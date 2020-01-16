@@ -22,8 +22,8 @@ Suggests:
     knitr,
     rmarkdown
 Depends: R (>= 2.10)
-URL: http://github.com/maniaabbas/influential
-BugReports: http://github.com/maniaabbas/influential/issues
+URL: http://github.com/asalavaty/influential
+BugReports: http://github.com/asalavaty/influential/issues
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
