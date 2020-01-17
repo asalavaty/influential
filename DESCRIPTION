@@ -18,7 +18,6 @@ Suggests:
     mgcv (>= 1.8-31),
     nortest (>= 1.0-4),
     NNS (>= 0.4.7.1),
-    snow,
     knitr,
     rmarkdown
 Depends: R (>= 2.10)
