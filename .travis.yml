@@ -2,3 +2,11 @@
 
 language: R
 cache: packages
+sudo: false
+
+addons:
+  apt:
+    packages:
+      - gmp-dev
+      - libxml2-dev
+      - glpk-dev
