@@ -8,12 +8,18 @@ Adrian (Abbas) Salavaty
 <!-- badges: start -->
 
 [![Travis build
-status](https://travis-ci.org/maniaabbas/influential.svg?branch=master)](https://travis-ci.org/maniaabbas/influential)
-[![Travis build
 status](https://travis-ci.org/asalavaty/influential.svg?branch=master)](https://travis-ci.org/asalavaty/influential)
 <!-- badges: end -->
 
-The goal of influential is to …
+The goal of influential is to help identification of the most
+influential nodes (hubs) in a network. This package contains functions
+for reconstruction of networks from adjacency matrices and data frames,
+analysis of the topology of the network and calculation of centrality
+measures, and identification of the most influential nodes (network
+hubs). Also, some functions have been provided for the assessment of
+dependence and correlation of two network centrality measures as well as
+the conditional probability of deviation from their corresponding means
+in opposite directions.
 
 ## Installation
 
@@ -30,7 +36,10 @@ This is a basic example which shows you how to solve a common problem:
 
 ``` r
 library(influential)
-## basic example code
+MyData <- centrality.measures
+My.vertices.IHS <- ihs(DC = centrality.measures$Degree,
+                       BC = centrality.measures$BetweennessCentrality,
+                       NC = centrality.measures$NeighborhoodConnectivity)
 ```
 
 What is special about using `README.Rmd` instead of just `README.md`?
