@@ -9,6 +9,9 @@ Adrian (Abbas) Salavaty
 
 [![AppVeyor build
 status](https://ci.appveyor.com/api/projects/status/github/asalavaty/influential?branch=master&svg=true)](https://ci.appveyor.com/project/asalavaty/influential)
+[![](https://www.r-pkg.org/badges/version/influential?color=blue)](https://cran.r-project.org/package=influential)
+[![](http://cranlogs.r-pkg.org/badges/grand-total/influential?color=green)](https://cran.r-project.org/package=influential)
+[![](https://img.shields.io/badge/First%20integrative%20method%20for-Hub%20identification-blue.svg)](XXX.XXX/unpublished)
 <!-- badges: end -->
 
 The goal of influential is to help identification of the most
@@ -28,6 +31,13 @@ You can install the released version of influential from
 
 ``` r
 install.packages("influential")
+```
+
+Or the development version from GitHub:
+
+``` r
+## install.packages("devtools")
+devtools::install_github("asalavaty/influential")
 ```
 
 ## Example
@@ -55,9 +65,6 @@ summary(cars)
 #>  3rd Qu.:19.0   3rd Qu.: 56.00  
 #>  Max.   :25.0   Max.   :120.00
 ```
-
-You’ll still need to render `README.Rmd` regularly, to keep `README.md`
-up-to-date.
 
 You can also embed plots, for example:
 
