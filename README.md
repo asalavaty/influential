@@ -9,6 +9,8 @@ Adrian (Abbas) Salavaty
 
 [![Travis build
 status](https://travis-ci.org/asalavaty/influential.svg?branch=master)](https://travis-ci.org/asalavaty/influential)
+[![AppVeyor build
+status](https://ci.appveyor.com/api/projects/status/github/asalavaty/influential?branch=master&svg=true)](https://ci.appveyor.com/project/asalavaty/influential)
 <!-- badges: end -->
 
 The goal of influential is to help identification of the most
