@@ -7,6 +7,6 @@ sudo: false
 addons:
   apt:
     packages:
-      - gmp-dev
-      - libxml2-dev
-      - glpk-dev
+      - gmp
+      - libxml2
+      - glpk
