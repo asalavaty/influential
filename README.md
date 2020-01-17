@@ -1,5 +1,3 @@
-CRAN Comments
-================
 Adrian (Abbas) Salavaty
 16/01/2020 (updated on 17 January, 2020)
 
