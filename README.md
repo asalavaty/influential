@@ -10,8 +10,6 @@ status](https://ci.appveyor.com/api/projects/status/github/asalavaty/influential
 [![](https://www.r-pkg.org/badges/version/influential?color=blue)](https://cran.r-project.org/package=influential)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/influential?color=green)](https://cran.r-project.org/package=influential)
 [![](https://img.shields.io/badge/First%20integrative%20method%20for-Hub%20identification-blue.svg)](XXX.XXX/unpublished)
-[![Travis build
-status](https://travis-ci.org/asalavaty/influential.svg?branch=master)](https://travis-ci.org/asalavaty/influential)
 <!-- badges: end -->
 
 ![The influential R package
