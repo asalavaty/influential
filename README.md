@@ -1,5 +1,3 @@
-Adrian (Abbas) Salavaty
-16/01/2020 (updated on 17 January, 2020)
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
@@ -12,22 +10,43 @@ status](https://ci.appveyor.com/api/projects/status/github/asalavaty/influential
 [![](https://www.r-pkg.org/badges/version/influential?color=blue)](https://cran.r-project.org/package=influential)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/influential?color=green)](https://cran.r-project.org/package=influential)
 [![](https://img.shields.io/badge/First%20integrative%20method%20for-Hub%20identification-blue.svg)](XXX.XXX/unpublished)
+[![Travis build
+status](https://travis-ci.org/asalavaty/influential.svg?branch=master)](https://travis-ci.org/asalavaty/influential)
 <!-- badges: end -->
 
-The goal of influential is to help identification of the most
+![The influential R package
+logo](https://github.com/asalavaty/influential/blob/master/logo.png)
+
+## Overview
+
+The goal of `influential` is to help identification of the most
 influential nodes (hubs) in a network. This package contains functions
 for reconstruction of networks from adjacency matrices and data frames,
 analysis of the topology of the network and calculation of centrality
-measures, and identification of the most influential nodes (network
-hubs). Also, some functions have been provided for the assessment of
-dependence and correlation of two network centrality measures as well as
-the conditional probability of deviation from their corresponding means
-in opposite directions.
+measures. The first integrative method (i.e. the *integrated hubness
+score (IHS)* method) for the identification of network hubs is also
+provided as a function, which is the main purpose of the package. Also,
+neighborhood connectivity, one of the required centrality measures for
+the calculation of IHS, is for the first time calculable in the R
+environment. Furthermore, some functions have been provided for the
+assessment of dependence and correlation of two network centrality
+measures as well as the conditional probability of deviation from their
+corresponding means in opposite directions.
 
-## Installation
+Check out [our paper](https://alaki.com) (not published yet) for a more
+complete description of the IHS formula and all of its underpining
+methods and analyses.
 
-You can install the released version of influential from
-[CRAN](https://CRAN.R-project.org) with:
+## Author
+
+The `influential` package was written by [Adrian (Abbas)
+Salavaty](https://www.AbbasSalavaty.com)
+
+## How to Install
+
+You can install the official [CRAN
+release](https://cran.r-project.org/package=influential) of the
+`influential` with the following code:
 
 ``` r
 install.packages("influential")
@@ -40,35 +59,42 @@ Or the development version from GitHub:
 devtools::install_github("asalavaty/influential")
 ```
 
-## Example
+## Vignettes
+
+[*Detailed description of the functions and their
+outputs*](https://github.com/asalavaty/influential/blob/master/vignettes/comparison.pdf)
+
+## An Example for Calculation of IHS
 
 This is a basic example which shows you how to solve a common problem:
 
 ``` r
 library(influential)
-MyData <- centrality.measures
+
+MyData <- centrality.measures # A data frame of centrality measures
+
+# This function calculates the integrated Hubness Score (IHS)
 My.vertices.IHS <- ihs(DC = centrality.measures$Degree,
                        BC = centrality.measures$BetweennessCentrality,
                        NC = centrality.measures$NeighborhoodConnectivity)
+
+print(head(My.vertices.IHS))
+#> [1] 196.2039215   2.9822273   0.1572078   6.1757221   0.3199993   0.5095222
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`?
-You can include R chunks like so:
+## How to cite `influential`
+
+To cite `influential`, please cite the [associated
+paper](https://alaki.com) (unpublished yet). You can also refer to the
+package’s citation information using the citation() function.
 
 ``` r
-summary(cars)
-#>      speed           dist       
-#>  Min.   : 4.0   Min.   :  2.00  
-#>  1st Qu.:12.0   1st Qu.: 26.00  
-#>  Median :15.0   Median : 36.00  
-#>  Mean   :15.4   Mean   : 42.98  
-#>  3rd Qu.:19.0   3rd Qu.: 56.00  
-#>  Max.   :25.0   Max.   :120.00
+citation("influential")
 ```
 
-You can also embed plots, for example:
+## How to contribute
 
-<img src="man/figures/README-pressure-1.png" width="100%" />
-
-In that case, don’t forget to commit and push the resulting figure
-files, so they display on GitHub\!
+Please don’t hesitate to report any bugs/issues and request for
+enhancement or any other contributions. To submit a bug report or
+enhancement request, please use the [`influential` GitHub issues
+tracker](https://github.com/asalavaty/influential/issues).
