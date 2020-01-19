@@ -14,11 +14,6 @@ cache:
   - C:\RLibrary
 
 environment:
-  matrix:
-    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
-      MY_VAR: value1
-    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
-      MY_VAR: value3
   NOT_CRAN: true
   # env vars that may need to be set, at least temporarily, from time to time
   # see https://github.com/krlmlr/r-appveyor#readme for details
