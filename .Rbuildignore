@@ -19,3 +19,4 @@ data-raw/DATASET.R
 vignettes/.gitignore
 ^\.travis\.yml$
 ^appveyor\.yml$
+logo.png
