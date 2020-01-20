@@ -2,3 +2,7 @@
 
 language: R
 cache: packages
+
+apt-file search GL/glu.h
+libglu1-mesa-dev: /usr/include/GL/glu.h
+sudo apt-get install libglu1-mesa-dev
