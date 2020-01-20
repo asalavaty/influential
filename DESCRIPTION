@@ -3,7 +3,7 @@ Type: Package
 Title: Identification of the Most Influential Nodes (Hubs)
 Version: 0.1.0
 Author: Adrian (Abbas) Salavaty
-Maintainer: Adrian (Abbas) Salavaty <abbas.salavaty@gmail.com>
+Maintainer: Adrian Salavaty <abbas.salavaty@gmail.com>
 Description: This package contains functions for reconstruction of networks from
     adjacency matrices and data frames, analysis of the topology of the network 
     and calculation of centrality measures, and identification of the most
