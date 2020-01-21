@@ -1,8 +1,12 @@
 ---
-title: "Vignettes"
-output: rmarkdown::html_vignette
+title: "Vignettes of the `influential`"
+output: 
+  rmarkdown::github_document:
+    toc: true
+    toc_depth: 2
+    keep_html: true
 vignette: >
-  %\VignetteIndexEntry{Vignettes}
+  %\VignetteIndexEntry{influential vignettes}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -12,8 +16,81 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+options(tibble.print_min = 4L, tibble.print_max = 4L)
+set.seed(60)
 ```
+
+## Overview
+
+The influential package contains several functions that could be categorized into four groups
+according to their purpose:
+
+* Network reconstruction
+* Calculation of centrality measures
+* Assessment of the association of centrality measures
+* Identification of the most `influential` network nodes (hubs)
+    
+********
 
 ```{r setup}
 library(influential)
 ```
+
+## Network reconstruction
+
+Two functions have been obtained from the `igraph` package for the reconstruction of networks.
+
+- ### From a data frame
+    In the data frame the first and second columns should be composed of source and target nodes.
+    
+    A sample appropriate data frame is brought below:
+    
+```{r, echo=FALSE}
+knitr::kable(head(coexpression.data))
+```
+    
+This is a co-expression dataset obtained from [PMID: 31211495](https://www.ncbi.nlm.nih.gov/pubmed/31211495).
+
+```{r}
+MyData <- coexpression.data
+My_graph <- graph_from_data_frame(d=MyData)
+```
+
+If you look at the class of `My_graph` you should see that it has an `igraph` class:
+```{r}
+class(My_graph)
+```
+
+********
+
+- ### From an adjacency matrix
+
+A sample appropriate data frame is brought below:
+
+```{r, echo=FALSE}
+knitr::kable(head(coexpression.adjacency)[,1:10])
+```
+
+```{r}
+MyData <- coexpression.adjacency
+My_graph <- graph_from_adjacency_matrix(MyData)
+```
+
+********
+
+## Calculation of centrality measures
+
+- ### Degree centrality
+
+- ### Betweenness centrality
+
+- ### Neighborhood connectivity
+
+
+
+********
+
+## Assessment of the association of centrality measures
+
+
+## Identification of the most `influential` network nodes (hubs)
