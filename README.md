@@ -60,7 +60,7 @@ devtools::install_github("asalavaty/influential")
 ## Vignettes
 
 [*Detailed description of the functions and their
-outputs*](https://github.com/asalavaty/influential/blob/master/vignettes/comparison.pdf)
+outputs*](https://github.com/asalavaty/influential/blob/master/vignettes/Vignettes.md)
 
 ## An Example for Calculation of IHS
 
