@@ -28,8 +28,6 @@
 #'                                            mode = "all")
 neighborhood.connectivity <- function(graph, vertices, mode = "all") {
 
-    base::attachNamespace("parallel")
-
   # Getting the first neighbors of each node
   if(mode == "all") {
     first.neighbors <- igraph::neighborhood(graph,
@@ -119,8 +117,6 @@ neighborhood.connectivity <- function(graph, vertices, mode = "all") {
 #'                                           Desired.colname = "BetweennessCentrality",
 #'                                           Condition.colname = "NeighborhoodConnectivity")
 cond.prob.analysis <- function(data, nodes.colname, Desired.colname, Condition.colname) {
-
-  base::attachNamespace("parallel")
 
   #filtering the data to find those nodes meeting the conditions
   ncpositive <- data[data[, Condition.colname] >
@@ -212,6 +208,7 @@ cond.prob.analysis <- function(data, nodes.colname, Desired.colname, Condition.c
 double.cent.assess <- function(data, nodes.colname, dependent.colname, independent.colname) {
 
   base::attachNamespace("parallel")
+  parallel::detectCores(logical = TRUE)
 
   #Checking the availability of required packages
 
@@ -426,6 +423,7 @@ double.cent.assess.noRegression <- function(data, nodes.colname,
                                             centrality2.colname) {
 
   base::attachNamespace("parallel")
+  parallel::detectCores(logical = TRUE)
 
   #Checking the availability of required packages
 
