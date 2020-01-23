@@ -570,7 +570,7 @@ double.cent.assess.noRegression <- function(data, nodes.colname,
 #'
 #' This function calculates the IHS of the desired nodes. This function is not dependent to
 #' other packages and the required centrality measures, namely degree centrality, betweenness
-#' centrality and neighborhood connectivity could had been calculated by any means beforehand.
+#' centrality and neighborhood connectivity could have been calculated by any means beforehand.
 #' @param DC A vector contating the values of degree centrality of the desired vertices.
 #' @param BC A vector contating the values of betweenness centrality of the desired vertices.
 #' @param NC A vector contating the values of neighborhood connectivity of the desired vertices.
