@@ -31,7 +31,7 @@ assessment of dependence and correlation of two network centrality
 measures as well as the conditional probability of deviation from their
 corresponding means in opposite directions.
 
-Check out [our paper](https://alaki.com) (not published yet) for a more
+Check out [our paper](https://XXX.YYY) (not published yet) for a more
 complete description of the IHS formula and all of its underpining
 methods and analyses.
 
@@ -83,7 +83,7 @@ print(head(My.vertices.IHS))
 ## How to cite `influential`
 
 To cite `influential`, please cite the [associated
-paper](https://alaki.com) (unpublished yet). You can also refer to the
+paper](https://XXX.YYY) (unpublished yet). You can also refer to the
 package’s citation information using the citation() function.
 
 ``` r
