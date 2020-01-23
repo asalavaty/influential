@@ -9,7 +9,7 @@
 status](https://ci.appveyor.com/api/projects/status/github/asalavaty/influential?branch=master&svg=true)](https://ci.appveyor.com/project/asalavaty/influential)
 [![](https://www.r-pkg.org/badges/version/influential?color=blue)](https://cran.r-project.org/package=influential)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/influential?color=green)](https://cran.r-project.org/package=influential)
-[![](https://img.shields.io/badge/First%20integrative%20method%20for-Hub%20identification-blue.svg)](XXX.XXX/unpublished)
+[![](https://img.shields.io/badge/First%20integrative%20method%20for-Hub%20identification-blue.svg)](https://github.com/asalavaty/influential)
 <!-- badges: end -->
 
 ![The influential R package
@@ -31,9 +31,9 @@ assessment of dependence and correlation of two network centrality
 measures as well as the conditional probability of deviation from their
 corresponding means in opposite directions.
 
-Check out [our paper](https://XXX.YYY) (not published yet) for a more
-complete description of the IHS formula and all of its underpinning
-methods and analyses.
+Check out **our paper** (not published yet) for a more complete
+description of the IHS formula and all of its underpinning methods and
+analyses.
 
 ## Author
 
@@ -82,9 +82,9 @@ print(head(My.vertices.IHS))
 
 ## How to cite `influential`
 
-To cite `influential`, please cite the [associated
-paper](https://XXX.YYY) (unpublished yet). You can also refer to the
-package’s citation information using the citation() function.
+To cite `influential`, please cite the **associated paper** (unpublished
+yet). You can also refer to the package’s citation information using the
+citation() function.
 
 ``` r
 citation("influential")
