@@ -23,3 +23,4 @@ logo.png
 ^doc$
 ^Meta$
 ^CRAN-RELEASE$
+vignettes/NNS_scatter.plot.pdf
