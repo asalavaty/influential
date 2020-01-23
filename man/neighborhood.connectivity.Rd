@@ -14,7 +14,7 @@ neighborhood.connectivity(graph, vertices, mode = "all")
 
 \item{mode}{The mode of neighborhood connectivity depending on the directedness of the graph.
 If the graph is undirected, the mode "all" should be specified.
-Otherwide, for the calculation of neighborhood connectivity based on
+Otherwise, for the calculation of neighborhood connectivity based on
 incoming connections select "in" and for the outgoing connections select "out".
 Also, if all of the connections are desired, specify the "all" mode. Default mode is set to "all".}
 }

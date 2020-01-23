@@ -22,7 +22,7 @@ can be a sparse matrix created with the Matrix package.}
 See also the weighted argument, the interpretation depends on that too.
 Possible values are: directed, undirected, upper, lower, max, min, plus.}
 
-\item{weighted}{AThis argument specifies whether to create a weighted graph from an adjacency matrix.
+\item{weighted}{This argument specifies whether to create a weighted graph from an adjacency matrix.
 If it is NULL then an unweighted graph is created and the elements of the adjacency matrix gives the
 number of edges between the vertices. If it is a character constant then for every non-zero matrix
 entry an edge is created and the value of the entry is added as an edge attribute named by the weighted argument.

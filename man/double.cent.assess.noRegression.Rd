@@ -13,7 +13,7 @@ double.cent.assess.noRegression(
 )
 }
 \arguments{
-\item{data}{A data frame contaning the values of two continuous variables and the name of
+\item{data}{A data frame containing the values of two continuous variables and the name of
 observations (nodes).}
 
 \item{nodes.colname}{The character format (quoted) name of the column containing
@@ -29,10 +29,10 @@ the values of the Centrality_2 variable.}
 This function assesses innate features and the association of two centrality measures
 (or any two other continuous variables) from the aspect of distribution mode, dependence,
 linearity, partial-moments based correlation, and conditional probability of
-deviating from corresponding means in oposite direction (centrality2 is used as the condition variable).
+deviating from corresponding means in opposite direction (centrality2 is used as the condition variable).
 This function doesn't consider which variable is dependent and which one is
 independent and no regression analysis is done.
-Also, the correlation between two variables is assessed via non-linear non-parametric statristics (NNS).
+Also, the correlation between two variables is assessed via non-linear non-parametric statistics (NNS).
 For the conditional probability assessment, the centrality2 variable is considered
 as the condition variable.
 }

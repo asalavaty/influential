@@ -122,7 +122,7 @@ specifying the `mode` parameter.
 
   - ### Betweenness centrality
     
-    Betweeneess centrality, like degree centrality, is one of the most
+    Betweenness centrality, like degree centrality, is one of the most
     commonly used centrality measures but is representative of the
     global centrality of a node. This centrality metric could also be
     calculated using a function obtained from the `igraph` package.
@@ -176,7 +176,7 @@ via specifying the `mode` parameter.
 
 The function `cond.prob.analysis` assesses the conditional probability
 of deviation of two centrality measures (or any other two continuous
-variables) from their corresponding means in oposite directions.
+variables) from their corresponding means in opposite directions.
 
 ``` r
 MyData <- centrality.measures        # Preparing the data
@@ -204,7 +204,7 @@ print(My.conditional.prob)
 
   - ### Nature of association (considering dependent and independent)
 
-The function `double.cent.assess` could be used to automaticelly assess
+The function `double.cent.assess` could be used to automatically assess
 both the distribution mode of centrality measures (two continuous
 variables) and the nature of their association. The analyses done
 through this formula are as follows:
@@ -212,22 +212,23 @@ through this formula are as follows:
 1.  **Normality assessment**:
       - Variables with **lower than** 5000 observations: *Shapiro-Wilk
         test*
-      - Variables with **over** 5000 observations: *Anderson-Darlin
+      - Variables with **over** 5000 observations: *Anderson-Darling
         test* <br><br>
 2.  **Assessment of non-linear/non-monotonic correlation**:
       - *Non-linearity assessment*: Fitting a generalized additive model
         (GAM) with integrated smoothness approximations using the `mgcv`
         package <br><br>
-      - *Non-monotonicity assessment*: Comaring the squared coefficients
-        of the correlation based on Spearman’s rank correlation analysis
-        and ranked regression test with non-linear splines.
+      - *Non-monotonicity assessment*: Comparing the squared
+        coefficients of the correlation based on Spearman’s rank
+        correlation analysis and ranked regression test with non-linear
+        splines.
           - Squared coefficient of Spearman’s rank correlation **\>**
             R-squared ranked regression with non-linear splines:
             *Monotonic*
           - Squared coefficient of Spearman’s rank correlation **\<**
             R-squared ranked regression with non-linear splines:
             *Non-monotonic* <br><br>
-3.  **Dependemnce assessment**:
+3.  **Dependence assessment**:
       - *Hoeffding’s independence test*: Hoeffding’s test of
         independence is a test based on the population measure of
         deviation from independence which computes a D Statistics
@@ -249,7 +250,7 @@ through this formula are as follows:
 5.  **Assessment of conditional probability of deviation from means**
     This step assesses the conditional probability of deviation of two
     centrality measures (or any other two continuous variables) from
-    their corresponding means in oposite directions.
+    their corresponding means in opposite directions.
       - The independent centrality measure (variable) is considered as
         the condition variable and the other as the desired one.
       - As you will see in the results, the whole data is also randomly
@@ -329,16 +330,16 @@ dependent and independent variables.
   - ### Nature of association (without considering dependence direction)
 
 The function `double.cent.assess.noRegression` could be used to
-automaticelly assess both the distribution mode of centrality measures
+automatically assess both the distribution mode of centrality measures
 (two continuous variables) and the nature of their association. The
 analyses done through this formula are as follows:
 
 1.  **Normality assessment**:
       - Variables with **lower than** 5000 observations: *Shapiro-Wilk
         test*
-      - Variables with **over** 5000 observations: *Anderson-Darlin
+      - Variables with **over** 5000 observations: *Anderson–Darling
         test* <br><br>
-2.  **Dependemnce assessment**:
+2.  **Dependence assessment**:
       - *Hoeffding’s independence test*: Hoeffding’s test of
         independence is a test based on the population measure of
         deviation from independence which computes a D Statistics
@@ -360,7 +361,7 @@ analyses done through this formula are as follows:
 4.  **Assessment of conditional probability of deviation from means**
     This step assesses the conditional probability of deviation of two
     centrality measures (or any other two continuous variables) from
-    their corresponding means in oposite directions.
+    their corresponding means in opposite directions.
       - The `centrality2` variable is considered as the condition
         variable and the other (`centrality1`) as the desired one.
       - As you will see in the results, the whole data is also randomly
@@ -425,7 +426,7 @@ print(My.metrics.assessment)
 
 **IHS** : `IHS` is the first integrative method for the identification
 of network hubs. The `IHS` formula integrates three network centrality
-meassure including degree centrality, betweenness centrality, and
+measure including degree centrality, betweenness centrality, and
 neighborhood connectivity in such a way that both synergize their
 effects and remove their biases.
 

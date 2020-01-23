@@ -12,7 +12,7 @@
 #' @param vertices A vector of desired vertices, which could be obtained by the V function.
 #' @param mode The mode of neighborhood connectivity depending on the directedness of the graph.
 #' If the graph is undirected, the mode "all" should be specified.
-#' Otherwide, for the calculation of neighborhood connectivity based on
+#' Otherwise, for the calculation of neighborhood connectivity based on
 #' incoming connections select "in" and for the outgoing connections select "out".
 #' Also, if all of the connections are desired, specify the "all" mode. Default mode is set to "all".
 #' @aliases NC
@@ -89,7 +89,7 @@ neighborhood.connectivity <- function(graph, vertices, mode = "all") {
 #=============================================================================
 #
 #    Code chunk 2: Calculation of conditional probability of deviation from
-#                  means in oposite directions
+#                  means in opposite directions
 #
 #=============================================================================
 
@@ -97,8 +97,8 @@ neighborhood.connectivity <- function(graph, vertices, mode = "all") {
 #'
 #' This function calculates the conditional probability of deviation of two
 #' centrality measures (or any two other continuous variables) from their corresponding
-#' means in oposite directions.
-#' @param data A data frame contaning the values of two continuous variables and the name of
+#' means in opposite directions.
+#' @param data A data frame containing the values of two continuous variables and the name of
 #' observations (nodes).
 #' @param nodes.colname The character format (quoted) name of the column containing
 #' the name of observations (nodes).
@@ -175,14 +175,14 @@ cond.prob.analysis <- function(data, nodes.colname, Desired.colname, Condition.c
 #' This function assesses innate features and the association of two centrality measures
 #' (or any two other continuous variables) from the aspect of distribution mode, dependence,
 #' linearity, monotonicity, partial-moments based correlation, and conditional probability of
-#' deviating from corresponding means in oposite direction. This function assumes one
+#' deviating from corresponding means in opposite direction. This function assumes one
 #' variable as dependent and the other as independent for regression analyses. The non-linear nature of
 #' the association of two centrality measures is evaluated based on generalized additive models (GAM).
 #' The monotonicity of the association is evaluated based on comparing the squared coefficient of
 #' Spearman correlation and R-squared of rank regression analysis.
-#' Also, the correlation between two variables is assessed via non-linear non-parametric statristics (NNS).
-#' For the conditional probability assessment, the idependent variable is considered as the condition variable.
-#' @param data A data frame contaning the values of two continuous variables and the name of
+#' Also, the correlation between two variables is assessed via non-linear non-parametric statistics (NNS).
+#' For the conditional probability assessment, the independent variable is considered as the condition variable.
+#' @param data A data frame containing the values of two continuous variables and the name of
 #' observations (nodes).
 #' @param nodes.colname The character format (quoted) name of the column containing
 #' the name of observations (nodes).
@@ -323,7 +323,7 @@ double.cent.assess <- function(data, nodes.colname, dependent.colname, independe
                              Dependence = unlist(nl.cor.dep)[2], row.names = "Results")
   } else {nl.cor.dep <- "The association is linear!"}
 
-  ##assessment of conditional probability of deviation of BC and NC from their means in oposite directions
+  ##assessment of conditional probability of deviation of BC and NC from their means in opposite directions
   #filtering the data to find those nodes meeting the conditions
   ncpositive <- data[data[, independent.colname] >
                        mean(data[, independent.colname]),]
@@ -391,13 +391,13 @@ double.cent.assess <- function(data, nodes.colname, dependent.colname, independe
 #' This function assesses innate features and the association of two centrality measures
 #' (or any two other continuous variables) from the aspect of distribution mode, dependence,
 #' linearity, partial-moments based correlation, and conditional probability of
-#' deviating from corresponding means in oposite direction (centrality2 is used as the condition variable).
+#' deviating from corresponding means in opposite direction (centrality2 is used as the condition variable).
 #' This function doesn't consider which variable is dependent and which one is
 #' independent and no regression analysis is done.
-#' Also, the correlation between two variables is assessed via non-linear non-parametric statristics (NNS).
+#' Also, the correlation between two variables is assessed via non-linear non-parametric statistics (NNS).
 #' For the conditional probability assessment, the centrality2 variable is considered
 #' as the condition variable.
-#' @param data A data frame contaning the values of two continuous variables and the name of
+#' @param data A data frame containing the values of two continuous variables and the name of
 #' observations (nodes).
 #' @param nodes.colname The character format (quoted) name of the column containing
 #' the name of observations (nodes).
@@ -507,7 +507,7 @@ double.cent.assess.noRegression <- function(data, nodes.colname,
   nl.cor.dep <- data.frame(Correlation = unlist(nl.cor.dep)[1],
                            Dependence = unlist(nl.cor.dep)[2], row.names = "Results")
 
-  ##assessment of conditional probability of deviation of BC and NC from their means in oposite directions
+  ##assessment of conditional probability of deviation of BC and NC from their means in opposite directions
   #filtering the data to find those nodes meeting the conditions
   ncpositive <- data[data[, centrality2.colname] >
                        mean(data[, centrality2.colname]),]
@@ -571,9 +571,9 @@ double.cent.assess.noRegression <- function(data, nodes.colname,
 #' This function calculates the IHS of the desired nodes. This function is not dependent to
 #' other packages and the required centrality measures, namely degree centrality, betweenness
 #' centrality and neighborhood connectivity could have been calculated by any means beforehand.
-#' @param DC A vector contating the values of degree centrality of the desired vertices.
-#' @param BC A vector contating the values of betweenness centrality of the desired vertices.
-#' @param NC A vector contating the values of neighborhood connectivity of the desired vertices.
+#' @param DC A vector containing the values of degree centrality of the desired vertices.
+#' @param BC A vector containing the values of betweenness centrality of the desired vertices.
+#' @param NC A vector containing the values of neighborhood connectivity of the desired vertices.
 #' @aliases IHS
 #' @keywords integrated_hubness_score IHS
 #' @export
@@ -628,7 +628,7 @@ ihs <- function(DC, BC, NC) {
   #' @param mode Character scalar, specifies how igraph should interpret the supplied matrix.
   #' See also the weighted argument, the interpretation depends on that too.
   #' Possible values are: directed, undirected, upper, lower, max, min, plus.
-  #' @param weighted AThis argument specifies whether to create a weighted graph from an adjacency matrix.
+  #' @param weighted This argument specifies whether to create a weighted graph from an adjacency matrix.
   #' If it is NULL then an unweighted graph is created and the elements of the adjacency matrix gives the
   #' number of edges between the vertices. If it is a character constant then for every non-zero matrix
   #' entry an edge is created and the value of the entry is added as an edge attribute named by the weighted argument.

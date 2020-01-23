@@ -32,7 +32,7 @@ measures as well as the conditional probability of deviation from their
 corresponding means in opposite directions.
 
 Check out [our paper](https://XXX.YYY) (not published yet) for a more
-complete description of the IHS formula and all of its underpining
+complete description of the IHS formula and all of its underpinning
 methods and analyses.
 
 ## Author

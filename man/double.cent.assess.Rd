@@ -8,7 +8,7 @@
 double.cent.assess(data, nodes.colname, dependent.colname, independent.colname)
 }
 \arguments{
-\item{data}{A data frame contaning the values of two continuous variables and the name of
+\item{data}{A data frame containing the values of two continuous variables and the name of
 observations (nodes).}
 
 \item{nodes.colname}{The character format (quoted) name of the column containing
@@ -24,13 +24,13 @@ the values of the independent variable.}
 This function assesses innate features and the association of two centrality measures
 (or any two other continuous variables) from the aspect of distribution mode, dependence,
 linearity, monotonicity, partial-moments based correlation, and conditional probability of
-deviating from corresponding means in oposite direction. This function assumes one
+deviating from corresponding means in opposite direction. This function assumes one
 variable as dependent and the other as independent for regression analyses. The non-linear nature of
 the association of two centrality measures is evaluated based on generalized additive models (GAM).
 The monotonicity of the association is evaluated based on comparing the squared coefficient of
 Spearman correlation and R-squared of rank regression analysis.
-Also, the correlation between two variables is assessed via non-linear non-parametric statristics (NNS).
-For the conditional probability assessment, the idependent variable is considered as the condition variable.
+Also, the correlation between two variables is assessed via non-linear non-parametric statistics (NNS).
+For the conditional probability assessment, the independent variable is considered as the condition variable.
 }
 \examples{
 MyData <- centrality.measures

@@ -8,16 +8,16 @@
 ihs(DC, BC, NC)
 }
 \arguments{
-\item{DC}{A vector contating the values of degree centrality of the desired vertices.}
+\item{DC}{A vector containing the values of degree centrality of the desired vertices.}
 
-\item{BC}{A vector contating the values of betweenness centrality of the desired vertices.}
+\item{BC}{A vector containing the values of betweenness centrality of the desired vertices.}
 
-\item{NC}{A vector contating the values of neighborhood connectivity of the desired vertices.}
+\item{NC}{A vector containing the values of neighborhood connectivity of the desired vertices.}
 }
 \description{
 This function calculates the IHS of the desired nodes. This function is not dependent to
 other packages and the required centrality measures, namely degree centrality, betweenness
-centrality and neighborhood connectivity could had been calculated by any means beforehand.
+centrality and neighborhood connectivity could have been calculated by any means beforehand.
 }
 \examples{
 MyData <- centrality.measures

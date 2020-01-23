@@ -8,7 +8,7 @@
 cond.prob.analysis(data, nodes.colname, Desired.colname, Condition.colname)
 }
 \arguments{
-\item{data}{A data frame contaning the values of two continuous variables and the name of
+\item{data}{A data frame containing the values of two continuous variables and the name of
 observations (nodes).}
 
 \item{nodes.colname}{The character format (quoted) name of the column containing
@@ -23,7 +23,7 @@ the values of the condition variable.}
 \description{
 This function calculates the conditional probability of deviation of two
 centrality measures (or any two other continuous variables) from their corresponding
-means in oposite directions.
+means in opposite directions.
 }
 \examples{
 MyData <- centrality.measures
