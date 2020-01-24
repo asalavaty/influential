@@ -5,7 +5,13 @@
 \alias{DCA}
 \title{Assessment of innate features and associations of two network centrality measures (dependent and independent)}
 \usage{
-double.cent.assess(data, nodes.colname, dependent.colname, independent.colname)
+double.cent.assess(
+  data,
+  nodes.colname,
+  dependent.colname,
+  independent.colname,
+  plot = FALSE
+)
 }
 \arguments{
 \item{data}{A data frame containing the values of two continuous variables and the name of
@@ -19,6 +25,8 @@ the values of the dependent variable.}
 
 \item{independent.colname}{The character format (quoted) name of the column containing
 the values of the independent variable.}
+
+\item{plot}{logical; FALSE (default) Plots quadrant means of NNS correlation analysis.}
 }
 \description{
 This function assesses innate features and the association of two centrality measures
