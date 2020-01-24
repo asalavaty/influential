@@ -190,6 +190,7 @@ cond.prob.analysis <- function(data, nodes.colname, Desired.colname, Condition.c
 #' the values of the dependent variable.
 #' @param independent.colname The character format (quoted) name of the column containing
 #' the values of the independent variable.
+#' @param plot logical; FALSE (default) Plots quadrant means of NNS correlation analysis.
 #' @aliases DCA
 #' @keywords association_assessment dependence_assessment
 #' @family centrality association assessment functions
@@ -205,7 +206,7 @@ cond.prob.analysis <- function(data, nodes.colname, Desired.colname, Condition.c
 #'                                             nodes.colname = "name",
 #'                                             dependent.colname = "BetweennessCentrality",
 #'                                             independent.colname = "NeighborhoodConnectivity")
-double.cent.assess <- function(data, nodes.colname, dependent.colname, independent.colname) {
+double.cent.assess <- function(data, nodes.colname, dependent.colname, independent.colname, plot = FALSE) {
 
   base::attachNamespace("parallel")
   parallel::detectCores(logical = TRUE)
@@ -304,21 +305,25 @@ double.cent.assess <- function(data, nodes.colname, dependent.colname, independe
   ##assessment of descriptive non-linear non-parametric correlation/dependence between
   #dependent and independent variables
   if(association.type == "nonlinear-nonmonotonic") {
+    if(plot == TRUE) {
     #prepare a PDF devide to save the plot in
     grDevices::pdf(file = paste("NNS_scatter.plot", "pdf", sep = "."),
-        width = 26, height = 12)
+        width = 26, height = 12) }
     nl.cor.dep <- NNS::NNS.dep(x = data[, independent.colname], y = data[, dependent.colname],
-                          print.map = T, order = 2)
-    grDevices::dev.off()
+                          print.map = plot, order = 2)
+    if(plot == TRUE) {
+    grDevices::dev.off() }
     nl.cor.dep <- data.frame(Correlation = unlist(nl.cor.dep)[1],
                              Dependence = unlist(nl.cor.dep)[2], row.names = "Results")
   } else if(association.type == "nonlinear-monotonic") {
+    if(plot == TRUE) {
     #prepare a PDF devide to save the plot in
     grDevices::pdf(file = paste("NNS_scatter.plot", "pdf", sep = "."),
-        width = 26, height = 12)
+        width = 26, height = 12) }
     nl.cor.dep <- NNS::NNS.dep(x = data[, independent.colname], y = data[, dependent.colname],
-                          print.map = T, order = 2)
-    grDevices::dev.off()
+                          print.map = plot, order = 2)
+    if(plot == TRUE) {
+    grDevices::dev.off() }
     nl.cor.dep <- data.frame(Correlation = unlist(nl.cor.dep)[1],
                              Dependence = unlist(nl.cor.dep)[2], row.names = "Results")
   } else {nl.cor.dep <- "The association is linear!"}
