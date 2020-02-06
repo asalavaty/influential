@@ -10,7 +10,8 @@ Description: Contains functions for reconstruction of networks from
     influential nodes (network hubs). Also, some functions have been provided
     for the assessment of dependence and correlation of two network centrality
     measures as well as the conditional probability of deviation from their
-    corresponding means in opposite direction.
+    corresponding means in opposite direction. 
+    Fred Viole and David Nawrocki (2013, ISBN:1490523995).
 Imports:
     igraph
 Suggests:
