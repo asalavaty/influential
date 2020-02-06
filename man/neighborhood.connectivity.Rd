@@ -18,6 +18,10 @@ Otherwise, for the calculation of neighborhood connectivity based on
 incoming connections select "in" and for the outgoing connections select "out".
 Also, if all of the connections are desired, specify the "all" mode. Default mode is set to "all".}
 }
+\value{
+A one column data frame with vertex names in vertices as row names and neighborhood connectivity score
+of each vertex in the column.
+}
 \description{
 This function calculates the neighborhood connectivity of input vertices and
 works with both directed and undirected networks.

@@ -15,6 +15,8 @@
 #' Otherwise, for the calculation of neighborhood connectivity based on
 #' incoming connections select "in" and for the outgoing connections select "out".
 #' Also, if all of the connections are desired, specify the "all" mode. Default mode is set to "all".
+#' @return A one column data frame with vertex names in vertices as row names and neighborhood connectivity score
+#' of each vertex in the column.
 #' @aliases NC
 #' @keywords neighborhood_connectivity
 #' @family centrality functions
@@ -106,6 +108,10 @@ neighborhood.connectivity <- function(graph, vertices, mode = "all") {
 #' the values of the desired variable.
 #' @param Condition.colname The character format (quoted) name of the column containing
 #' the values of the condition variable.
+#' @return A list of two objects including the conditional probability of deviation of two
+#' centrality measures (or any two other continuous variables) from their corresponding
+#' means in opposite directions based on both the entire network and the split-half random
+#' sample of network nodes.
 #' @aliases CPA
 #' @keywords conditional_probability association_assessment
 #' @family centrality association assessment functions
@@ -191,6 +197,20 @@ cond.prob.analysis <- function(data, nodes.colname, Desired.colname, Condition.c
 #' @param independent.colname The character format (quoted) name of the column containing
 #' the values of the independent variable.
 #' @param plot logical; FALSE (default) Plots quadrant means of NNS correlation analysis.
+#' @return A list of 11 objects including:
+#' Summary of the basic statistics of two centrality measures (or any two other continuous variables)
+#' The results of normality assessment of two variable (p-value > 0.05 imply that the variable is normally distributed).
+#' Description of the normality assessment of the dependent variable.
+#' Description of the normality assessment of the independent variable.
+#' Results of the generalized additive modeling (GAM) of the data.
+#' The association type based on simultaneous consideration of normality assessment,
+#' GAM Computation with smoothness estimation, Spearman correlation, and ranked regression analysis of splines.
+#' The Hoeffding's D Statistic of dependence (ranging from -0.5 to 1).
+#' Description of the dependence significance.
+#' Correlation between variables based on the NNS method.
+#' The last two objects are the conditional probability of deviation of two
+#' centrality measures from their corresponding means in opposite directions based
+#' on both the entire network and the split-half random sample of network nodes.
 #' @aliases DCA
 #' @keywords association_assessment dependence_assessment
 #' @family centrality association assessment functions
@@ -410,6 +430,17 @@ double.cent.assess <- function(data, nodes.colname, dependent.colname, independe
 #' the values of the Centrality_1 variable.
 #' @param centrality2.colname The character format (quoted) name of the column containing
 #' the values of the Centrality_2 variable.
+#' @return A list of nine objects including:
+#' Summary of the basic statistics of two centrality measures (or any two other continuous variables)
+#' The results of normality assessment of two variable (p-value > 0.05 imply that the variable is normally distributed).
+#' Description of the normality assessment of the centrality1 (first variable).
+#' Description of the normality assessment of the centrality2 (second variable).
+#' The Hoeffding's D Statistic of dependence (ranging from -0.5 to 1).
+#' Description of the dependence significance.
+#' Correlation between variables based on the NNS method.
+#' The last two objects are the conditional probability of deviation of two
+#' centrality measures from their corresponding means in opposite directions based
+#' on both the entire network and the split-half random sample of network nodes.
 #' @aliases DCANR
 #' @keywords association_assessment dependence_assessment
 #' @family centrality association assessment functions
@@ -579,6 +610,7 @@ double.cent.assess.noRegression <- function(data, nodes.colname,
 #' @param DC A vector containing the values of degree centrality of the desired vertices.
 #' @param BC A vector containing the values of betweenness centrality of the desired vertices.
 #' @param NC A vector containing the values of neighborhood connectivity of the desired vertices.
+#' @return A numeric vector with the IHS score based on the provided centrality measures.
 #' @aliases IHS
 #' @keywords integrated_hubness_score IHS
 #' @export
@@ -609,6 +641,7 @@ ihs <- function(DC, BC, NC) {
 #' @param directed Logical scalar, whether or not to create a directed graph.
 #' @param vertices A data frame with vertex metadata, or NULL.
 #' Since version 0.7 of igraph this argument is coerced to a data frame with as.data.frame, if not NULL.
+#' @return An igraph graph object.
 #' @aliases dataframe2graph
 #' @keywords graph_from_dataframe
 #' @family network_reconstruction functions
@@ -646,6 +679,7 @@ ihs <- function(DC, BC, NC) {
   #' @param add.rownames Character scalar, whether to add the row names as vertex attributes.
   #' Possible values the same as the previous argument. By default row names are not added.
   #' If ‘add.rownames’ and ‘add.colnames’ specify the same vertex attribute, then the former is ignored.
+  #' @return An igraph graph object.
   #' @aliases adjmatrix2graph
   #' @keywords graph_from_adjacencymatrices
   #' @family network_reconstruction functions
@@ -663,6 +697,7 @@ ihs <- function(DC, BC, NC) {
   #'
   #' This function and all of its descriptions have been obtained from the igraph package.
   #' @param graph The graph (an igraph graph)
+  #' @return A vertex sequence containing all vertices, in the order of their numeric vertex ids.
   #' @aliases vertices
   #' @keywords graph_vertices
   #' @seealso \code{\link[igraph]{V}} for a complete description on this function
@@ -688,6 +723,7 @@ ihs <- function(DC, BC, NC) {
   #' This is only required for lattice-like graphs that have very many shortest paths between a pair of vertices.
   #' If TRUE (the default), then big integers are not used.
   #' @param normalized Logical scalar, whether to normalize the betweenness scores. If TRUE, then the results are normalized.
+  #' @return A numeric vector with the betweenness score for each vertex in v.
   #' @aliases BC
   #' @keywords betweenness_centrality
   #' @family centrality functions
@@ -715,6 +751,7 @@ ihs <- function(DC, BC, NC) {
   #' If the graph has a weight edge attribute, then this is used by default. Weights are used to calculate weighted shortest paths, so they are interpreted as distances.
   #' @param normalized Logical scalar, whether to normalize the degree.
   #' If TRUE then the result is divided by n-1, where n is the number of vertices in the graph.
+  #' @return A numeric vector of the same length as argument v.
   #' @aliases DC
   #' @keywords degree_centrality
   #' @family centrality functions

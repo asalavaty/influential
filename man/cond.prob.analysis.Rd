@@ -20,6 +20,12 @@ the values of the desired variable.}
 \item{Condition.colname}{The character format (quoted) name of the column containing
 the values of the condition variable.}
 }
+\value{
+A list of two objects including the conditional probability of deviation of two
+centrality measures (or any two other continuous variables) from their corresponding
+means in opposite directions based on both the entire network and the split-half random
+sample of network nodes.
+}
 \description{
 This function calculates the conditional probability of deviation of two
 centrality measures (or any two other continuous variables) from their corresponding

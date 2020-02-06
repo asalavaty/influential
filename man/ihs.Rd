@@ -14,6 +14,9 @@ ihs(DC, BC, NC)
 
 \item{NC}{A vector containing the values of neighborhood connectivity of the desired vertices.}
 }
+\value{
+A numeric vector with the IHS score based on the provided centrality measures.
+}
 \description{
 This function calculates the IHS of the desired nodes. This function is not dependent to
 other packages and the required centrality measures, namely degree centrality, betweenness

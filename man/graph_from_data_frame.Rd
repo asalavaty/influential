@@ -17,6 +17,9 @@ Since version 0.7 this argument is coerced to a data frame with as.data.frame.}
 \item{vertices}{A data frame with vertex metadata, or NULL.
 Since version 0.7 of igraph this argument is coerced to a data frame with as.data.frame, if not NULL.}
 }
+\value{
+An igraph graph object.
+}
 \description{
 This function and all of its descriptions have been obtained from the igraph package.
 For a complete description if the function and its arguments try this:

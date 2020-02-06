@@ -39,6 +39,9 @@ If ‘NA’ then they will not be added. If a character constant, then it gives 
 Possible values the same as the previous argument. By default row names are not added.
 If ‘add.rownames’ and ‘add.colnames’ specify the same vertex attribute, then the former is ignored.}
 }
+\value{
+An igraph graph object.
+}
 \description{
 This function and all of its descriptions have been obtained from the igraph package.
 For a complete description if the function and its arguments try this:

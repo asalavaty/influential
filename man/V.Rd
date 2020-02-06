@@ -10,6 +10,9 @@ V(graph)
 \arguments{
 \item{graph}{The graph (an igraph graph)}
 }
+\value{
+A vertex sequence containing all vertices, in the order of their numeric vertex ids.
+}
 \description{
 This function and all of its descriptions have been obtained from the igraph package.
 }

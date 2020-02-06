@@ -27,6 +27,9 @@ If the graph has a weight edge attribute, then this is used by default. Weights 
 \item{normalized}{Logical scalar, whether to normalize the degree.
 If TRUE then the result is divided by n-1, where n is the number of vertices in the graph.}
 }
+\value{
+A numeric vector of the same length as argument v.
+}
 \description{
 This function and all of its descriptions have been obtained from the igraph package.
 }

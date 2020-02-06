@@ -30,6 +30,9 @@ If TRUE (the default), then big integers are not used.}
 
 \item{normalized}{Logical scalar, whether to normalize the betweenness scores. If TRUE, then the results are normalized.}
 }
+\value{
+A numeric vector with the betweenness score for each vertex in v.
+}
 \description{
 This function and all of its descriptions have been obtained from the igraph package.
 }
