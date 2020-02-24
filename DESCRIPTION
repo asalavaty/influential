@@ -1,7 +1,7 @@
 Package: influential
 Type: Package
 Title: Identification of the Most Influential Nodes (Hubs)
-Version: 0.1.0
+Version: 0.1.9000
 Author: Adrian (Abbas) Salavaty
 Maintainer: Adrian Salavaty <abbas.salavaty@gmail.com>
 Description: Contains functions for reconstruction of networks from
