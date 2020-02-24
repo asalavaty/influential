@@ -1,0 +1,15 @@
+citHeader("To cite influential in publications use:")
+
+citEntry(
+  entry    = "Article",
+  title    = "IHS: an integrative method for the identification of network hubs",
+  author   = "Abbas Salavaty, Mirana Ramialison, Peter D Currie",
+  journal  = "bioRxiv",
+  year     = "2020",
+  url      = "https://doi.org/10.1101/2020.02.17.953430",
+  textVersion = paste("IHS: an integrative method for the identification of network hubs.
+Abbas Salavaty, Mirana Ramialison, Peter D Currie.
+bioRxiv 2020.02.17.953430; doi: https://doi.org/10.1101/2020.02.17.953430"
+
+  )
+)
