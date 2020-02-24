@@ -198,17 +198,27 @@ cond.prob.analysis <- function(data, nodes.colname, Desired.colname, Condition.c
 #' the values of the independent variable.
 #' @param plot logical; FALSE (default) Plots quadrant means of NNS correlation analysis.
 #' @return A list of 11 objects including:
-#' Summary of the basic statistics of two centrality measures (or any two other continuous variables)
-#' The results of normality assessment of two variable (p-value > 0.05 imply that the variable is normally distributed).
-#' Description of the normality assessment of the dependent variable.
-#' Description of the normality assessment of the independent variable.
-#' Results of the generalized additive modeling (GAM) of the data.
-#' The association type based on simultaneous consideration of normality assessment,
+#'
+#'     - Summary of the basic statistics of two centrality measures (or any two other continuous variables).
+#'
+#'     - The results of normality assessment of two variable (p-value > 0.05 imply that the variable is normally distributed).
+#'
+#'     - Description of the normality assessment of the dependent variable.
+#'
+#'     - Description of the normality assessment of the independent variable.
+#'
+#'     - Results of the generalized additive modeling (GAM) of the data.
+#'
+#'     - The association type based on simultaneous consideration of normality assessment,
 #' GAM Computation with smoothness estimation, Spearman correlation, and ranked regression analysis of splines.
-#' The Hoeffding's D Statistic of dependence (ranging from -0.5 to 1).
-#' Description of the dependence significance.
-#' Correlation between variables based on the NNS method.
-#' The last two objects are the conditional probability of deviation of two
+#'
+#'     - The Hoeffding's D Statistic of dependence (ranging from -0.5 to 1).
+#'
+#'     - Description of the dependence significance.
+#'
+#'     - Correlation between variables based on the NNS method.
+#'
+#'     - The last two objects are the conditional probability of deviation of two
 #' centrality measures from their corresponding means in opposite directions based
 #' on both the entire network and the split-half random sample of network nodes.
 #' @aliases DCA
@@ -431,14 +441,22 @@ double.cent.assess <- function(data, nodes.colname, dependent.colname, independe
 #' @param centrality2.colname The character format (quoted) name of the column containing
 #' the values of the Centrality_2 variable.
 #' @return A list of nine objects including:
-#' Summary of the basic statistics of two centrality measures (or any two other continuous variables)
-#' The results of normality assessment of two variable (p-value > 0.05 imply that the variable is normally distributed).
-#' Description of the normality assessment of the centrality1 (first variable).
-#' Description of the normality assessment of the centrality2 (second variable).
-#' The Hoeffding's D Statistic of dependence (ranging from -0.5 to 1).
-#' Description of the dependence significance.
-#' Correlation between variables based on the NNS method.
-#' The last two objects are the conditional probability of deviation of two
+#'
+#' - Summary of the basic statistics of two centrality measures (or any two other continuous variables).
+#'
+#' - The results of normality assessment of two variable (p-value > 0.05 imply that the variable is normally distributed).
+#'
+#' - Description of the normality assessment of the centrality1 (first variable).
+#'
+#' - Description of the normality assessment of the centrality2 (second variable).
+#'
+#' - The Hoeffding's D Statistic of dependence (ranging from -0.5 to 1).
+#'
+#' - Description of the dependence significance.
+#'
+#' - Correlation between variables based on the NNS method.
+#'
+#' - The last two objects are the conditional probability of deviation of two
 #' centrality measures from their corresponding means in opposite directions based
 #' on both the entire network and the split-half random sample of network nodes.
 #' @aliases DCANR
