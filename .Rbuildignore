@@ -8,6 +8,7 @@ influential.Rproj
 .Rproj.user/
 .Rhistory
 README.Rmd
+NEWS.Rmd
 cran-comments.Rmd
 cran-comments.html
 cran-comments.md
