@@ -3,3 +3,8 @@ inst/doc
 influential.Rproj
 cran-comments.html
 Meta
+README.Rmd
+NEWS.Rmd
+.Rhistory
+cran-comments.Rmd
+data-raw
