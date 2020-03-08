@@ -238,7 +238,6 @@ cond.prob.analysis <- function(data, nodes.colname, Desired.colname, Condition.c
 #'                                             independent.colname = "NeighborhoodConnectivity")
 double.cent.assess <- function(data, nodes.colname, dependent.colname, independent.colname, plot = FALSE) {
 
-  if(!requireNamespace("parallel")) {base::attachNamespace("parallel")}
   parallel::detectCores(logical = TRUE)
 
   #Checking the availability of required packages
@@ -476,7 +475,6 @@ double.cent.assess.noRegression <- function(data, nodes.colname,
                                             centrality1.colname,
                                             centrality2.colname) {
 
-  if(!requireNamespace("parallel")) {base::attachNamespace("parallel")}
   parallel::detectCores(logical = TRUE)
 
   #Checking the availability of required packages
