@@ -239,8 +239,6 @@ cond.prob.analysis <- function(data, nodes.colname, Desired.colname, Condition.c
 #' @import parallel
 double.cent.assess <- function(data, nodes.colname, dependent.colname, independent.colname, plot = FALSE) {
 
-  parallel::detectCores(logical = TRUE)
-
   #Checking the availability of required packages
 
   if (nrow(data) >= 5000) { if(!requireNamespace(c("nortest", "Hmisc", "mgcv", "NNS"), quietly = TRUE)) {
@@ -476,8 +474,6 @@ double.cent.assess <- function(data, nodes.colname, dependent.colname, independe
 double.cent.assess.noRegression <- function(data, nodes.colname,
                                             centrality1.colname,
                                             centrality2.colname) {
-
-  parallel::detectCores(logical = TRUE)
 
   #Checking the availability of required packages
 
