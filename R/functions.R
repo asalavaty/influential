@@ -236,8 +236,14 @@ cond.prob.analysis <- function(data, nodes.colname, Desired.colname, Condition.c
 #'                                             nodes.colname = "name",
 #'                                             dependent.colname = "BetweennessCentrality",
 #'                                             independent.colname = "NeighborhoodConnectivity")
-#' @import parallel
 double.cent.assess <- function(data, nodes.colname, dependent.colname, independent.colname, plot = FALSE) {
+
+  if("parallel" %in% (.packages())) {
+    parallel::detectCores(logical = TRUE)
+  } else {
+    base::attachNamespace("parallel")
+    parallel::detectCores(logical = TRUE)
+    }
 
   #Checking the availability of required packages
 
@@ -470,10 +476,16 @@ double.cent.assess <- function(data, nodes.colname, dependent.colname, independe
 #'                                             nodes.colname = "name",
 #'                                             centrality1.colname = "BetweennessCentrality",
 #'                                             centrality2.colname = "NeighborhoodConnectivity")
-#' @import parallel
 double.cent.assess.noRegression <- function(data, nodes.colname,
                                             centrality1.colname,
                                             centrality2.colname) {
+
+  if("parallel" %in% (.packages())) {
+    parallel::detectCores(logical = TRUE)
+  } else {
+    base::attachNamespace("parallel")
+    parallel::detectCores(logical = TRUE)
+  }
 
   #Checking the availability of required packages
 
