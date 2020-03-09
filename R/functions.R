@@ -240,6 +240,7 @@ double.cent.assess <- function(data, nodes.colname, dependent.colname, independe
 
   parallel::detectCores(logical = TRUE)
 
+
   #Checking the availability of required packages
 
   if (nrow(data) >= 5000) { if(!requireNamespace(c("nortest", "Hmisc", "mgcv", "NNS"), quietly = TRUE)) {
