@@ -14,7 +14,6 @@ Description: Contains functions for reconstruction of networks from
     Fred Viole and David Nawrocki (2013, ISBN:1490523995).
 Imports:
     igraph
-    parallel
 Suggests:
     Hmisc (>= 4.3-0),
     mgcv (>= 1.8-31),
