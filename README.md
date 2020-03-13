@@ -71,7 +71,7 @@ library(influential)
 
 MyData <- centrality.measures # A data frame of centrality measures
 
-# This function calculates the integrated Hubness Score (IHS)
+# This function calculates the Integrated Hubness Score (IHS)
 My.vertices.IHS <- ihs(DC = centrality.measures$Degree,
                        BC = centrality.measures$BetweennessCentrality,
                        NC = centrality.measures$NeighborhoodConnectivity)
