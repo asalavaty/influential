@@ -651,7 +651,8 @@ double.cent.assess.noRegression <- function(data, nodes.colname,
 #'                        NC = centrality.measures$NeighborhoodConnectivity)
 ihs <- function(DC, BC, NC) {
 
-    DC * (log2((BC * NC) + 1))
+    DC * (log2((BC * NC) +
+                 (1.1 - min(BC * NC))))
   }
 
 #=============================================================================
