@@ -26,10 +26,12 @@ This function calculates the H-index of input vertices and
 works with both directed and undirected networks.
 }
 \examples{
+\dontrun{
 MyData <- coexpression.data
 My_graph <- graph_from_data_frame(MyData)
 GraphVertices <- V(My_graph)
 h.index <- h_index(graph = My_graph, vertices = GraphVertices, mode = "all")
+}
 }
 \seealso{
 \code{\link[influential]{lh_index}}

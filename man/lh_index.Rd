@@ -26,10 +26,12 @@ This function calculates the local H-index of input vertices and
 works with both directed and undirected networks.
 }
 \examples{
+\dontrun{
 MyData <- coexpression.data
 My_graph <- graph_from_data_frame(MyData)
 GraphVertices <- V(My_graph)
 lh.index <- lh_index(graph = My_graph, vertices = GraphVertices, mode = "all")
+}
 }
 \seealso{
 Other centrality functions: 

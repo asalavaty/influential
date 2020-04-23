@@ -53,12 +53,14 @@ Spreading score reflects the spreading potential of each node within a network a
 one of the major components of the IVI.
 }
 \examples{
+\dontrun{
 MyData <- coexpression.data
 My_graph <- graph_from_data_frame(MyData)
 GraphVertices <- V(My_graph)
 Spreading.score <- spreading.score(graph = My_graph, vertices = GraphVertices,
                                    weights = NULL, directed = FALSE, mode = "all",
                                    loops = TRUE, d = 3, scaled = TRUE)
+}
 }
 \seealso{
 \code{\link[influential]{hubness.score}}

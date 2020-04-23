@@ -153,10 +153,12 @@ neighborhood.connectivity <- function(graph, vertices = V(graph), mode = "all") 
 #' @seealso \code{\link[influential]{lh_index}}
 #' @export
 #' @examples
+#' \dontrun{
 #' MyData <- coexpression.data
 #' My_graph <- graph_from_data_frame(MyData)
 #' GraphVertices <- V(My_graph)
 #' h.index <- h_index(graph = My_graph, vertices = GraphVertices, mode = "all")
+#' }
 #' @importFrom utils tail
   h_index <- function(graph, vertices = V(graph), mode = "all") {
 
@@ -215,10 +217,12 @@ neighborhood.connectivity <- function(graph, vertices = V(graph), mode = "all") 
   #' @family centrality functions
   #' @export
   #' @examples
+  #' \dontrun{
   #' MyData <- coexpression.data
   #' My_graph <- graph_from_data_frame(MyData)
   #' GraphVertices <- V(My_graph)
   #' lh.index <- lh_index(graph = My_graph, vertices = GraphVertices, mode = "all")
+  #' }
   lh_index <- function(graph, vertices = V(graph), mode = "all") {
 
     # Getting the first neighbors of each node
@@ -1037,12 +1041,14 @@ ivi.from.indices <- function(DC, CR, LH_index, NC, BC, CI, scaled = TRUE) {
 #' @seealso \code{\link[influential]{ivi.from.indices}}
 #' @export
 #' @examples
+#' \dontrun{
 #' MyData <- coexpression.data
 #' My_graph <- graph_from_data_frame(MyData)
 #' GraphVertices <- V(My_graph)
 #' My.vertices.IVI <- ivi(graph = My_graph, vertices = GraphVertices,
 #'                        weights = NULL, directed = FALSE, mode = "all",
 #'                        loops = TRUE, d = 3, scaled = TRUE)
+#' }
 ivi <- function(graph, vertices = V(graph), weights = NULL, directed = FALSE,
                 mode = "all", loops = TRUE, d = 3, scaled = TRUE) {
 
@@ -1154,12 +1160,14 @@ ivi <- function(graph, vertices = V(graph), weights = NULL, directed = FALSE,
 #' @seealso \code{\link[influential]{hubness.score}}
 #' @export
 #' @examples
+#' \dontrun{
 #' MyData <- coexpression.data
 #' My_graph <- graph_from_data_frame(MyData)
 #' GraphVertices <- V(My_graph)
 #' Spreading.score <- spreading.score(graph = My_graph, vertices = GraphVertices,
 #'                                    weights = NULL, directed = FALSE, mode = "all",
 #'                                    loops = TRUE, d = 3, scaled = TRUE)
+#' }
 spreading.score <- function(graph, vertices = V(graph), weights = NULL, directed = FALSE,
                             mode = "all", loops = TRUE, d = 3, scaled = TRUE) {
 
@@ -1245,12 +1253,14 @@ spreading.score <- function(graph, vertices = V(graph), weights = NULL, directed
 #' @seealso \code{\link[influential]{spreading.score}}
 #' @export
 #' @examples
+#' \dontrun{
 #' MyData <- coexpression.data
 #' My_graph <- graph_from_data_frame(MyData)
 #' GraphVertices <- V(My_graph)
 #' Hubness.score <- hubness.score(graph = My_graph, vertices = GraphVertices,
 #'                                directed = FALSE, mode = "all",
 #'                                loops = TRUE, scaled = TRUE)
+#' }
 hubness.score <- function(graph, vertices = V(graph), directed = FALSE,
                           mode = "all", loops = TRUE, scaled = TRUE) {
 

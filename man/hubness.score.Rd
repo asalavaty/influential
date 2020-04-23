@@ -40,12 +40,14 @@ Hubness score reflects the power of each node in its surrounding environment and
 one of the major components of the IVI.
 }
 \examples{
+\dontrun{
 MyData <- coexpression.data
 My_graph <- graph_from_data_frame(MyData)
 GraphVertices <- V(My_graph)
 Hubness.score <- hubness.score(graph = My_graph, vertices = GraphVertices,
                                directed = FALSE, mode = "all",
                                loops = TRUE, scaled = TRUE)
+}
 }
 \seealso{
 \code{\link[influential]{spreading.score}}

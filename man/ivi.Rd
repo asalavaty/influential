@@ -52,12 +52,14 @@ A numeric vector with the IVI values based on the provided centrality measures.
 This function calculates the IVI of the desired nodes from a graph.
 }
 \examples{
+\dontrun{
 MyData <- coexpression.data
 My_graph <- graph_from_data_frame(MyData)
 GraphVertices <- V(My_graph)
 My.vertices.IVI <- ivi(graph = My_graph, vertices = GraphVertices,
                        weights = NULL, directed = FALSE, mode = "all",
                        loops = TRUE, d = 3, scaled = TRUE)
+}
 }
 \seealso{
 \code{\link[influential]{ivi.from.indices}}
