@@ -1,11 +1,18 @@
 CRAN Comments
 ================
 Adrian (Abbas) Salavaty
-15/01/2020 (updated on 23 April, 2020)
+15/01/2020 (updated on 24 April, 2020)
 
-## 1.0.0 New version submission
+## 1.0.0 Resubmission
 
-This is a new submission for a new version of the package `influential`.
+This is a resubmission of the package `influential`. Comments were
+addressed on 24-04-2020 and Re-ran R CMD check –as-cran with no new
+warnings, errors or notes.
+
+1.  Please do not use directed but undirected quotes in the Description
+    field.  
+    *Quotations and additional links were removed from the DESCRIPTION
+    file*.
 
 ## Test environments
 
@@ -20,5 +27,5 @@ There were no ERRORs, WARNINGs or NOTEs.
 
 ## Downstream dependencies
 
-There are currently no downstream dependencies for the “influential”
-package.
+There are currently no downstream dependencies for the package
+`influential`.
