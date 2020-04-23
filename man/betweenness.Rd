@@ -47,7 +47,11 @@ My_graph_betweenness <- betweenness(My_graph, v = GraphVertices,
 \code{\link[igraph]{betweenness}} for a complete description on this function
 
 Other centrality functions: 
+\code{\link{clusterrank}()},
+\code{\link{collective.influence}()},
 \code{\link{degree}()},
+\code{\link{h_index}()},
+\code{\link{lh_index}()},
 \code{\link{neighborhood.connectivity}()}
 }
 \concept{centrality functions}

@@ -9,7 +9,7 @@ categorized into four groups according to their purpose:
   - Network reconstruction
   - Calculation of centrality measures
   - Assessment of the association of centrality measures
-  - Identification of the most `influential` network nodes (hubs)
+  - Identification of the most `influential` network nodes
 
 -----
 
@@ -85,7 +85,8 @@ Network vertices (nodes) are required in order to calculate their
 centrality measures. Thus, before calculation of network centrality
 measures we need to obtain the name of required network vertices. To
 this end, we use the `V` function, which is obtained from the `igraph`
-package.
+package. However, you may provide a character vector of the name of your
+desired nodes manually.
 
 ``` r
 MyData <- coexpression.data        # Preparing the data
@@ -140,14 +141,14 @@ My_graph_betweenness <- betweenness(My_graph, v = GraphVertices,    # Calculatin
                                     directed = FALSE, normalized = FALSE)
 ```
 
-Degree centrality could be also calculated for *directed* and/or
+Betweenness centrality could be also calculated for *directed* and/or
 *weighted* graphs via specifying the `directed` and `weights`
 parameters, respectively.
 
   - ### Neighborhood connectivity
 
 Neighborhood connectivity is one of the other important centrality
-measures that reflect the (semi-) local centrality of a node. This
+measures that reflect the semi-local centrality of a node. This
 centrality measure was first represented in a [Science
 paper](https://www.ncbi.nlm.nih.gov/pubmed/11988575) in 2002 and is for
 the first time calculable in R environment via the `influential`
@@ -168,6 +169,93 @@ neighrhood.co <- neighborhood.connectivity(graph = My_graph,    # Calculating ne
 Neighborhood connectivity could be also calculated for *directed* graphs
 via specifying the `mode` parameter.
 
+  - ### H-index
+
+H-index is H-index is another semi-local centrality measure that was
+inspired from its application in assessing the impact of researchers and
+is for the first time calculable in R environment via the `influential`
+package.
+
+``` r
+MyData <- coexpression.data        # Preparing the data
+
+My_graph <- graph_from_data_frame(MyData)        # Reconstructing the graph
+
+GraphVertices <- V(My_graph)        # Extracting the vertices
+
+h.index <- h_index(graph = My_graph,    # Calculating H-index
+                   vertices = GraphVertices,
+                   mode = "all")
+```
+
+H-index could be also calculated for *directed* graphs via specifying
+the `mode` parameter.
+
+  - ### Local H-index
+
+Local H-index (LH-index) is a semi-local centrality measure and an
+improved version of H-index centrality that leverages the H-index to the
+second order neighbors of a node and is for the first time calculable in
+R environment via the `influential` package.
+
+``` r
+MyData <- coexpression.data        # Preparing the data
+
+My_graph <- graph_from_data_frame(MyData)        # Reconstructing the graph
+
+GraphVertices <- V(My_graph)        # Extracting the vertices
+
+lh.index <- lh_index(graph = My_graph,    # Calculating Local H-index
+                   vertices = GraphVertices,
+                   mode = "all")
+```
+
+Local H-index could be also calculated for *directed* graphs via
+specifying the `mode` parameter.
+
+  - ### Collective Influence
+
+Collective Influence (CI) is a global centrality measure that calculates
+the product of the reduced degree (degree - 1) of a node and the total
+reduced degree of all nodes at a distance d from the node. This
+centrality measure is for the first time provided in an R package.
+
+``` r
+MyData <- coexpression.data        # Preparing the data
+
+My_graph <- graph_from_data_frame(MyData)        # Reconstructing the graph
+
+GraphVertices <- V(My_graph)        # Extracting the vertices
+
+ci <- collective.influence(graph = My_graph,    # Calculating Collective Influence
+                          vertices = GraphVertices,
+                          mode = "all", d=3)
+```
+
+Collective Influence could be also calculated for *directed* graphs via
+specifying the `mode` parameter.
+
+  - ### ClusterRank
+
+ClusterRank is a local centrality measure that makes a connection
+between local and semi-local characteristics of a node and at the same
+time removes the negative effects of local clustering.
+
+``` r
+MyData <- coexpression.data        # Preparing the data
+
+My_graph <- graph_from_data_frame(MyData)        # Reconstructing the graph
+
+GraphVertices <- V(My_graph)        # Extracting the vertices
+
+cr <- clusterrank(graph = My_graph,    # Calculating ClusterRank
+                  vids = GraphVertices,
+                  directed = FALSE, loops = TRUE)
+```
+
+ClusterRank could be also calculated for *directed* graphs via
+specifying the `directed` parameter.
+
 -----
 
 ## Assessment of the association of centrality measures
@@ -182,16 +270,16 @@ variables) from their corresponding means in opposite directions.
 MyData <- centrality.measures        # Preparing the data
 
 My.conditional.prob <- cond.prob.analysis(data = MyData,       # Assessing the conditional probability
-                                          nodes.colname = "name",
-                                          Desired.colname = "BetweennessCentrality",
-                                          Condition.colname = "NeighborhoodConnectivity")
+                                          nodes.colname = rownames(MyData),
+                                          Desired.colname = "BC",
+                                          Condition.colname = "NC")
 
 print(My.conditional.prob)
 #> $ConditionalProbability
-#> [1] 55.35386
+#> [1] 51.61871
 #> 
 #> $ConditionalProbability_split.half.sample
-#> [1] 55.16751
+#> [1] 51.33333
 ```
 
   - As you can see in the results, the whole data is also randomly
@@ -265,13 +353,13 @@ through this formula are as follows:
 MyData <- centrality.measures        # Preparing the data
 
 My.metrics.assessment <- double.cent.assess(data = MyData,       # Association assessment
-                                            nodes.colname = "name",
-                                            dependent.colname = "BetweennessCentrality",
-                                            independent.colname = "NeighborhoodConnectivity")
+                                            nodes.colname = rownames(MyData),
+                                            dependent.colname = "BC",
+                                            independent.colname = "NC")
 
 print(My.metrics.assessment)
 #> $Summary_statistics
-#>         BetweennessCentrality NeighborhoodConnectivity
+#>         BC NC
 #> Min.              0.000000000                   1.2000
 #> 1st Qu.           0.000000000                  66.0000
 #> Median            0.000000000                 156.0000
@@ -281,8 +369,8 @@ print(My.metrics.assessment)
 #> 
 #> $Normality_results
 #>                               p.value
-#> BetweennessCentrality    1.415450e-50
-#> NeighborhoodConnectivity 9.411737e-30
+#> BC    1.415450e-50
+#> NC 9.411737e-30
 #> 
 #> $Dependent_Normality
 #> [1] "Non-normally distributed"
@@ -376,13 +464,13 @@ analyses done through this formula are as follows:
 MyData <- centrality.measures        # Preparing the data
 
 My.metrics.assessment <- double.cent.assess.noRegression(data = MyData,       # Association assessment
-                                                         nodes.colname = "name",
-                                                         centrality1.colname = "BetweennessCentrality",
-                                                         centrality2.colname = "NeighborhoodConnectivity")
+                                                         nodes.colname = rownames(MyData),
+                                                         centrality1.colname = "BC",
+                                                         centrality2.colname = "NC")
 
 print(My.metrics.assessment)
 #> $Summary_statistics
-#>         BetweennessCentrality NeighborhoodConnectivity
+#>         BC NC
 #> Min.              0.000000000                   1.2000
 #> 1st Qu.           0.000000000                  66.0000
 #> Median            0.000000000                 156.0000
@@ -392,8 +480,8 @@ print(My.metrics.assessment)
 #> 
 #> $Normality_results
 #>                               p.value
-#> BetweennessCentrality    1.415450e-50
-#> NeighborhoodConnectivity 9.411737e-30
+#> BC    1.415450e-50
+#> NC 9.411737e-30
 #> 
 #> $Centrality1_Normality
 #> [1] "Non-normally distributed"
@@ -422,21 +510,137 @@ print(My.metrics.assessment)
 
 -----
 
-## Identification of the most `influential` network nodes (hubs)
+## Identification of the most `influential` network nodes
 
-**IHS** : `IHS` is the first integrative method for the identification
-of network hubs. The `IHS` formula integrates three network centrality
-measure including degree centrality, betweenness centrality, and
-neighborhood connectivity in such a way that both synergize their
-effects and remove their biases.
+**IVI** : `IVI` is the first integrative method for the identification
+of network most influential nodes in a way that captures all network
+topological dimensions. The `IVI` formula integrates the most important
+local (i.e. degree centrality and ClusterRank), semi-local
+(i.e. neighborhood connectivity and local H-index) and global
+(i.e. betweenness centrality and collective influence) centrality
+measures in such a way that both synergize their effects and remove
+their biases.
+
+  - ### Integrated Vector of Influence (IVI) from centrality measures
+
+<!-- end list -->
 
 ``` r
 MyData <- centrality.measures        # Preparing the data
 
-My.vertices.IHS <- ihs(DC = centrality.measures$Degree,       # Calculation of IHS
-                       BC = centrality.measures$BetweennessCentrality,
-                       NC = centrality.measures$NeighborhoodConnectivity)
-
-print(head(My.vertices.IHS))
-#> [1] 196.2039215   2.9822273   0.1572078   6.1757221   0.3199993   0.5095222
+My.vertices.IVI <- ivi.from.indices(DC = centrality.measures$DC,       # Calculation of IVI
+                                   CR = centrality.measures$CR,
+                                   NC = centrality.measures$NC,
+                                   LH_index = centrality.measures$LH_index,
+                                   BC = centrality.measures$BC,
+                                   CI = centrality.measures$CI)
 ```
+
+  - ### Integrated Vector of Influence (IVI) from graph
+
+<!-- end list -->
+
+``` r
+MyData <- coexpression.data        # Preparing the data
+
+My_graph <- graph_from_data_frame(MyData)        # Reconstructing the graph
+
+GraphVertices <- V(My_graph)        # Extracting the vertices
+
+My.vertices.IVI <- ivi(graph = My_graph, vertices = GraphVertices, # Calculation of IVI
+                       weights = NULL, directed = FALSE, mode = "all",
+                       loops = TRUE, d = 3, scaled = TRUE)
+```
+
+IVI could be also calculated for *directed* and/or *weighted* graphs via
+specifying the `directed`, `mode`, and `weights` parameters.
+
+-----
+
+## Identification of the most important network spreaders
+
+**Spreading score** : `spreading.score` is an integrative score made up
+of four different centrality measures including ClusterRank,
+neighborhood connectivity, betweenness centrality, and collective
+influence. Also, Spreading score reflects the spreading potential of
+each node within a network and is one of the major components of the
+`IVI`.
+
+``` r
+MyData <- coexpression.data        # Preparing the data
+
+My_graph <- graph_from_data_frame(MyData)        # Reconstructing the graph
+
+GraphVertices <- V(My_graph)        # Extracting the vertices
+
+Spreading.score <- spreading.score(graph = My_graph,     # Calculation of Spreading score
+                                   vertices = GraphVertices, 
+                                   weights = NULL, directed = FALSE, mode = "all",
+                                   loops = TRUE, d = 3, scaled = TRUE)
+```
+
+Spreading score could be also calculated for *directed* and/or
+*weighted* graphs via specifying the `directed`, `mode`, and `weights`
+parameters.
+
+-----
+
+## Identification of the most important network hubs
+
+**Hubness score** : `hubness.score` is an integrative score made up of
+two different centrality measures including degree centrality and local
+H-index. Also, Hubness score reflects the power of each node in its
+surrounding environment and is one of the major components of the `IVI`.
+
+``` r
+MyData <- coexpression.data        # Preparing the data
+
+My_graph <- graph_from_data_frame(MyData)        # Reconstructing the graph
+
+GraphVertices <- V(My_graph)        # Extracting the vertices
+
+Hubness.score <- hubness.score(graph = My_graph,     # Calculation of Hubness score
+                                   vertices = GraphVertices, 
+                                   directed = FALSE, mode = "all",
+                                   loops = TRUE, scaled = TRUE)
+```
+
+Spreading score could be also calculated for *directed* graphs via
+specifying the `directed` and `mode` parameters.
+
+-----
+
+## Ranking the influence of network nodes based on the `SIRIR` model
+
+**SIRIR** : `SIRIR` is is achieved by the integration
+susceptible-infected-recovered (SIR) model with the leave-one-out cross
+validation technique and ranks network nodes based on their true
+universal influence. One of the applications of this function is the
+assessment of performance of a novel algorithm in identification of
+network influential nodes.
+
+``` r
+set.seed(1234)
+My_graph <- igraph::sample_gnp(n=50, p=0.05)        # Reconstructing the graph
+
+GraphVertices <- V(My_graph)        # Extracting the vertices
+
+Influence.Ranks <- sirir(graph = My_graph,     # Calculation of influence rank
+                                   vertices = GraphVertices, 
+                                   beta = 0.5, gamma = 1, no.sim = 10, seed = 1234)
+
+knitr::kable(Influence.Ranks[c(order(Influence.Ranks$rank)[1:10]),])
+```
+
+|    | difference.value | rank |
+| -- | ---------------: | ---: |
+| 6  |              9.0 |    1 |
+| 1  |              8.9 |    2 |
+| 2  |              8.9 |    2 |
+| 8  |              8.9 |    2 |
+| 10 |              8.7 |    5 |
+| 24 |              8.7 |    5 |
+| 18 |              8.6 |    7 |
+| 19 |              8.6 |    7 |
+| 20 |              8.6 |    7 |
+| 21 |              8.6 |    7 |

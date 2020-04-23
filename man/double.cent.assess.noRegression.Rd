@@ -60,9 +60,9 @@ as the condition variable.
 \examples{
 MyData <- centrality.measures
 My.metrics.assessment <- double.cent.assess.noRegression(data = MyData,
-                                            nodes.colname = "name",
-                                            centrality1.colname = "BetweennessCentrality",
-                                            centrality2.colname = "NeighborhoodConnectivity")
+                                            nodes.colname = rownames(MyData),
+                                            centrality1.colname = "BC",
+                                            centrality2.colname = "NC")
 }
 \seealso{
 \code{\link[nortest]{ad.test}} for Anderson-Darling test for normality,

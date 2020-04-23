@@ -34,9 +34,9 @@ means in opposite directions.
 \examples{
 MyData <- centrality.measures
 My.conditional.prob <- cond.prob.analysis(data = MyData,
-                                          nodes.colname = "name",
-                                          Desired.colname = "BetweennessCentrality",
-                                          Condition.colname = "NeighborhoodConnectivity")
+                                          nodes.colname = rownames(MyData),
+                                          Desired.colname = "BC",
+                                          Condition.colname = "NC")
 }
 \seealso{
 Other centrality association assessment functions: 

@@ -69,9 +69,9 @@ For the conditional probability assessment, the independent variable is consider
 \examples{
 MyData <- centrality.measures
 My.metrics.assessment <- double.cent.assess(data = MyData,
-                                            nodes.colname = "name",
-                                            dependent.colname = "BetweennessCentrality",
-                                            independent.colname = "NeighborhoodConnectivity")
+                                            nodes.colname = rownames(MyData),
+                                            dependent.colname = "BC",
+                                            independent.colname = "NC")
 }
 \seealso{
 \code{\link[nortest]{ad.test}} for Anderson-Darling test for normality,

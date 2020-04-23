@@ -4,12 +4,15 @@
 \name{centrality.measures}
 \alias{centrality.measures}
 \title{Centrality measures dataset}
-\format{A data frame with 794 rows and 4 variables:
+\format{A data frame with 794 rows and 6 variables:
 \describe{
-  \item{BetweennessCentrality}{Betweenness Centrality}
-  \item{Degree}{Degree Centrality}
-  \item{name}{Node (gene) name}
-  \item{NeighborhoodConnectivity}{Neighborhood Connectivity}
+  \
+  \item{DC}{Degree Centrality}
+  \item{CR}{ClusterRank}
+  \item{NC}{Neighborhood Connectivity}
+  \item{LH_index}{Local H-index}
+  \item{BC}{Betweenness Centrality}
+  \item{CI}{Collective Influence}
   ...
 }}
 \source{

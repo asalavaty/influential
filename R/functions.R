@@ -1,5 +1,60 @@
 #=============================================================================
 #
+#    Code chunk 0: Influential package description
+#
+#=============================================================================
+
+#' @keywords internal
+#' @title Influential package
+#' @description
+#' The goal of \emph{\strong{\code{influential}}} is to help identification of the most influential nodes in a network.
+#' This package contains functions for reconstruction of networks from adjacency matrices and
+#' data frames, analysis of the topology of the network and calculation of centrality measures
+#' as well as a novel and powerful influential node ranking. The first integrative method,
+#' namely the \strong{Integrated Vector of Influence (IVI)}, that captures all topological dimensions
+#' of the network for the identification of network most influential nodes is also provided as
+#' a function. Also, neighborhood connectivity, H-index, local H-index, and collective
+#' influence (CI), all of which required centrality measures for the calculation of IVI,
+#' are for the first time provided in an R package. Furthermore, some functions have been
+#' provided for the assessment of dependence and correlation of two network centrality
+#' measures as well as the conditional probability of deviation from their corresponding
+#' means in opposite directions.
+#'
+#' You may check the latest developmental version of the \emph{influential} package on its
+#' \href{https://github.com/asalavaty/influential}{GitHub repository}
+#'
+#' @details
+#' \itemize{
+#'   \item Package: influential
+#'   \item Type: Package
+#'   \item Version: 1.0.0
+#'   \item Date: 23-04-2020
+#'   \item License: GPL-3
+#' }
+#'
+#' @author
+#' Author: Adrian (Abbas) Salavaty
+#' Maintainer: Adrian (Abbas) Salavaty \email{abbas.salavaty@@gmail.com}
+#'
+#' You may find more information on my personal website at \href{https://www.abbassalavaty.com/}{www.AbbasSalavaty.com}
+#'
+#' @references
+#' \itemize{
+#'   \item Fred Viole and David Nawrocki (2013, ISBN:1490523995).
+#'   \item Csardi G, Nepusz T (2006). “The igraph software package for complex network research.”
+#' InterJournal, Complex Systems, 1695. http://igraph.org.
+#' }
+#' \strong{Note:} Adapted algorithms and sources are referenced in function document.
+"_PACKAGE"
+
+# The following block is used by usethis to automatically manage
+# roxygen namespace tags. Modify with care!
+## usethis namespace: start
+## usethis namespace: end
+NULL
+
+#=============================================================================
+#
 #    Code chunk 1: Calculation of neighborhood connectivity
 #
 #=============================================================================
@@ -15,8 +70,7 @@
 #' Otherwise, for the calculation of neighborhood connectivity based on
 #' incoming connections select "in" and for the outgoing connections select "out".
 #' Also, if all of the connections are desired, specify the "all" mode. Default mode is set to "all".
-#' @return A one column data frame with vertex names in vertices as row names and neighborhood connectivity score
-#' of each vertex in the column.
+#' @return A vector including the neighborhood connectivity score of each vertex inputted.
 #' @aliases NC
 #' @keywords neighborhood_connectivity
 #' @family centrality functions
@@ -28,19 +82,11 @@
 #' neighrhood.co <- neighborhood.connectivity(graph = My_graph,
 #'                                            vertices = GraphVertices,
 #'                                            mode = "all")
-neighborhood.connectivity <- function(graph, vertices, mode = "all") {
+neighborhood.connectivity <- function(graph, vertices = V(graph), mode = "all") {
 
   # Getting the first neighbors of each node
-  if(mode == "all") {
-    first.neighbors <- igraph::neighborhood(graph,
-                                    nodes = vertices, mode = "all")
-  } else if (mode == "out") {
-    first.neighbors <- igraph::neighborhood(graph,
-                                    nodes = vertices, mode = "out")
-  } else if (mode == "in") {
-    first.neighbors <- igraph::neighborhood(graph,
-                                    nodes = vertices, mode = "in")
-  }
+  first.neighbors <- igraph::neighborhood(graph,
+                                    nodes = vertices, mode = mode)
 
   # Getting the names of vertices with the order in use
   node.names <- sapply(first.neighbors, function(n) rownames(as.matrix(n[[]][1])))
@@ -49,19 +95,9 @@ neighborhood.connectivity <- function(graph, vertices, mode = "all") {
   node.neighbors <- sapply(first.neighbors, function(n) rownames(as.matrix(n[[]][-1])))
 
   # Getting the neighborhood size of each node
-  if(mode == "all") {
     first.neighbors.size <- sapply(node.neighbors,
                                    function(s) igraph::neighborhood.size(graph, s,
-                                                                 mode = "all", order = 1) - 1)
-  } else if (mode == "out") {
-    first.neighbors.size <- sapply(node.neighbors,
-                                   function(s) igraph::neighborhood.size(graph, s,
-                                                                 mode = "out", order = 1) - 1)
-  } else if (mode == "in") {
-    first.neighbors.size <- sapply(node.neighbors,
-                                   function(s) igraph::neighborhood.size(graph, s,
-                                                                 mode = "in", order = 1) - 1)
-  }
+                                                                 mode = mode, order = 1) - 1)
 
   first.neighbors.size.sum <- sapply(first.neighbors.size, sum)
 
@@ -84,13 +120,216 @@ neighborhood.connectivity <- function(graph, vertices, mode = "all") {
 
   rownames(nc.table) <- node.names
 
+  nc.table$Neighborhood_connectivity[c(which(is.nan(nc.table$Neighborhood_connectivity)),
+                                       which(is.na(nc.table$Neighborhood_connectivity)))] <- 0
+
+  nc.table <- nc.table[,1]
+
   return(nc.table)
 
 }
 
 #=============================================================================
 #
-#    Code chunk 2: Calculation of conditional probability of deviation from
+#    Code chunk 2: Calculation of H-index
+#
+#=============================================================================
+
+#' H-index
+#'
+#' This function calculates the H-index of input vertices and
+#' works with both directed and undirected networks.
+#' @param graph A graph (network) of the igraph class.
+#' @param vertices A vector of desired vertices, which could be obtained by the V function.
+#' @param mode The mode of H-index depending on the directedness of the graph.
+#' If the graph is undirected, the mode "all" should be specified.
+#' Otherwise, for the calculation of H-index based on
+#' incoming connections select "in" and for the outgoing connections select "out".
+#' Also, if all of the connections are desired, specify the "all" mode. Default mode is set to "all".
+#' @return A vector including the H-index of each vertex inputted.
+#' @aliases h.index
+#' @keywords h_index
+#' @family centrality functions
+#' @seealso \code{\link[influential]{lh_index}}
+#' @export
+#' @examples
+#' MyData <- coexpression.data
+#' My_graph <- graph_from_data_frame(MyData)
+#' GraphVertices <- V(My_graph)
+#' h.index <- h_index(graph = My_graph, vertices = GraphVertices, mode = "all")
+#' @importFrom utils tail
+  h_index <- function(graph, vertices = V(graph), mode = "all") {
+
+  # Getting the first neighbors of each node
+  first.neighbors <- igraph::neighborhood(graph, nodes = vertices, mode = mode)
+
+  # Getting the neighbors of each vertex
+  node.neighbors <- sapply(first.neighbors, function(n) rownames(as.matrix(n[[]][-1])), simplify = F)
+
+  # Getting the neighborhood size of each node
+  first.neighbors.size <- lapply(node.neighbors, function(s) igraph::neighborhood.size(graph, s,
+                                                                               mode = mode, order = 1) - 1)
+
+  # Calculation of H-index
+  hindex <- vector(mode = "integer", length = length(vertices))
+
+  for (i in 1:length(vertices)) {
+
+    temp.neighbors.size <- unlist(first.neighbors.size[i])
+
+    temp.neighbors.size <- temp.neighbors.size[order(temp.neighbors.size,
+                                                     decreasing = TRUE)]
+    if(length(temp.neighbors.size) == 0) { hindex[i] <- 0
+
+    } else if(max(temp.neighbors.size) == 0) {
+      hindex[i] <- 0
+    } else {hindex[i] <- utils::tail(which(temp.neighbors.size >=
+                                      seq_along(temp.neighbors.size)), 1)
+    }
+
+    rm(temp.neighbors.size)
+  }
+  return(hindex)
+  }
+
+  #=============================================================================
+  #
+  #    Code chunk 3: Calculation of local H-index (LH-index)
+  #
+  #=============================================================================
+
+  #' local H-index (LH-index)
+  #'
+  #' This function calculates the local H-index of input vertices and
+  #' works with both directed and undirected networks.
+  #' @param graph A graph (network) of the igraph class.
+  #' @param vertices A vector of desired vertices, which could be obtained by the V function.
+  #' @param mode The mode of local H-index depending on the directedness of the graph.
+  #' If the graph is undirected, the mode "all" should be specified.
+  #' Otherwise, for the calculation of local H-index based on
+  #' incoming connections select "in" and for the outgoing connections select "out".
+  #' Also, if all of the connections are desired, specify the "all" mode. Default mode is set to "all".
+  #' @return A vector including the local H-index of each vertex inputted.
+  #' @aliases lh.index
+  #' @keywords lh_index
+  #' @family centrality functions
+  #' @export
+  #' @examples
+  #' MyData <- coexpression.data
+  #' My_graph <- graph_from_data_frame(MyData)
+  #' GraphVertices <- V(My_graph)
+  #' lh.index <- lh_index(graph = My_graph, vertices = GraphVertices, mode = "all")
+  lh_index <- function(graph, vertices = V(graph), mode = "all") {
+
+    # Getting the first neighbors of each node
+    first.neighbors <- igraph::neighborhood(graph, nodes = vertices, mode = mode)
+
+    # Calculation of local H-index (LH-index)
+    lhindex <- vector(mode = "integer", length = length(vertices))
+
+    for (i in 1:length(vertices)) {
+
+      lhindex[i] <- sum(h_index(graph = graph,
+                                vertices = unlist(first.neighbors[i]),
+                                mode = mode))
+    }
+    return(lhindex)
+  }
+
+  #=============================================================================
+  #
+  #    Code chunk 4: Calculation of Collective Influence (CI)
+  #
+  #=============================================================================
+
+  #' Collective Influence (CI)
+  #'
+  #' This function calculates the collective influence of input vertices and
+  #' works with both directed and undirected networks. This function and its descriptions are
+  #' obtained from https://github.com/ronammar/collective_influence with minor modifications.
+  #' Collective Influence as described by Morone & Makse (2015). In simple terms,
+  #' it is the product of the reduced degree (degree - 1) of a node and the total reduced
+  #' degree of all nodes at a distance d from the node.
+  #' @param graph A graph (network) of the igraph class.
+  #' @param vertices A vector of desired vertices, which could be obtained by the V function.
+  #' @param mode The mode of collective influence depending on the directedness of the graph.
+  #' If the graph is undirected, the mode "all" should be specified.
+  #' Otherwise, for the calculation of collective influence based on
+  #' incoming connections select "in" and for the outgoing connections select "out".
+  #' Also, if all of the connections are desired, specify the "all" mode. Default mode is set to "all".
+  #' @param d The distance, expressed in number of steps from a given node (default=3). Distance
+  #' must be > 0. According to Morone & Makse (https://doi.org/10.1038/nature14604), optimal
+  #' results can be reached at d=3,4, but this depends on the size/"radius" of the network.
+  #' NOTE: the distance d is not inclusive. This means that nodes at a distance of 3 from
+  #' our node-of-interest do not include nodes at distances 1 and 2. Only 3.
+  #' @return A vector of collective influence for each vertex of the graph corresponding to
+  #' the order of vertices output by V(graph).
+  #' @aliases CI
+  #' @keywords collective.influence
+  #' @family centrality functions
+  #' @export
+  #' @examples
+  #' MyData <- coexpression.data
+  #' My_graph <- graph_from_data_frame(MyData)
+  #' GraphVertices <- V(My_graph)
+  #' ci <- collective.influence(graph = My_graph, vertices = GraphVertices, mode = "all", d=3)
+  collective.influence <- function(graph, vertices = V(graph), mode = "all", d=3) {
+
+    ci <- vector(mode="numeric", length=length(vertices))  # collective influence output
+
+    reduced.degrees <- degree(graph = graph,
+                              v = vertices,
+                              mode = mode) - 1
+
+    # Only identify nodes at distance d
+    nodes.at.distance <- igraph::neighborhood(graph = graph, nodes = vertices,
+                                              mode = mode, order=d, mindist=d)
+
+    for (i in 1:length(nodes.at.distance)) {
+      rd <- reduced.degrees[i]  # i is the index of the node
+      rd.list <- reduced.degrees[igraph::as_ids(nodes.at.distance[[i]])]
+      # Setting 0 as default in case the graph doesn't have 2nd-order neighbours
+      rd.neighbours <- ifelse(length(rd.list) > 0, sum(rd.list), 0)
+      ci[i] <- rd * rd.neighbours
+    }
+
+    return(ci)
+  }
+
+  #=============================================================================
+  #
+  #    Code chunk 5: Calculation of ClusterRank
+  #
+  #=============================================================================
+
+  #' ClusterRank (CR)
+  #'
+  #' This function calculates the ClusterRank of input vertices and
+  #' works with both directed and undirected networks.
+  #' This function and all of its descriptions have been obtained from the centiserve package.
+  #' For a complete description if the function and its arguments try this:
+  #' ?centiserve::clusterrank
+  #' @param graph The input graph as igraph object
+  #' @param vids Vertex sequence, the vertices for which the centrality values are returned. Default is all vertices.
+  #' @param directed Logical scalar, whether to directed graph is analyzed. This argument is ignored for undirected graphs.
+  #' @param loops Logical; whether the loop edges are also counted.
+  #' @return A numeric vector contaning the ClusterRank centrality scores for the selected vertices.
+  #' @aliases CR
+  #' @keywords clusterrank
+  #' @family centrality functions
+  #' @seealso \code{\link[centiserve]{clusterrank}} for a complete description on this function
+  #' @export
+  #' @examples
+  #' MyData <- coexpression.data
+  #' My_graph <- graph_from_data_frame(MyData)
+  #' GraphVertices <- V(My_graph)
+  #' cr <- clusterrank(graph = My_graph, vids = GraphVertices, directed = FALSE, loops = TRUE)
+  #' @importFrom centiserve clusterrank
+  clusterrank <- centiserve::clusterrank
+
+#=============================================================================
+#
+#    Code chunk 6: Calculation of conditional probability of deviation from
 #                  means in opposite directions
 #
 #=============================================================================
@@ -119,9 +358,9 @@ neighborhood.connectivity <- function(graph, vertices, mode = "all") {
 #' @examples
 #' MyData <- centrality.measures
 #' My.conditional.prob <- cond.prob.analysis(data = MyData,
-#'                                           nodes.colname = "name",
-#'                                           Desired.colname = "BetweennessCentrality",
-#'                                           Condition.colname = "NeighborhoodConnectivity")
+#'                                           nodes.colname = rownames(MyData),
+#'                                           Desired.colname = "BC",
+#'                                           Condition.colname = "NC")
 cond.prob.analysis <- function(data, nodes.colname, Desired.colname, Condition.colname) {
 
   #filtering the data to find those nodes meeting the conditions
@@ -171,7 +410,7 @@ cond.prob.analysis <- function(data, nodes.colname, Desired.colname, Condition.c
 
 #=============================================================================
 #
-#    Code chunk 3: Assessment of innate features and associations of two network
+#    Code chunk 7: Assessment of innate features and associations of two network
 #                  centrality measures, one independent and one dependent
 #
 #=============================================================================
@@ -233,9 +472,9 @@ cond.prob.analysis <- function(data, nodes.colname, Desired.colname, Condition.c
 #' @examples
 #' MyData <- centrality.measures
 #' My.metrics.assessment <- double.cent.assess(data = MyData,
-#'                                             nodes.colname = "name",
-#'                                             dependent.colname = "BetweennessCentrality",
-#'                                             independent.colname = "NeighborhoodConnectivity")
+#'                                             nodes.colname = rownames(MyData),
+#'                                             dependent.colname = "BC",
+#'                                             independent.colname = "NC")
 double.cent.assess <- function(data, nodes.colname, dependent.colname, independent.colname, plot = FALSE) {
 
   if("parallel" %in% (.packages())) {
@@ -282,19 +521,40 @@ double.cent.assess <- function(data, nodes.colname, dependent.colname, independe
 
   #checking the normality of data
   summary.stat <- apply(data[, c(dependent.colname, independent.colname)], 2, summary)
-  if(nrow(data) < 5000) {
-    normality <- apply(data[, c(dependent.colname, independent.colname)], 2, stats::shapiro.test)
-  } else if(nrow(data) >= 5000) {
-    normality <- apply(data[, c(dependent.colname, independent.colname)], 2, nortest::ad.test)
-  }
-  normality <- as.data.frame(sapply(normality, function(m) m[]$p.value))
-  colnames(normality) <- "p.value"
 
-  if(normality[1,1] < 0.05) {
+  if(length(unique(data[,dependent.colname])) < 3 &
+     length(unique(data[,independent.colname])) >= 3) {
+    if(nrow(data) < 5000) {
+      normality <- data.frame(p.value = c(NA, stats::shapiro.test(data[, independent.colname])$p.value))
+    } else if (nrow(data) >= 5000) {
+      normality <- data.frame(p.value = c(NA, nortest::ad.test(data[, independent.colname])$p.value))
+    }
+  } else if (length(unique(data[,dependent.colname])) >= 3 &
+             length(unique(data[,independent.colname])) < 3) {
+    if(nrow(data) < 5000) {
+      normality <- data.frame(p.value = c(stats::shapiro.test(data[, dependent.colname])$p.value, NA))
+    } else if (nrow(data) >= 5000) {
+      normality <- data.frame(p.value = c(nortest::ad.test(data[, dependent.colname])$p.value, NA))
+    }
+  } else if(length(unique(data[,dependent.colname])) < 3 &
+            length(unique(data[,independent.colname])) < 3) {
+    normality <- data.frame(p.value = c(NA, NA))
+  } else {
+
+    if(nrow(data) < 5000) {
+      normality <- apply(data[, c(dependent.colname, independent.colname)], 2, stats::shapiro.test)
+    } else if(nrow(data) >= 5000) {
+      normality <- apply(data[, c(dependent.colname, independent.colname)], 2, nortest::ad.test)
+    }
+    normality <- as.data.frame(sapply(normality, function(m) m[]$p.value))
+    colnames(normality) <- "p.value"
+  }
+
+  if(is.na(normality[1,1])) {dependent.normality <- NA} else if (normality[1,1] < 0.05) {
     dependent.normality <- "Non-normally distributed"
   } else {dependent.normality <- "Normally distributed"}
 
-  if(normality[2,1] < 0.05) {
+  if(is.na(normality[2,1])) {independent.normality <- NA} else if(normality[2,1] < 0.05) {
     independent.normality <- "Non-normally distributed"
   } else {independent.normality <- "Normally distributed"}
 
@@ -421,7 +681,7 @@ double.cent.assess <- function(data, nodes.colname, dependent.colname, independe
 
 #=============================================================================
 #
-#    Code chunk 4: Assessment of innate features and associations of two network centrality
+#    Code chunk 8: Assessment of innate features and associations of two network centrality
 #                  measures, without considering dependent and independent ones
 #
 #=============================================================================
@@ -475,9 +735,9 @@ double.cent.assess <- function(data, nodes.colname, dependent.colname, independe
 #' @examples
 #' MyData <- centrality.measures
 #' My.metrics.assessment <- double.cent.assess.noRegression(data = MyData,
-#'                                             nodes.colname = "name",
-#'                                             centrality1.colname = "BetweennessCentrality",
-#'                                             centrality2.colname = "NeighborhoodConnectivity")
+#'                                             nodes.colname = rownames(MyData),
+#'                                             centrality1.colname = "BC",
+#'                                             centrality2.colname = "NC")
 double.cent.assess.noRegression <- function(data, nodes.colname,
                                             centrality1.colname,
                                             centrality2.colname) {
@@ -526,22 +786,41 @@ double.cent.assess.noRegression <- function(data, nodes.colname,
 
   #checking the normality of data
   summary.stat <- apply(data[, c(centrality1.colname, centrality2.colname)], 2, summary)
-  if(nrow(data) < 5000) {
-    normality <- apply(data[, c(centrality1.colname, centrality2.colname)], 2, stats::shapiro.test)
-  } else if(nrow(data) >= 5000) {
-    normality <- apply(data[, c(centrality1.colname, centrality2.colname)], 2, nortest::ad.test)
-  }
-  normality <- as.data.frame(sapply(normality, function(m) m[]$p.value))
-  colnames(normality) <- "p.value"
 
-  if(normality[1,1] < 0.05) {
+  if(length(unique(data[,centrality1.colname])) < 3 &
+     length(unique(data[,centrality2.colname])) >= 3) {
+    if(nrow(data) < 5000) {
+      normality <- data.frame(p.value = c(NA, stats::shapiro.test(data[, centrality2.colname])$p.value))
+    } else if (nrow(data) >= 5000) {
+      normality <- data.frame(p.value = c(NA, nortest::ad.test(data[, centrality2.colname])$p.value))
+    }
+  } else if (length(unique(data[,centrality1.colname])) >= 3 &
+             length(unique(data[,centrality2.colname])) < 3) {
+    if(nrow(data) < 5000) {
+      normality <- data.frame(p.value = c(stats::shapiro.test(data[, centrality1.colname])$p.value, NA))
+    } else if (nrow(data) >= 5000) {
+      normality <- data.frame(p.value = c(nortest::ad.test(data[, centrality1.colname])$p.value, NA))
+    }
+  } else if(length(unique(data[,centrality1.colname])) < 3 &
+            length(unique(data[,centrality2.colname])) < 3) {
+    normality <- data.frame(p.value = c(NA, NA))
+  } else {
+    if(nrow(data) < 5000) {
+      normality <- apply(data[, c(centrality1.colname, centrality2.colname)], 2, stats::shapiro.test)
+    } else if(nrow(data) >= 5000) {
+      normality <- apply(data[, c(centrality1.colname, centrality2.colname)], 2, nortest::ad.test)
+    }
+    normality <- as.data.frame(sapply(normality, function(m) m[]$p.value))
+    colnames(normality) <- "p.value"
+  }
+
+  if(is.na(normality[1,1])) {dependent.normality <- NA} else if(normality[1,1] < 0.05) {
     dependent.normality <- "Non-normally distributed"
   } else {dependent.normality <- "Normally distributed"}
 
-  if(normality[2,1] < 0.05) {
+  if(is.na(normality[2,1])) {independent.normality <- NA} else if(normality[2,1] < 0.05) {
     independent.normality <- "Non-normally distributed"
   } else {independent.normality <- "Normally distributed"}
-
 
   #calculation of Hoeffding’s D Statistics (Hoeffding Dependence Coefficient)
   hoeffd <- data.frame(D_statistic = as.data.frame(Hmisc::hoeffd(x = data[, centrality2.colname],
@@ -628,36 +907,486 @@ double.cent.assess.noRegression <- function(data, nodes.colname,
 
 #=============================================================================
 #
-#    Code chunk 5: Calculation of Integrated hubness score (IHS)
+#    Code chunk 9: Calculation of IVI from centrality measures
 #
 #=============================================================================
 
-#' Integrated hubness score (IHS)
+#' Integrated Vector of Influence (IVI)
 #'
-#' This function calculates the IHS of the desired nodes. This function is not dependent to
-#' other packages and the required centrality measures, namely degree centrality, betweenness
-#' centrality and neighborhood connectivity could have been calculated by any means beforehand.
+#' This function calculates the IVI of the desired nodes from previously calculated centrality
+#' measures. This function is not dependent to other packages and the required centrality
+#' measures, namely degree centrality, ClusterRank, betweenness centrality, Collective Influence,
+#' local H-index, and neighborhood connectivity could have been calculated by any means beforehand.
 #' @param DC A vector containing the values of degree centrality of the desired vertices.
-#' @param BC A vector containing the values of betweenness centrality of the desired vertices.
+#' @param CR A vector containing the values of ClusterRank of the desired vertices.
+#' @param LH_index A vector containing the values of local H-index of the desired vertices.
 #' @param NC A vector containing the values of neighborhood connectivity of the desired vertices.
-#' @return A numeric vector with the IHS score based on the provided centrality measures.
-#' @aliases IHS
-#' @keywords integrated_hubness_score IHS
+#' @param BC A vector containing the values of betweenness centrality of the desired vertices.
+#' @param CI A vector containing the values of Collective Influence of the desired vertices.
+#' @param scaled Logical; whether the end result should be 1-100 range normalized or not (default is TRUE).
+#' @return A numeric vector with the IVI values based on the provided centrality measures.
+#' @aliases IVI.FI
+#' @keywords ivi.from.indices
+#' @seealso \code{\link[influential]{ivi}}
 #' @export
 #' @examples
 #' MyData <- centrality.measures
-#' My.vertices.IHS <- ihs(DC = centrality.measures$Degree,
-#'                        BC = centrality.measures$BetweennessCentrality,
-#'                        NC = centrality.measures$NeighborhoodConnectivity)
-ihs <- function(DC, BC, NC) {
+#' My.vertices.IVI <- ivi.from.indices(DC = centrality.measures$DC,
+#'                                     CR = centrality.measures$CR,
+#'                                     NC = centrality.measures$NC,
+#'                                     LH_index = centrality.measures$LH_index,
+#'                                     BC = centrality.measures$BC,
+#'                                     CI = centrality.measures$CI)
+ivi.from.indices <- function(DC, CR, LH_index, NC, BC, CI, scaled = TRUE) {
 
-    DC * log2(c(BC * NC) +
-                c(1.1 - min(BC * NC)))
+  #Generating temporary measures
+
+  temp.DC <- DC
+  temp.CR <- CR
+  temp.LH_index <- LH_index
+  temp.NC <- NC
+  temp.BC <- BC
+  temp.CI <- CI
+
+  #Removing the NAN and NA values
+
+  temp.DC[c(which(is.nan(temp.DC)), which(is.na(temp.DC)))] <- 0
+  temp.CR[c(which(is.nan(temp.CR)), which(is.na(temp.CR)))] <- 0
+  temp.LH_index[c(which(is.nan(temp.LH_index)), which(is.na(temp.LH_index)))] <- 0
+  temp.NC[c(which(is.nan(temp.NC)), which(is.na(temp.NC)))] <- 0
+  temp.BC[c(which(is.nan(temp.BC)), which(is.na(temp.BC)))] <- 0
+  temp.CI[c(which(is.nan(temp.CI)), which(is.na(temp.CI)))] <- 0
+
+  #1-100 normalization of centrality measures
+
+  if(any(temp.DC > 0)) {
+    temp.DC <- 1+(((temp.DC-min(temp.DC))*(100-1))/(max(temp.DC)-min(temp.DC)))
   }
+
+  if(any(temp.CR > 0)) {
+    temp.CR <- 1+(((temp.CR-min(temp.CR))*(100-1))/(max(temp.CR)-min(temp.CR)))
+  }
+
+  if(any(temp.LH_index > 0)) {
+    temp.LH_index <- 1+(((temp.LH_index-min(temp.LH_index))*(100-1))/(max(temp.LH_index)-min(temp.LH_index)))
+  }
+
+  if(any(temp.NC > 0)) {
+    temp.NC <- 1+(((temp.NC-min(temp.NC))*(100-1))/(max(temp.NC)-min(temp.NC)))
+  }
+
+  if(any(temp.BC > 0)) {
+    temp.BC <- 1+(((temp.BC-min(temp.BC))*(100-1))/(max(temp.BC)-min(temp.BC)))
+  }
+
+  if(any(temp.CI > 0)) {
+    temp.CI <- 1+(((temp.CI-min(temp.CI))*(100-1))/(max(temp.CI)-min(temp.CI)))
+  }
+
+  #Calculation of IVI
+
+  spreading.rank <- ((temp.NC+temp.CR)*(temp.BC+temp.CI))
+
+  hubness.rank <- (temp.DC+temp.LH_index)
+
+  temp.ivi <- (hubness.rank)*(spreading.rank)
+
+  #1-100 normalization of IVI
+
+  if(scaled == TRUE) {
+
+    temp.ivi <- 1+(((temp.ivi-min(temp.ivi))*(100-1))/(max(temp.ivi)-min(temp.ivi)))
+
+  }
+
+  return(temp.ivi)
+}
 
 #=============================================================================
 #
-#    Code chunk 6: Some required functions from the igraph package
+#    Code chunk 10: Calculation of IVI from graph
+#
+#=============================================================================
+
+#' Integrated Vector of Influence (IVI)
+#'
+#' This function calculates the IVI of the desired nodes from a graph.
+#' @param graph A graph (network) of the igraph class.
+#' @param vertices A vector of desired vertices, which could be obtained by the V function.
+#' @param weights Optional positive weight vector for calculating weighted betweenness centrality
+#' of nodes as a requirement for calculation of IVI. If the graph has a weight edge attribute,
+#' then this is used by default. Weights are used to calculate weighted shortest paths,
+#' so they are interpreted as distances.
+#' @param directed Logical scalar, whether to directed graph is analyzed. This argument
+#' is ignored for undirected graphs.
+#' @param mode The mode of IVI depending on the directedness of the graph.
+#' If the graph is undirected, the mode "all" should be specified.
+#' Otherwise, for the calculation of IVI based on
+#' incoming connections select "in" and for the outgoing connections select "out".
+#' Also, if all of the connections are desired, specify the "all" mode. Default mode is set to "all".
+#' @param loops Logical; whether the loop edges are also counted.
+#' @param d The distance, expressed in number of steps from a given node (default=3). Distance
+#' must be > 0. According to Morone & Makse (https://doi.org/10.1038/nature14604), optimal
+#' results can be reached at d=3,4, but this depends on the size/"radius" of the network.
+#' NOTE: the distance d is not inclusive. This means that nodes at a distance of 3 from
+#' our node-of-interest do not include nodes at distances 1 and 2. Only 3.
+#' @param scaled Logical; whether the end result should be 1-100 range normalized or not (default is TRUE).
+#' @return A numeric vector with the IVI values based on the provided centrality measures.
+#' @aliases IVI
+#' @keywords IVI integrated_vector_of_influence
+#' @seealso \code{\link[influential]{ivi.from.indices}}
+#' @export
+#' @examples
+#' MyData <- coexpression.data
+#' My_graph <- graph_from_data_frame(MyData)
+#' GraphVertices <- V(My_graph)
+#' My.vertices.IVI <- ivi(graph = My_graph, vertices = GraphVertices,
+#'                        weights = NULL, directed = FALSE, mode = "all",
+#'                        loops = TRUE, d = 3, scaled = TRUE)
+ivi <- function(graph, vertices = V(graph), weights = NULL, directed = FALSE,
+                mode = "all", loops = TRUE, d = 3, scaled = TRUE) {
+
+  #Calculation of required centrality measures
+
+  DC <- igraph::degree(graph = graph, v = vertices, mode = mode, loops = loops)
+  CR <- clusterrank(graph = graph, vids = vertices, directed = directed, loops = loops)
+  LH_index <- lh_index(graph = graph, vertices = vertices, mode = mode)
+  NC <- neighborhood.connectivity(graph = graph, vertices = vertices, mode = mode)
+  BC <- betweenness(graph = graph, v = vertices, directed = directed, weights = weights)
+  CI <- collective.influence(graph = graph, vertices = vertices, mode = mode, d = d)
+
+  #Generating temporary measures
+
+  temp.DC <- DC
+  temp.CR <- CR
+  temp.LH_index <- LH_index
+  temp.NC <- unlist(NC)
+  temp.BC <- BC
+  temp.CI <- CI
+
+  #Removing the NAN and NA values
+
+  temp.DC[c(which(is.nan(temp.DC)), which(is.na(temp.DC)))] <- 0
+  temp.CR[c(which(is.nan(temp.CR)), which(is.na(temp.CR)))] <- 0
+  temp.LH_index[c(which(is.nan(temp.LH_index)), which(is.na(temp.LH_index)))] <- 0
+  temp.NC[c(which(is.nan(temp.NC)), which(is.na(temp.NC)))] <- 0
+  temp.BC[c(which(is.nan(temp.BC)), which(is.na(temp.BC)))] <- 0
+  temp.CI[c(which(is.nan(temp.CI)), which(is.na(temp.CI)))] <- 0
+
+  #1-100 normalization of centrality measures
+
+  if(any(temp.DC > 0)) {
+    temp.DC <- 1+(((temp.DC-min(temp.DC))*(100-1))/(max(temp.DC)-min(temp.DC)))
+  }
+
+  if(any(temp.CR > 0)) {
+    temp.CR <- 1+(((temp.CR-min(temp.CR))*(100-1))/(max(temp.CR)-min(temp.CR)))
+  }
+
+  if(any(temp.LH_index > 0)) {
+    temp.LH_index <- 1+(((temp.LH_index-min(temp.LH_index))*(100-1))/(max(temp.LH_index)-min(temp.LH_index)))
+  }
+
+  if(any(temp.NC > 0)) {
+    temp.NC <- 1+(((temp.NC-min(temp.NC))*(100-1))/(max(temp.NC)-min(temp.NC)))
+  }
+
+  if(any(temp.BC > 0)) {
+    temp.BC <- 1+(((temp.BC-min(temp.BC))*(100-1))/(max(temp.BC)-min(temp.BC)))
+  }
+
+  if(any(temp.CI > 0)) {
+    temp.CI <- 1+(((temp.CI-min(temp.CI))*(100-1))/(max(temp.CI)-min(temp.CI)))
+  }
+
+  #Calculation of IVI
+
+  spreading.rank <- ((temp.NC+temp.CR)*(temp.BC+temp.CI))
+
+  hubness.rank <- (temp.DC+temp.LH_index)
+
+  temp.ivi <- (hubness.rank)*(spreading.rank)
+
+  #1-100 normalization of IVI
+
+  if(scaled == TRUE) {
+
+    temp.ivi <- 1+(((temp.ivi-min(temp.ivi))*(100-1))/(max(temp.ivi)-min(temp.ivi)))
+
+  }
+
+  return(temp.ivi)
+}
+
+#=============================================================================
+#
+#    Code chunk 11: Calculation of Spreading score
+#
+#=============================================================================
+
+#' Spreading score
+#'
+#' This function calculates the Spreading score of the desired nodes from a graph.
+#' Spreading score reflects the spreading potential of each node within a network and is
+#' one of the major components of the IVI.
+#' @param graph A graph (network) of the igraph class.
+#' @param vertices A vector of desired vertices, which could be obtained by the V function.
+#' @param weights Optional positive weight vector for calculating weighted betweenness centrality
+#' of nodes as a requirement for calculation of IVI. If the graph has a weight edge attribute,
+#' then this is used by default. Weights are used to calculate weighted shortest paths,
+#' so they are interpreted as distances.
+#' @param directed Logical scalar, whether to directed graph is analyzed. This argument
+#' is ignored for undirected graphs.
+#' @param mode The mode of Spreading score depending on the directedness of the graph.
+#' If the graph is undirected, the mode "all" should be specified.
+#' Otherwise, for the calculation of Spreading score based on
+#' incoming connections select "in" and for the outgoing connections select "out".
+#' Also, if all of the connections are desired, specify the "all" mode. Default mode is set to "all".
+#' @param loops Logical; whether the loop edges are also counted.
+#' @param d The distance, expressed in number of steps from a given node (default=3). Distance
+#' must be > 0. According to Morone & Makse (https://doi.org/10.1038/nature14604), optimal
+#' results can be reached at d=3,4, but this depends on the size/"radius" of the network.
+#' NOTE: the distance d is not inclusive. This means that nodes at a distance of 3 from
+#' our node-of-interest do not include nodes at distances 1 and 2. Only 3.
+#' @param scaled Logical; whether the end result should be 1-100 range normalized or not (default is TRUE).
+#' @return A numeric vector with Spreading scores.
+#' @keywords spreading.score
+#' @seealso \code{\link[influential]{hubness.score}}
+#' @export
+#' @examples
+#' MyData <- coexpression.data
+#' My_graph <- graph_from_data_frame(MyData)
+#' GraphVertices <- V(My_graph)
+#' Spreading.score <- spreading.score(graph = My_graph, vertices = GraphVertices,
+#'                                    weights = NULL, directed = FALSE, mode = "all",
+#'                                    loops = TRUE, d = 3, scaled = TRUE)
+spreading.score <- function(graph, vertices = V(graph), weights = NULL, directed = FALSE,
+                            mode = "all", loops = TRUE, d = 3, scaled = TRUE) {
+
+  #Calculation of required centrality measures
+
+  CR <- clusterrank(graph = graph, vids = vertices, directed = directed, loops = loops)
+  CR[which(is.nan(CR))] <- 0
+  NC <- neighborhood.connectivity(graph = graph, vertices = vertices, mode = mode)
+  BC <- betweenness(graph = graph, v = vertices, directed = directed, weights = weights)
+  CI <- collective.influence(graph = graph, vertices = vertices, mode = mode, d = d)
+
+  #Generating temporary measures
+
+  temp.CR <- CR
+  temp.NC <- unlist(NC)
+  temp.BC <- BC
+  temp.CI <- CI
+
+  #Removing the NAN and NA values
+
+  temp.CR[c(which(is.nan(temp.CR)), which(is.na(temp.CR)))] <- 0
+  temp.NC[c(which(is.nan(temp.NC)), which(is.na(temp.NC)))] <- 0
+  temp.BC[c(which(is.nan(temp.BC)), which(is.na(temp.BC)))] <- 0
+  temp.CI[c(which(is.nan(temp.CI)), which(is.na(temp.CI)))] <- 0
+
+  #1-100 normalization of centrality measures
+
+  if(any(temp.CR > 0)) {
+    temp.CR <- 1+(((temp.CR-min(temp.CR))*(100-1))/(max(temp.CR)-min(temp.CR)))
+  }
+
+  if(any(temp.NC > 0)) {
+    temp.NC <- 1+(((temp.NC-min(temp.NC))*(100-1))/(max(temp.NC)-min(temp.NC)))
+  }
+
+  if(any(temp.BC > 0)) {
+    temp.BC <- 1+(((temp.BC-min(temp.BC))*(100-1))/(max(temp.BC)-min(temp.BC)))
+  }
+
+  if(any(temp.CI > 0)) {
+    temp.CI <- 1+(((temp.CI-min(temp.CI))*(100-1))/(max(temp.CI)-min(temp.CI)))
+  }
+
+  #Calculation of spreading.score
+
+  temp.spreading.score <- ((temp.NC+temp.CR)*(temp.BC+temp.CI))
+
+  #1-100 normalization of spreading score
+
+  if(scaled == TRUE) {
+
+    temp.spreading.score <- 1+(((temp.spreading.score-min(temp.spreading.score))*(100-1))/(max(temp.spreading.score)-min(temp.spreading.score)))
+
+  }
+
+  return(temp.spreading.score)
+}
+
+#=============================================================================
+#
+#    Code chunk 12: Calculation of Hubness score
+#
+#=============================================================================
+
+#' Hubness score
+#'
+#' This function calculates the Hubness score of the desired nodes from a graph.
+#' Hubness score reflects the power of each node in its surrounding environment and is
+#' one of the major components of the IVI.
+#' @param graph A graph (network) of the igraph class.
+#' @param vertices A vector of desired vertices, which could be obtained by the V function.
+#' @param directed Logical scalar, whether to directed graph is analyzed. This argument
+#' is ignored for undirected graphs.
+#' @param mode The mode of Hubness score depending on the directedness of the graph.
+#' If the graph is undirected, the mode "all" should be specified.
+#' Otherwise, for the calculation of Hubness score based on
+#' incoming connections select "in" and for the outgoing connections select "out".
+#' Also, if all of the connections are desired, specify the "all" mode. Default mode is set to "all".
+#' @param loops Logical; whether the loop edges are also counted.
+#' @param scaled Logical; whether the end result should be 1-100 range normalized or not (default is TRUE).
+#' @return A numeric vector with the Hubness scores.
+#' @keywords hubness.score
+#' @seealso \code{\link[influential]{spreading.score}}
+#' @export
+#' @examples
+#' MyData <- coexpression.data
+#' My_graph <- graph_from_data_frame(MyData)
+#' GraphVertices <- V(My_graph)
+#' Hubness.score <- hubness.score(graph = My_graph, vertices = GraphVertices,
+#'                                directed = FALSE, mode = "all",
+#'                                loops = TRUE, scaled = TRUE)
+hubness.score <- function(graph, vertices = V(graph), directed = FALSE,
+                          mode = "all", loops = TRUE, scaled = TRUE) {
+
+  #Calculation of required centrality measures
+
+  DC <- igraph::degree(graph = graph, v = vertices, mode = mode, loops = loops)
+  LH_index <- lh_index(graph = graph, vertices = vertices, mode = mode)
+
+  #Generating temporary measures
+
+  temp.DC <- DC
+  temp.LH_index <- LH_index
+
+  #Removing the NAN and NA values
+
+  temp.DC[c(which(is.nan(temp.DC)), which(is.na(temp.DC)))] <- 0
+  temp.LH_index[c(which(is.nan(temp.LH_index)), which(is.na(temp.LH_index)))] <- 0
+
+  #1-100 normalization of centrality measures
+
+  if(any(temp.DC > 0)) {
+    temp.DC <- 1+(((temp.DC-min(temp.DC))*(100-1))/(max(temp.DC)-min(temp.DC)))
+  }
+
+  if(any(temp.LH_index > 0)) {
+    temp.LH_index <- 1+(((temp.LH_index-min(temp.LH_index))*(100-1))/(max(temp.LH_index)-min(temp.LH_index)))
+  }
+
+  #Calculation of Hubness score
+
+  temp.hubness.score <- (temp.DC+temp.LH_index)
+
+  #1-100 normalization of Hubness score
+
+  if(scaled == TRUE) {
+
+    temp.hubness.score <- 1+(((temp.hubness.score-min(temp.hubness.score))*(100-1))/(max(temp.hubness.score)-min(temp.hubness.score)))
+
+  }
+
+  return(temp.hubness.score)
+}
+
+#=============================================================================
+#
+#    Code chunk 13: Calculation of SIRIR
+#
+#=============================================================================
+
+#' SIR-based Influence Ranking
+#'
+#' This function is achieved by the integration susceptible-infected-recovered (SIR) model
+#' with the leave-one-out cross validation technique and ranks network nodes based on their
+#' true universal influence. One of the applications of this function is the assessment of
+#' performance of a novel algorithm in identification of network influential nodes.
+#' @param graph A graph (network) of the igraph class.
+#' @param vertices A vector of desired vertices, which could be obtained by the V function.
+#' @param beta Non-negative scalar. The rate of infection of an individual that is susceptible
+#' and has a single infected neighbor. The infection rate of a susceptible individual with n
+#' infected neighbors is n times beta. Formally this is the rate parameter of an exponential
+#' distribution.
+#' @param gamma Positive scalar. The rate of recovery of an infected individual.
+#' Formally, this is the rate parameter of an exponential distribution.
+#' @param no.sim Integer scalar, the number of simulation runs to perform SIR model on for the
+#' original network as well perturbed networks generated by leave-one-out technique.
+#' You may choose a different no.sim based on the available memory on your system.
+#' @param seed A single value, interpreted as an integer to be used for random number generation
+#' @return A two-column dataframe; a column containing the difference values of the original and
+#' perturbed networks and a column containing node influence rankings
+#' @aliases SIRIR
+#' @keywords sirir
+#' @seealso \code{\link[igraph]{sir}} for a complete description on SIR model.
+#' @export
+#' @examples
+#' set.seed(1234)
+#' My_graph <- igraph::sample_gnp(n=50, p=0.05)
+#' GraphVertices <- V(My_graph)
+#' Influence.Ranks <- sirir(graph = My_graph, vertices = GraphVertices,
+#'                          beta = 0.5, gamma = 1, no.sim = 10, seed = 1234)
+#' @importFrom igraph vcount as_ids sir
+sirir <- function(graph, vertices = V(graph),
+                  beta = 0.5, gamma = 1,
+                  no.sim = igraph::vcount(graph)*100,  seed = 1234) {
+
+  #Define a data frame
+  temp.loocr.table <- data.frame(difference.value = vector("numeric", length = length(vertices)),
+                                 rank = vector("integer", length = length(vertices)))
+
+  if(class(vertices) == "character") {
+    rownames(temp.loocr.table) <- vertices
+  } else if(class(vertices) == "igraph.vs") {
+    rownames(temp.loocr.table) <- igraph::as_ids(vertices)
+  }
+
+
+  #Model the spreading based on all nodes
+  set.seed(seed)
+  all.included.spread <- igraph::sir(graph = graph, beta = beta,
+                             gamma = gamma, no.sim = no.sim)
+
+  #Getting the mean of spread in each independent experiment
+  all.mean.spread <- vector("numeric", length = length(all.included.spread))
+
+  for (i in 1:length(all.included.spread)) {
+    all.mean.spread[i] <- max(all.included.spread[[i]]$NR)
+  }
+  all.mean.spread <- mean(all.mean.spread)
+
+  #Model the spread based on leave one out cross ranking (LOOCR)
+
+  for(s in 1:length(vertices)) {
+
+    temp.graph <- igraph::delete_vertices(graph, unlist(vertices[s]))
+
+    set.seed(seed)
+
+    loocr.spread <- igraph::sir(graph = temp.graph, beta = beta,
+                        gamma = gamma, no.sim = no.sim)
+
+    loocr.mean.spread <- vector("numeric", length = length(loocr.spread))
+
+    for (h in 1:length(loocr.spread)) {
+      loocr.mean.spread[h] <- max(loocr.spread[[h]]$NR)
+    }
+    loocr.mean.spread <- mean(loocr.mean.spread)
+    temp.loocr.table$difference.value[s] <- all.mean.spread - loocr.mean.spread
+  }
+
+  temp.loocr.table$rank <- rank(-temp.loocr.table$difference.value, ties.method = "min")
+
+  return(temp.loocr.table)
+}
+
+#=============================================================================
+#
+#    Code chunk 14: Some required functions from the igraph package
 #
 #=============================================================================
 

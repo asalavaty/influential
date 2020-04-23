@@ -4,12 +4,12 @@ citEntry(
   entry    = "Article",
   title    = "IHS: an integrative method for the identification of network hubs",
   author   = "Abbas Salavaty, Mirana Ramialison, Peter D Currie",
-  journal  = "bioRxiv",
+  journal  = "SSRN Electronic Journal",
   year     = "2020",
-  url      = "https://doi.org/10.1101/2020.02.17.953430",
+  url      = "https://dx.doi.org/10.2139/ssrn.3565980",
   textVersion = paste("IHS: an integrative method for the identification of network hubs.
 Abbas Salavaty, Mirana Ramialison, Peter D Currie.
-bioRxiv 2020.02.17.953430; doi: https://doi.org/10.1101/2020.02.17.953430"
+SSRN Electronic Journal 2020.04.06; doi: https://dx.doi.org/10.2139/ssrn.3565980"
 
   )
 )
