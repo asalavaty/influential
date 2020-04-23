@@ -22,16 +22,16 @@ influential nodes in a network. This package contains functions for
 reconstruction of networks from adjacency matrices and data frames,
 analysis of the topology of the network and calculation of centrality
 measures as well as a novel and powerful influential node ranking. The
-first integrative method, namely the *Integrated Vector of Influence
-(IVI)*, that captures all topological dimensions of the network for the
+first integrative method, namely the **Integrated Vector of Influence
+(IVI)**, that captures all topological dimensions of the network for the
 identification of network most influential nodes is also provided as a
 function. Also, neighborhood connectivity, H-index, local H-index, and
 collective influence (CI), all of which required centrality measures for
-the calculation of IVI, are for the first time provided in an R package.
-Furthermore, some functions have been provided for the assessment of
-dependence and correlation of two network centrality measures as well as
-the conditional probability of deviation from their corresponding means
-in opposite directions.
+the calculation of **IVI**, are for the first time provided in an R
+package. Furthermore, some functions have been provided for the
+assessment of dependence and correlation of two network centrality
+measures as well as the conditional probability of deviation from their
+corresponding means in opposite directions.
 
 Check out [**our paper**](https://doi.org/10.1101/2020.02.17.953430) for
 a more complete description of the IVI formula and all of its
