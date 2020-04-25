@@ -14,9 +14,12 @@ namely the \strong{Integrated Vector of Influence (IVI)}, that captures all topo
 of the network for the identification of network most influential nodes is also provided as
 a function. Also, neighborhood connectivity, H-index, local H-index, and collective
 influence (CI), all of which required centrality measures for the calculation of IVI,
-are for the first time provided in an R package. Furthermore, some functions have been
-provided for the assessment of dependence and correlation of two network centrality
-measures as well as the conditional probability of deviation from their corresponding
+are for the first time provided in an R package. Additionally, a function is provided
+for running SIRIR model, which is the combination of leave-one-out cross validation
+technique and the conventional SIR model, on a network to unsupervisedly rank the true
+influence of vertices.Furthermore, some functions have been provided for the
+assessment of dependence and correlation of two network centrality measures as well
+as the conditional probability of deviation from their corresponding
 means in opposite directions.
 
 You may check the latest developmental version of the \emph{influential} package on its
@@ -35,9 +38,9 @@ You may check the latest developmental version of the \emph{influential} package
 \itemize{
   \item Fred Viole and David Nawrocki (2013, ISBN:1490523995).
   \item Csardi G, Nepusz T (2006). “The igraph software package for complex network research.”
-InterJournal, Complex Systems, 1695. http://igraph.org.
+InterJournal, Complex Systems, 1695. \url{http://igraph.org}.
 }
-\strong{Note:} Adapted algorithms and sources are referenced in function document.
+\strong{Note:} Adopted algorithms and sources are referenced in function document.
 }
 \seealso{
 Useful links:

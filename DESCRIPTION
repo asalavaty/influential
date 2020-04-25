@@ -11,8 +11,8 @@ Description: Contains functions for reconstruction of networks from
     of dependence and correlation of two network centrality measures as well as 
     the conditional probability of deviation from their corresponding means in opposite direction.
     Fred Viole and David Nawrocki (2013, ISBN:1490523995).
-    Csardi G, Nepusz T (2006). The igraph software package for complex network research. InterJournal, Complex Systems, 1695.
-    Adapted algorithms and sources are referenced in function document.
+    Csardi G, Nepusz T (2006). "The igraph software package for complex network research." InterJournal, Complex Systems, 1695.
+    Adopted algorithms and sources are referenced in function document.
 Imports:
     igraph,
     centiserve

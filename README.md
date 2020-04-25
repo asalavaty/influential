@@ -28,10 +28,13 @@ identification of network most influential nodes is also provided as a
 function. Also, neighborhood connectivity, H-index, local H-index, and
 collective influence (CI), all of which required centrality measures for
 the calculation of **IVI**, are for the first time provided in an R
-package. Furthermore, some functions have been provided for the
-assessment of dependence and correlation of two network centrality
-measures as well as the conditional probability of deviation from their
-corresponding means in opposite directions.
+package. Additionally, a function is provided for running SIRIR model,
+which is the combination of leave-one-out cross validation technique and
+the conventional SIR model, on a network to unsupervisedly rank the true
+influence of vertices. Furthermore, some functions have been provided
+for the assessment of dependence and correlation of two network
+centrality measures as well as the conditional probability of deviation
+from their corresponding means in opposite directions.
 
 Check out [**our paper**](https://doi.org/10.1101/2020.02.17.953430) for
 a more complete description of the IVI formula and all of its
