@@ -18,13 +18,13 @@ logo](https://github.com/asalavaty/influential/blob/master/logo.png)
 ## Overview
 
 The goal of `influential` is to help identification of the most
-influential nodes in a network. This package contains functions for
+`influential` nodes in a network. This package contains functions for
 reconstruction of networks from adjacency matrices and data frames,
 analysis of the topology of the network and calculation of centrality
-measures as well as a novel and powerful influential node ranking. The
+measures as well as a novel and powerful `influential` node ranking. The
 first integrative method, namely the **Integrated Vector of Influence
 (IVI)**, that captures all topological dimensions of the network for the
-identification of network most influential nodes is also provided as a
+identification of network most `influential` nodes is also provided as a
 function. Also, neighborhood connectivity, H-index, local H-index, and
 collective influence (CI), all of which required centrality measures for
 the calculation of **IVI**, are for the first time provided in an R
