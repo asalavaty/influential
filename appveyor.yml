@@ -19,11 +19,6 @@ environment:
   # see https://github.com/krlmlr/r-appveyor#readme for details
   USE_RTOOLS: true
   R_REMOTES_STANDALONE: true
- - R_VERSION: release
- - R_VERSION: oldrel
-  RTOOLS_VERSION: 35
- - R_VERSION: 3.4.4
-  RTOOLS_VERSION: 34
 
 # Adapt as necessary starting from here
 
