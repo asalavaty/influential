@@ -7,7 +7,8 @@ Maintainer: Adrian Salavaty <abbas.salavaty@gmail.com>
 Description: Contains functions for reconstruction of networks from
     adjacency matrices and data frames, analysis of the topology of the network 
     and calculation of centrality measures, and identification of the most
-    influential nodes. Also, some functions have been provided for the assessment 
+    influential nodes. Also, a function is provided for running SIRIR model, which 
+    is the combination of leave-one-out cross validation technique and the conventional SIR model, on a network to unsupervisedly rank the true influence of vertices. Additionally, some functions have been provided for the assessment 
     of dependence and correlation of two network centrality measures as well as 
     the conditional probability of deviation from their corresponding means in opposite direction.
     Fred Viole and David Nawrocki (2013, ISBN:1490523995).

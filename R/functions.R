@@ -16,7 +16,7 @@
 #' a function. Also, neighborhood connectivity, H-index, local H-index, and collective
 #' influence (CI), all of which required centrality measures for the calculation of IVI,
 #' are for the first time provided in an R package. Additionally, a function is provided
-#' for running SIRIR model, which is the combination of leave-one-out cross validation
+#' for running \strong{SIRIR} model, which is the combination of leave-one-out cross validation
 #' technique and the conventional SIR model, on a network to unsupervisedly rank the true
 #' influence of vertices.Furthermore, some functions have been provided for the
 #' assessment of dependence and correlation of two network centrality measures as well
@@ -37,7 +37,10 @@
 #'
 #' @author
 #' Author: Adrian (Abbas) Salavaty
+#'
+#'
 #' Maintainer: Adrian (Abbas) Salavaty \email{abbas.salavaty@@gmail.com}
+#'
 #'
 #' You may find more information on my personal website at \href{https://www.abbassalavaty.com/}{www.AbbasSalavaty.com}
 #'

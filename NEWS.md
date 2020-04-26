@@ -1,9 +1,14 @@
-influential (CRAN version)
+influential
 ================
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-# influential 1.0.0
+# influential 1.0.0.9000 (Developmental version)
+
+  - Some minor corrections are done in the documentation of functions
+    and DESCRIPTION file.
+
+# influential 1.0.0 (CRAN version)
 
   - The DESCRIPTION file is updated.
 
