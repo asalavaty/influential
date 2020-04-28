@@ -9,7 +9,7 @@
 status](https://ci.appveyor.com/api/projects/status/github/asalavaty/influential?branch=master&svg=true)](https://ci.appveyor.com/project/asalavaty/influential)
 [![](https://www.r-pkg.org/badges/version/influential?color=blue)](https://cran.r-project.org/package=influential)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/influential?color=green)](https://cran.r-project.org/package=influential)
-[![](https://img.shields.io/badge/First%20integrative%20method%20for-Hub%20identification-blue.svg)](https://dx.doi.org/10.2139/ssrn.3565980)
+[![](https://img.shields.io/badge/Integrated%20Value%20of%20Influence-IVI-blue.svg)](https://dx.doi.org/10.2139/ssrn.3565980)
 <!-- badges: end -->
 
 ![The influential R package
