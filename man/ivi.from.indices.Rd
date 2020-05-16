@@ -3,7 +3,7 @@
 \name{ivi.from.indices}
 \alias{ivi.from.indices}
 \alias{IVI.FI}
-\title{Integrated Vector of Influence (IVI)}
+\title{Integrated Value of Influence (IVI)}
 \usage{
 ivi.from.indices(DC, CR, LH_index, NC, BC, CI, scaled = TRUE)
 }

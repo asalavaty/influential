@@ -11,7 +11,7 @@
 #' This package contains functions for reconstruction of networks from adjacency matrices and
 #' data frames, analysis of the topology of the network and calculation of centrality measures
 #' as well as a novel and powerful influential node ranking. The first integrative method,
-#' namely the \strong{Integrated Vector of Influence (IVI)}, that captures all topological dimensions
+#' namely the \strong{Integrated Value of Influence (IVI)}, that captures all topological dimensions
 #' of the network for the identification of network most influential nodes is also provided as
 #' a function. Also, neighborhood connectivity, H-index, local H-index, and collective
 #' influence (CI), all of which required centrality measures for the calculation of IVI,
@@ -921,7 +921,7 @@ double.cent.assess.noRegression <- function(data, nodes.colname,
 #
 #=============================================================================
 
-#' Integrated Vector of Influence (IVI)
+#' Integrated Value of Influence (IVI)
 #'
 #' This function calculates the IVI of the desired nodes from previously calculated centrality
 #' measures. This function is not dependent to other packages and the required centrality
@@ -1018,7 +1018,7 @@ ivi.from.indices <- function(DC, CR, LH_index, NC, BC, CI, scaled = TRUE) {
 #
 #=============================================================================
 
-#' Integrated Vector of Influence (IVI)
+#' Integrated Value of Influence (IVI)
 #'
 #' This function calculates the IVI of the desired nodes from a graph.
 #' @param graph A graph (network) of the igraph class.
@@ -1043,7 +1043,7 @@ ivi.from.indices <- function(DC, CR, LH_index, NC, BC, CI, scaled = TRUE) {
 #' @param scaled Logical; whether the end result should be 1-100 range normalized or not (default is TRUE).
 #' @return A numeric vector with the IVI values based on the provided centrality measures.
 #' @aliases IVI
-#' @keywords IVI integrated_vector_of_influence
+#' @keywords IVI integrated_value_of_influence
 #' @seealso \code{\link[influential]{ivi.from.indices}}
 #' @export
 #' @examples

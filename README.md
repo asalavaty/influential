@@ -22,7 +22,7 @@ The goal of `influential` is to help identification of the most
 reconstruction of networks from adjacency matrices and data frames,
 analysis of the topology of the network and calculation of centrality
 measures as well as a novel and powerful `influential` node ranking. The
-first integrative method, namely the **Integrated Vector of Influence
+first integrative method, namely the **Integrated Value of Influence
 (IVI)**, that captures all topological dimensions of the network for the
 identification of network most `influential` nodes is also provided as a
 function. Also, neighborhood connectivity, H-index, local H-index, and
@@ -82,7 +82,7 @@ library(influential)
 
 MyData <- centrality.measures # A data frame of centrality measures
 
-# This function calculates the Integrated Vector of Influence (IVI)
+# This function calculates the Integrated Value of Influence (IVI)
 My.vertices.IVI <- ivi.from.indices(DC = centrality.measures$DC,       # Calculation of IVI
                                    CR = centrality.measures$CR,
                                    NC = centrality.measures$NC,

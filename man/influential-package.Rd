@@ -10,7 +10,7 @@ The goal of \emph{\strong{\code{influential}}} is to help identification of the 
 This package contains functions for reconstruction of networks from adjacency matrices and
 data frames, analysis of the topology of the network and calculation of centrality measures
 as well as a novel and powerful influential node ranking. The first integrative method,
-namely the \strong{Integrated Vector of Influence (IVI)}, that captures all topological dimensions
+namely the \strong{Integrated Value of Influence (IVI)}, that captures all topological dimensions
 of the network for the identification of network most influential nodes is also provided as
 a function. Also, neighborhood connectivity, H-index, local H-index, and collective
 influence (CI), all of which required centrality measures for the calculation of IVI,

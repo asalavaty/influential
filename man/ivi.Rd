@@ -3,7 +3,7 @@
 \name{ivi}
 \alias{ivi}
 \alias{IVI}
-\title{Integrated Vector of Influence (IVI)}
+\title{Integrated Value of Influence (IVI)}
 \usage{
 ivi(
   graph,
@@ -65,4 +65,4 @@ My.vertices.IVI <- ivi(graph = My_graph, vertices = GraphVertices,
 \code{\link[influential]{ivi.from.indices}}
 }
 \keyword{IVI}
-\keyword{integrated_vector_of_influence}
+\keyword{integrated_value_of_influence}

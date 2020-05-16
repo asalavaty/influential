@@ -521,7 +521,7 @@ local (i.e. degree centrality and ClusterRank), semi-local
 measures in such a way that both synergize their effects and remove
 their biases.
 
-  - ### Integrated Vector of Influence (IVI) from centrality measures
+  - ### Integrated Value of Influence (IVI) from centrality measures
 
 <!-- end list -->
 
@@ -536,7 +536,7 @@ My.vertices.IVI <- ivi.from.indices(DC = centrality.measures$DC,       # Calcula
                                    CI = centrality.measures$CI)
 ```
 
-  - ### Integrated Vector of Influence (IVI) from graph
+  - ### Integrated Value of Influence (IVI) from graph
 
 <!-- end list -->
 
