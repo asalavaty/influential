@@ -45,6 +45,10 @@ underpinning methods and analyses.
 The `influential` package was written by [Adrian (Abbas)
 Salavaty](https://www.AbbasSalavaty.com)
 
+## Advisors
+
+Mirana Ramialison and Peter D. Currie
+
 ## How to Install
 
 You can install the official [CRAN

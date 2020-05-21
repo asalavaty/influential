@@ -5,6 +5,8 @@ influential
 
 # influential 1.0.0.9000 (Developmental version)
 
+  - The thesis advisors were added to the DESCRIPTION file.
+
   - Some minor corrections are done in the documentation of functions
     and DESCRIPTION file.
 

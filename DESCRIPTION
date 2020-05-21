@@ -1,8 +1,8 @@
 Package: influential
 Type: Package
 Title: Identification of the Most Influential Nodes
-Version: 1.0.0
-Author: Adrian (Abbas) Salavaty
+Version: 1.0.0.9000
+Author: Adrian (Abbas) Salavaty [aut, cre], Mirana Ramialison [ths], Peter D. Currie [ths]
 Maintainer: Adrian Salavaty <abbas.salavaty@gmail.com>
 Description: Contains functions for reconstruction of networks from
     adjacency matrices and data frames, analysis of the topology of the network 
