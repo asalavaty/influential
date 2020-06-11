@@ -4,12 +4,14 @@
 \name{coexpression.adjacency}
 \alias{coexpression.adjacency}
 \title{Adjacency matrix}
-\format{A data frame with 794 rows and 794 variables:
+\format{
+A data frame with 794 rows and 794 variables:
 \describe{
   \item{lncRNA}{lncRNA symbol}
   \item{lncRNA}{lncRNA symbol}
   ...
-}}
+}
+}
 \source{
 \url{https://www.ncbi.nlm.nih.gov/pubmed/31211495/}
 }

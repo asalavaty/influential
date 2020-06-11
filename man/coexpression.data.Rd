@@ -4,12 +4,14 @@
 \name{coexpression.data}
 \alias{coexpression.data}
 \title{Co-expression dataset}
-\format{A data frame with 2410 rows and 2 variables:
+\format{
+A data frame with 2410 rows and 2 variables:
 \describe{
   \item{lncRNA}{lncRNA symbol}
   \item{Coexpressed.Gene}{Co-expressed gene symbol}
   ...
-}}
+}
+}
 \source{
 \url{https://www.ncbi.nlm.nih.gov/pubmed/31211495/}
 }

@@ -5,6 +5,10 @@ influential
 
 # influential 1.0.0.9000 (Developmental version)
 
+  - A function was added for automatic importing and conversion of a SIF
+    file from your local hard drive, cloud space, or internet into a
+    graph with an igraph class.
+
   - The thesis advisors were added to the DESCRIPTION file.
 
   - Some minor corrections are done in the documentation of functions

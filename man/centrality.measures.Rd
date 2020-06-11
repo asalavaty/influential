@@ -4,7 +4,8 @@
 \name{centrality.measures}
 \alias{centrality.measures}
 \title{Centrality measures dataset}
-\format{A data frame with 794 rows and 6 variables:
+\format{
+A data frame with 794 rows and 6 variables:
 \describe{
   \
   \item{DC}{Degree Centrality}
@@ -14,7 +15,8 @@
   \item{BC}{Betweenness Centrality}
   \item{CI}{Collective Influence}
   ...
-}}
+}
+}
 \source{
 \url{https://www.ncbi.nlm.nih.gov/pubmed/31211495/}
 }
