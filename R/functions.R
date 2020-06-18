@@ -90,31 +90,32 @@ NULL
 #'                                            mode = "all")
 neighborhood.connectivity <- function(graph, vertices = V(graph), mode = "all") {
 
-  # Getting the first neighbors of each node
-  first.neighbors <- igraph::neighborhood(graph,
-                                    nodes = vertices, mode = mode)
-
   # Getting the names of vertices with the order in use
-  node.names <- sapply(first.neighbors, function(n) rownames(as.matrix(n[[]][1])))
+  node.names <- as.character(igraph::as_ids(igraph::V(graph = graph)))
 
-  # Getting the neibors of each vertex
-  node.neighbors <- sapply(first.neighbors, function(n) rownames(as.matrix(n[[]][-1])))
+  # Getting the first neighbors of each node
+  node.neighbors <- sapply(as.list(node.names),
+                           FUN = function(i) as.character(igraph::as_ids(igraph::neighbors(graph = graph,
+                                                                                           v = i,
+                                                                                           mode = mode))))
 
   # Getting the neighborhood size of each node
     first.neighbors.size <- sapply(node.neighbors,
-                                   function(s) igraph::neighborhood.size(graph, s,
-                                                                 mode = mode, order = 1) - 1)
+                                   function(s) igraph::neighborhood.size(graph = graph,
+                                                                         nodes = s,
+                                                                         mode = mode,
+                                                                         order = 1) - 1)
 
   first.neighbors.size.sum <- sapply(first.neighbors.size, sum)
 
   # Calculation of neighborhood connectivity
-  nc <- vector(mode = "numeric", length = length(first.neighbors.size))
+  temp.nc <- vector(mode = "numeric", length = length(vertices))
 
-  for (co in 1:length(first.neighbors.size.sum)) {
-    nc[co] <- first.neighbors.size.sum[co]/length(unlist(node.neighbors[co]))
+  for (i in 1:length(vertices)) {
+    temp.nc[i] <- first.neighbors.size.sum[i]/length(node.neighbors[[i]])
   }
 
-  nc.table <- data.frame(Neighborhood_connectivity = nc)
+  nc.table <- data.frame(Neighborhood_connectivity = temp.nc)
 
   if (length(vertices) > 1) {
     nc.table <- nc.table
