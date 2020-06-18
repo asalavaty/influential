@@ -5,6 +5,9 @@ influential
 
 # influential 1.0.0.9000 (Developmental version)
 
+  - The function `neighborhood.connectivity` was undergone minor
+    revisions to enhance the performance speed.
+
   - A function was added for automatic importing and conversion of a SIF
     file from your local hard drive, cloud space, or internet into a
     graph with an igraph class.
