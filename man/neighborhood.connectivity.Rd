@@ -36,7 +36,7 @@ neighrhood.co <- neighborhood.connectivity(graph = My_graph,
 \seealso{
 Other centrality functions: 
 \code{\link{betweenness}()},
-\code{\link{clusterrank}()},
+\code{\link{clusterRank}()},
 \code{\link{collective.influence}()},
 \code{\link{degree}()},
 \code{\link{h_index}()},

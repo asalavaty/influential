@@ -41,6 +41,14 @@ My.vertices.IVI <- ivi.from.indices(DC = centrality.measures$DC,
                                     CI = centrality.measures$CI)
 }
 \seealso{
-\code{\link[influential]{ivi}}
+\code{\link[influential]{ivi}},
+\code{\link[influential]{ExIR}}
+
+Other integrative ranking: 
+\code{\link{exir}()},
+\code{\link{hubness.score}()},
+\code{\link{ivi}()},
+\code{\link{spreading.score}()}
 }
+\concept{integrative ranking}
 \keyword{ivi.from.indices}

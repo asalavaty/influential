@@ -6,12 +6,17 @@
 \alias{influential-package}
 \title{Influential package}
 \description{
-The goal of \emph{\strong{\code{influential}}} is to help identification of the most influential nodes in a network.
-This package contains functions for reconstruction of networks from adjacency matrices and
+The goal of \emph{\strong{\code{influential}}} is to help identification of the most influential nodes in a network
+as well as the classification and ranking of top candidate features.
+This package contains functions for the classification and ranking of features,
+reconstruction of networks from adjacency matrices and
 data frames, analysis of the topology of the network and calculation of centrality measures
-as well as a novel and powerful influential node ranking. The first integrative method,
-namely the \strong{Integrated Value of Influence (IVI)}, that captures all topological dimensions
-of the network for the identification of network most influential nodes is also provided as
+as well as a novel and powerful influential node ranking.
+The \strong{Experimental-data-based Integrative Ranking (ExIR)} is a sophisticated model
+for classification and ranking of the top candidate features based on only the experimental data.
+The first integrative method, namely the \strong{Integrated Value of Influence (IVI)},
+that captures all topological dimensions of the network for
+the identification of network most influential nodes is also provided as
 a function. Also, neighborhood connectivity, H-index, local H-index, and collective
 influence (CI), all of which required centrality measures for the calculation of IVI,
 are for the first time provided in an R package. Additionally, a function is provided
@@ -29,8 +34,8 @@ You may check the latest developmental version of the \emph{influential} package
 \itemize{
   \item Package: influential
   \item Type: Package
-  \item Version: 1.0.0
-  \item Date: 23-04-2020
+  \item Version: 1.1.0
+  \item Date: 23-06-2020
   \item License: GPL-3
 }
 }
@@ -40,6 +45,7 @@ You may check the latest developmental version of the \emph{influential} package
   \item Csardi G, Nepusz T (2006). “The igraph software package for complex network research.”
 InterJournal, Complex Systems, 1695. \url{http://igraph.org}.
 }
+
 \strong{Note:} Adopted algorithms and sources are referenced in function document.
 }
 \seealso{
@@ -52,6 +58,8 @@ Useful links:
 }
 \author{
 Author: Adrian (Abbas) Salavaty
+
+Advisors: Mirana Ramialison and Peter D. Currie
 
 
 Maintainer: Adrian (Abbas) Salavaty \email{abbas.salavaty@gmail.com}

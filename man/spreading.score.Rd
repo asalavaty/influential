@@ -64,5 +64,12 @@ Spreading.score <- spreading.score(graph = My_graph, vertices = GraphVertices,
 }
 \seealso{
 \code{\link[influential]{hubness.score}}
+
+Other integrative ranking: 
+\code{\link{exir}()},
+\code{\link{hubness.score}()},
+\code{\link{ivi.from.indices}()},
+\code{\link{ivi}()}
 }
+\concept{integrative ranking}
 \keyword{spreading.score}

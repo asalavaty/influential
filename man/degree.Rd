@@ -44,7 +44,7 @@ My_graph_degree <- degree(My_graph, v = GraphVertices, normalized = FALSE)
 
 Other centrality functions: 
 \code{\link{betweenness}()},
-\code{\link{clusterrank}()},
+\code{\link{clusterRank}()},
 \code{\link{collective.influence}()},
 \code{\link{h_index}()},
 \code{\link{lh_index}()},

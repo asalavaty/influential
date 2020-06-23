@@ -3,16 +3,31 @@ influential
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-# influential 1.0.0.9000 (Developmental version)
+# influential 1.1.0 (CRAN version)
 
-  - The function `neighborhood.connectivity` was undergone minor
-    revisions to enhance the performance speed.
+  - The DESCRIPTION file is updated according to all of the
+    modifications.
 
-  - A function was added for automatic importing and conversion of a SIF
-    file from your local hard drive, cloud space, or internet into a
-    graph with an igraph class.
+  - The citation details of the package is updated.
 
-  - The thesis advisors were added to the DESCRIPTION file.
+  - The function `diff.data.assembly` is added for assembling the
+    differential/regression data required as an input for the `exir`
+    function.
+
+  - The function `exir` is added for the experimental-data-based
+    classification and ranking of top candidate features.
+
+  - The function `clusterrank` is upgraded to `clusterRank` in order to
+    calculate the ClusterRank centrality intenally.
+
+  - The function `neighborhood.connectivity` is undergone minor
+    modifications to enhance the performance speed.
+
+  - The function `sif2igraph` is added for automatic importing and
+    conversion of a SIF file from the users’ local hard drive, cloud
+    space, or internet into a graph with an igraph class.
+
+  - The thesis advisors are added to the DESCRIPTION file.
 
   - Some minor corrections are done in the documentation of functions
     and DESCRIPTION file.

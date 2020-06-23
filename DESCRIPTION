@@ -1,10 +1,10 @@
 Package: influential
 Type: Package
-Title: Identification of the Most Influential Nodes
-Version: 1.0.0.9000
+Title: Identification and Classification of the Most Influential Nodes
+Version: 1.1.0
 Author: Adrian (Abbas) Salavaty [aut, cre], Mirana Ramialison [ths], Peter D. Currie [ths]
 Maintainer: Adrian Salavaty <abbas.salavaty@gmail.com>
-Description: Contains functions for reconstruction of networks from
+Description: Contains functions for the classification and ranking of top candidate features, reconstruction of networks from
     adjacency matrices and data frames, analysis of the topology of the network 
     and calculation of centrality measures, and identification of the most
     influential nodes. Also, a function is provided for running SIRIR model, which 
@@ -16,7 +16,9 @@ Description: Contains functions for reconstruction of networks from
     Adopted algorithms and sources are referenced in function document.
 Imports:
     igraph,
-    centiserve
+    ranger,
+    coop,
+    reshape2
 Suggests:
     Hmisc (>= 4.3-0),
     mgcv (>= 1.8-31),

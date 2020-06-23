@@ -871,7 +871,7 @@ body {
 <a class="sourceLine" id="cb12-4" data-line-number="4"></a>
 <a class="sourceLine" id="cb12-5" data-line-number="5">GraphVertices &lt;-<span class="st"> </span><span class="kw">V</span>(My_graph)        <span class="co"># Extracting the vertices</span></a>
 <a class="sourceLine" id="cb12-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb12-7" data-line-number="7">cr &lt;-<span class="st"> </span><span class="kw">clusterrank</span>(<span class="dt">graph =</span> My_graph,    <span class="co"># Calculating ClusterRank</span></a>
+<a class="sourceLine" id="cb12-7" data-line-number="7">cr &lt;-<span class="st"> </span><span class="kw">clusterRank</span>(<span class="dt">graph =</span> My_graph,    <span class="co"># Calculating ClusterRank</span></a>
 <a class="sourceLine" id="cb12-8" data-line-number="8">                  <span class="dt">vids =</span> GraphVertices,</a>
 <a class="sourceLine" id="cb12-9" data-line-number="9">                  <span class="dt">directed =</span> <span class="ot">FALSE</span>, <span class="dt">loops =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
 <p>ClusterRank could be also calculated for <em>directed</em> graphs via specifying the <code>directed</code> parameter.</p>
@@ -1118,7 +1118,7 @@ body {
 <p>Spreading score could be also calculated for <em>directed</em> graphs via specifying the <code>directed</code> and <code>mode</code> parameters.</p>
 <hr />
 <h2 id="ranking-the-influence-of-network-nodes-based-on-the-sirir-model">Ranking the influence of network nodes based on the <code>SIRIR</code> model</h2>
-<p><strong>SIRIR</strong> : <code>SIRIR</code> is is achieved by the integration susceptible-infected-recovered (SIR) model with the leave-one-out cross validation technique and ranks network nodes based on their true universal influence. One of the applications of this function is the assessment of performance of a novel algorithm in identification of network influential nodes.</p>
+<p><strong>SIRIR</strong> : <code>SIRIR</code> is achieved by the integration susceptible-infected-recovered (SIR) model with the leave-one-out cross validation technique and ranks network nodes based on their true universal influence. One of the applications of this function is the assessment of performance of a novel algorithm in identification of network influential nodes.</p>
 <div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">1234</span>)</a>
 <a class="sourceLine" id="cb20-2" data-line-number="2">My_graph &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw">sample_gnp</span>(<span class="dt">n=</span><span class="dv">50</span>, <span class="dt">p=</span><span class="fl">0.05</span>)        <span class="co"># Reconstructing the graph</span></a>
 <a class="sourceLine" id="cb20-3" data-line-number="3"></a>
@@ -1190,6 +1190,29 @@ body {
 </tr>
 </tbody>
 </table>
+<hr />
+<h2 id="experimental-data-based-classification-and-ranking-of-top-candidate-features-based-on-the-exir-model">Experimental-data-based classification and ranking of top candidate features based on the <code>ExIR</code> model</h2>
+<p><strong>ExIR</strong> : <code>ExIR</code> is a model for the classification and ranking of top candidate features. The input data could come from any type of experiment such as transcriptomics and proteomics. This model is based on multi-level filteration and scoring based on several supervised and unsupervised analyses followed by the classification and integrative ranking of top candidate features. Using this function and depending on the input data and specified arguments, the user can get 1 to four tables.</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1"></a>
+<a class="sourceLine" id="cb21-2" data-line-number="2"><span class="co">#Preparing the required arguments for the `exir` function</span></a>
+<a class="sourceLine" id="cb21-3" data-line-number="3">MyDesired_list &lt;-<span class="st"> </span>Desiredlist</a>
+<a class="sourceLine" id="cb21-4" data-line-number="4">MyDiff_data &lt;-<span class="st"> </span>Diffdata</a>
+<a class="sourceLine" id="cb21-5" data-line-number="5">Diff_value &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">5</span>)</a>
+<a class="sourceLine" id="cb21-6" data-line-number="6">Regr_value &lt;-<span class="st"> </span><span class="dv">7</span></a>
+<a class="sourceLine" id="cb21-7" data-line-number="7">Sig_value &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">4</span>,<span class="dv">6</span>,<span class="dv">8</span>)</a>
+<a class="sourceLine" id="cb21-8" data-line-number="8">MyExptl_data &lt;-<span class="st"> </span>Exptldata</a>
+<a class="sourceLine" id="cb21-9" data-line-number="9">Condition_colname &lt;-<span class="st"> &quot;condition&quot;</span></a>
+<a class="sourceLine" id="cb21-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb21-11" data-line-number="11"><span class="co">#Running the ExIR model</span></a>
+<a class="sourceLine" id="cb21-12" data-line-number="12">My.exir &lt;-<span class="st"> </span><span class="kw">exir</span>(<span class="dt">Desired_list =</span> MyDesired_list,</a>
+<a class="sourceLine" id="cb21-13" data-line-number="13"><span class="dt">Diff_data =</span> MyDiff_data, <span class="dt">Diff_value =</span> Diff_value,</a>
+<a class="sourceLine" id="cb21-14" data-line-number="14"><span class="dt">Regr_value =</span> Regr_value, <span class="dt">Sig_value =</span> Sig_value,</a>
+<a class="sourceLine" id="cb21-15" data-line-number="15"><span class="dt">Exptl_data =</span> MyExptl_data, <span class="dt">Condition_colname =</span> Condition_colname,</a>
+<a class="sourceLine" id="cb21-16" data-line-number="16"><span class="dt">verbose =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb21-17" data-line-number="17"></a>
+<a class="sourceLine" id="cb21-18" data-line-number="18"><span class="kw">names</span>(My.exir)</a>
+<a class="sourceLine" id="cb21-19" data-line-number="19"><span class="co">#&gt; [1] &quot;Driver table&quot;          &quot;DE-mediator table&quot;     &quot;nonDE-mediators table&quot;</span></a>
+<a class="sourceLine" id="cb21-20" data-line-number="20"><span class="co">#&gt; [4] &quot;Biomarker table&quot;</span></a></code></pre></div>
 
 </body>
 </html>

@@ -7,12 +7,17 @@
 #' @keywords internal
 #' @title Influential package
 #' @description
-#' The goal of \emph{\strong{\code{influential}}} is to help identification of the most influential nodes in a network.
-#' This package contains functions for reconstruction of networks from adjacency matrices and
+#' The goal of \emph{\strong{\code{influential}}} is to help identification of the most influential nodes in a network
+#' as well as the classification and ranking of top candidate features.
+#' This package contains functions for the classification and ranking of features,
+#' reconstruction of networks from adjacency matrices and
 #' data frames, analysis of the topology of the network and calculation of centrality measures
-#' as well as a novel and powerful influential node ranking. The first integrative method,
-#' namely the \strong{Integrated Value of Influence (IVI)}, that captures all topological dimensions
-#' of the network for the identification of network most influential nodes is also provided as
+#' as well as a novel and powerful influential node ranking.
+#' The \strong{Experimental-data-based Integrative Ranking (ExIR)} is a sophisticated model
+#' for classification and ranking of the top candidate features based on only the experimental data.
+#' The first integrative method, namely the \strong{Integrated Value of Influence (IVI)},
+#' that captures all topological dimensions of the network for
+#' the identification of network most influential nodes is also provided as
 #' a function. Also, neighborhood connectivity, H-index, local H-index, and collective
 #' influence (CI), all of which required centrality measures for the calculation of IVI,
 #' are for the first time provided in an R package. Additionally, a function is provided
@@ -30,13 +35,15 @@
 #' \itemize{
 #'   \item Package: influential
 #'   \item Type: Package
-#'   \item Version: 1.0.0
-#'   \item Date: 23-04-2020
+#'   \item Version: 1.1.0
+#'   \item Date: 23-06-2020
 #'   \item License: GPL-3
 #' }
 #'
 #' @author
 #' Author: Adrian (Abbas) Salavaty
+#'
+#' Advisors: Mirana Ramialison and Peter D. Currie
 #'
 #'
 #' Maintainer: Adrian (Abbas) Salavaty \email{abbas.salavaty@@gmail.com}
@@ -50,6 +57,7 @@
 #'   \item Csardi G, Nepusz T (2006). “The igraph software package for complex network research.”
 #' InterJournal, Complex Systems, 1695. \url{http://igraph.org}.
 #' }
+#'
 #' \strong{Note:} Adopted algorithms and sources are referenced in function document.
 "_PACKAGE"
 
@@ -317,26 +325,86 @@ neighborhood.connectivity <- function(graph, vertices = V(graph), mode = "all") 
   #'
   #' This function calculates the ClusterRank of input vertices and
   #' works with both directed and undirected networks.
-  #' This function and all of its descriptions have been obtained from the centiserve package.
-  #' For a complete description if the function and its arguments try this:
-  #' ?centiserve::clusterrank
+  #' This function and all of its descriptions have been adapted from the centiserve package with
+  #' some minor modifications. ClusterRank is a local ranking algorithm which takes into account not only
+  #' the number of neighbors and the neighbors’ influences, but also the clustering coefficient.
   #' @param graph The input graph as igraph object
   #' @param vids Vertex sequence, the vertices for which the centrality values are returned. Default is all vertices.
   #' @param directed Logical scalar, whether to directed graph is analyzed. This argument is ignored for undirected graphs.
   #' @param loops Logical; whether the loop edges are also counted.
   #' @return A numeric vector contaning the ClusterRank centrality scores for the selected vertices.
   #' @aliases CR
-  #' @keywords clusterrank
+  #' @keywords clusterRank
   #' @family centrality functions
-  #' @seealso \code{\link[centiserve]{clusterrank}} for a complete description on this function
   #' @export
   #' @examples
   #' MyData <- coexpression.data
   #' My_graph <- graph_from_data_frame(MyData)
   #' GraphVertices <- V(My_graph)
-  #' cr <- clusterrank(graph = My_graph, vids = GraphVertices, directed = FALSE, loops = TRUE)
-  #' @importFrom centiserve clusterrank
-  clusterrank <- centiserve::clusterrank
+  #' cr <- clusterRank(graph = My_graph, vids = GraphVertices, directed = FALSE, loops = TRUE)
+  clusterRank <- function(graph, vids = V(graph),
+                        directed = FALSE, loops = TRUE) {
+
+  vertex.transitivity <- vector(mode = "numeric")
+
+  if(directed) {
+
+    cl.Rank.mode <- "out"
+
+    for(i in V(graph)) {
+      vertex.neighborhood <- igraph::neighborhood(graph = graph,
+                                          order = 1, nodes=i,
+                                          mode = cl.Rank.mode)[[1]][-1]
+      if(length(vertex.neighborhood) < 2){
+        vertex.transitivity <- base::append(vertex.transitivity, NaN)
+      } else {
+        indc.subgraph <- igraph::induced.subgraph(graph = graph, vertex.neighborhood)
+        vertex.transitivity <- base::append(vertex.transitivity,
+                                            igraph::ecount(indc.subgraph)/(igraph::vcount(indc.subgraph)*(igraph::vcount(indc.subgraph)-1)))
+      }
+    }
+
+  } else {
+
+    cl.Rank.mode <- "all"
+
+    vertex.transitivity <- igraph::transitivity(graph = graph, type = "local")
+
+  }
+
+  if(class(vids) == "igraph.vs") {
+    vertices.index <- stats::na.omit(match(vids, V(graph)))
+  } else {
+    vertices.index <- stats::na.omit(match(vids, igraph::as_ids(V(graph))))
+  }
+
+  cl.Rank <- vector(mode = "numeric")
+
+  for (i in V(graph)[vertices.index]) {
+    if (is.nan(vertex.transitivity[i])) {
+      cl.Rank <- append(cl.Rank, NaN)
+    }
+    else {
+
+      selected.v.neighborhood <- igraph::neighborhood(graph = graph,
+                                                      order = 1, nodes = i,
+                                                      mode = cl.Rank.mode)[[1]][-1]
+      temp.cl.Rank <- 0
+      for (j in selected.v.neighborhood) {
+        temp.cl.Rank <- temp.cl.Rank + igraph::degree(graph = graph,
+                                                      v = j, mode = cl.Rank.mode,
+                                                      loops = loops) + 1
+      }
+      cl.Rank <- append(cl.Rank, temp.cl.Rank * vertex.transitivity[i])
+    }
+  }
+
+  if (igraph::is.named(graph)) {
+    names(cl.Rank) <- igraph::V(graph)$name[vertices.index]
+  }
+
+  return(cl.Rank)
+  }
 
 #=============================================================================
 #
@@ -938,7 +1006,9 @@ double.cent.assess.noRegression <- function(data, nodes.colname,
 #' @return A numeric vector with the IVI values based on the provided centrality measures.
 #' @aliases IVI.FI
 #' @keywords ivi.from.indices
-#' @seealso \code{\link[influential]{ivi}}
+#' @family integrative ranking
+#' @seealso \code{\link[influential]{ivi}},
+#' \code{\link[influential]{ExIR}}
 #' @export
 #' @examples
 #' MyData <- centrality.measures
@@ -1045,7 +1115,9 @@ ivi.from.indices <- function(DC, CR, LH_index, NC, BC, CI, scaled = TRUE) {
 #' @return A numeric vector with the IVI values based on the provided centrality measures.
 #' @aliases IVI
 #' @keywords IVI integrated_value_of_influence
-#' @seealso \code{\link[influential]{ivi.from.indices}}
+#' @family integrative ranking
+#' @seealso \code{\link[influential]{ivi.from.indices}},
+#' \code{\link[influential]{ExIR}}
 #' @export
 #' @examples
 #' \dontrun{
@@ -1062,7 +1134,7 @@ ivi <- function(graph, vertices = V(graph), weights = NULL, directed = FALSE,
   #Calculation of required centrality measures
 
   DC <- igraph::degree(graph = graph, v = vertices, mode = mode, loops = loops)
-  CR <- clusterrank(graph = graph, vids = vertices, directed = directed, loops = loops)
+  CR <- clusterRank(graph = graph, vids = vertices, directed = directed, loops = loops)
   LH_index <- lh_index(graph = graph, vertices = vertices, mode = mode)
   NC <- neighborhood.connectivity(graph = graph, vertices = vertices, mode = mode)
   BC <- betweenness(graph = graph, v = vertices, directed = directed, weights = weights)
@@ -1164,6 +1236,7 @@ ivi <- function(graph, vertices = V(graph), weights = NULL, directed = FALSE,
 #' @param scaled Logical; whether the end result should be 1-100 range normalized or not (default is TRUE).
 #' @return A numeric vector with Spreading scores.
 #' @keywords spreading.score
+#' @family integrative ranking
 #' @seealso \code{\link[influential]{hubness.score}}
 #' @export
 #' @examples
@@ -1180,7 +1253,7 @@ spreading.score <- function(graph, vertices = V(graph), weights = NULL, directed
 
   #Calculation of required centrality measures
 
-  CR <- clusterrank(graph = graph, vids = vertices, directed = directed, loops = loops)
+  CR <- clusterRank(graph = graph, vids = vertices, directed = directed, loops = loops)
   CR[which(is.nan(CR))] <- 0
   NC <- neighborhood.connectivity(graph = graph, vertices = vertices, mode = mode)
   BC <- betweenness(graph = graph, v = vertices, directed = directed, weights = weights)
@@ -1257,6 +1330,7 @@ spreading.score <- function(graph, vertices = V(graph), weights = NULL, directed
 #' @param scaled Logical; whether the end result should be 1-100 range normalized or not (default is TRUE).
 #' @return A numeric vector with the Hubness scores.
 #' @keywords hubness.score
+#' @family integrative ranking
 #' @seealso \code{\link[influential]{spreading.score}}
 #' @export
 #' @examples
@@ -1567,4 +1641,771 @@ sirir <- function(graph, vertices = V(graph),
   sif2igraph <- function(Path, directed=FALSE) {
 
     graph_from_data_frame(d = utils::read.delim(Path, header = FALSE)[,c(1,3)],directed = directed)
+  }
+
+#=============================================================================
+#
+#    Code chunk 16: Calculation of ExIR
+#
+#=============================================================================
+
+  #' ExIR
+  #'
+  #' This function runs the Experimental-data-based Integrated Ranking (ExIR)
+  #' model for the classification and ranking of top candidate features. The input
+  #' data could come from any type of experiment such as transcriptomics and proteomics.
+  #' @param Desired_list (Optional) A character vector of your desired features. This vector could be, for
+  #' instance, a list of features obtained from cluster analysis, time-course analysis,
+  #' or a list of dysregulated features with a specific sign.
+  #' @param Diff_data A dataframe of all significant differential/regression data and their
+  #' statistical significance values (p-value/adjusted p-value).
+  #' You may have selected a proportion of the differential data as the significant ones according
+  #' to your desired thresholds. A function, named diff.data.assembly, has also been
+  #' provided for the convenient assembling of the Diff_data dataframe.
+  #' @param Diff_value A numeric vector containing the column number(s) of the differential
+  #' data in the Diff_data dataframe. The differential data could result from any type of
+  #' differential data analysis. One example could be the fold changes (FCs) obtained from differential
+  #' expression analyses. The user may provide as many differential data as he/she wish.
+  #' @param Regr_value (Optional) A numeric vector containing the column number(s) of the regression
+  #' data in the Diff_data dataframe. The regression data could result from any type of regression
+  #' data analysis or other analyses such as time-course data analyses that are based on regression models.
+  #' @param Sig_value A numeric vector containing the column number(s) of the significance values (p-value/adjusted p-value) of
+  #' both differential and regression data (if provided). Providing significance values for the regression data is optional.
+  #' @param Exptl_data A dataframe containing all of the experimental including a column for specifying the conditions.
+  #' The features/variables of the dataframe should be as the columns and the samples should come in the rows.
+  #' The condition column should be of the character class. For example, if the study includes several replicates of
+  #' cancer and normal samples, the condition column should include "cancer" and "normal" as the conditions of different samples.
+  #' Also, the prior normalization of the experimental data is highly recommended. Otherwise,
+  #' the user may set the Normalize argument to TRUE for a simple log2 transformation of the data.
+  #' The experimental data could come from a variety sources such as transcriptomics and proteomics assays.
+  #' @param Condition_colname A string or character vector specifying the name of the condition column of the Exptl_data dataframe.
+  #' @param Normalize Logical; whether the experimental data should be normalized or not (default is FALSE). If TRUE, the
+  #' experimental data will be log2 transformed.
+  #' @param r The threshold of Pearson correlation coefficient for the selection of correlated features (default is 0).
+  #' @param alpha The threshold of the statistical significance (p-value) used throughout the entir model (default is 0.05)
+  #' @param num_trees Number of trees to be used for the random forest classification (supervised machine learning) Default is set to 10000.
+  #' @param num_permutations Number of permutations to be used for computation of the statistical significances (p-values) of
+  #' the importance scores resulted from random forest classification (default is 100).
+  #' @param seed The seed to be used for all of the random processes throughout the model (default is 1234).
+  #' @param verbose Logical; whether the accomplishment of different stages of the model should be printed (default is TRUE).
+  #' @return A list of one to four tables including:
+  #'
+  #' - Driver table: Top candidate drivers
+  #'
+  #' - DE-mediator table: Top candidate differentially expressed/abundant mediators
+  #'
+  #' - nonDE-mediators table: Top candidate non-differentially expressed/abundant mediators
+  #'
+  #' - Biomarker table: Top candidate biomarkers
+  #'
+  #' The number of returned tables depends on the input data and specified arguments.
+  #' @aliases ExIR
+  #' @keywords ExIR
+  #' @family integrative ranking
+  #' @seealso \code{\link[influential]{diff.data.assembly}},
+  #' \code{\link[influential]{ivi}},
+  #' \code{\link[coop]{pcor}},
+  #' \code{\link[stats]{prcomp}},
+  #' \code{\link[ranger]{ranger}},
+  #' \code{\link[ranger]{importance_pvalues}}
+  #' @export
+  #' @example
+  #' \dontrun{
+  #' MyDesired_list <- Desiredlist
+  #' MyDiff_data <- Diffdata
+  #' Diff_value <- c(1,3,5)
+  #' Regr_value <- 7
+  #' Sig_value <- c(2,4,6,8)
+  #' MyExptl_data <- Exptldata
+  #' Condition_colname <- "condition"
+  #' My.exir <- exir(Desired_list = MyDesired_list,
+  #'                Diff_data = MyDiff_data, Diff_value = Diff_value,
+  #'                Regr_value = Regr_value, Sig_value = Sig_value,
+  #'                Exptl_data = MyExptl_data, Condition_colname = Condition_colname)
+  #' }
+  exir <- function(Desired_list = NULL,
+                   Diff_data, Diff_value, Regr_value = NULL, Sig_value,
+                   Exptl_data, Condition_colname, Normalize = FALSE,
+                   r = 0, alpha = 0.05, num_trees = 10000, num_permutations = 100,
+                   seed = 1234, verbose = TRUE) {
+
+    # Setup progress bar
+    if(verbose) {
+      pb <- utils::txtProgressBar(min = 0, max = 100, initial = 0, char = "=",
+                           width = NA, style = 3, file = "")
+    }
+
+    #ProgressBar: Preparing the input data
+    if(verbose) {
+      print("Preparing the input data", quote = FALSE)
+    }
+
+    #make sure the input data is of data frame class
+    Diff_data <- as.data.frame(Diff_data)
+    Exptl_data <- as.data.frame(Exptl_data)
+
+    # Get the column number of condition column
+    condition.index <- match(Condition_colname, colnames(Exptl_data))
+
+    # Normalize the experimental data (if required)
+    if(Normalize) {
+      Exptl_data[,-condition.index] <- log2(Exptl_data[,-condition.index]+1)
+    }
+
+    #ProgressBar: Preparing the input data
+    if(verbose) {
+      utils::setTxtProgressBar(pb = pb, value = 5)
+    }
+
+    #ProgressBar: Calculating the differential score
+    if(verbose) {
+      print("Calculating the differential score", quote = FALSE)
+    }
+
+    #1 Calculate differential score
+    Diff_data$sum.Diff_value <- base::abs(base::apply(Diff_data[,Diff_value, drop = FALSE],1,sum))
+    #range normalize the differential score
+    Diff_data$sum.Diff_value <- 1+(((Diff_data$sum.Diff_value-min(Diff_data$sum.Diff_value))*(100-1))/
+                                     (max(Diff_data$sum.Diff_value)-min(Diff_data$sum.Diff_value)))
+
+    #ProgressBar: Calculating the differential score
+    if(verbose) {
+      utils::setTxtProgressBar(pb = pb, value = 10)
+    }
+
+    #ProgressBar: Calculating the regression/time-course R-squared score
+    if(verbose & !is.null(Regr_value)) {
+      print("Calculating the regression/time-course R-squared score", quote = FALSE)
+    }
+
+    #2 Calculate regression/time-course R-squared score (if provided)
+    if (!is.null(Regr_value)) {
+      Diff_data$sum.Regr_value <- base::apply(Diff_data[,Regr_value, drop = FALSE],1,sum)
+      #range normalize the R-squared score
+      Diff_data$sum.Regr_value <- 1+(((Diff_data$sum.Regr_value-min(Diff_data$sum.Regr_value))*(100-1))/
+                                       (max(Diff_data$sum.Regr_value)-min(Diff_data$sum.Regr_value)))
+    }
+
+    #ProgressBar: Calculating the regression/time-course R-squared score
+    if(verbose & !is.null(Regr_value)) {
+      utils::setTxtProgressBar(pb = pb, value = 15)
+    }
+
+    #ProgressBar: Calculating the collective statistical significance of differential/regression factors
+    if(verbose) {
+      print("Calculating the collective statistical significance of differential/regression factors", quote = FALSE)
+    }
+
+    #3 Calculate statistical significance of differential/regression factors
+    if (max(Diff_data[,Sig_value]) > 1 | min(Diff_data[,Sig_value]) < 0) {
+      stop("input Sig-values (p-value/padj) must all be in the range 0 to 1!")
+    }
+
+    if(min(Diff_data[,Sig_value])==0) {
+      Diff_data[,Sig_value, drop = FALSE] <- Diff_data[,Sig_value, drop = FALSE] + sort(as.matrix(Diff_data[,Sig_value, drop = FALSE]))[2]
+
+      for (i in 1:ncol(Diff_data[,Sig_value, drop = FALSE])) {
+        Diff_data[,Sig_value, drop = FALSE][which(Diff_data[,Sig_value, drop = FALSE][,i] > 1),i] <- 1
+      }
+    }
+
+    Diff_data$sum.Sig_value <- base::apply(-log10(Diff_data[,Sig_value, drop = FALSE]),1,sum)
+    #range normalize the statistical significance
+    Diff_data$sum.Sig_value <- 1+(((Diff_data$sum.Sig_value-min(Diff_data$sum.Sig_value))*(100-1))/
+                                    (max(Diff_data$sum.Sig_value)-min(Diff_data$sum.Sig_value)))
+
+    #ProgressBar: Calculating the collective statistical significance of differential/regression factors
+    if(verbose) {
+      utils::setTxtProgressBar(pb = pb, value = 20)
+    }
+
+    #ProgressBar: Performing random forest classification (supervised machine learning)
+    if(verbose) {
+      print("Performing random forest classification (supervised machine learning)", quote = FALSE)
+    }
+
+    #4 Calculation of the Integrated Value of Influence (IVI)
+
+    #a Separate a transcriptomic profile of diff features
+    if(!is.null(Desired_list)) {
+      sig.diff.index <- stats::na.omit(base::unique(base::match(Desired_list,
+                                                                colnames(Exptl_data))))
+    } else {
+      sig.diff.index <- stats::na.omit(base::unique(base::match(rownames(Diff_data),
+                                                                colnames(Exptl_data))))
+    }
+
+    exptl.for.super.learn <- Exptl_data[,sig.diff.index]
+    exptl.for.super.learn$condition <- Exptl_data[,condition.index]
+
+    #b Perform random forest classification
+    rf.diff.exptl <- ranger::ranger(seed = seed,
+                                    formula = condition ~ .,
+                                    data = exptl.for.super.learn,
+                                    num.trees = num_trees, importance = "permutation",
+                                    write.forest = FALSE)
+
+    rf.diff.exptl.pvalue <- as.data.frame(ranger::importance_pvalues(seed = seed,
+                                                                     x = rf.diff.exptl,
+                                                                     formula = condition ~ .,
+                                                                     num.permutations = num_permutations,
+                                                                     data = exptl.for.super.learn,
+                                                                     method = "altmann"))
+
+    rf.diff.exptl.pvalue <- base::subset(rf.diff.exptl.pvalue, rf.diff.exptl.pvalue$pvalue <alpha)
+
+    if(min(rf.diff.exptl.pvalue[,"pvalue"])==0) {
+      rf.diff.exptl.pvalue[,"pvalue"] <- rf.diff.exptl.pvalue[,"pvalue"] + sort(as.matrix(rf.diff.exptl.pvalue[,"pvalue"]))[2]
+    }
+
+    #ProgressBar: Performing random forest classification (supervised machine learning)
+    if(verbose) {
+      utils::setTxtProgressBar(pb = pb, value = 35)
+    }
+
+    #ProgressBar: Performing the first round association analysis
+    if(verbose) {
+      print("Performing the first round association analysis", quote = FALSE)
+    }
+
+    #c Performing correlation analysis
+    temp.corr <- coop::pcor(Exptl_data[,-condition.index])
+
+    #filter corr data for only those corr between diff features and themselves/others
+    filter.corr.index <- stats::na.omit(base::unique(base::match(rownames(rf.diff.exptl.pvalue),
+                                                                 colnames(temp.corr))))
+    temp.corr <- temp.corr[,filter.corr.index]
+
+    temp.corr <- reshape2::melt(data = temp.corr, value.name = "cor")
+
+    #filterring low level correlations
+    cor.thresh <- r
+    temp.corr <- base::subset(temp.corr, temp.corr[,3]>cor.thresh)
+
+    temp.corr <- temp.corr[-which(as.character(temp.corr$Var1)==
+                                    as.character(temp.corr$Var2)),]
+
+    if(nrow(temp.corr)>20000) {
+
+      repeat {
+
+        cor.thresh <- cor.thresh+((1-cor.thresh)/2)
+        temp.corr <- base::subset(temp.corr, temp.corr[,3]>cor.thresh)
+
+        if(nrow(temp.corr)<=20000) {
+          break
+        }
+      }
+    }
+
+    #getting the list of diff features and their correlated features
+    diff.plus.corr.features <- base::unique(c(base::as.character(temp.corr[,1]),
+                                              base::as.character(temp.corr[,2])))
+
+    #ProgressBar: Performing first round association analysis
+    if(verbose) {
+      utils::setTxtProgressBar(pb = pb, value = 45)
+    }
+
+    #ProgressBar: Performing the second round association analysis
+    if(verbose) {
+      print("Performing the second round association analysis", quote = FALSE)
+    }
+
+    #redo correlation analysis
+    temp.corr <- coop::pcor(Exptl_data[,-condition.index])
+
+    #filter corr data for only those corr between diff.plus.corr.features and themselves/others
+    filter.corr.index <- stats::na.omit(match(diff.plus.corr.features,
+                                              colnames(temp.corr)))
+    temp.corr <- temp.corr[,filter.corr.index]
+
+    temp.corr <- reshape2::melt(data = temp.corr, value.name = "cor")
+
+    #filterring low level correlations
+    cor.thresh <- r
+    temp.corr <- base::subset(temp.corr, temp.corr[,3]>cor.thresh)
+
+    temp.corr <- temp.corr[-which(as.character(temp.corr$Var1)==
+                                    as.character(temp.corr$Var2)),]
+
+    if(nrow(temp.corr)>20000) {
+
+      repeat {
+
+        cor.thresh <- cor.thresh+((1-cor.thresh)/2)
+        temp.corr <- base::subset(temp.corr, temp.corr[,3]>cor.thresh)
+
+        if(nrow(temp.corr)<=20000) {
+          break
+        }
+      }
+    }
+
+    #ProgressBar: Performing second round association analysis
+    if(verbose) {
+      utils::setTxtProgressBar(pb = pb, value = 55)
+    }
+
+    #ProgressBar: Network reconstruction
+    if(verbose) {
+      print("Network reconstruction", quote = FALSE)
+    }
+
+    #d Graph reconstruction
+    temp.corr.graph <- igraph::graph_from_data_frame(temp.corr[,c(1:2)])
+
+    #ProgressBar: Network reconstruction
+    if(verbose) {
+      utils::setTxtProgressBar(pb = pb, value = 60)
+    }
+
+    #ProgressBar: Calculation of the integrated value of influence (IVI)
+    if(verbose) {
+      print("Calculation of the integrated value of influence (IVI)", quote = FALSE)
+    }
+
+    #e Calculation of IVI
+    temp.corr.ivi <- ivi(temp.corr.graph)
+
+    #ProgressBar: Calculation of the integrated value of influence (IVI)
+    if(verbose) {
+      utils::setTxtProgressBar(pb = pb, value = 65)
+    }
+
+    #ProgressBar: Performing PCA (unsupervised machine learning)
+    if(verbose) {
+      print("Performing PCA (unsupervised machine learning)", quote = FALSE)
+    }
+
+    #5 Unsupervised machine learning (PCA)
+
+    Exptl_data.for.PCA.index <- stats::na.omit(base::match(base::rownames(rf.diff.exptl.pvalue),
+                                                           base::colnames(Exptl_data)))
+    temp.Exptl_data.for.PCA <- Exptl_data[,Exptl_data.for.PCA.index]
+
+    temp.PCA <- stats::prcomp(temp.Exptl_data.for.PCA)
+    temp.PCA.r <- base::abs(temp.PCA$rotation[,1])
+
+    #range normalize the rotation values
+    temp.PCA.r <- 1+(((temp.PCA.r-min(temp.PCA.r))*(100-1))/
+                       (max(temp.PCA.r)-min(temp.PCA.r)))
+
+    #ProgressBar: Performing PCA (unsupervised machine learning)
+    if(verbose) {
+      utils::setTxtProgressBar(pb = pb, value = 70)
+    }
+
+    #ProgressBar: Calculation of the primitive driver score
+    if(verbose) {
+      print("Calculation of the primitive driver score", quote = FALSE)
+    }
+
+    ## Driver score and ranking
+
+    #a calculate first level driver score based on #3 and #4
+
+    Diff_data$IVI <- 0
+    Diff_data.IVI.index <- stats::na.omit(match(names(temp.corr.ivi),
+                                                rownames(Diff_data)))
+
+    temp.corr.ivi.for.Diff_data.IVI.index <- stats::na.omit(match(rownames(Diff_data)[Diff_data.IVI.index],
+                                                                  names(temp.corr.ivi)))
+
+    Diff_data$IVI[Diff_data.IVI.index] <- temp.corr.ivi[temp.corr.ivi.for.Diff_data.IVI.index]
+
+    #range normalize the IVI
+    Diff_data$IVI <- 1+(((Diff_data$IVI-min(Diff_data$IVI))*(100-1))/
+                          (max(Diff_data$IVI)-min(Diff_data$IVI)))
+
+    Diff_data$first.Driver.Rank <- 1
+    for (i in 1:nrow(Diff_data)) {
+      if(c(any(Diff_data[i,Diff_value, drop = FALSE]<0) & any(Diff_data[i,Diff_value, drop = FALSE]>0))) {
+        Diff_data$first.Driver.Rank[i] <- 0
+      } else {
+        Diff_data$first.Driver.Rank[i] <- Diff_data$sum.Sig_value[i]*Diff_data$IVI[i]
+      }
+    }
+    #range normalize (0,100) the first driver rank
+    Diff_data$first.Driver.Rank <- 0+(((Diff_data$first.Driver.Rank-min(Diff_data$first.Driver.Rank))*(100-0))/
+                                        (max(Diff_data$first.Driver.Rank)-min(Diff_data$first.Driver.Rank)))
+
+    #ProgressBar: Calculation of the primitive driver score
+    if(verbose) {
+      utils::setTxtProgressBar(pb = pb, value = 75)
+    }
+
+    #ProgressBar: Calculation of the neighborhood driver score
+    if(verbose) {
+      print("Calculation of the neighborhood driver score", quote = FALSE)
+    }
+
+    #b (#6) calculate neighborhood score
+
+    #get the list of network nodes
+    network.nodes <- igraph::as_ids(igraph::V(temp.corr.graph))
+
+    neighborehood.score.table <- data.frame(node = network.nodes,
+                                            N.score = 0)
+    for (n in 1:nrow(neighborehood.score.table)) {
+      first.neighbors <- igraph::as_ids(igraph::neighbors(graph = temp.corr.graph,
+                                                          v = neighborehood.score.table$node[n],
+                                                          mode = "all"))
+      first.neighbors.index <- stats::na.omit(match(first.neighbors,
+                                                    rownames(Diff_data)))
+
+      neighborehood.score.table$N.score[n] <- sum(Diff_data$first.Driver.Rank[first.neighbors.index])
+    }
+
+    #ProgressBar: Calculation of the neighborhood driver score
+    if(verbose) {
+      utils::setTxtProgressBar(pb = pb, value = 80)
+    }
+
+    #ProgressBar: Preparation of the driver table
+    if(verbose) {
+      print("Preparation of the driver table", quote = FALSE)
+    }
+
+    Diff_data$N.score <- 0
+    Diff_data.N.score.index <- stats::na.omit(match(neighborehood.score.table$node,
+                                                    rownames(Diff_data)))
+
+    neighborehood.score.table.for.Diff_data.N.score.index <- stats::na.omit(match(rownames(Diff_data)[Diff_data.N.score.index],
+                                                                                  neighborehood.score.table$node))
+
+    Diff_data$N.score[Diff_data.N.score.index] <- neighborehood.score.table$N.score[neighborehood.score.table.for.Diff_data.N.score.index]
+
+    #range normalize (1,100) the neighborhood score
+    Diff_data$N.score <- 1+(((Diff_data$N.score-min(Diff_data$N.score))*(100-1))/
+                              (max(Diff_data$N.score)-min(Diff_data$N.score)))
+
+    #c calculate the final driver score
+
+    Diff_data$final.Driver.score <- (Diff_data$first.Driver.Rank)*(Diff_data$N.score)
+    Diff_data$final.Driver.score[Diff_data$final.Driver.score==0] <- NA
+
+    # Create the Drivers table
+
+    Driver.table <- Diff_data
+
+    #remove the rows/features with NA in the final driver score
+    Driver.table <- Driver.table[stats::complete.cases(Driver.table),]
+
+    #filter the driver table by either the desired list or the list of network nodes
+    if(!is.null(Desired_list)) {
+      Driver.table.row.index <- stats::na.omit(match(Desired_list,
+                                                     rownames(Driver.table)))
+    } else {
+      Driver.table.row.index <- stats::na.omit(match(network.nodes,
+                                                     rownames(Driver.table)))
+    }
+
+    Driver.table <- Driver.table[Driver.table.row.index,]
+    if(nrow(Driver.table)==0) {Driver.table <- NULL} else {
+
+      #range normalize final driver score
+      Driver.table$final.Driver.score <- 1+(((Driver.table$final.Driver.score-min(Driver.table$final.Driver.score))*(100-1))/
+                                              (max(Driver.table$final.Driver.score)-min(Driver.table$final.Driver.score)))
+
+      #add driver rank
+      Driver.table$rank <- rank(-Driver.table$final.Driver.score, ties.method = "min")
+
+      #add driver type
+      Driver.table$driver.type <- ""
+
+      for (d in 1:nrow(Driver.table)) {
+
+        if(sum(Driver.table[d,Diff_value])<0) {
+          Driver.table$driver.type[d] <- "Decelerator"
+
+        } else if(sum(Driver.table[d,Diff_value])>0) {
+          Driver.table$driver.type[d] <- "Accelerator"
+        } else {
+          Driver.table$driver.type[d] <- NA
+        }
+      }
+
+      Driver.table <- Driver.table[stats::complete.cases(Driver.table),]
+
+      #remove redundent columns
+      Driver.table <- Driver.table[,c("final.Driver.score",
+                                      "rank",
+                                      "driver.type")]
+
+      #rename column names
+      colnames(Driver.table) <- c("Score", "Rank", "Type")
+
+      #filtering redundant (NaN) results
+      Driver.table <- Driver.table[stats::complete.cases(Driver.table),]
+
+      if(nrow(Driver.table)==0) {Driver.table <- NULL}
+
+    }
+
+    #ProgressBar: Preparation of the driver table
+    if(verbose) {
+      utils::setTxtProgressBar(pb = pb, value = 85)
+    }
+
+    #ProgressBar: Preparation of the DE-mediator table
+    if(verbose) {
+      print("Preparation of the DE-mediator table", quote = FALSE)
+    }
+
+    # Create the DE mediators table
+
+    DE.mediator.table <- Diff_data
+
+    #include only rows/features with NA in the final driver score (which are mediators)
+    DE.mediator.index <- which(is.na(DE.mediator.table$final.Driver.score))
+
+    DE.mediator.table <- DE.mediator.table[DE.mediator.index,]
+
+    DE.mediator.table$DE.mediator.score <- DE.mediator.table$sum.Sig_value*
+      DE.mediator.table$IVI*
+      DE.mediator.table$N.score
+
+    #filter the DE mediators table by either the desired list or the list of network nodes
+    if(!is.null(Desired_list)) {
+      DE.mediator.row.index <- stats::na.omit(match(Desired_list,
+                                                    rownames(DE.mediator.table)))
+    } else {
+      DE.mediator.row.index <- stats::na.omit(match(network.nodes,
+                                                    rownames(DE.mediator.table)))
+    }
+
+    DE.mediator.table <- DE.mediator.table[DE.mediator.row.index,]
+    if(nrow(DE.mediator.table)==0) {DE.mediator.table <- NULL} else {
+
+      #range normalize DE mediators score
+      DE.mediator.table$DE.mediator.score <- 1+(((DE.mediator.table$DE.mediator.score-min(DE.mediator.table$DE.mediator.score))*(100-1))/
+                                                  (max(DE.mediator.table$DE.mediator.score)-min(DE.mediator.table$DE.mediator.score)))
+
+      #add DE mediators rank
+      DE.mediator.table$rank <- rank(-DE.mediator.table$DE.mediator.score, ties.method = "min")
+
+      #remove redundent columns
+      DE.mediator.table <- DE.mediator.table[,c("DE.mediator.score", "rank")]
+
+      #rename column names
+      colnames(DE.mediator.table) <- c("Score", "Rank")
+
+      #filtering redundant (NaN) results
+      DE.mediator.table <- DE.mediator.table[stats::complete.cases(DE.mediator.table),]
+
+      if(nrow(DE.mediator.table)==0) {DE.mediator.table <- NULL}
+
+    }
+
+    #ProgressBar: Preparation of the DE-mediator table
+    if(verbose) {
+      utils::setTxtProgressBar(pb = pb, value = 90)
+    }
+
+    #ProgressBar: Preparation of the nonDE-mediator table
+    if(verbose) {
+      print("Preparation of the nonDE-mediator table", quote = FALSE)
+    }
+
+    # Create the non-DE mediators table
+    non.DE.mediators.index <- stats::na.omit(unique(match(rownames(Diff_data),
+                                                          neighborehood.score.table$node)))
+
+    non.DE.mediators.table <- neighborehood.score.table[-c(non.DE.mediators.index),]
+    if(nrow(non.DE.mediators.table)==0) {non.DE.mediators.table <- NULL} else {
+
+      #filter the non-DE mediators table by either the desired list or the list of network nodes
+      if(!is.null(Desired_list)) {
+        non.DE.mediator.row.index <- stats::na.omit(match(Desired_list,
+                                                          non.DE.mediators.table$node))
+        non.DE.mediators.table <- non.DE.mediators.table[non.DE.mediator.row.index,]
+      }
+    }
+
+    if(nrow(non.DE.mediators.table)==0) {non.DE.mediators.table <- NULL} else {
+
+      rownames(non.DE.mediators.table) <- non.DE.mediators.table$node
+
+      non.DE.mediators.ivi.index <- stats::na.omit(match(rownames(non.DE.mediators.table),
+                                                         names(temp.corr.ivi)))
+
+      non.DE.mediators.table$ivi <- temp.corr.ivi[non.DE.mediators.ivi.index]
+
+      non.DE.mediators.table$non.DE.mediator.score <- non.DE.mediators.table$N.score*non.DE.mediators.table$ivi
+
+      #range normalize DE mediators score
+      non.DE.mediators.table$non.DE.mediator.score <- 1+(((non.DE.mediators.table$non.DE.mediator.score-min(non.DE.mediators.table$non.DE.mediator.score))*(100-1))/
+                                                           (max(non.DE.mediators.table$non.DE.mediator.score)-min(non.DE.mediators.table$non.DE.mediator.score)))
+
+      #add non-DE mediators rank
+      non.DE.mediators.table$rank <- rank(-non.DE.mediators.table$non.DE.mediator.score, ties.method = "min")
+
+      #remove redundent columns
+      non.DE.mediators.table <- non.DE.mediators.table[,c("non.DE.mediator.score", "rank")]
+
+      #rename column names
+      colnames(non.DE.mediators.table) <- c("Score", "Rank")
+
+      #filtering redundant (NaN) results
+      non.DE.mediators.table <- non.DE.mediators.table[stats::complete.cases(non.DE.mediators.table),]
+
+      if(nrow(non.DE.mediators.table)==0) {non.DE.mediators.table <- NULL}
+
+    }
+
+    #ProgressBar: Preparation of the nonDE-mediator table
+    if(verbose) {
+      utils::setTxtProgressBar(pb = pb, value = 95)
+    }
+
+    #ProgressBar: Preparation of the biomarker table
+    if(verbose) {
+      print("Preparation of the biomarker table", quote = FALSE)
+    }
+
+    # Create the Biomarkers table
+
+    Biomarker.table <- Diff_data
+
+    #remove the rows/features with NA in the final driver score
+    Biomarker.table <- Biomarker.table[stats::complete.cases(Biomarker.table),]
+
+    #filter by random forest table
+    Biomarker.rf.index <- stats::na.omit(match(rownames(rf.diff.exptl.pvalue),
+                                               rownames(Biomarker.table)))
+
+    Biomarker.table <- Biomarker.table[Biomarker.rf.index,]
+
+    if(nrow(Biomarker.table)==0) {Biomarker.table <- NULL} else {
+
+      #add RF importance score and p-value
+      rf.for.Biomarker.table <- stats::na.omit(match(rownames(Biomarker.table),
+                                                     rownames(rf.diff.exptl.pvalue)))
+
+      Biomarker.table$rf.importance <- rf.diff.exptl.pvalue$importance[rf.for.Biomarker.table]
+      Biomarker.table$rf.pvalue <- rf.diff.exptl.pvalue$pvalue[rf.for.Biomarker.table]
+
+      #range normalize rf.importance and rf.pvalue
+      Biomarker.table$rf.importance <- 1+(((Biomarker.table$rf.importance-min(Biomarker.table$rf.importance))*(100-1))/
+                                            (max(Biomarker.table$rf.importance)-min(Biomarker.table$rf.importance)))
+
+      Biomarker.table$rf.pvalue <- -log10(Biomarker.table$rf.pvalue)
+      Biomarker.table$rf.pvalue <- 1+(((Biomarker.table$rf.pvalue-min(Biomarker.table$rf.pvalue))*(100-1))/
+                                        (max(Biomarker.table$rf.pvalue)-min(Biomarker.table$rf.pvalue)))
+
+      #add rotation values
+      Biomarker.table.rotation.index <- stats::na.omit(match(rownames(Biomarker.table),
+                                                             names(temp.PCA.r)))
+
+      Biomarker.table$rotation <- temp.PCA.r[Biomarker.table.rotation.index]
+
+      #calculate biomarker score
+      if(!is.null(Regr_value)) {
+        Biomarker.table$final.biomarker.score <- (Biomarker.table$sum.Diff_value)*
+          (Biomarker.table$sum.Regr_value)*(Biomarker.table$sum.Sig_value)*
+          (Biomarker.table$rf.pvalue)*(Biomarker.table$rf.importance)*
+          (Biomarker.table$rotation)
+      } else {
+        Biomarker.table$final.biomarker.score <- (Biomarker.table$sum.Diff_value)*
+          (Biomarker.table$sum.Sig_value)*
+          (Biomarker.table$rf.pvalue)*(Biomarker.table$rf.importance)*
+          (Biomarker.table$rotation)
+      }
+
+      #range normalize biomarker score
+      Biomarker.table$final.biomarker.score <- 1+(((Biomarker.table$final.biomarker.score-min(Biomarker.table$final.biomarker.score))*(100-1))/
+                                                    (max(Biomarker.table$final.biomarker.score)-min(Biomarker.table$final.biomarker.score)))
+
+      #add biomarker rank
+      Biomarker.table$rank <- rank(-Biomarker.table$final.biomarker.score, ties.method = "min")
+
+      #remove redundent columns
+      Biomarker.table <- Biomarker.table[,c("final.biomarker.score", "rank")]
+
+      #rename column names
+      colnames(Biomarker.table) <- c("Score", "Rank")
+
+      #filtering redundant (NaN) results
+      Biomarker.table <- Biomarker.table[stats::complete.cases(Biomarker.table),]
+
+      if(nrow(Biomarker.table)==0) {Biomarker.table <- NULL}
+
+    }
+
+    #ProgressBar: Preparation of the biomarker table
+    if(verbose) {
+      utils::setTxtProgressBar(pb = pb, value = 100)
+    }
+
+    Results <- list("Driver table" = Driver.table,
+                    "DE-mediator table" = DE.mediator.table,
+                    "nonDE-mediators table" = non.DE.mediators.table,
+                    "Biomarker table" = Biomarker.table)
+
+    return(Results)
+  }
+
+  #=============================================================================
+  #
+  #    Code chunk 17: Assembling the differential/regression data in a dataframe
+  #
+  #=============================================================================
+
+  #' Assembling the differential/regression
+  #'
+  #' This function assembles a dataframe required for running the `ExIR` model. You may provide
+  #' as many differential/regression data as you wish. Also, the datasets should be filtered
+  #' beforehand according to your desired thresholds and, consequently, should only include the significant data.
+  #' Each dataset provided should be a dataframe with one or two columns.
+  #' The first column should always include differential/regression values
+  #' and the second one (if provided) the significance values.
+  #' @param ... Desired datasets/dataframes.
+  #' @return A dataframe including the collective list of features in rows and all of the
+  #' differential/regression data and their statistical significance in columns with the same
+  #' order provided by the user.
+  #' @aliases DDA
+  #' @keywords diff.data.assembly
+  #' @seealso \code{\link[influential]{ExIR}}
+  #' @export
+  #' @examples
+  #' \dontrun{
+  #' my.Diff_data <- diff.data.assembly(Differential_data1,
+  #'                                    Differential_data2,
+  #'                                    Regression_data1)
+  #' }
+  diff.data.assembly <- function(...) {
+
+    #Getting the list of all datasets provided
+    datasets <- lapply(list(...), as.data.frame)
+
+    #Getting the feature names
+    feature.names <- unique(unlist(lapply(X = datasets, FUN = rownames)))
+
+    #Creating the Diff_data dataset
+    Diff_data <- data.frame(Diff_value1 = rep(0,length(feature.names)),
+                            row.names = feature.names)
+
+    for (i in 1:length(datasets)) {
+
+      feature.names.index <- match(rownames(datasets[[i]]),
+                                   rownames(Diff_data))
+
+      if(ncol(datasets[[i]]) == 2) {
+
+        Diff_data[,paste("Diff_value", i, sep = "")] <- 0
+        Diff_data[,paste("Diff_value", i, sep = "")][feature.names.index] <- datasets[[i]][,1]
+
+        Diff_data[,paste("Sig_value", i, sep = "")] <- 1
+        Diff_data[,paste("Sig_value", i, sep = "")][feature.names.index] <- datasets[[i]][,2]
+
+      } else if(ncol(datasets[[i]]) == 1) {
+
+        Diff_data[,paste("Diff_value", i, sep = "")] <- 0
+        Diff_data[,paste("Diff_value", i, sep = "")][feature.names.index] <- datasets[[i]][,1]
+
+      }
+    }
+
+    return(Diff_data)
   }
