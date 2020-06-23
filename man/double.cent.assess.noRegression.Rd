@@ -58,11 +58,13 @@ For the conditional probability assessment, the centrality2 variable is consider
 as the condition variable.
 }
 \examples{
+\dontrun{
 MyData <- centrality.measures
 My.metrics.assessment <- double.cent.assess.noRegression(data = MyData,
                                             nodes.colname = rownames(MyData),
                                             centrality1.colname = "BC",
                                             centrality2.colname = "NC")
+}
 }
 \seealso{
 \code{\link[nortest]{ad.test}} for Anderson-Darling test for normality,

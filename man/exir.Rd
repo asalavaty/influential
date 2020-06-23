@@ -97,11 +97,11 @@ data could come from any type of experiment such as transcriptomics and proteomi
 \code{\link[ranger]{ranger}},
 \code{\link[ranger]{importance_pvalues}}
 
-Other integrative ranking: 
+Other integrative ranking functions: 
 \code{\link{hubness.score}()},
 \code{\link{ivi.from.indices}()},
 \code{\link{ivi}()},
 \code{\link{spreading.score}()}
 }
-\concept{integrative ranking}
-\keyword{ExIR}
+\concept{integrative ranking functions}
+\keyword{exir}

@@ -31,6 +31,6 @@ my.Diff_data <- diff.data.assembly(Differential_data1,
 }
 }
 \seealso{
-\code{\link[influential]{ExIR}}
+\code{\link[influential]{exir}}
 }
 \keyword{diff.data.assembly}

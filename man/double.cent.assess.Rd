@@ -67,11 +67,13 @@ Also, the correlation between two variables is assessed via non-linear non-param
 For the conditional probability assessment, the independent variable is considered as the condition variable.
 }
 \examples{
+\dontrun{
 MyData <- centrality.measures
 My.metrics.assessment <- double.cent.assess(data = MyData,
                                             nodes.colname = rownames(MyData),
                                             dependent.colname = "BC",
                                             independent.colname = "NC")
+}
 }
 \seealso{
 \code{\link[nortest]{ad.test}} for Anderson-Darling test for normality,

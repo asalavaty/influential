@@ -549,11 +549,13 @@ cond.prob.analysis <- function(data, nodes.colname, Desired.colname, Condition.c
 #' \code{\link[NNS]{NNS.dep}} for NNS Dependence
 #' @export
 #' @examples
+#' \dontrun{
 #' MyData <- centrality.measures
 #' My.metrics.assessment <- double.cent.assess(data = MyData,
 #'                                             nodes.colname = rownames(MyData),
 #'                                             dependent.colname = "BC",
 #'                                             independent.colname = "NC")
+#' }
 double.cent.assess <- function(data, nodes.colname, dependent.colname, independent.colname, plot = FALSE) {
 
   if("parallel" %in% (.packages())) {
@@ -812,11 +814,13 @@ double.cent.assess <- function(data, nodes.colname, dependent.colname, independe
 #' \code{\link[NNS]{NNS.dep}} for NNS Dependence
 #' @export
 #' @examples
+#' \dontrun{
 #' MyData <- centrality.measures
 #' My.metrics.assessment <- double.cent.assess.noRegression(data = MyData,
 #'                                             nodes.colname = rownames(MyData),
 #'                                             centrality1.colname = "BC",
 #'                                             centrality2.colname = "NC")
+#' }
 double.cent.assess.noRegression <- function(data, nodes.colname,
                                             centrality1.colname,
                                             centrality2.colname) {
@@ -1006,9 +1010,9 @@ double.cent.assess.noRegression <- function(data, nodes.colname,
 #' @return A numeric vector with the IVI values based on the provided centrality measures.
 #' @aliases IVI.FI
 #' @keywords ivi.from.indices
-#' @family integrative ranking
+#' @family integrative ranking functions
 #' @seealso \code{\link[influential]{ivi}},
-#' \code{\link[influential]{ExIR}}
+#' \code{\link[influential]{exir}}
 #' @export
 #' @examples
 #' MyData <- centrality.measures
@@ -1115,9 +1119,9 @@ ivi.from.indices <- function(DC, CR, LH_index, NC, BC, CI, scaled = TRUE) {
 #' @return A numeric vector with the IVI values based on the provided centrality measures.
 #' @aliases IVI
 #' @keywords IVI integrated_value_of_influence
-#' @family integrative ranking
+#' @family integrative ranking functions
 #' @seealso \code{\link[influential]{ivi.from.indices}},
-#' \code{\link[influential]{ExIR}}
+#' \code{\link[influential]{exir}}
 #' @export
 #' @examples
 #' \dontrun{
@@ -1236,7 +1240,7 @@ ivi <- function(graph, vertices = V(graph), weights = NULL, directed = FALSE,
 #' @param scaled Logical; whether the end result should be 1-100 range normalized or not (default is TRUE).
 #' @return A numeric vector with Spreading scores.
 #' @keywords spreading.score
-#' @family integrative ranking
+#' @family integrative ranking functions
 #' @seealso \code{\link[influential]{hubness.score}}
 #' @export
 #' @examples
@@ -1330,7 +1334,7 @@ spreading.score <- function(graph, vertices = V(graph), weights = NULL, directed
 #' @param scaled Logical; whether the end result should be 1-100 range normalized or not (default is TRUE).
 #' @return A numeric vector with the Hubness scores.
 #' @keywords hubness.score
-#' @family integrative ranking
+#' @family integrative ranking functions
 #' @seealso \code{\link[influential]{spreading.score}}
 #' @export
 #' @examples
@@ -1700,8 +1704,8 @@ sirir <- function(graph, vertices = V(graph),
   #'
   #' The number of returned tables depends on the input data and specified arguments.
   #' @aliases ExIR
-  #' @keywords ExIR
-  #' @family integrative ranking
+  #' @keywords exir
+  #' @family integrative ranking functions
   #' @seealso \code{\link[influential]{diff.data.assembly}},
   #' \code{\link[influential]{ivi}},
   #' \code{\link[coop]{pcor}},
@@ -2366,7 +2370,7 @@ sirir <- function(graph, vertices = V(graph),
   #' order provided by the user.
   #' @aliases DDA
   #' @keywords diff.data.assembly
-  #' @seealso \code{\link[influential]{ExIR}}
+  #' @seealso \code{\link[influential]{exir}}
   #' @export
   #' @examples
   #' \dontrun{

@@ -63,14 +63,14 @@ My.vertices.IVI <- ivi(graph = My_graph, vertices = GraphVertices,
 }
 \seealso{
 \code{\link[influential]{ivi.from.indices}},
-\code{\link[influential]{ExIR}}
+\code{\link[influential]{exir}}
 
-Other integrative ranking: 
+Other integrative ranking functions: 
 \code{\link{exir}()},
 \code{\link{hubness.score}()},
 \code{\link{ivi.from.indices}()},
 \code{\link{spreading.score}()}
 }
-\concept{integrative ranking}
+\concept{integrative ranking functions}
 \keyword{IVI}
 \keyword{integrated_value_of_influence}
