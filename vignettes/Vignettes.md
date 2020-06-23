@@ -248,7 +248,7 @@ My_graph <- graph_from_data_frame(MyData)        # Reconstructing the graph
 
 GraphVertices <- V(My_graph)        # Extracting the vertices
 
-cr <- clusterrank(graph = My_graph,    # Calculating ClusterRank
+cr <- clusterRank(graph = My_graph,    # Calculating ClusterRank
                   vids = GraphVertices,
                   directed = FALSE, loops = TRUE)
 ```
@@ -612,7 +612,7 @@ specifying the `directed` and `mode` parameters.
 
 ## Ranking the influence of network nodes based on the `SIRIR` model
 
-**SIRIR** : `SIRIR` is is achieved by the integration
+**SIRIR** : `SIRIR` is achieved by the integration
 susceptible-infected-recovered (SIR) model with the leave-one-out cross
 validation technique and ranks network nodes based on their true
 universal influence. One of the applications of this function is the
@@ -644,3 +644,39 @@ knitr::kable(Influence.Ranks[c(order(Influence.Ranks$rank)[1:10]),])
 | 19 |              8.6 |    7 |
 | 20 |              8.6 |    7 |
 | 21 |              8.6 |    7 |
+
+-----
+
+## Experimental-data-based classification and ranking of top candidate features based on the `ExIR` model
+
+**ExIR** : `ExIR` is a model for the classification and ranking of top
+candidate features. The input data could come from any type of
+experiment such as transcriptomics and proteomics. This model is based
+on multi-level filteration and scoring based on several supervised and
+unsupervised analyses followed by the classification and integrative
+ranking of top candidate features. Using this function and depending on
+the input data and specified arguments, the user can get 1 to four
+tables.
+
+``` r
+
+#Preparing the required arguments for the `exir` function
+MyDesired_list <- Desiredlist
+MyDiff_data <- Diffdata
+Diff_value <- c(1,3,5)
+Regr_value <- 7
+Sig_value <- c(2,4,6,8)
+MyExptl_data <- Exptldata
+Condition_colname <- "condition"
+
+#Running the ExIR model
+My.exir <- exir(Desired_list = MyDesired_list,
+Diff_data = MyDiff_data, Diff_value = Diff_value,
+Regr_value = Regr_value, Sig_value = Sig_value,
+Exptl_data = MyExptl_data, Condition_colname = Condition_colname,
+verbose = FALSE)
+
+names(My.exir)
+#> [1] "Driver table"          "DE-mediator table"     "nonDE-mediators table"
+#> [4] "Biomarker table"
+```
