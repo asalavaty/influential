@@ -3,7 +3,7 @@ influential
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-# influential 1.1.0 (CRAN version)
+# influential 1.1.1 (CRAN version)
 
   - The DESCRIPTION file is updated according to all of the
     modifications.
