@@ -1,11 +1,13 @@
 CRAN Comments
 ================
 Adrian (Abbas) Salavaty
-15/01/2020 (updated on 23 June, 2020)
+15/01/2020 (updated on 24 June, 2020)
 
 ## 1.1.0 New version submission
 
-This is a new submission for a new version of the package `influential`.
+This is a new submission for the current version of the package
+`influential`. The citation details was not properly updated in the
+package. Nothing else has changed.
 
 ## Test environments
 
