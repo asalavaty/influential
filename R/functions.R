@@ -1653,7 +1653,7 @@ sirir <- function(graph, vertices = V(graph),
 #
 #=============================================================================
 
-  #' ExIR
+  #' Experimental-data-based Integrated Ranking
   #'
   #' This function runs the Experimental-data-based Integrated Ranking (ExIR)
   #' model for the classification and ranking of top candidate features. The input

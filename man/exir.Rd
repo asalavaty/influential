@@ -3,7 +3,7 @@
 \name{exir}
 \alias{exir}
 \alias{ExIR}
-\title{ExIR}
+\title{Experimental-data-based Integrated Ranking}
 \usage{
 exir(
   Desired_list = NULL,
