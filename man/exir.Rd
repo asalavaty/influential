@@ -3,7 +3,7 @@
 \name{exir}
 \alias{exir}
 \alias{ExIR}
-\title{Experimental-data-based Integrated Ranking}
+\title{Experimental data-based Integrated Ranking}
 \usage{
 exir(
   Desired_list = NULL,
@@ -85,7 +85,7 @@ A list of one to four tables including:
 The number of returned tables depends on the input data and specified arguments.
 }
 \description{
-This function runs the Experimental-data-based Integrated Ranking (ExIR)
+This function runs the Experimental data-based Integrated Ranking (ExIR)
 model for the classification and ranking of top candidate features. The input
 data could come from any type of experiment such as transcriptomics and proteomics.
 }

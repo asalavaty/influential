@@ -63,7 +63,7 @@ A sample appropriate data frame is brought
 below:
 
 |             | ADAMTS9-AS2 | C8orf34-AS1 | CADM3-AS1 | FAM83A-AS1 | FENDRR | LANCL1-AS1 | LINC00092 | LINC00467 | LINC00857 | LINC00891 |
-| ----------- | ----------: | ----------: | --------: | ---------: | -----: | ---------: | --------: | --------: | --------: | --------: |
+| :---------- | ----------: | ----------: | --------: | ---------: | -----: | ---------: | --------: | --------: | --------: | --------: |
 | ADAMTS9-AS2 |           0 |           0 |         0 |          0 |      0 |          1 |         0 |         0 |         0 |         1 |
 | C8orf34-AS1 |           0 |           0 |         0 |          0 |      0 |          0 |         0 |         0 |         0 |         1 |
 | CADM3-AS1   |           0 |           0 |         0 |          0 |      1 |          0 |         0 |         0 |         0 |         0 |
@@ -633,7 +633,7 @@ knitr::kable(Influence.Ranks[c(order(Influence.Ranks$rank)[1:10]),])
 ```
 
 |    | difference.value | rank |
-| -- | ---------------: | ---: |
+| :- | ---------------: | ---: |
 | 6  |              9.0 |    1 |
 | 1  |              8.9 |    2 |
 | 2  |              8.9 |    2 |
@@ -647,7 +647,7 @@ knitr::kable(Influence.Ranks[c(order(Influence.Ranks$rank)[1:10]),])
 
 -----
 
-## Experimental-data-based classification and ranking of top candidate features based on the `ExIR` model
+## Experimental data-based classification and ranking of top candidate features based on the `ExIR` model
 
 **ExIR** : `ExIR` is a model for the classification and ranking of top
 candidate features. The input data could come from any type of

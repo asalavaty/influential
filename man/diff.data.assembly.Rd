@@ -3,7 +3,7 @@
 \name{diff.data.assembly}
 \alias{diff.data.assembly}
 \alias{DDA}
-\title{Assembling the differential/regression}
+\title{Assembling the differential/regression data}
 \usage{
 \method{diff}{data.assembly}(...)
 }

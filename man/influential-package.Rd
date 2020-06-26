@@ -12,7 +12,7 @@ This package contains functions for the classification and ranking of features,
 reconstruction of networks from adjacency matrices and
 data frames, analysis of the topology of the network and calculation of centrality measures
 as well as a novel and powerful influential node ranking.
-The \strong{Experimental-data-based Integrative Ranking (ExIR)} is a sophisticated model
+The \strong{Experimental data-based Integrative Ranking (ExIR)} is a sophisticated model
 for classification and ranking of the top candidate features based on only the experimental data.
 The first integrative method, namely the \strong{Integrated Value of Influence (IVI)},
 that captures all topological dimensions of the network for
@@ -34,8 +34,8 @@ You may check the latest developmental version of the \emph{influential} package
 \itemize{
   \item Package: influential
   \item Type: Package
-  \item Version: 1.1.1
-  \item Date: 24-06-2020
+  \item Version: 1.1.2
+  \item Date: 27-06-2020
   \item License: GPL-3
 }
 }
