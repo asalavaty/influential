@@ -13,7 +13,7 @@
 #' reconstruction of networks from adjacency matrices and
 #' data frames, analysis of the topology of the network and calculation of centrality measures
 #' as well as a novel and powerful influential node ranking.
-#' The \strong{Experimental-data-based Integrative Ranking (ExIR)} is a sophisticated model
+#' The \strong{Experimental data-based Integrative Ranking (ExIR)} is a sophisticated model
 #' for classification and ranking of the top candidate features based on only the experimental data.
 #' The first integrative method, namely the \strong{Integrated Value of Influence (IVI)},
 #' that captures all topological dimensions of the network for
@@ -1653,9 +1653,9 @@ sirir <- function(graph, vertices = V(graph),
 #
 #=============================================================================
 
-  #' Experimental-data-based Integrated Ranking
+  #' Experimental data-based Integrated Ranking
   #'
-  #' This function runs the Experimental-data-based Integrated Ranking (ExIR)
+  #' This function runs the Experimental data-based Integrated Ranking (ExIR)
   #' model for the classification and ranking of top candidate features. The input
   #' data could come from any type of experiment such as transcriptomics and proteomics.
   #' @param Desired_list (Optional) A character vector of your desired features. This vector could be, for
