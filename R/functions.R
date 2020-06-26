@@ -2356,7 +2356,7 @@ sirir <- function(graph, vertices = V(graph),
   #
   #=============================================================================
 
-  #' Assembling the differential/regression
+  #' Assembling the differential/regression data
   #'
   #' This function assembles a dataframe required for running the `ExIR` model. You may provide
   #' as many differential/regression data as you wish. Also, the datasets should be filtered
