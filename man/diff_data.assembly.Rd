@@ -16,7 +16,7 @@ differential/regression data and their statistical significance in columns with 
 order provided by the user.
 }
 \description{
-This function assembles a dataframe required for running the `ExIR` model. You may provide
+This function assembles a dataframe required for running the \emph{\strong{\code{ExIR}}} model. You may provide
 as many differential/regression data as you wish. Also, the datasets should be filtered
 beforehand according to your desired thresholds and, consequently, should only include the significant data.
 Each dataset provided should be a dataframe with one or two columns.
