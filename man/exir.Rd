@@ -30,7 +30,7 @@ or a list of dysregulated features with a specific sign.}
 \item{Diff_data}{A dataframe of all significant differential/regression data and their
 statistical significance values (p-value/adjusted p-value).
 You may have selected a proportion of the differential data as the significant ones according
-to your desired thresholds. A function, named diff.data.assembly, has also been
+to your desired thresholds. A function, named diff_data.assembly, has also been
 provided for the convenient assembling of the Diff_data dataframe.}
 
 \item{Diff_value}{A numeric vector containing the column number(s) of the differential
@@ -90,7 +90,7 @@ model for the classification and ranking of top candidate features. The input
 data could come from any type of experiment such as transcriptomics and proteomics.
 }
 \seealso{
-\code{\link[influential]{diff.data.assembly}},
+\code{\link[influential]{diff_data.assembly}},
 \code{\link[influential]{ivi}},
 \code{\link[coop]{pcor}},
 \code{\link[stats]{prcomp}},

@@ -1684,7 +1684,7 @@ sirir <- function(graph, vertices = V(graph),
   #' @param Diff_data A dataframe of all significant differential/regression data and their
   #' statistical significance values (p-value/adjusted p-value).
   #' You may have selected a proportion of the differential data as the significant ones according
-  #' to your desired thresholds. A function, named diff.data.assembly, has also been
+  #' to your desired thresholds. A function, named diff_data.assembly, has also been
   #' provided for the convenient assembling of the Diff_data dataframe.
   #' @param Diff_value A numeric vector containing the column number(s) of the differential
   #' data in the Diff_data dataframe. The differential data could result from any type of
@@ -1726,7 +1726,7 @@ sirir <- function(graph, vertices = V(graph),
   #' @aliases ExIR
   #' @keywords exir
   #' @family integrative ranking functions
-  #' @seealso \code{\link[influential]{diff.data.assembly}},
+  #' @seealso \code{\link[influential]{diff_data.assembly}},
   #' \code{\link[influential]{ivi}},
   #' \code{\link[coop]{pcor}},
   #' \code{\link[stats]{prcomp}},
@@ -2384,29 +2384,24 @@ sirir <- function(graph, vertices = V(graph),
   #' Each dataset provided should be a dataframe with one or two columns.
   #' The first column should always include differential/regression values
   #' and the second one (if provided) the significance values.
-  #' @param Diff_list A list of desired datasets/dataframes.
+  #' @param ... Desired datasets/dataframes.
   #' @return A dataframe including the collective list of features in rows and all of the
   #' differential/regression data and their statistical significance in columns with the same
   #' order provided by the user.
   #' @aliases DDA
-  #' @keywords diff.data.assembly
+  #' @keywords diff_data.assembly
   #' @seealso \code{\link[influential]{exir}}
-  #' @export diff.data.assembly
+  #' @export diff_data.assembly
   #' @examples
   #' \dontrun{
-  #' my.Diff_data <- diff.data.assembly(Diff_list = list(Differential_data1,
-  #'                                                     Differential_data2,
-  #'                                                     Regression_data1))
+  #' my.Diff_data <- diff_data.assembly(Differential_data1,
+  #'                                    Differential_data2,
+  #'                                    Regression_data1))
   #' }
-  diff.data.assembly <- function(Diff_list) {
-
-    #Check the class of Diff_list
-    if(base::class(Diff_list) != "list") {
-      stop("The argument Diff_list should be of a list class.", call. = FALSE)
-    }
+  diff_data.assembly <- function(...) {
 
     #Getting the list of all datasets provided
-    datasets <- lapply(Diff_list, as.data.frame)
+    datasets <- lapply(list(...), as.data.frame)
 
     #Getting the feature names
     feature.names <- unique(unlist(lapply(X = datasets, FUN = rownames)))
