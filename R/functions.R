@@ -2384,7 +2384,7 @@ sirir <- function(graph, vertices = V(graph),
   #' Each dataset provided should be a dataframe with one or two columns.
   #' The first column should always include differential/regression values
   #' and the second one (if provided) the significance values.
-  #' @param ... Desired datasets/dataframes.
+  #' @param Diff_list A list of desired datasets/dataframes.
   #' @return A dataframe including the collective list of features in rows and all of the
   #' differential/regression data and their statistical significance in columns with the same
   #' order provided by the user.
@@ -2394,14 +2394,19 @@ sirir <- function(graph, vertices = V(graph),
   #' @export diff.data.assembly
   #' @examples
   #' \dontrun{
-  #' my.Diff_data <- diff.data.assembly(Differential_data1,
-  #'                                    Differential_data2,
-  #'                                    Regression_data1)
+  #' my.Diff_data <- diff.data.assembly(Diff_list = list(Differential_data1,
+  #'                                                     Differential_data2,
+  #'                                                     Regression_data1))
   #' }
-  diff.data.assembly <- function(...) {
+  diff.data.assembly <- function(Diff_list) {
+
+    #Check the class of Diff_list
+    if(base::class(Diff_list) != "list") {
+      stop("The argument Diff_list should be of a list class.", call. = FALSE)
+    }
 
     #Getting the list of all datasets provided
-    datasets <- lapply(list(...), as.data.frame)
+    datasets <- lapply(Diff_list, as.data.frame)
 
     #Getting the feature names
     feature.names <- unique(unlist(lapply(X = datasets, FUN = rownames)))

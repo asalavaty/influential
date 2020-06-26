@@ -5,10 +5,10 @@
 \alias{DDA}
 \title{Assembling the differential/regression data}
 \usage{
-\method{diff}{data.assembly}(...)
+\method{diff}{data.assembly}(Diff_list)
 }
 \arguments{
-\item{...}{Desired datasets/dataframes.}
+\item{Diff_list}{A list of desired datasets/dataframes.}
 }
 \value{
 A dataframe including the collective list of features in rows and all of the
@@ -25,9 +25,9 @@ and the second one (if provided) the significance values.
 }
 \examples{
 \dontrun{
-my.Diff_data <- diff.data.assembly(Differential_data1,
-                                   Differential_data2,
-                                   Regression_data1)
+my.Diff_data <- diff.data.assembly(Diff_list = c(Differential_data1,
+                                                 Differential_data2,
+                                                 Regression_data1))
 }
 }
 \seealso{
