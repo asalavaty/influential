@@ -25,9 +25,9 @@ and the second one (if provided) the significance values.
 }
 \examples{
 \dontrun{
-my.Diff_data <- diff.data.assembly(Diff_list = c(Differential_data1,
-                                                 Differential_data2,
-                                                 Regression_data1))
+my.Diff_data <- diff.data.assembly(Diff_list = list(Differential_data1,
+                                                    Differential_data2,
+                                                    Regression_data1))
 }
 }
 \seealso{
