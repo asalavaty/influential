@@ -12,7 +12,7 @@ status](https://ci.appveyor.com/api/projects/status/github/asalavaty/influential
 [![Rdoc](http://www.rdocumentation.org/badges/version/influential)](http://www.rdocumentation.org/packages/influential)
 [![](https://img.shields.io/badge/Integrated%20Value%20of%20Influence-IVI-blue.svg)](https://doi.org/10.1016/j.patter.2020.100052)
 [![](https://img.shields.io/badge/SIR--based%20Influence%20Ranking-SIRIR-green.svg)](https://doi.org/10.1016/j.patter.2020.100052)
-[![](https://img.shields.io/badge/Experimental--data--based%20Integrative%20Ranking-ExIR-blue.svg)](https://github.com/asalavaty/influential)
+[![](https://img.shields.io/badge/Experimental%20data--based%20Integrative%20Ranking-ExIR-blue.svg)](https://github.com/asalavaty/influential)
 <!-- badges: end -->
 
 ![The influential R package
@@ -26,7 +26,7 @@ ranking of top candidate features. This package contains functions for
 the classification and ranking of features, reconstruction of networks
 from adjacency matrices and data frames, analysis of the topology of the
 network and calculation of centrality measures as well as a novel and
-powerful `influential` node ranking. The **Experimental-data-based
+powerful `influential` node ranking. The **Experimental data-based
 Integrative Ranking (ExIR)** is a sophisticated model for classification
 and ranking of the top candidate features based on only the experimental
 data. The first integrative method, namely the **Integrated Value of
