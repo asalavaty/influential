@@ -3,6 +3,14 @@ influential
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
+# influential 1.1.2.9000 (Developmental version)
+
+  - The `ExIR` function is updated to prevent outputting NULL results.
+
+  - Package logo is updated in acorddance with the design of R packages.
+
+  - Some documentations in the Read Me file are corrected.
+
 # influential 1.1.2 (CRAN version)
 
   - The `NC` function is improved.
