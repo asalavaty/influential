@@ -2367,6 +2367,14 @@ sirir <- function(graph, vertices = V(graph),
                     "nonDE-mediators table" = non.DE.mediators.table,
                     "Biomarker table" = Biomarker.table)
 
+    Results.Non.Null.vector <- vector()
+
+    for (i in 1:length(Results)) {
+      Results.Non.Null.vector[i] <- !is.null(Results[[i]])
+    }
+
+    Results <- Results[Results.Non.Null.vector]
+
     return(Results)
   }
 
