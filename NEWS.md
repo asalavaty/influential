@@ -5,6 +5,10 @@ influential
 
 # influential 1.1.2.9000 (Developmental version)
 
+  - The version of Roxygen2 is updated in the DESCRIPTION file.
+
+  - The documentation of the `ExIR` function is updated.
+
   - The `ExIR` function is updated to prevent outputting NULL results.
 
   - Package logo is updated in acorddance with the design of R packages.
