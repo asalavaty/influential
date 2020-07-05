@@ -45,7 +45,7 @@ data analysis or other analyses such as time-course data analyses that are based
 \item{Sig_value}{A numeric vector containing the column number(s) of the significance values (p-value/adjusted p-value) of
 both differential and regression data (if provided). Providing significance values for the regression data is optional.}
 
-\item{Exptl_data}{A dataframe containing all of the experimental including a column for specifying the conditions.
+\item{Exptl_data}{A dataframe containing all of the experimental data including a column for specifying the conditions.
 The features/variables of the dataframe should be as the columns and the samples should come in the rows.
 The condition column should be of the character class. For example, if the study includes several replicates of
 cancer and normal samples, the condition column should include "cancer" and "normal" as the conditions of different samples.
