@@ -5,6 +5,12 @@ influential
 
 # influential 1.1.2.9000 (Developmental version)
 
+  - The function `ExIR` is upddated so that the experimental data are
+    ranked prior to correlation analysis. This will result in the
+    assessment of the association based on the Spearman method, a more
+    robust algorithm in variable conditions and/or non-parametric
+    distributions.
+
   - The version of Roxygen2 is updated in the DESCRIPTION file.
 
   - The documentation of the `ExIR` function is updated.
