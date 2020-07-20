@@ -1893,7 +1893,7 @@ sirir <- function(graph, vertices = V(graph),
     }
 
     #c Performing correlation analysis
-    temp.corr <- coop::pcor(Exptl_data[,-condition.index])
+    temp.corr <- coop::pcor(base::rank(Exptl_data[,-condition.index]))
 
     #filter corr data for only those corr between diff features and themselves/others
     filter.corr.index <- stats::na.omit(base::unique(base::match(rownames(rf.diff.exptl.pvalue),
@@ -1937,7 +1937,7 @@ sirir <- function(graph, vertices = V(graph),
     }
 
     #redo correlation analysis
-    temp.corr <- coop::pcor(Exptl_data[,-condition.index])
+    temp.corr <- coop::pcor(base::rank(Exptl_data[,-condition.index]))
 
     #filter corr data for only those corr between diff.plus.corr.features and themselves/others
     filter.corr.index <- stats::na.omit(match(diff.plus.corr.features,
