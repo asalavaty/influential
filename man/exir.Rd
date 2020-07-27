@@ -33,16 +33,16 @@ You may have selected a proportion of the differential data as the significant o
 to your desired thresholds. A function, named diff_data.assembly, has also been
 provided for the convenient assembling of the Diff_data dataframe.}
 
-\item{Diff_value}{A numeric vector containing the column number(s) of the differential
+\item{Diff_value}{An integer vector containing the column number(s) of the differential
 data in the Diff_data dataframe. The differential data could result from any type of
 differential data analysis. One example could be the fold changes (FCs) obtained from differential
 expression analyses. The user may provide as many differential data as he/she wish.}
 
-\item{Regr_value}{(Optional) A numeric vector containing the column number(s) of the regression
+\item{Regr_value}{(Optional) An integer vector containing the column number(s) of the regression
 data in the Diff_data dataframe. The regression data could result from any type of regression
 data analysis or other analyses such as time-course data analyses that are based on regression models.}
 
-\item{Sig_value}{A numeric vector containing the column number(s) of the significance values (p-value/adjusted p-value) of
+\item{Sig_value}{An integer vector containing the column number(s) of the significance values (p-value/adjusted p-value) of
 both differential and regression data (if provided). Providing significance values for the regression data is optional.}
 
 \item{Exptl_data}{A dataframe containing all of the experimental data including a column for specifying the conditions.
@@ -53,7 +53,9 @@ Also, the prior normalization of the experimental data is highly recommended. Ot
 the user may set the Normalize argument to TRUE for a simple log2 transformation of the data.
 The experimental data could come from a variety sources such as transcriptomics and proteomics assays.}
 
-\item{Condition_colname}{A string or character vector specifying the name of the condition column of the Exptl_data dataframe.}
+\item{Condition_colname}{A string or character vector specifying the name of the column "condition" of the Exptl_data dataframe. Please
+note that the column "condition" should have a "factor" class with correct levels. This can be easily achieved using \code{as.factor()} and
+\code{factor()} functions.}
 
 \item{Normalize}{Logical; whether the experimental data should be normalized or not (default is FALSE). If TRUE, the
 experimental data will be log2 transformed.}

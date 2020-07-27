@@ -1686,14 +1686,14 @@ sirir <- function(graph, vertices = V(graph),
   #' You may have selected a proportion of the differential data as the significant ones according
   #' to your desired thresholds. A function, named diff_data.assembly, has also been
   #' provided for the convenient assembling of the Diff_data dataframe.
-  #' @param Diff_value A numeric vector containing the column number(s) of the differential
+  #' @param Diff_value An integer vector containing the column number(s) of the differential
   #' data in the Diff_data dataframe. The differential data could result from any type of
   #' differential data analysis. One example could be the fold changes (FCs) obtained from differential
   #' expression analyses. The user may provide as many differential data as he/she wish.
-  #' @param Regr_value (Optional) A numeric vector containing the column number(s) of the regression
+  #' @param Regr_value (Optional) An integer vector containing the column number(s) of the regression
   #' data in the Diff_data dataframe. The regression data could result from any type of regression
   #' data analysis or other analyses such as time-course data analyses that are based on regression models.
-  #' @param Sig_value A numeric vector containing the column number(s) of the significance values (p-value/adjusted p-value) of
+  #' @param Sig_value An integer vector containing the column number(s) of the significance values (p-value/adjusted p-value) of
   #' both differential and regression data (if provided). Providing significance values for the regression data is optional.
   #' @param Exptl_data A dataframe containing all of the experimental data including a column for specifying the conditions.
   #' The features/variables of the dataframe should be as the columns and the samples should come in the rows.
@@ -1702,7 +1702,9 @@ sirir <- function(graph, vertices = V(graph),
   #' Also, the prior normalization of the experimental data is highly recommended. Otherwise,
   #' the user may set the Normalize argument to TRUE for a simple log2 transformation of the data.
   #' The experimental data could come from a variety sources such as transcriptomics and proteomics assays.
-  #' @param Condition_colname A string or character vector specifying the name of the condition column of the Exptl_data dataframe.
+  #' @param Condition_colname A string or character vector specifying the name of the column "condition" of the Exptl_data dataframe. Please
+  #' note that the column "condition" should have a "factor" class with correct levels. This can be easily achieved using \code{as.factor()} and
+  #' \code{factor()} functions.
   #' @param Normalize Logical; whether the experimental data should be normalized or not (default is FALSE). If TRUE, the
   #' experimental data will be log2 transformed.
   #' @param r The threshold of Pearson correlation coefficient for the selection of correlated features (default is 0).
@@ -1863,20 +1865,32 @@ sirir <- function(graph, vertices = V(graph),
     exptl.for.super.learn$condition <- Exptl_data[,condition.index]
 
     #b Perform random forest classification
-    rf.diff.exptl <- ranger::ranger(seed = seed,
-                                    formula = condition ~ .,
+    base::set.seed(seed = seed)
+    rf.diff.exptl <- ranger::ranger(formula = condition ~ .,
                                     data = exptl.for.super.learn,
-                                    num.trees = num_trees, importance = "permutation",
+                                    num.trees = num_trees, importance = "impurity_corrected",
                                     write.forest = FALSE)
 
-    rf.diff.exptl.pvalue <- as.data.frame(ranger::importance_pvalues(seed = seed,
-                                                                     x = rf.diff.exptl,
+    base::set.seed(seed = seed)
+    rf.diff.exptl.pvalue <- as.data.frame(ranger::importance_pvalues(x = rf.diff.exptl,
                                                                      formula = condition ~ .,
                                                                      num.permutations = num_permutations,
                                                                      data = exptl.for.super.learn,
                                                                      method = "altmann"))
 
+    if(any(is.na(rf.diff.exptl.pvalue[,"pvalue"]))) {
+      rf.diff.exptl.pvalue[which(is.na(rf.diff.exptl.pvalue[,"pvalue"])),"pvalue"] <- 1
+    }
+
+    if(length(which(rf.diff.exptl.pvalue[,"pvalue"] <alpha)) >= 50) {
     rf.diff.exptl.pvalue <- base::subset(rf.diff.exptl.pvalue, rf.diff.exptl.pvalue$pvalue <alpha)
+    } else {
+      rf.diff.exptl.pvalue <- base::subset(rf.diff.exptl.pvalue, rf.diff.exptl.pvalue$importance >0)
+      if(nrow(rf.diff.exptl.pvalue) > 100) {
+        rf.diff.exptl.pvalue <- rf.diff.exptl.pvalue[match(sort(rf.diff.exptl.pvalue$pvalue),
+                                                           rf.diff.exptl.pvalue$pvalue)[1:100],]
+      }
+    }
 
     if(min(rf.diff.exptl.pvalue[,"pvalue"])==0) {
       rf.diff.exptl.pvalue[,"pvalue"] <- rf.diff.exptl.pvalue[,"pvalue"] + sort(as.matrix(rf.diff.exptl.pvalue[,"pvalue"]))[2]
@@ -1887,13 +1901,42 @@ sirir <- function(graph, vertices = V(graph),
       utils::setTxtProgressBar(pb = pb, value = 35)
     }
 
+
+    #ProgressBar: Performing PCA (unsupervised machine learning)
+    if(verbose) {
+      print("Performing PCA (unsupervised machine learning)", quote = FALSE)
+    }
+
+    #5 Unsupervised machine learning (PCA)
+
+    Exptl_data.for.PCA.index <- stats::na.omit(base::match(base::rownames(rf.diff.exptl.pvalue),
+                                                           base::colnames(Exptl_data)))
+    temp.Exptl_data.for.PCA <- Exptl_data[,Exptl_data.for.PCA.index]
+
+    temp.PCA <- stats::prcomp(temp.Exptl_data.for.PCA)
+    temp.PCA.r <- base::abs(temp.PCA$rotation[,1])
+
+    #range normalize the rotation values
+    temp.PCA.r <- 1+(((temp.PCA.r-min(temp.PCA.r))*(100-1))/
+                       (max(temp.PCA.r)-min(temp.PCA.r)))
+
+    #ProgressBar: Performing PCA (unsupervised machine learning)
+    if(verbose) {
+      utils::setTxtProgressBar(pb = pb, value = 40)
+    }
+
     #ProgressBar: Performing the first round association analysis
     if(verbose) {
       print("Performing the first round association analysis", quote = FALSE)
     }
 
     #c Performing correlation analysis
-    temp.corr <- coop::pcor(base::rank(Exptl_data[,-condition.index]))
+
+    #make ranked experimental data
+    Exptl_data[,-condition.index] <- base::t(base::apply(X = Exptl_data[,-condition.index],
+                                                         MARGIN = 1, base::rank))
+
+    temp.corr <- coop::pcor(Exptl_data[,-condition.index])
 
     #filter corr data for only those corr between diff features and themselves/others
     filter.corr.index <- stats::na.omit(base::unique(base::match(rownames(rf.diff.exptl.pvalue),
@@ -1928,7 +1971,7 @@ sirir <- function(graph, vertices = V(graph),
 
     #ProgressBar: Performing first round association analysis
     if(verbose) {
-      utils::setTxtProgressBar(pb = pb, value = 45)
+      utils::setTxtProgressBar(pb = pb, value = 50)
     }
 
     #ProgressBar: Performing the second round association analysis
@@ -1937,7 +1980,7 @@ sirir <- function(graph, vertices = V(graph),
     }
 
     #redo correlation analysis
-    temp.corr <- coop::pcor(base::rank(Exptl_data[,-condition.index]))
+    temp.corr <- coop::pcor(Exptl_data[,-condition.index])
 
     #filter corr data for only those corr between diff.plus.corr.features and themselves/others
     filter.corr.index <- stats::na.omit(match(diff.plus.corr.features,
@@ -1968,7 +2011,7 @@ sirir <- function(graph, vertices = V(graph),
 
     #ProgressBar: Performing second round association analysis
     if(verbose) {
-      utils::setTxtProgressBar(pb = pb, value = 55)
+      utils::setTxtProgressBar(pb = pb, value = 60)
     }
 
     #ProgressBar: Network reconstruction
@@ -1981,7 +2024,7 @@ sirir <- function(graph, vertices = V(graph),
 
     #ProgressBar: Network reconstruction
     if(verbose) {
-      utils::setTxtProgressBar(pb = pb, value = 60)
+      utils::setTxtProgressBar(pb = pb, value = 65)
     }
 
     #ProgressBar: Calculation of the integrated value of influence (IVI)
@@ -1993,29 +2036,6 @@ sirir <- function(graph, vertices = V(graph),
     temp.corr.ivi <- ivi(temp.corr.graph)
 
     #ProgressBar: Calculation of the integrated value of influence (IVI)
-    if(verbose) {
-      utils::setTxtProgressBar(pb = pb, value = 65)
-    }
-
-    #ProgressBar: Performing PCA (unsupervised machine learning)
-    if(verbose) {
-      print("Performing PCA (unsupervised machine learning)", quote = FALSE)
-    }
-
-    #5 Unsupervised machine learning (PCA)
-
-    Exptl_data.for.PCA.index <- stats::na.omit(base::match(base::rownames(rf.diff.exptl.pvalue),
-                                                           base::colnames(Exptl_data)))
-    temp.Exptl_data.for.PCA <- Exptl_data[,Exptl_data.for.PCA.index]
-
-    temp.PCA <- stats::prcomp(temp.Exptl_data.for.PCA)
-    temp.PCA.r <- base::abs(temp.PCA$rotation[,1])
-
-    #range normalize the rotation values
-    temp.PCA.r <- 1+(((temp.PCA.r-min(temp.PCA.r))*(100-1))/
-                       (max(temp.PCA.r)-min(temp.PCA.r)))
-
-    #ProgressBar: Performing PCA (unsupervised machine learning)
     if(verbose) {
       utils::setTxtProgressBar(pb = pb, value = 70)
     }
