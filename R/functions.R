@@ -2147,7 +2147,7 @@ sirir <- function(graph, vertices = V(graph),
     }
 
     Driver.table <- Driver.table[Driver.table.row.index,]
-    if(nrow(base:as.data.frame(Driver.table))==0) {Driver.table <- NULL} else {
+    if(nrow(as.data.frame(Driver.table))==0) {Driver.table <- NULL} else {
 
       #range normalize final driver score
       Driver.table$final.Driver.score <- 1+(((Driver.table$final.Driver.score-min(Driver.table$final.Driver.score))*(100-1))/
@@ -2184,7 +2184,7 @@ sirir <- function(graph, vertices = V(graph),
       #filtering redundant (NaN) results
       Driver.table <- Driver.table[stats::complete.cases(Driver.table),]
 
-      if(nrow(base:as.data.frame(Driver.table))==0) {Driver.table <- NULL}
+      if(nrow(as.data.frame(Driver.table))==0) {Driver.table <- NULL}
 
     }
 
@@ -2221,7 +2221,7 @@ sirir <- function(graph, vertices = V(graph),
     }
 
     DE.mediator.table <- DE.mediator.table[DE.mediator.row.index,]
-    if(nrow(base:as.data.frame(DE.mediator.table))==0) {DE.mediator.table <- NULL} else {
+    if(nrow(as.data.frame(DE.mediator.table))==0) {DE.mediator.table <- NULL} else {
 
       #range normalize DE mediators score
       DE.mediator.table$DE.mediator.score <- 1+(((DE.mediator.table$DE.mediator.score-min(DE.mediator.table$DE.mediator.score))*(100-1))/
@@ -2239,7 +2239,7 @@ sirir <- function(graph, vertices = V(graph),
       #filtering redundant (NaN) results
       DE.mediator.table <- DE.mediator.table[stats::complete.cases(DE.mediator.table),]
 
-      if(nrow(base:as.data.frame(DE.mediator.table))==0) {DE.mediator.table <- NULL}
+      if(nrow(as.data.frame(DE.mediator.table))==0) {DE.mediator.table <- NULL}
 
     }
 
@@ -2258,7 +2258,7 @@ sirir <- function(graph, vertices = V(graph),
                                                           neighborehood.score.table$node)))
 
     non.DE.mediators.table <- neighborehood.score.table[-c(non.DE.mediators.index),]
-    if(nrow(base:as.data.frame(non.DE.mediators.table))==0) {non.DE.mediators.table <- NULL} else {
+    if(nrow(as.data.frame(non.DE.mediators.table))==0) {non.DE.mediators.table <- NULL} else {
 
       #filter the non-DE mediators table by either the desired list or the list of network nodes
       if(!is.null(Desired_list)) {
@@ -2268,7 +2268,7 @@ sirir <- function(graph, vertices = V(graph),
       }
     }
 
-    if(nrow(base:as.data.frame(non.DE.mediators.table))==0) {non.DE.mediators.table <- NULL} else {
+    if(nrow(as.data.frame(non.DE.mediators.table))==0) {non.DE.mediators.table <- NULL} else {
 
       rownames(non.DE.mediators.table) <- non.DE.mediators.table$node
 
@@ -2295,7 +2295,7 @@ sirir <- function(graph, vertices = V(graph),
       #filtering redundant (NaN) results
       non.DE.mediators.table <- non.DE.mediators.table[stats::complete.cases(non.DE.mediators.table),]
 
-      if(nrow(base:as.data.frame(non.DE.mediators.table))==0) {non.DE.mediators.table <- NULL}
+      if(nrow(as.data.frame(non.DE.mediators.table))==0) {non.DE.mediators.table <- NULL}
 
     }
 
@@ -2322,7 +2322,7 @@ sirir <- function(graph, vertices = V(graph),
 
     Biomarker.table <- Biomarker.table[Biomarker.rf.index,]
 
-    if(nrow(base:as.data.frame(Biomarker.table))==0) {Biomarker.table <- NULL} else {
+    if(nrow(as.data.frame(Biomarker.table))==0) {Biomarker.table <- NULL} else {
 
       #add RF importance score and p-value
       rf.for.Biomarker.table <- stats::na.omit(match(rownames(Biomarker.table),
@@ -2374,7 +2374,7 @@ sirir <- function(graph, vertices = V(graph),
       #filtering redundant (NaN) results
       Biomarker.table <- Biomarker.table[stats::complete.cases(Biomarker.table),]
 
-      if(nrow(base:as.data.frame(Biomarker.table))==0) {Biomarker.table <- NULL}
+      if(nrow(as.data.frame(Biomarker.table))==0) {Biomarker.table <- NULL}
 
     }
 
