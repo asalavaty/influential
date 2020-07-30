@@ -1684,7 +1684,7 @@ sirir <- function(graph, vertices = V(graph),
   #' @param Diff_data A dataframe of all significant differential/regression data and their
   #' statistical significance values (p-value/adjusted p-value).
   #' You may have selected a proportion of the differential data as the significant ones according
-  #' to your desired thresholds. A function, named diff_data.assembly, has also been
+  #' to your desired thresholds. A function, named \code{\link[influential]{diff_data.assembly}}, has also been
   #' provided for the convenient assembling of the Diff_data dataframe.
   #' @param Diff_value An integer vector containing the column number(s) of the differential
   #' data in the Diff_data dataframe. The differential data could result from any type of
@@ -1702,9 +1702,7 @@ sirir <- function(graph, vertices = V(graph),
   #' Also, the prior normalization of the experimental data is highly recommended. Otherwise,
   #' the user may set the Normalize argument to TRUE for a simple log2 transformation of the data.
   #' The experimental data could come from a variety sources such as transcriptomics and proteomics assays.
-  #' @param Condition_colname A string or character vector specifying the name of the column "condition" of the Exptl_data dataframe. Please
-  #' note that the column "condition" should have a "factor" class with correct levels. This can be easily achieved using \code{as.factor()} and
-  #' \code{factor()} functions.
+  #' @param Condition_colname A string or character vector specifying the name of the column "condition" of the Exptl_data dataframe.
   #' @param Normalize Logical; whether the experimental data should be normalized or not (default is FALSE). If TRUE, the
   #' experimental data will be log2 transformed.
   #' @param r The threshold of Pearson correlation coefficient for the selection of correlated features (default is 0).
@@ -1763,7 +1761,7 @@ sirir <- function(graph, vertices = V(graph),
 
     #ProgressBar: Preparing the input data
     if(verbose) {
-      print("Preparing the input data", quote = FALSE)
+      print(unname(as.data.frame("Preparing the input data")),quote = FALSE, row.names = FALSE)
     }
 
     #make sure the input data is of data frame class
@@ -1772,6 +1770,9 @@ sirir <- function(graph, vertices = V(graph),
 
     # Get the column number of condition column
     condition.index <- match(Condition_colname, colnames(Exptl_data))
+
+    # Transform the condition column to a factor
+    Exptl_data[,condition.index] <- base::as.factor(Exptl_data[,condition.index])
 
     # Normalize the experimental data (if required)
     if(Normalize) {
@@ -1785,7 +1786,7 @@ sirir <- function(graph, vertices = V(graph),
 
     #ProgressBar: Calculating the differential score
     if(verbose) {
-      print("Calculating the differential score", quote = FALSE)
+      print(unname(as.data.frame("Calculating the differential score")),quote = FALSE, row.names = FALSE)
     }
 
     #1 Calculate differential score
@@ -1801,7 +1802,7 @@ sirir <- function(graph, vertices = V(graph),
 
     #ProgressBar: Calculating the regression/time-course R-squared score
     if(verbose & !is.null(Regr_value)) {
-      print("Calculating the regression/time-course R-squared score", quote = FALSE)
+      print(unname(as.data.frame("Calculating the regression/time-course R-squared score")),quote = FALSE, row.names = FALSE)
     }
 
     #2 Calculate regression/time-course R-squared score (if provided)
@@ -1819,7 +1820,7 @@ sirir <- function(graph, vertices = V(graph),
 
     #ProgressBar: Calculating the collective statistical significance of differential/regression factors
     if(verbose) {
-      print("Calculating the collective statistical significance of differential/regression factors", quote = FALSE)
+      print(unname(as.data.frame("Calculating the collective statistical significance of differential/regression factors")),quote = FALSE, row.names = FALSE)
     }
 
     #3 Calculate statistical significance of differential/regression factors
@@ -1847,7 +1848,7 @@ sirir <- function(graph, vertices = V(graph),
 
     #ProgressBar: Performing random forest classification (supervised machine learning)
     if(verbose) {
-      print("Performing random forest classification (supervised machine learning)", quote = FALSE)
+      print(unname(as.data.frame("Performing random forest classification (supervised machine learning)")),quote = FALSE, row.names = FALSE)
     }
 
     #4 Calculation of the Integrated Value of Influence (IVI)
@@ -1904,7 +1905,7 @@ sirir <- function(graph, vertices = V(graph),
 
     #ProgressBar: Performing PCA (unsupervised machine learning)
     if(verbose) {
-      print("Performing PCA (unsupervised machine learning)", quote = FALSE)
+      print(unname(as.data.frame("Performing PCA (unsupervised machine learning)")),quote = FALSE, row.names = FALSE)
     }
 
     #5 Unsupervised machine learning (PCA)
@@ -1927,7 +1928,7 @@ sirir <- function(graph, vertices = V(graph),
 
     #ProgressBar: Performing the first round association analysis
     if(verbose) {
-      print("Performing the first round association analysis", quote = FALSE)
+      print(unname(as.data.frame("Performing the first round association analysis")),quote = FALSE, row.names = FALSE)
     }
 
     #c Performing correlation analysis
@@ -1976,7 +1977,7 @@ sirir <- function(graph, vertices = V(graph),
 
     #ProgressBar: Performing the second round association analysis
     if(verbose) {
-      print("Performing the second round association analysis", quote = FALSE)
+      print(unname(as.data.frame("Performing the second round association analysis")),quote = FALSE, row.names = FALSE)
     }
 
     #redo correlation analysis
@@ -2016,7 +2017,7 @@ sirir <- function(graph, vertices = V(graph),
 
     #ProgressBar: Network reconstruction
     if(verbose) {
-      print("Network reconstruction", quote = FALSE)
+      print(unname(as.data.frame("Network reconstruction")),quote = FALSE, row.names = FALSE)
     }
 
     #d Graph reconstruction
@@ -2029,7 +2030,7 @@ sirir <- function(graph, vertices = V(graph),
 
     #ProgressBar: Calculation of the integrated value of influence (IVI)
     if(verbose) {
-      print("Calculation of the integrated value of influence (IVI)", quote = FALSE)
+      print(unname(as.data.frame("Calculation of the integrated value of influence (IVI)")),quote = FALSE, row.names = FALSE)
     }
 
     #e Calculation of IVI
@@ -2042,7 +2043,7 @@ sirir <- function(graph, vertices = V(graph),
 
     #ProgressBar: Calculation of the primitive driver score
     if(verbose) {
-      print("Calculation of the primitive driver score", quote = FALSE)
+      print(unname(as.data.frame("Calculation of the primitive driver score")),quote = FALSE, row.names = FALSE)
     }
 
     ## Driver score and ranking
@@ -2081,7 +2082,7 @@ sirir <- function(graph, vertices = V(graph),
 
     #ProgressBar: Calculation of the neighborhood driver score
     if(verbose) {
-      print("Calculation of the neighborhood driver score", quote = FALSE)
+      print(unname(as.data.frame("Calculation of the neighborhood driver score")),quote = FALSE, row.names = FALSE)
     }
 
     #b (#6) calculate neighborhood score
@@ -2108,7 +2109,7 @@ sirir <- function(graph, vertices = V(graph),
 
     #ProgressBar: Preparation of the driver table
     if(verbose) {
-      print("Preparation of the driver table", quote = FALSE)
+      print(unname(as.data.frame("Preparation of the driver table")),quote = FALSE, row.names = FALSE)
     }
 
     Diff_data$N.score <- 0
@@ -2146,7 +2147,7 @@ sirir <- function(graph, vertices = V(graph),
     }
 
     Driver.table <- Driver.table[Driver.table.row.index,]
-    if(nrow(Driver.table)==0) {Driver.table <- NULL} else {
+    if(nrow(base:as.data.frame(Driver.table))==0) {Driver.table <- NULL} else {
 
       #range normalize final driver score
       Driver.table$final.Driver.score <- 1+(((Driver.table$final.Driver.score-min(Driver.table$final.Driver.score))*(100-1))/
@@ -2183,7 +2184,7 @@ sirir <- function(graph, vertices = V(graph),
       #filtering redundant (NaN) results
       Driver.table <- Driver.table[stats::complete.cases(Driver.table),]
 
-      if(nrow(Driver.table)==0) {Driver.table <- NULL}
+      if(nrow(base:as.data.frame(Driver.table))==0) {Driver.table <- NULL}
 
     }
 
@@ -2194,7 +2195,7 @@ sirir <- function(graph, vertices = V(graph),
 
     #ProgressBar: Preparation of the DE-mediator table
     if(verbose) {
-      print("Preparation of the DE-mediator table", quote = FALSE)
+      print(unname(as.data.frame("Preparation of the DE-mediator table")),quote = FALSE, row.names = FALSE)
     }
 
     # Create the DE mediators table
@@ -2220,7 +2221,7 @@ sirir <- function(graph, vertices = V(graph),
     }
 
     DE.mediator.table <- DE.mediator.table[DE.mediator.row.index,]
-    if(nrow(DE.mediator.table)==0) {DE.mediator.table <- NULL} else {
+    if(nrow(base:as.data.frame(DE.mediator.table))==0) {DE.mediator.table <- NULL} else {
 
       #range normalize DE mediators score
       DE.mediator.table$DE.mediator.score <- 1+(((DE.mediator.table$DE.mediator.score-min(DE.mediator.table$DE.mediator.score))*(100-1))/
@@ -2238,7 +2239,7 @@ sirir <- function(graph, vertices = V(graph),
       #filtering redundant (NaN) results
       DE.mediator.table <- DE.mediator.table[stats::complete.cases(DE.mediator.table),]
 
-      if(nrow(DE.mediator.table)==0) {DE.mediator.table <- NULL}
+      if(nrow(base:as.data.frame(DE.mediator.table))==0) {DE.mediator.table <- NULL}
 
     }
 
@@ -2249,7 +2250,7 @@ sirir <- function(graph, vertices = V(graph),
 
     #ProgressBar: Preparation of the nonDE-mediator table
     if(verbose) {
-      print("Preparation of the nonDE-mediator table", quote = FALSE)
+      print(unname(as.data.frame("Preparation of the nonDE-mediator table")),quote = FALSE, row.names = FALSE)
     }
 
     # Create the non-DE mediators table
@@ -2257,7 +2258,7 @@ sirir <- function(graph, vertices = V(graph),
                                                           neighborehood.score.table$node)))
 
     non.DE.mediators.table <- neighborehood.score.table[-c(non.DE.mediators.index),]
-    if(nrow(non.DE.mediators.table)==0) {non.DE.mediators.table <- NULL} else {
+    if(nrow(base:as.data.frame(non.DE.mediators.table))==0) {non.DE.mediators.table <- NULL} else {
 
       #filter the non-DE mediators table by either the desired list or the list of network nodes
       if(!is.null(Desired_list)) {
@@ -2267,7 +2268,7 @@ sirir <- function(graph, vertices = V(graph),
       }
     }
 
-    if(nrow(non.DE.mediators.table)==0) {non.DE.mediators.table <- NULL} else {
+    if(nrow(base:as.data.frame(non.DE.mediators.table))==0) {non.DE.mediators.table <- NULL} else {
 
       rownames(non.DE.mediators.table) <- non.DE.mediators.table$node
 
@@ -2294,7 +2295,7 @@ sirir <- function(graph, vertices = V(graph),
       #filtering redundant (NaN) results
       non.DE.mediators.table <- non.DE.mediators.table[stats::complete.cases(non.DE.mediators.table),]
 
-      if(nrow(non.DE.mediators.table)==0) {non.DE.mediators.table <- NULL}
+      if(nrow(base:as.data.frame(non.DE.mediators.table))==0) {non.DE.mediators.table <- NULL}
 
     }
 
@@ -2305,7 +2306,7 @@ sirir <- function(graph, vertices = V(graph),
 
     #ProgressBar: Preparation of the biomarker table
     if(verbose) {
-      print("Preparation of the biomarker table", quote = FALSE)
+      print(unname(as.data.frame("Preparation of the biomarker table")),quote = FALSE, row.names = FALSE)
     }
 
     # Create the Biomarkers table
@@ -2321,7 +2322,7 @@ sirir <- function(graph, vertices = V(graph),
 
     Biomarker.table <- Biomarker.table[Biomarker.rf.index,]
 
-    if(nrow(Biomarker.table)==0) {Biomarker.table <- NULL} else {
+    if(nrow(base:as.data.frame(Biomarker.table))==0) {Biomarker.table <- NULL} else {
 
       #add RF importance score and p-value
       rf.for.Biomarker.table <- stats::na.omit(match(rownames(Biomarker.table),
@@ -2373,7 +2374,7 @@ sirir <- function(graph, vertices = V(graph),
       #filtering redundant (NaN) results
       Biomarker.table <- Biomarker.table[stats::complete.cases(Biomarker.table),]
 
-      if(nrow(Biomarker.table)==0) {Biomarker.table <- NULL}
+      if(nrow(base:as.data.frame(Biomarker.table))==0) {Biomarker.table <- NULL}
 
     }
 

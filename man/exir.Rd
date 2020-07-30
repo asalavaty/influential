@@ -30,7 +30,7 @@ or a list of dysregulated features with a specific sign.}
 \item{Diff_data}{A dataframe of all significant differential/regression data and their
 statistical significance values (p-value/adjusted p-value).
 You may have selected a proportion of the differential data as the significant ones according
-to your desired thresholds. A function, named diff_data.assembly, has also been
+to your desired thresholds. A function, named \code{\link[influential]{diff_data.assembly}}, has also been
 provided for the convenient assembling of the Diff_data dataframe.}
 
 \item{Diff_value}{An integer vector containing the column number(s) of the differential
@@ -53,9 +53,7 @@ Also, the prior normalization of the experimental data is highly recommended. Ot
 the user may set the Normalize argument to TRUE for a simple log2 transformation of the data.
 The experimental data could come from a variety sources such as transcriptomics and proteomics assays.}
 
-\item{Condition_colname}{A string or character vector specifying the name of the column "condition" of the Exptl_data dataframe. Please
-note that the column "condition" should have a "factor" class with correct levels. This can be easily achieved using \code{as.factor()} and
-\code{factor()} functions.}
+\item{Condition_colname}{A string or character vector specifying the name of the column "condition" of the Exptl_data dataframe.}
 
 \item{Normalize}{Logical; whether the experimental data should be normalized or not (default is FALSE). If TRUE, the
 experimental data will be log2 transformed.}
