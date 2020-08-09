@@ -22,8 +22,6 @@ An igraph graph object.
 }
 \description{
 This function and all of its descriptions have been obtained from the igraph package.
-For a complete description if the function and its arguments try this:
-?igraph::graph_from_data_frame
 }
 \examples{
 MyData <- coexpression.data
@@ -33,7 +31,8 @@ My_graph <- graph_from_data_frame(d=MyData)
 \code{\link[igraph]{graph_from_adjacency_matrix}} for a complete description on this function
 
 Other network_reconstruction functions: 
-\code{\link{graph_from_adjacency_matrix}()}
+\code{\link{graph_from_adjacency_matrix}()},
+\code{\link{graph_from_incidence_matrix}()}
 }
 \concept{network_reconstruction functions}
 \keyword{graph_from_dataframe}
