@@ -5,6 +5,22 @@ influential
 
 # influential 1.1.2.9000 (Developmental version)
 
+  - A new function named `exir.vis` is added for the visualization of
+    the results of the function `exir.`
+
+  - A new function named `cent_network.vis` is added for the
+    visualization of a network based on a centrality measure.
+
+  - A new function named `graph_from_incidence_matrix` is added
+    (imported from the *igraph* package) for the network reconstruction
+    from an incidence matrix.
+
+  - A new column named **Type** is added to the *Biomarker* tabel of the
+    function `ExIR`.
+
+  - The Z-score and statistical significance is added to the results of
+    function `ExIR`.
+
   - The function `ExIR` is upddated so that the experimental data are
     ranked prior to correlation analysis. This will result in the
     assessment of the association based on the Spearman method, a more
