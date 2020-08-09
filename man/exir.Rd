@@ -15,6 +15,7 @@ exir(
   Condition_colname,
   Normalize = FALSE,
   r = 0,
+  max.connections = 20000,
   alpha = 0.05,
   num_trees = 10000,
   num_permutations = 100,
@@ -60,6 +61,9 @@ experimental data will be log2 transformed.}
 
 \item{r}{The threshold of Pearson correlation coefficient for the selection of correlated features (default is 0).}
 
+\item{max.connections}{The maximum number of connections to be included in the association network.
+Higher max.connections might increase the computation time, cost, and accuracy of the results (default is 20000).}
+
 \item{alpha}{The threshold of the statistical significance (p-value) used throughout the entir model (default is 0.05)}
 
 \item{num_trees}{Number of trees to be used for the random forest classification (supervised machine learning) Default is set to 10000.}
@@ -78,7 +82,7 @@ A list of one to four tables including:
 
 - DE-mediator table: Top candidate differentially expressed/abundant mediators
 
-- nonDE-mediators table: Top candidate non-differentially expressed/abundant mediators
+- nonDE-mediator table: Top candidate non-differentially expressed/abundant mediators
 
 - Biomarker table: Top candidate biomarkers
 
