@@ -74,6 +74,8 @@ set different shapes to different groups of nodes by providing a character vecto
 the same length and order of network vertices. This is useful when plotting a network that include different
 type of node (for example, up- and down-regulated features).}
 
+\item{stroke.size}{The size of stroke (border) around the nodes (default is set to 1.5).}
+
 \item{stroke.color}{The color of stroke (border) around the nodes (default is set to "identical" meaning that the
 stroke color of a node will be identical to its corresponding node color). You can also
 set different colors to different groups of nodes by providing a character vector of colors of nodes with
@@ -130,8 +132,6 @@ The default is set to "vertical".}
 
 \item{seed}{A single value, interpreted as an integer to be used for random number generation for preparing
 the network layout (default is set to 1234).}
-
-\item{stroke.siz}{The size of stroke (border) around the nodes (default is set to 1.5).}
 }
 \value{
 A plot with the class ggplot.

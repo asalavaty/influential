@@ -60,6 +60,8 @@ different types of candidates. You may choose one of the Viridis palettes includ
 "inferno" (or "B"), "plasma" (or "C"), "viridis" (or "D", the default option) and "cividis" (or "E"), use a function specifying
 your desired palette, or manually specify the vector of colors for different types.}
 
+\item{stroke.size}{The size of stroke (border) around the dots (default is set to 1.5).}
+
 \item{stroke.alpha}{The transparency of the stroke (border) around the dots which should
 be a number between 0 and 1 (default is set to 1).}
 
@@ -90,8 +92,6 @@ The default is set to "vertical".}
 \item{y.axis.title}{The title of the y axis (features title). Default is set to "Features".}
 
 \item{show.y.axis.grid}{Logical scalar, whether to draw y axis grid lines (default is set to TRUE).}
-
-\item{stroke.siz}{The size of stroke (border) around the dots (default is set to 1.5).}
 }
 \value{
 A plot with the class ggplot.
