@@ -2633,7 +2633,7 @@ sirir <- function(graph, vertices = V(graph),
   #' set different shapes to different groups of nodes by providing a character vector of shapes of nodes with
   #' the same length and order of network vertices. This is useful when plotting a network that include different
   #' type of node (for example, up- and down-regulated features).
-  #' @param stroke.siz The size of stroke (border) around the nodes (default is set to 1.5).
+  #' @param stroke.size The size of stroke (border) around the nodes (default is set to 1.5).
   #' @param stroke.color The color of stroke (border) around the nodes (default is set to "identical" meaning that the
   #' stroke color of a node will be identical to its corresponding node color). You can also
   #' set different colors to different groups of nodes by providing a character vector of colors of nodes with
@@ -2834,23 +2834,23 @@ sirir <- function(graph, vertices = V(graph),
   ####*******************************####
 
   # draw the plot
-  temp.plot <- ggplot2::ggplot(data = plotcord, aes(X, Y))
+  temp.plot <- ggplot2::ggplot(data = plotcord, ggplot2::aes(x = X, y = Y))
 
   ##***********##
 
     # add the edges
   if(directed) {
     temp.plot <- temp.plot +
-      ggplot2::geom_segment(data=edges.cord, aes(x=X1, y=Y1, xend = X2, yend = Y2),
+      ggplot2::geom_segment(data=edges.cord, ggplot2::aes(x=X1, y=Y1, xend = X2, yend = Y2),
                             size = edges.cord$Weight,
-                            arrow = arrow(angle = arrow.width,
-                                          length = unit(arrow.length, "in"),
+                            arrow = ggplot2::arrow(angle = arrow.width,
+                                          length = ggplot2::unit(arrow.length, "in"),
                                           type = "closed"),
                             colour = edge.color,
                             linetype = edge.linetype)
   } else {
     temp.plot <- temp.plot +
-      ggplot2::geom_segment(data=edges.cord, aes(x=X1, y=Y1, xend = X2, yend = Y2),
+      ggplot2::geom_segment(data=edges.cord, ggplot2::aes(x=X1, y=Y1, xend = X2, yend = Y2),
                             size = edges.cord$Weight,
                             colour = edge.color,
                             linetype = edge.linetype)
@@ -2881,7 +2881,7 @@ sirir <- function(graph, vertices = V(graph),
   # add stroke color
   if(stroke.color == "identical") {
     temp.plot <- temp.plot +
-      ggplot2::geom_point(data = plotcord, aes(X, Y, colour = cent.metric),
+      ggplot2::geom_point(data = plotcord, ggplot2::aes(x = X, y = Y, colour = cent.metric),
                           shape = node.shape,
                           size = plotcord$Node.size,
                           stroke = stroke.size,
@@ -2891,7 +2891,7 @@ sirir <- function(graph, vertices = V(graph),
                                      begin = 0.15)
   } else {
     temp.plot <- temp.plot +
-      ggplot2::geom_point(data = plotcord, aes(X, Y),
+      ggplot2::geom_point(data = plotcord, ggplot2::aes(x = X, y = Y),
                           shape = node.shape,
                           colour = stroke.color,
                           size = plotcord$Node.size,
@@ -2902,7 +2902,7 @@ sirir <- function(graph, vertices = V(graph),
 
   # add node objects
   temp.plot <- temp.plot +
-    ggplot2::geom_point(data = plotcord, aes(X, Y, fill = cent.metric),
+    ggplot2::geom_point(data = plotcord, ggplot2::aes(x = X, y = Y, fill = cent.metric),
                         shape = node.shape,
                         stroke = 0,
                         size = plotcord$Node.size) +
@@ -2917,7 +2917,7 @@ sirir <- function(graph, vertices = V(graph),
 
     # add node labels
       ggplot2::geom_text(data = plotcord,
-              aes(X, Y, label=Node.name),
+                         ggplot2::aes(x = X, y = Y, label=Node.name),
               size = plotcord$Node.size*label.cex,
               color = label.color) +
 
@@ -3019,7 +3019,7 @@ sirir <- function(graph, vertices = V(graph),
   #' different types of candidates. You may choose one of the Viridis palettes including "magma" (or "A"),
   #' "inferno" (or "B"), "plasma" (or "C"), "viridis" (or "D", the default option) and "cividis" (or "E"), use a function specifying
   #' your desired palette, or manually specify the vector of colors for different types.
-  #' @param stroke.siz The size of stroke (border) around the dots (default is set to 1.5).
+  #' @param stroke.size The size of stroke (border) around the dots (default is set to 1.5).
   #' @param stroke.alpha The transparency of the stroke (border) around the dots which should
   #' be a number between 0 and 1 (default is set to 1).
   #' @param dot.color.low The color to be used for the visualization of dots (features) with the lowest Z-score values (default is set to "blue").
@@ -3341,7 +3341,7 @@ sirir <- function(graph, vertices = V(graph),
                                       ggplot2::aes(x = Rank, y = Feature)) +
 
       # add node objects
-      ggplot2::geom_point(aes(fill = Z.score,
+      ggplot2::geom_point(ggplot2::aes(fill = Z.score,
                               colour = Type,
                               size = P.adj),
                           shape = 21,
@@ -3351,7 +3351,7 @@ sirir <- function(graph, vertices = V(graph),
       ##***********##
 
       # add color of Type
-      ggplot2::geom_point(aes(colour = Type,
+      ggplot2::geom_point(ggplot2::aes(colour = Type,
                               size = P.adj),
                           shape = 21,
                           stroke = stroke.size,
@@ -3423,10 +3423,10 @@ sirir <- function(graph, vertices = V(graph),
                      legend.position = legend.position,
                      legend.direction = legend.direction) +
 
-      ggplot2::guides(colour = guide_legend(keyheight = 1.5),
-                      fill = guide_colorbar(frame.colour = "black",
+      ggplot2::guides(colour = ggplot2::guide_legend(keyheight = 1.5),
+                      fill = ggplot2::guide_colorbar(frame.colour = "black",
                                             barwidth = 1.5),
-                      size = guide_legend(title = "Statistical\nsignificance"))
+                      size = ggplot2::guide_legend(title = "Statistical\nsignificance"))
 
     if(boxed.legend) {
       temp.exir.plot <- temp.exir.plot +
@@ -3506,3 +3506,22 @@ sirir <- function(graph, vertices = V(graph),
     return(temp.exir.plot)
   }
 
+#=============================================================================
+#
+#    Code chunk ∞: Required global variables
+#
+#=============================================================================
+
+  utils::globalVariables(c("Feature",
+                           "Node.name",
+                           "P.adj",
+                           "Rank",
+                           "Type",
+                           "X",
+                           "X1",
+                           "X2",
+                           "Y",
+                           "Y1",
+                           "Y2",
+                           "Z.score"
+                           ))
