@@ -88,6 +88,8 @@ NULL
 #' @aliases NC
 #' @keywords neighborhood_connectivity
 #' @family centrality functions
+#' @seealso \code{\link[influential]{ivi}},
+#' \code{\link[influential]{cent_network.vis}}
 #' @export neighborhood.connectivity
 #' @examples
 #' MyData <- coexpression.data
@@ -163,7 +165,8 @@ neighborhood.connectivity <- function(graph, vertices = V(graph), mode = "all") 
 #' @aliases h.index
 #' @keywords h_index
 #' @family centrality functions
-#' @seealso \code{\link[influential]{lh_index}}
+#' @seealso \code{\link[influential]{ivi}},
+#' \code{\link[influential]{cent_network.vis}}
 #' @export h_index
 #' @examples
 #' \dontrun{
@@ -236,6 +239,8 @@ neighborhood.connectivity <- function(graph, vertices = V(graph), mode = "all") 
   #' @aliases lh.index
   #' @keywords lh_index
   #' @family centrality functions
+  #' @seealso \code{\link[influential]{ivi}},
+  #' \code{\link[influential]{cent_network.vis}}
   #' @export lh_index
   #' @examples
   #' \dontrun{
@@ -299,6 +304,8 @@ neighborhood.connectivity <- function(graph, vertices = V(graph), mode = "all") 
   #' @aliases CI
   #' @keywords collective.influence
   #' @family centrality functions
+  #' @seealso \code{\link[influential]{ivi}},
+  #' \code{\link[influential]{cent_network.vis}}
   #' @export collective.influence
   #' @examples
   #' MyData <- coexpression.data
@@ -356,6 +363,8 @@ neighborhood.connectivity <- function(graph, vertices = V(graph), mode = "all") 
   #' @aliases CR
   #' @keywords clusterRank
   #' @family centrality functions
+  #' @seealso \code{\link[influential]{ivi}},
+  #' \code{\link[influential]{cent_network.vis}}
   #' @export clusterRank
   #' @examples
   #' MyData <- coexpression.data
@@ -1031,8 +1040,7 @@ double.cent.assess.noRegression <- function(data, nodes.colname,
 #' @aliases IVI.FI
 #' @keywords ivi.from.indices
 #' @family integrative ranking functions
-#' @seealso \code{\link[influential]{ivi}},
-#' \code{\link[influential]{exir}}
+#' @seealso \code{\link[influential]{cent_network.vis}}
 #' @export ivi.from.indices
 #' @examples
 #' MyData <- centrality.measures
@@ -1140,8 +1148,7 @@ ivi.from.indices <- function(DC, CR, LH_index, NC, BC, CI, scaled = TRUE) {
 #' @aliases IVI
 #' @keywords IVI integrated_value_of_influence
 #' @family integrative ranking functions
-#' @seealso \code{\link[influential]{ivi.from.indices}},
-#' \code{\link[influential]{exir}}
+#' @seealso \code{\link[influential]{cent_network.vis}}
 #' @export ivi
 #' @examples
 #' \dontrun{
@@ -1261,7 +1268,7 @@ ivi <- function(graph, vertices = V(graph), weights = NULL, directed = FALSE,
 #' @return A numeric vector with Spreading scores.
 #' @keywords spreading.score
 #' @family integrative ranking functions
-#' @seealso \code{\link[influential]{hubness.score}}
+#' @seealso \code{\link[influential]{cent_network.vis}}
 #' @export spreading.score
 #' @examples
 #' \dontrun{
@@ -1355,7 +1362,7 @@ spreading.score <- function(graph, vertices = V(graph), weights = NULL, directed
 #' @return A numeric vector with the Hubness scores.
 #' @keywords hubness.score
 #' @family integrative ranking functions
-#' @seealso \code{\link[influential]{spreading.score}}
+#' @seealso \code{\link[influential]{cent_network.vis}}
 #' @export hubness.score
 #' @examples
 #' \dontrun{
@@ -1437,7 +1444,8 @@ hubness.score <- function(graph, vertices = V(graph), directed = FALSE,
 #' perturbed networks and a column containing node influence rankings
 #' @aliases SIRIR
 #' @keywords sirir
-#' @seealso \code{\link[igraph]{sir}} for a complete description on SIR model.
+#' @seealso \code{\link[influential]{cent_network.vis}},
+#' and \code{\link[igraph]{sir}} for a complete description on SIR model
 #' @export sirir
 #' @examples
 #' set.seed(1234)
@@ -1645,7 +1653,9 @@ sirir <- function(graph, vertices = V(graph),
   #' @aliases BC
   #' @keywords betweenness_centrality
   #' @family centrality functions
-  #' @seealso \code{\link[igraph]{betweenness}} for a complete description on this function
+  #' @seealso \code{\link[influential]{ivi}},
+  #' \code{\link[influential]{cent_network.vis}},
+  #' and \code{\link[igraph]{betweenness}} for a complete description on this function
   #' @export betweenness
   #' @examples
   #' MyData <- coexpression.data
@@ -1673,7 +1683,9 @@ sirir <- function(graph, vertices = V(graph),
   #' @aliases DC
   #' @keywords degree_centrality
   #' @family centrality functions
-  #' @seealso \code{\link[igraph]{degree}} for a complete description on this function
+  #' @seealso \code{\link[influential]{ivi}},
+  #' \code{\link[influential]{cent_network.vis}},
+  #' and \code{\link[igraph]{degree}} for a complete description on this function
   #' @export degree
   #' @examples
   #' MyData <- coexpression.data
@@ -1693,13 +1705,13 @@ sirir <- function(graph, vertices = V(graph),
   #'
   #' This function imports and converts a SIF file from your local hard drive, cloud space,
   #' or internet into a graph with an igraph class, which can then be used for the identification
-  #' of most influential nodes via the ivi function.
+  #' of most influential nodes via the ivi function, for instance.
   #' @param Path A string or character vector indicating the path to the desired SIF file. The SIF file
   #' could be on your local hard drive, cloud space, or on the internet.
   #' @param directed Logical scalar, whether or not to create a directed graph.
   #' @return An igraph graph object.
   #' @keywords SIF.to.igraph
-  #' @seealso \code{\link[influential]{graph_from_data_frame}}
+  #' @family network_reconstruction functions
   #' @export sif2igraph
   #' @examples
   #' \dontrun{
@@ -1771,8 +1783,8 @@ sirir <- function(graph, vertices = V(graph),
   #' @aliases ExIR
   #' @keywords exir
   #' @family integrative ranking functions
-  #' @seealso \code{\link[influential]{diff_data.assembly}},
-  #' \code{\link[influential]{ivi}},
+  #' @seealso \code{\link[influential]{exir.vis}},
+  #' \code{\link[influential]{diff_data.assembly}},
   #' \code{\link[coop]{pcor}},
   #' \code{\link[stats]{prcomp}},
   #' \code{\link[ranger]{ranger}},

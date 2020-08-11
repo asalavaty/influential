@@ -54,7 +54,8 @@ My_graph <- graph_from_adjacency_matrix(MyData)
 
 Other network_reconstruction functions: 
 \code{\link{graph_from_data_frame}()},
-\code{\link{graph_from_incidence_matrix}()}
+\code{\link{graph_from_incidence_matrix}()},
+\code{\link{sif2igraph}()}
 }
 \concept{network_reconstruction functions}
 \keyword{graph_from_adjacencymatrices}

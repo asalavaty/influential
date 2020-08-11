@@ -50,7 +50,7 @@ Hubness.score <- hubness.score(graph = My_graph, vertices = GraphVertices,
 }
 }
 \seealso{
-\code{\link[influential]{spreading.score}}
+\code{\link[influential]{cent_network.vis}}
 
 Other integrative ranking functions: 
 \code{\link{exir}()},

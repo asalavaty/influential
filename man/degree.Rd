@@ -40,7 +40,9 @@ GraphVertices <- V(My_graph)
 My_graph_degree <- degree(My_graph, v = GraphVertices, normalized = FALSE)
 }
 \seealso{
-\code{\link[igraph]{degree}} for a complete description on this function
+\code{\link[influential]{ivi}},
+\code{\link[influential]{cent_network.vis}},
+and \code{\link[igraph]{degree}} for a complete description on this function
 
 Other centrality functions: 
 \code{\link{betweenness}()},

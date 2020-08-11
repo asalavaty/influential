@@ -62,8 +62,7 @@ My.vertices.IVI <- ivi(graph = My_graph, vertices = GraphVertices,
 }
 }
 \seealso{
-\code{\link[influential]{ivi.from.indices}},
-\code{\link[influential]{exir}}
+\code{\link[influential]{cent_network.vis}}
 
 Other integrative ranking functions: 
 \code{\link{exir}()},

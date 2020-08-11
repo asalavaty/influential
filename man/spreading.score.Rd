@@ -63,7 +63,7 @@ Spreading.score <- spreading.score(graph = My_graph, vertices = GraphVertices,
 }
 }
 \seealso{
-\code{\link[influential]{hubness.score}}
+\code{\link[influential]{cent_network.vis}}
 
 Other integrative ranking functions: 
 \code{\link{exir}()},

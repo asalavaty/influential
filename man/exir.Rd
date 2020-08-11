@@ -94,8 +94,8 @@ model for the classification and ranking of top candidate features. The input
 data could come from any type of experiment such as transcriptomics and proteomics.
 }
 \seealso{
+\code{\link[influential]{exir.vis}},
 \code{\link[influential]{diff_data.assembly}},
-\code{\link[influential]{ivi}},
 \code{\link[coop]{pcor}},
 \code{\link[stats]{prcomp}},
 \code{\link[ranger]{ranger}},

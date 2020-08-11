@@ -41,8 +41,7 @@ My.vertices.IVI <- ivi.from.indices(DC = centrality.measures$DC,
                                     CI = centrality.measures$CI)
 }
 \seealso{
-\code{\link[influential]{ivi}},
-\code{\link[influential]{exir}}
+\code{\link[influential]{cent_network.vis}}
 
 Other integrative ranking functions: 
 \code{\link{exir}()},

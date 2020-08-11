@@ -44,7 +44,9 @@ My_graph_betweenness <- betweenness(My_graph, v = GraphVertices,
                         directed = FALSE, normalized = FALSE)
 }
 \seealso{
-\code{\link[igraph]{betweenness}} for a complete description on this function
+\code{\link[influential]{ivi}},
+\code{\link[influential]{cent_network.vis}},
+and \code{\link[igraph]{betweenness}} for a complete description on this function
 
 Other centrality functions: 
 \code{\link{clusterRank}()},

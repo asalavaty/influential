@@ -51,6 +51,7 @@ Influence.Ranks <- sirir(graph = My_graph, vertices = GraphVertices,
                          beta = 0.5, gamma = 1, no.sim = 10, seed = 1234)
 }
 \seealso{
-\code{\link[igraph]{sir}} for a complete description on SIR model.
+\code{\link[influential]{cent_network.vis}},
+and \code{\link[igraph]{sir}} for a complete description on SIR model
 }
 \keyword{sirir}
