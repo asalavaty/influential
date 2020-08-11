@@ -1427,7 +1427,8 @@ hubness.score <- function(graph, vertices = V(graph), directed = FALSE,
 #' This function is achieved by the integration susceptible-infected-recovered (SIR) model
 #' with the leave-one-out cross validation technique and ranks network nodes based on their
 #' true universal influence. One of the applications of this function is the assessment of
-#' performance of a novel algorithm in identification of network influential nodes.
+#' performance of a novel algorithm in identification of network influential nodes by considering
+#' the SIRIR ranks as the ground truth (gold standard).
 #' @param graph A graph (network) of the igraph class.
 #' @param vertices A vector of desired vertices, which could be obtained by the V function.
 #' @param beta Non-negative scalar. The rate of infection of an individual that is susceptible
@@ -1444,6 +1445,7 @@ hubness.score <- function(graph, vertices = V(graph), directed = FALSE,
 #' perturbed networks and a column containing node influence rankings
 #' @aliases SIRIR
 #' @keywords sirir
+#' @family centrality functions
 #' @seealso \code{\link[influential]{cent_network.vis}},
 #' and \code{\link[igraph]{sir}} for a complete description on SIR model
 #' @export sirir

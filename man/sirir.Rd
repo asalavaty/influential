@@ -41,7 +41,8 @@ perturbed networks and a column containing node influence rankings
 This function is achieved by the integration susceptible-infected-recovered (SIR) model
 with the leave-one-out cross validation technique and ranks network nodes based on their
 true universal influence. One of the applications of this function is the assessment of
-performance of a novel algorithm in identification of network influential nodes.
+performance of a novel algorithm in identification of network influential nodes by considering
+the SIRIR ranks as the ground truth (gold standard).
 }
 \examples{
 set.seed(1234)
@@ -53,5 +54,15 @@ Influence.Ranks <- sirir(graph = My_graph, vertices = GraphVertices,
 \seealso{
 \code{\link[influential]{cent_network.vis}},
 and \code{\link[igraph]{sir}} for a complete description on SIR model
+
+Other centrality functions: 
+\code{\link{betweenness}()},
+\code{\link{clusterRank}()},
+\code{\link{collective.influence}()},
+\code{\link{degree}()},
+\code{\link{h_index}()},
+\code{\link{lh_index}()},
+\code{\link{neighborhood.connectivity}()}
 }
+\concept{centrality functions}
 \keyword{sirir}

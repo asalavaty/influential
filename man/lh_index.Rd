@@ -43,7 +43,8 @@ Other centrality functions:
 \code{\link{collective.influence}()},
 \code{\link{degree}()},
 \code{\link{h_index}()},
-\code{\link{neighborhood.connectivity}()}
+\code{\link{neighborhood.connectivity}()},
+\code{\link{sirir}()}
 }
 \concept{centrality functions}
 \keyword{lh_index}

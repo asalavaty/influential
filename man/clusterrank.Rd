@@ -42,7 +42,8 @@ Other centrality functions:
 \code{\link{degree}()},
 \code{\link{h_index}()},
 \code{\link{lh_index}()},
-\code{\link{neighborhood.connectivity}()}
+\code{\link{neighborhood.connectivity}()},
+\code{\link{sirir}()}
 }
 \concept{centrality functions}
 \keyword{clusterRank}
