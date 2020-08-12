@@ -2655,6 +2655,7 @@ sirir <- function(graph, vertices = V(graph),
   #' type of node (for example, up- and down-regulated features).
   #' @param stroke.alpha The transparency of the stroke (border) around the nodes which should
   #' be a number between 0 and 1 (default is set to 0.6).
+  #' @param show.labels Logical scalar, whether to show node labels or not (default is set to TRUE).
   #' @param label.cex The amount by which node labels should be scaled relative to the node sizes (default is set to 0.4).
   #' @param label.color The color of node labels (default is set to "black").
   #' @param directed Logical scalar, whether to draw the network as directed or not (default is set to FALSE).
@@ -2707,6 +2708,7 @@ sirir <- function(graph, vertices = V(graph),
                                stroke.size = 1.5,
                                stroke.color = "identical",
                                stroke.alpha = 0.6,
+                               show.labels = TRUE,
                                label.cex = 0.4,
                                label.color = "black",
                                directed = FALSE,
@@ -2925,19 +2927,22 @@ sirir <- function(graph, vertices = V(graph),
 
     # add node color
     ggplot2::scale_fill_viridis_c(option = node.color,
-                                  begin = 0.15) +
+                                  begin = 0.15)
 
     ##***********##
 
     # add node labels
-      ggplot2::geom_text(data = plotcord,
-                         ggplot2::aes(x = X, y = Y, label=Node.name),
-              size = plotcord$Node.size*label.cex,
-              color = label.color) +
+    if(show.labels) {
+      temp.plot <- temp.plot +
+        ggplot2::geom_text(data = plotcord,
+                           ggplot2::aes(x = X, y = Y, label=Node.name),
+                           size = plotcord$Node.size*label.cex,
+                           color = label.color)
+    }
 
       ##***********##
-
-      # expand the x and y limits
+    # expand the x and y limits
+    temp.plot <- temp.plot +
     ggplot2::scale_x_continuous(expand=c(0,1)) +
     ggplot2::scale_y_continuous(expand=c(0,1))
 

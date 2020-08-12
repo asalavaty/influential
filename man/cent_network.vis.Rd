@@ -16,6 +16,7 @@ cent_network.vis(
   stroke.size = 1.5,
   stroke.color = "identical",
   stroke.alpha = 0.6,
+  show.labels = TRUE,
   label.cex = 0.4,
   label.color = "black",
   directed = FALSE,
@@ -84,6 +85,8 @@ type of node (for example, up- and down-regulated features).}
 
 \item{stroke.alpha}{The transparency of the stroke (border) around the nodes which should
 be a number between 0 and 1 (default is set to 0.6).}
+
+\item{show.labels}{Logical scalar, whether to show node labels or not (default is set to TRUE).}
 
 \item{label.cex}{The amount by which node labels should be scaled relative to the node sizes (default is set to 0.4).}
 
