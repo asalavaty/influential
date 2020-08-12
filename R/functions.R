@@ -1828,6 +1828,9 @@ sirir <- function(graph, vertices = V(graph),
     Diff_data <- as.data.frame(Diff_data)
     Exptl_data <- as.data.frame(Exptl_data)
 
+    #remove the colnames of Diff_data
+    base::colnames(Diff_data) <- NULL
+
     # Get the column number of condition column
     condition.index <- match(Condition_colname, colnames(Exptl_data))
 
@@ -2153,7 +2156,7 @@ sirir <- function(graph, vertices = V(graph),
     #b (#6) calculate neighborhood score
 
     #get the list of network nodes
-    network.nodes <- igraph::as_ids(igraph::V(temp.corr.graph))
+    network.nodes <- base::as.character(igraph::as_ids(V(temp.corr.graph)))
 
     neighborehood.score.table <- data.frame(node = network.nodes,
                                             N.score = 0)
@@ -2202,16 +2205,13 @@ sirir <- function(graph, vertices = V(graph),
     #remove the rows/features with NA in the final driver score
     Driver.table <- Driver.table[stats::complete.cases(Driver.table),]
 
-    #filter the driver table by either the desired list or the list of network nodes
+    #filter the driver table by the desired list (if provided)
     if(!is.null(Desired_list)) {
       Driver.table.row.index <- stats::na.omit(match(Desired_list,
                                                      rownames(Driver.table)))
-    } else {
-      Driver.table.row.index <- stats::na.omit(match(network.nodes,
-                                                     rownames(Driver.table)))
+      Driver.table <- Driver.table[Driver.table.row.index,]
     }
 
-    Driver.table <- Driver.table[Driver.table.row.index,]
     if(nrow(as.data.frame(Driver.table))==0) {Driver.table <- NULL} else {
 
       #range normalize final driver score
