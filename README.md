@@ -108,10 +108,15 @@ print(head(My.vertices.IVI))
 
 ## How to cite `influential`
 
-To cite `influential`, please cite the [**associated
-paper**](https://doi.org/10.1016/j.patter.2020.100052). You can also
-refer to the package’s citation information using the citation()
-function.
+To cite `influential`, please cite its associated paper:
+
+  - Integrated Value of Influence: An Integrative Method for the
+    Identification of the Most Influential Nodes within Networks. Abbas
+    Salavaty, Mirana Ramialison, Peter D Currie. *Patterns*. 2020.08.14
+    ([Read online](https://doi.org/10.1016/j.patter.2020.100052)).
+
+You can also refer to the package’s citation information using the
+`citation()` function.
 
 ``` r
 citation("influential")
