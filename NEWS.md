@@ -5,6 +5,12 @@ influential
 
 # influential 1.1.2.9000 (Developmental version)
 
+  - The ReadMe file is updated.
+
+  - The citation details of the package is updated.
+
+  - Vignettes of the package are updated and extended.
+
   - A new function named `exir.vis` is added for the visualization of
     the results of the function `exir.`
 
