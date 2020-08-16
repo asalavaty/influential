@@ -29,7 +29,8 @@ instance, a list of features obtained from cluster analysis, time-course analysi
 or a list of dysregulated features with a specific sign.}
 
 \item{Diff_data}{A dataframe of all significant differential/regression data and their
-statistical significance values (p-value/adjusted p-value).
+statistical significance values (p-value/adjusted p-value). Note that the differential data
+should be in the log fold-change (log2FC) format.
 You may have selected a proportion of the differential data as the significant ones according
 to your desired thresholds. A function, named \code{\link[influential]{diff_data.assembly}}, has also been
 provided for the convenient assembling of the Diff_data dataframe.}

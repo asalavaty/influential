@@ -1739,7 +1739,8 @@ sirir <- function(graph, vertices = V(graph),
   #' instance, a list of features obtained from cluster analysis, time-course analysis,
   #' or a list of dysregulated features with a specific sign.
   #' @param Diff_data A dataframe of all significant differential/regression data and their
-  #' statistical significance values (p-value/adjusted p-value).
+  #' statistical significance values (p-value/adjusted p-value). Note that the differential data
+  #' should be in the log fold-change (log2FC) format.
   #' You may have selected a proportion of the differential data as the significant ones according
   #' to your desired thresholds. A function, named \code{\link[influential]{diff_data.assembly}}, has also been
   #' provided for the convenient assembling of the Diff_data dataframe.
@@ -1830,6 +1831,18 @@ sirir <- function(graph, vertices = V(graph),
 
     #remove the colnames of Diff_data
     base::colnames(Diff_data) <- NULL
+
+    #change the Inf/-Inf diff values (applicable to sc-Data)
+    for(i in 1:base::length(Diff_value)) {
+      for(s in 1:base::nrow(Diff_data)) {
+        if(Exptl_data[s,Diff_value[i]] == Inf) {
+          Exptl_data[s,Diff_value[i]] <-
+            (10^10)*base::max(base::abs(Exptl_data[,Diff_value[i]][!base::is.infinite(Exptl_data[,Diff_value[i]])]))
+        } else if(Exptl_data[s,Diff_value[i]] == -Inf) {
+          -1*(10^10)*base::max(base::abs(Exptl_data[,Diff_value[i]][!base::is.infinite(Exptl_data[,Diff_value[i]])]))
+        }
+      }
+    }
 
     # Get the column number of condition column
     condition.index <- match(Condition_colname, colnames(Exptl_data))
