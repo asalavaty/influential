@@ -1770,6 +1770,13 @@ sirir <- function(graph, vertices = V(graph),
   #' @param num_trees Number of trees to be used for the random forest classification (supervised machine learning) Default is set to 10000.
   #' @param num_permutations Number of permutations to be used for computation of the statistical significances (p-values) of
   #' the importance scores resulted from random forest classification (default is 100).
+  #' @param inf_const The constant value to be multiplied by the maximum absolute value of differential (logFC)
+  #' values for the substitution with infinite differential values. This results in noticeably high biomarker values for features
+  #' with infinite differential values compared with other features. Having said that, the user can still use the
+  #' biomarker rank to compare all of the features. This parameter is ignored if no infinite value
+  #' is present within Diff_data. However, this is used in the case of sc-seq experiments where some genes are uniquely
+  #' expressed in a specific cell-type and consequently get infinite differential values. Note that the sign of differential
+  #' value is preserved (default is 10^10).
   #' @param seed The seed to be used for all of the random processes throughout the model (default is 1234).
   #' @param verbose Logical; whether the accomplishment of different stages of the model should be printed (default is TRUE).
   #' @return A list of one to four tables including:
@@ -1812,7 +1819,7 @@ sirir <- function(graph, vertices = V(graph),
                    Exptl_data, Condition_colname, Normalize = FALSE,
                    r = 0, max.connections = 20000, alpha = 0.05,
                    num_trees = 10000, num_permutations = 100,
-                   seed = 1234, verbose = TRUE) {
+                   inf_const = 10^10, seed = 1234, verbose = TRUE) {
 
     # Setup progress bar
     if(verbose) {
@@ -1834,13 +1841,25 @@ sirir <- function(graph, vertices = V(graph),
 
     #change the Inf/-Inf diff values (applicable to sc-Data)
     for(i in 1:base::length(Diff_value)) {
+
+      if(any(base::is.infinite(Diff_data[,Diff_value[i]]))) {
+
+        temp.max.abs.diff.value <-
+      base::max(base::abs(Diff_data[,Diff_value[i]][!base::is.infinite(Diff_data[,Diff_value[i]])]))
+
       for(s in 1:base::nrow(Diff_data)) {
-        if(Exptl_data[s,Diff_value[i]] == Inf) {
-          Exptl_data[s,Diff_value[i]] <-
-            (10^10)*base::max(base::abs(Exptl_data[,Diff_value[i]][!base::is.infinite(Exptl_data[,Diff_value[i]])]))
-        } else if(Exptl_data[s,Diff_value[i]] == -Inf) {
-          -1*(10^10)*base::max(base::abs(Exptl_data[,Diff_value[i]][!base::is.infinite(Exptl_data[,Diff_value[i]])]))
+
+        if(Diff_data[s,Diff_value[i]] == Inf) {
+
+          Diff_data[s,Diff_value[i]] <-
+            temp.max.abs.diff.value*inf_const
+
+        } else if(Diff_data[s,Diff_value[i]] == -Inf) {
+
+          Diff_data[s,Diff_value[i]] <-
+          -1*temp.max.abs.diff.value*inf_const
         }
+      }
       }
     }
 

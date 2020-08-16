@@ -19,6 +19,7 @@ exir(
   alpha = 0.05,
   num_trees = 10000,
   num_permutations = 100,
+  inf_const = 10^10,
   seed = 1234,
   verbose = TRUE
 )
@@ -71,6 +72,14 @@ Higher max.connections might increase the computation time, cost, and accuracy o
 
 \item{num_permutations}{Number of permutations to be used for computation of the statistical significances (p-values) of
 the importance scores resulted from random forest classification (default is 100).}
+
+\item{inf_const}{The constant value to be multiplied by the maximum absolute value of differential (logFC)
+values for the substitution with infinite differential values. This results in noticeably high biomarker values for features
+with infinite differential values compared with other features. Having said that, the user can still use the
+biomarker rank to compare all of the features. This parameter is ignored if no infinite value
+is present within Diff_data. However, this is used in the case of sc-seq experiments where some genes are uniquely
+expressed in a specific cell-type and consequently get infinite differential values. Note that the sign of differential
+value is preserved (default is 10^10).}
 
 \item{seed}{The seed to be used for all of the random processes throughout the model (default is 1234).}
 
