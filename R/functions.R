@@ -1836,8 +1836,10 @@ sirir <- function(graph, vertices = V(graph),
     Diff_data <- as.data.frame(Diff_data)
     Exptl_data <- as.data.frame(Exptl_data)
 
-    #remove the colnames of Diff_data
-    base::colnames(Diff_data) <- NULL
+    #change the colnames of Diff_data
+    base::colnames(Diff_data) <- base::paste("source",
+                                             base::colnames(Diff_data),
+                                             sep = ".")
 
     #change the Inf/-Inf diff values (applicable to sc-Data)
     for(i in 1:base::length(Diff_value)) {
@@ -1847,19 +1849,12 @@ sirir <- function(graph, vertices = V(graph),
         temp.max.abs.diff.value <-
       base::max(base::abs(Diff_data[,Diff_value[i]][!base::is.infinite(Diff_data[,Diff_value[i]])]))
 
-      for(s in 1:base::nrow(Diff_data)) {
+        temp.inf.index <- base::which(base::is.infinite(Diff_data[,Diff_value[i]]))
 
-        if(Diff_data[s,Diff_value[i]] == Inf) {
-
-          Diff_data[s,Diff_value[i]] <-
-            temp.max.abs.diff.value*inf_const
-
-        } else if(Diff_data[s,Diff_value[i]] == -Inf) {
-
-          Diff_data[s,Diff_value[i]] <-
-          -1*temp.max.abs.diff.value*inf_const
-        }
-      }
+        Diff_data[temp.inf.index, Diff_value[i]] <-
+          base::ifelse(base::unlist(Diff_data[temp.inf.index,Diff_value[i]]) > 0,
+                 temp.max.abs.diff.value*inf_const,
+                 -1*temp.max.abs.diff.value*inf_const)
       }
     }
 
@@ -1923,11 +1918,13 @@ sirir <- function(graph, vertices = V(graph),
       stop("input Sig-values (p-value/padj) must all be in the range 0 to 1!")
     }
 
-    if(min(Diff_data[,Sig_value])==0) {
-      Diff_data[,Sig_value, drop = FALSE] <- Diff_data[,Sig_value, drop = FALSE] + sort(as.matrix(Diff_data[,Sig_value, drop = FALSE]))[2]
+      for(m in 1:length(Sig_value)) {
 
-      for (i in 1:ncol(Diff_data[,Sig_value, drop = FALSE])) {
-        Diff_data[,Sig_value, drop = FALSE][which(Diff_data[,Sig_value, drop = FALSE][,i] > 1),i] <- 1
+        if(min(Diff_data[,Sig_value[m]])==0) {
+
+          Diff_data[,Sig_value[m]] <- Diff_data[,Sig_value[m]] + base::sort(as.matrix(Diff_data[,Sig_value[m]]))[2]
+
+          Diff_data[which(Diff_data[,Sig_value[m]] > 1), Sig_value[m]] <- 1
       }
     }
 
