@@ -1100,16 +1100,24 @@ ivi.from.indices <- function(DC, CR, LH_index, NC, BC, CI, scaled = TRUE) {
 
   spreading.rank <- ((temp.NC+temp.CR)*(temp.BC+temp.CI))
 
+  if(sum(spreading.rank) == 0) {
+    spreading.rank[] <- 1
+  }
+
   hubness.rank <- (temp.DC+temp.LH_index)
 
+  if(sum(hubness.rank) == 0) {
+    hubness.rank[] <- 1
+  }
   temp.ivi <- (hubness.rank)*(spreading.rank)
 
   #1-100 normalization of IVI
 
   if(scaled == TRUE) {
 
-    temp.ivi <- 1+(((temp.ivi-min(temp.ivi))*(100-1))/(max(temp.ivi)-min(temp.ivi)))
-
+    if(length(unique(temp.ivi)) > 1) {
+      temp.ivi <- 1+(((temp.ivi-min(temp.ivi))*(100-1))/(max(temp.ivi)-min(temp.ivi)))
+    }
   }
 
   return(temp.ivi)
@@ -1219,16 +1227,24 @@ ivi <- function(graph, vertices = V(graph), weights = NULL, directed = FALSE,
 
   spreading.rank <- ((temp.NC+temp.CR)*(temp.BC+temp.CI))
 
+  if(sum(spreading.rank) == 0) {
+    spreading.rank[] <- 1
+  }
+
   hubness.rank <- (temp.DC+temp.LH_index)
 
+  if(sum(hubness.rank) == 0) {
+    hubness.rank[] <- 1
+  }
   temp.ivi <- (hubness.rank)*(spreading.rank)
 
   #1-100 normalization of IVI
 
   if(scaled == TRUE) {
 
-    temp.ivi <- 1+(((temp.ivi-min(temp.ivi))*(100-1))/(max(temp.ivi)-min(temp.ivi)))
-
+    if(length(unique(temp.ivi)) > 1) {
+      temp.ivi <- 1+(((temp.ivi-min(temp.ivi))*(100-1))/(max(temp.ivi)-min(temp.ivi)))
+    }
   }
 
   return(temp.ivi)
@@ -1918,13 +1934,16 @@ sirir <- function(graph, vertices = V(graph),
       stop("input Sig-values (p-value/padj) must all be in the range 0 to 1!")
     }
 
-      for(m in 1:length(Sig_value)) {
+    for(m in 1:length(Sig_value)) {
 
-        if(min(Diff_data[,Sig_value[m]])==0) {
+      if(min(Diff_data[,Sig_value[m]])==0) {
 
-          Diff_data[,Sig_value[m]] <- Diff_data[,Sig_value[m]] + base::sort(as.matrix(Diff_data[,Sig_value[m]]))[2]
+        #range normalize the primitive Sig_value
+        temp.min_Sig_value <- base::sort(base::unique(Diff_data[,Sig_value[m]]))[2]
 
-          Diff_data[which(Diff_data[,Sig_value[m]] > 1), Sig_value[m]] <- 1
+        Diff_data[,Sig_value[m]] <- temp.min_Sig_value+
+          (((Diff_data[,Sig_value[m]]-min(Diff_data[,Sig_value[m]]))*(max(Diff_data[,Sig_value[m]])-temp.min_Sig_value))/
+             (max(Diff_data[,Sig_value[m]])-min(Diff_data[,Sig_value[m]])))
       }
     }
 
@@ -1971,18 +1990,33 @@ sirir <- function(graph, vertices = V(graph),
                                                                      data = exptl.for.super.learn,
                                                                      method = "altmann"))
 
-    if(any(is.na(rf.diff.exptl.pvalue[,"pvalue"]))) {
-      rf.diff.exptl.pvalue[which(is.na(rf.diff.exptl.pvalue[,"pvalue"])),"pvalue"] <- 1
+    if(any(is.na(rf.diff.exptl.pvalue[,"pvalue"])) |
+       any(is.nan(rf.diff.exptl.pvalue[,"pvalue"]))) {
+      rf.diff.exptl.pvalue[c(which(is.na(rf.diff.exptl.pvalue[,"pvalue"])),
+                             which(is.nan(rf.diff.exptl.pvalue[,"pvalue"]))),
+                           "pvalue"] <- 1
     }
 
-    if(length(which(rf.diff.exptl.pvalue[,"pvalue"] <alpha)) >= 50) {
+    select.number <- ifelse(!is.null(Desired_list),
+                            round(length(Desired_list)/2),
+                            50)
+
+    if(length(which(rf.diff.exptl.pvalue[,"pvalue"] <alpha)) >= select.number) {
     rf.diff.exptl.pvalue <- base::subset(rf.diff.exptl.pvalue, rf.diff.exptl.pvalue$pvalue <alpha)
-    } else {
+
+    } else if(length(which(rf.diff.exptl.pvalue[,"importance"] > 0)) >= select.number) {
       rf.diff.exptl.pvalue <- base::subset(rf.diff.exptl.pvalue, rf.diff.exptl.pvalue$importance >0)
       if(nrow(rf.diff.exptl.pvalue) > 100) {
         rf.diff.exptl.pvalue <- rf.diff.exptl.pvalue[match(sort(rf.diff.exptl.pvalue$pvalue),
                                                            rf.diff.exptl.pvalue$pvalue)[1:100],]
       }
+    } else {
+      rf.diff.exptl.pvalue$multiplied <- rf.diff.exptl.pvalue$importance * (-log10(rf.diff.exptl.pvalue$pvalue))
+      select.number.index <- utils::tail(match(seq(nrow(rf.diff.exptl.pvalue)),
+                                               rank(rf.diff.exptl.pvalue$multiplied,
+                                                    ties.method = "first")),
+                                         n = select.number)
+      rf.diff.exptl.pvalue <- rf.diff.exptl.pvalue[select.number.index,]
     }
 
     if(min(rf.diff.exptl.pvalue[,"pvalue"])==0) {
@@ -2030,6 +2064,7 @@ sirir <- function(graph, vertices = V(graph),
                                                          MARGIN = 1, base::rank))
 
     temp.corr <- coop::pcor(Exptl_data[,-condition.index])
+    temp.corr.for.sec.round <- temp.corr
 
     #filter corr data for only those corr between diff features and themselves/others
     filter.corr.index <- stats::na.omit(base::unique(base::match(rownames(rf.diff.exptl.pvalue),
@@ -2042,25 +2077,31 @@ sirir <- function(graph, vertices = V(graph),
     cor.thresh <- r
     temp.corr <- base::subset(temp.corr, temp.corr[,3]>cor.thresh)
 
+    # removing self-correlations
     temp.corr <- temp.corr[-which(as.character(temp.corr$Var1)==
                                     as.character(temp.corr$Var2)),]
 
-    if(nrow(temp.corr)>max.connections) {
+    if(nrow(temp.corr)> (max.connections*0.95)) {
 
-      repeat {
+      temp.corr.select.index <- utils::tail(match(seq(nrow(temp.corr)),
+                                                  rank(temp.corr$cor,
+                                                       ties.method = "first")),
+                                            n = round(max.connections*0.95))
 
-        cor.thresh <- cor.thresh+((1-cor.thresh)/2)
-        temp.corr <- base::subset(temp.corr, temp.corr[,3]>cor.thresh)
+      temp.corr <- temp.corr[temp.corr.select.index,]
 
-        if(nrow(temp.corr)<=max.connections) {
-          break
-        }
-      }
     }
+
+    diff.only.temp.corr.nrow <- nrow(temp.corr)
 
     #getting the list of diff features and their correlated features
     diff.plus.corr.features <- base::unique(c(base::as.character(temp.corr[,1]),
                                               base::as.character(temp.corr[,2])))
+
+    #find the diff features amongst diff.plus.corr.features
+    diff.only.features.index <- stats::na.omit(base::unique(base::match(rownames(rf.diff.exptl.pvalue),
+                                                                        diff.plus.corr.features)))
+    diff.only.features <- diff.plus.corr.features[diff.only.features.index]
 
     #ProgressBar: Performing first round of association analysis
     if(verbose) {
@@ -2073,7 +2114,8 @@ sirir <- function(graph, vertices = V(graph),
     }
 
     #redo correlation analysis
-    temp.corr <- coop::pcor(Exptl_data[,-condition.index])
+    temp.corr <- temp.corr.for.sec.round
+    rm(temp.corr.for.sec.round)
 
     #filter corr data for only those corr between diff.plus.corr.features and themselves/others
     filter.corr.index <- stats::na.omit(match(diff.plus.corr.features,
@@ -2086,21 +2128,40 @@ sirir <- function(graph, vertices = V(graph),
     cor.thresh <- r
     temp.corr <- base::subset(temp.corr, temp.corr[,3]>cor.thresh)
 
+    # removing self-correlations
     temp.corr <- temp.corr[-which(as.character(temp.corr$Var1)==
                                     as.character(temp.corr$Var2)),]
 
-    if(nrow(temp.corr)>max.connections) {
+    # separate diff.only features
+    temp.corr.diff.only.index <- base::unique(c(which(temp.corr$Var1 %in% diff.only.features),
+                                                which(temp.corr$Var2 %in% diff.only.features)))
+    temp.corr.diff.only <- temp.corr[temp.corr.diff.only.index,]
 
-      repeat {
+    if(nrow(temp.corr.diff.only)>diff.only.temp.corr.nrow) {
 
-        cor.thresh <- cor.thresh+((1-cor.thresh)/2)
-        temp.corr <- base::subset(temp.corr, temp.corr[,3]>cor.thresh)
+      temp.corr.diff.only.select.index <- utils::tail(match(seq(nrow(temp.corr.diff.only)),
+                                                  rank(temp.corr.diff.only$cor,
+                                                       ties.method = "first")),
+                                            n = diff.only.temp.corr.nrow)
 
-        if(nrow(temp.corr)<=max.connections) {
-          break
-        }
-      }
+      temp.corr.diff.only <- temp.corr.diff.only[temp.corr.diff.only.select.index,]
     }
+
+    # remove diff.only features from temp.corr
+    temp.corr <- temp.corr[-temp.corr.diff.only.index,]
+
+    if(nrow(temp.corr)>(max.connections-nrow(temp.corr.diff.only))) {
+
+      temp.corr.select.index <- utils::tail(match(seq(nrow(temp.corr)),
+                                                  rank(temp.corr$cor,
+                                                       ties.method = "first")),
+                                            n = (max.connections-nrow(temp.corr.diff.only)))
+
+      temp.corr <- temp.corr[temp.corr.select.index,]
+    }
+
+    # recombine the temp.corr.diff.only data and temp.corr
+    temp.corr <- base::rbind(temp.corr, temp.corr.diff.only)
 
     #ProgressBar: Performing second round of association analysis
     if(verbose) {
@@ -2219,8 +2280,9 @@ sirir <- function(graph, vertices = V(graph),
     Diff_data$N.score[Diff_data.N.score.index] <- neighborehood.score.table$N.score[neighborehood.score.table.for.Diff_data.N.score.index]
 
     #range normalize (1,100) the neighborhood score
-    Diff_data$N.score <- 1+(((Diff_data$N.score-min(Diff_data$N.score))*(100-1))/
-                              (max(Diff_data$N.score)-min(Diff_data$N.score)))
+    Diff_data$N.score <- ifelse(sum(Diff_data$N.score) == 0, 1,
+                                1+(((Diff_data$N.score-min(Diff_data$N.score))*(100-1))/
+                                     (max(Diff_data$N.score)-min(Diff_data$N.score))))
 
     #c calculate the final driver score
 
@@ -3384,6 +3446,8 @@ sirir <- function(graph, vertices = V(graph),
                                                    "Biomarker",
                                                    mediators.class.levels))
 
+    ####*******************************####
+
     # draw the plot
     temp.exir.plot <- ggplot2::ggplot(data = exir.for.plot,
                                       ggplot2::aes(x = Rank, y = Feature)) +
@@ -3445,7 +3509,9 @@ sirir <- function(graph, vertices = V(graph),
       ##***********##
 
       # add facets
-      ggplot2::facet_wrap(~Class) +
+      ggplot2::facet_grid(. ~ Class,
+                          scales = "free_x",
+                          space = "free_x") +
 
 
       ##***********##
@@ -3454,18 +3520,28 @@ sirir <- function(graph, vertices = V(graph),
 
       ggplot2::theme_bw()
 
-    # set the x axis numbers
-    if(n %% 2 == 0 & n > 7) {
-      start.x_continuous <- 2
-    } else {start.x_continuous <- 1}
+    # set the x axis breaks
+    by.x_continuous <- base::round(n/5)
 
-    if(base::round(n/5) > 0) {
-      by.x_continuous <- base::round(n/5)
-    } else {by.x_continuous <- 1}
+    # set the x axis numbers and start
+    x.axis.numbers <- function(x) {
+      if(n %% 2 == 0 & n > 10) {
+        base::seq(2, max(x), by = by.x_continuous)
+      } else if(n > 10) {
+        base::seq(1, max(x), by = by.x_continuous)
+      } else {
+        base::seq(1, max(x), by = 1)
+      }
+    }
+
+    # set the x axis limits
+    x.axis.limits <- function(x) {
+      c((min(x)-(n/50)), (max(x)+(n/50)))
+    }
 
     temp.exir.plot <- temp.exir.plot +
-      ggplot2::scale_x_continuous(breaks = c(base::seq(start.x_continuous,n,
-                                                       by = by.x_continuous))) +
+      ggplot2::scale_x_continuous(breaks = x.axis.numbers,
+                                  limits = x.axis.limits) +
 
       ggplot2::theme(legend.title = ggplot2::element_text(size = 10),
                      legend.position = legend.position,
