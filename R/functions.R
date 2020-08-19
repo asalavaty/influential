@@ -2384,6 +2384,131 @@ sirir <- function(graph, vertices = V(graph),
       utils::setTxtProgressBar(pb = pb, value = 85)
     }
 
+
+    #ProgressBar: Preparation of the biomarker table
+    if(verbose) {
+      print(unname(as.data.frame("Preparation of the biomarker table")),quote = FALSE, row.names = FALSE)
+    }
+
+    # Create the Biomarker table
+
+    Biomarker.table <- Diff_data
+
+    #remove the rows/features with NA in the final driver score
+    Biomarker.table <- Biomarker.table[stats::complete.cases(Biomarker.table),]
+
+    #filter the biomarker table by the desired list (if provided)
+    if(!is.null(Desired_list)) {
+      Biomarker.table.row.index <- stats::na.omit(match(Desired_list,
+                                                     rownames(Biomarker.table)))
+      Biomarker.table <- Biomarker.table[Biomarker.table.row.index,]
+    }
+
+    if(nrow(as.data.frame(Biomarker.table))==0) {Biomarker.table <- NULL} else {
+
+      #add RF importance score and p-value
+      Biomarker.table$rf.importance <- 0
+      Biomarker.table$rf.pvalue <- 1
+
+      Biomarker.table.rf.index <- stats::na.omit(match(rownames(rf.diff.exptl.pvalue),
+                                                       rownames(Biomarker.table)))
+
+      rf.for.Biomarker.table <- stats::na.omit(match(rownames(Biomarker.table)[Biomarker.table.rf.index],
+                                                     rownames(rf.diff.exptl.pvalue)))
+
+      Biomarker.table$rf.importance[Biomarker.table.rf.index] <- rf.diff.exptl.pvalue$importance[rf.for.Biomarker.table]
+      Biomarker.table$rf.pvalue[Biomarker.table.rf.index] <- rf.diff.exptl.pvalue$pvalue[rf.for.Biomarker.table]
+
+      #range normalize rf.importance and rf.pvalue
+      Biomarker.table$rf.importance <- 1+(((Biomarker.table$rf.importance-min(Biomarker.table$rf.importance))*(100-1))/
+                                            (max(Biomarker.table$rf.importance)-min(Biomarker.table$rf.importance)))
+
+      Biomarker.table$rf.pvalue <- -log10(Biomarker.table$rf.pvalue)
+      Biomarker.table$rf.pvalue <- 1+(((Biomarker.table$rf.pvalue-min(Biomarker.table$rf.pvalue))*(100-1))/
+                                        (max(Biomarker.table$rf.pvalue)-min(Biomarker.table$rf.pvalue)))
+
+      #add rotation values
+      Biomarker.table$rotation <- 0
+      Biomarker.table.for.rotation <- stats::na.omit(match(names(temp.PCA.r),
+                                                           rownames(Biomarker.table)))
+
+      Biomarker.table.rotation.index <- stats::na.omit(match(rownames(Biomarker.table)[Biomarker.table.for.rotation],
+                                                             names(temp.PCA.r)))
+
+      Biomarker.table$rotation[Biomarker.table.for.rotation] <- temp.PCA.r[Biomarker.table.rotation.index]
+
+      #range normalize rotation values
+      Biomarker.table$rotation <- 1+(((Biomarker.table$rotation-min(Biomarker.table$rotation))*(100-1))/
+                                            (max(Biomarker.table$rotation)-min(Biomarker.table$rotation)))
+
+      #calculate biomarker score
+      if(!is.null(Regr_value)) {
+        Biomarker.table$final.biomarker.score <- (Biomarker.table$sum.Diff_value)*
+          (Biomarker.table$sum.Regr_value)*(Biomarker.table$sum.Sig_value)*
+          (Biomarker.table$rf.pvalue)*(Biomarker.table$rf.importance)*
+          (Biomarker.table$rotation)
+      } else {
+        Biomarker.table$final.biomarker.score <- (Biomarker.table$sum.Diff_value)*
+          (Biomarker.table$sum.Sig_value)*
+          (Biomarker.table$rf.pvalue)*(Biomarker.table$rf.importance)*
+          (Biomarker.table$rotation)
+      }
+
+      #range normalize biomarker score
+      Biomarker.table$final.biomarker.score <- 1+(((Biomarker.table$final.biomarker.score-min(Biomarker.table$final.biomarker.score))*(100-1))/
+                                                    (max(Biomarker.table$final.biomarker.score)-min(Biomarker.table$final.biomarker.score)))
+
+      #add biomarker Z.score
+      Biomarker.table$Z.score <- base::scale(Biomarker.table$final.biomarker.score)
+
+      #add biomarker rank
+      Biomarker.table$rank <- rank(-Biomarker.table$final.biomarker.score, ties.method = "min")
+
+      #add biomarker P-value
+      Biomarker.table$P.value <- stats::pnorm(Biomarker.table$Z.score,
+                                              lower.tail = FALSE)
+
+      #add biomarker adjusted p-value
+      Biomarker.table$padj <- stats::p.adjust(p = Biomarker.table$P.value,
+                                              method = "BH")
+
+      #add biomarker type
+      Biomarker.table$type <- ""
+
+      for (b in 1:nrow(Biomarker.table)) {
+
+        if(sum(Biomarker.table[b,Diff_value])<0) {
+          Biomarker.table$type[b] <- "Down-regulated"
+
+        } else if(sum(Biomarker.table[b,Diff_value])>0) {
+          Biomarker.table$type[b] <- "Up-regulated"
+        } else {
+          Biomarker.table$type[b] <- NA
+        }
+      }
+
+      #remove redundent columns
+      Biomarker.table <- Biomarker.table[,c("final.biomarker.score",
+                                            "Z.score", "rank",
+                                            "P.value", "padj", "type")]
+
+      #rename column names
+      colnames(Biomarker.table) <- c("Score", "Z.score",
+                                     "Rank", "P.value",
+                                     "P.adj", "Type")
+
+      #filtering redundant (NaN) results
+      Biomarker.table <- Biomarker.table[stats::complete.cases(Biomarker.table),]
+
+      if(nrow(as.data.frame(Biomarker.table))==0) {Biomarker.table <- NULL}
+
+    }
+
+    #ProgressBar: Preparation of the biomarker table
+    if(verbose) {
+      utils::setTxtProgressBar(pb = pb, value = 90)
+    }
+
     #ProgressBar: Preparation of the DE-mediator table
     if(verbose) {
       print(unname(as.data.frame("Preparation of the DE-mediator table")),quote = FALSE, row.names = FALSE)
@@ -2452,7 +2577,7 @@ sirir <- function(graph, vertices = V(graph),
 
     #ProgressBar: Preparation of the DE-mediator table
     if(verbose) {
-      utils::setTxtProgressBar(pb = pb, value = 90)
+      utils::setTxtProgressBar(pb = pb, value = 95)
     }
 
     #ProgressBar: Preparation of the nonDE-mediator table
@@ -2523,117 +2648,9 @@ sirir <- function(graph, vertices = V(graph),
 
     #ProgressBar: Preparation of the nonDE-mediator table
     if(verbose) {
-      utils::setTxtProgressBar(pb = pb, value = 95)
-    }
-
-    #ProgressBar: Preparation of the biomarker table
-    if(verbose) {
-      print(unname(as.data.frame("Preparation of the biomarker table")),quote = FALSE, row.names = FALSE)
-    }
-
-    # Create the Biomarkers table
-
-    Biomarker.table <- Diff_data
-
-    #remove the rows/features with NA in the final driver score
-    Biomarker.table <- Biomarker.table[stats::complete.cases(Biomarker.table),]
-
-    #filter by random forest table
-    Biomarker.rf.index <- stats::na.omit(match(rownames(rf.diff.exptl.pvalue),
-                                               rownames(Biomarker.table)))
-
-    Biomarker.table <- Biomarker.table[Biomarker.rf.index,]
-
-    if(nrow(as.data.frame(Biomarker.table))==0) {Biomarker.table <- NULL} else {
-
-      #add RF importance score and p-value
-      rf.for.Biomarker.table <- stats::na.omit(match(rownames(Biomarker.table),
-                                                     rownames(rf.diff.exptl.pvalue)))
-
-      Biomarker.table$rf.importance <- rf.diff.exptl.pvalue$importance[rf.for.Biomarker.table]
-      Biomarker.table$rf.pvalue <- rf.diff.exptl.pvalue$pvalue[rf.for.Biomarker.table]
-
-      #range normalize rf.importance and rf.pvalue
-      Biomarker.table$rf.importance <- 1+(((Biomarker.table$rf.importance-min(Biomarker.table$rf.importance))*(100-1))/
-                                            (max(Biomarker.table$rf.importance)-min(Biomarker.table$rf.importance)))
-
-      Biomarker.table$rf.pvalue <- -log10(Biomarker.table$rf.pvalue)
-      Biomarker.table$rf.pvalue <- 1+(((Biomarker.table$rf.pvalue-min(Biomarker.table$rf.pvalue))*(100-1))/
-                                        (max(Biomarker.table$rf.pvalue)-min(Biomarker.table$rf.pvalue)))
-
-      #add rotation values
-      Biomarker.table.rotation.index <- stats::na.omit(match(rownames(Biomarker.table),
-                                                             names(temp.PCA.r)))
-
-      Biomarker.table$rotation <- temp.PCA.r[Biomarker.table.rotation.index]
-
-      #calculate biomarker score
-      if(!is.null(Regr_value)) {
-        Biomarker.table$final.biomarker.score <- (Biomarker.table$sum.Diff_value)*
-          (Biomarker.table$sum.Regr_value)*(Biomarker.table$sum.Sig_value)*
-          (Biomarker.table$rf.pvalue)*(Biomarker.table$rf.importance)*
-          (Biomarker.table$rotation)
-      } else {
-        Biomarker.table$final.biomarker.score <- (Biomarker.table$sum.Diff_value)*
-          (Biomarker.table$sum.Sig_value)*
-          (Biomarker.table$rf.pvalue)*(Biomarker.table$rf.importance)*
-          (Biomarker.table$rotation)
-      }
-
-      #range normalize biomarker score
-      Biomarker.table$final.biomarker.score <- 1+(((Biomarker.table$final.biomarker.score-min(Biomarker.table$final.biomarker.score))*(100-1))/
-                                                    (max(Biomarker.table$final.biomarker.score)-min(Biomarker.table$final.biomarker.score)))
-
-      #add biomarker Z.score
-      Biomarker.table$Z.score <- base::scale(Biomarker.table$final.biomarker.score)
-
-      #add biomarker rank
-      Biomarker.table$rank <- rank(-Biomarker.table$final.biomarker.score, ties.method = "min")
-
-      #add biomarker P-value
-      Biomarker.table$P.value <- stats::pnorm(Biomarker.table$Z.score,
-                                              lower.tail = FALSE)
-
-      #add biomarker adjusted p-value
-      Biomarker.table$padj <- stats::p.adjust(p = Biomarker.table$P.value,
-                                              method = "BH")
-
-      #add biomarker type
-      Biomarker.table$type <- ""
-
-      for (b in 1:nrow(Biomarker.table)) {
-
-        if(sum(Biomarker.table[b,Diff_value])<0) {
-          Biomarker.table$type[b] <- "Down-regulated"
-
-        } else if(sum(Biomarker.table[b,Diff_value])>0) {
-          Biomarker.table$type[b] <- "Up-regulated"
-        } else {
-          Biomarker.table$type[b] <- NA
-        }
-      }
-
-      #remove redundent columns
-      Biomarker.table <- Biomarker.table[,c("final.biomarker.score",
-                                            "Z.score", "rank",
-                                            "P.value", "padj", "type")]
-
-      #rename column names
-      colnames(Biomarker.table) <- c("Score", "Z.score",
-                                     "Rank", "P.value",
-                                     "P.adj", "Type")
-
-      #filtering redundant (NaN) results
-      Biomarker.table <- Biomarker.table[stats::complete.cases(Biomarker.table),]
-
-      if(nrow(as.data.frame(Biomarker.table))==0) {Biomarker.table <- NULL}
-
-    }
-
-    #ProgressBar: Preparation of the biomarker table
-    if(verbose) {
       utils::setTxtProgressBar(pb = pb, value = 100)
     }
+
 
     Results <- list("Driver table" = Driver.table,
                     "DE-mediator table" = DE.mediator.table,
