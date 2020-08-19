@@ -1997,30 +1997,48 @@ sirir <- function(graph, vertices = V(graph),
                            "pvalue"] <- 1
     }
 
+    # filtering the RF output data
     select.number <- ifelse(!is.null(Desired_list),
                             round(length(Desired_list)/2),
-                            50)
+                            100)
 
-    if(length(which(rf.diff.exptl.pvalue[,"pvalue"] <alpha)) >= select.number) {
-    rf.diff.exptl.pvalue <- base::subset(rf.diff.exptl.pvalue, rf.diff.exptl.pvalue$pvalue <alpha)
+      if(length(which(rf.diff.exptl.pvalue[,"pvalue"] <alpha)) >= select.number) {
+        rf.diff.exptl.pvalue <- base::subset(rf.diff.exptl.pvalue, pvalue < alpha)
 
-    } else if(length(which(rf.diff.exptl.pvalue[,"importance"] > 0)) >= select.number) {
-      rf.diff.exptl.pvalue <- base::subset(rf.diff.exptl.pvalue, rf.diff.exptl.pvalue$importance >0)
-      if(nrow(rf.diff.exptl.pvalue) > 100) {
-        rf.diff.exptl.pvalue <- rf.diff.exptl.pvalue[match(sort(rf.diff.exptl.pvalue$pvalue),
-                                                           rf.diff.exptl.pvalue$pvalue)[1:100],]
+      } else {
+        rf.pval.select <- which(rf.diff.exptl.pvalue[,"pvalue"] <alpha)
+        rf.nonSig <- seq(nrow(rf.diff.exptl.pvalue))[-rf.pval.select]
+        required.pos.importance <- select.number - length(rf.pval.select)
+
+        temp.rf.diff.exptl.pvalue <- rf.diff.exptl.pvalue[rf.nonSig,]
+
+        rf.importance.select <- utils::tail(match(seq(nrow(temp.rf.diff.exptl.pvalue)),
+                                                 rank(temp.rf.diff.exptl.pvalue[,"importance"],
+                                                      ties.method = "first")),
+                                           n = required.pos.importance)
+
+        temp.rf.diff.exptl.pvalue <- temp.rf.diff.exptl.pvalue[rf.importance.select,]
+
+        #combine pvalue-based and importance-based tables
+        rf.diff.exptl.pvalue <- rbind(rf.diff.exptl.pvalue[rf.pval.select,],
+                                      temp.rf.diff.exptl.pvalue)
       }
-    } else {
-      rf.diff.exptl.pvalue$multiplied <- rf.diff.exptl.pvalue$importance * (-log10(rf.diff.exptl.pvalue$pvalue))
-      select.number.index <- utils::tail(match(seq(nrow(rf.diff.exptl.pvalue)),
-                                               rank(rf.diff.exptl.pvalue$multiplied,
-                                                    ties.method = "first")),
-                                         n = select.number)
-      rf.diff.exptl.pvalue <- rf.diff.exptl.pvalue[select.number.index,]
+
+    # negative importance values could be considered as 0
+    if(any(rf.diff.exptl.pvalue[,"importance"] < 0)) {
+      rf.diff.exptl.pvalue[which(rf.diff.exptl.pvalue[,"importance"] < 0),
+                           "importance"] <- 0
     }
 
+    # taking care of zero p-values
     if(min(rf.diff.exptl.pvalue[,"pvalue"])==0) {
-      rf.diff.exptl.pvalue[,"pvalue"] <- rf.diff.exptl.pvalue[,"pvalue"] + sort(as.matrix(rf.diff.exptl.pvalue[,"pvalue"]))[2]
+
+      #range normalize the primitive pvalue
+      temp.min_pvalue <- base::sort(base::unique(rf.diff.exptl.pvalue[,"pvalue"]))[2]
+
+      rf.diff.exptl.pvalue[,"pvalue"] <- temp.min_pvalue+
+        (((rf.diff.exptl.pvalue[,"pvalue"]-min(rf.diff.exptl.pvalue[,"pvalue"]))*(max(rf.diff.exptl.pvalue[,"pvalue"])-temp.min_pvalue))/
+           (max(rf.diff.exptl.pvalue[,"pvalue"])-min(rf.diff.exptl.pvalue[,"pvalue"])))
     }
 
     #ProgressBar: Performing the random forest classification (supervised machine learning)
@@ -3525,9 +3543,9 @@ sirir <- function(graph, vertices = V(graph),
 
     # set the x axis numbers and start
     x.axis.numbers <- function(x) {
-      if(n %% 2 == 0 & n > 10) {
+      if(by.x_continuous %% 2 == 0 & n > 7) {
         base::seq(2, max(x), by = by.x_continuous)
-      } else if(n > 10) {
+      } else if(n > 7) {
         base::seq(1, max(x), by = by.x_continuous)
       } else {
         base::seq(1, max(x), by = 1)
