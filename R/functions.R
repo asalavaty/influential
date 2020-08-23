@@ -2012,9 +2012,7 @@ sirir <- function(graph, vertices = V(graph),
 
         temp.rf.diff.exptl.pvalue <- rf.diff.exptl.pvalue[rf.nonSig,]
 
-        rf.importance.select <- utils::tail(match(seq(nrow(temp.rf.diff.exptl.pvalue)),
-                                                 rank(temp.rf.diff.exptl.pvalue[,"importance"],
-                                                      ties.method = "first")),
+        rf.importance.select <- utils::tail(order(temp.rf.diff.exptl.pvalue[,"importance"]),
                                            n = required.pos.importance)
 
         temp.rf.diff.exptl.pvalue <- temp.rf.diff.exptl.pvalue[rf.importance.select,]
@@ -2101,9 +2099,7 @@ sirir <- function(graph, vertices = V(graph),
 
     if(nrow(temp.corr)> (max.connections*0.95)) {
 
-      temp.corr.select.index <- utils::tail(match(seq(nrow(temp.corr)),
-                                                  rank(temp.corr$cor,
-                                                       ties.method = "first")),
+      temp.corr.select.index <- utils::tail(order(temp.corr$cor),
                                             n = round(max.connections*0.95))
 
       temp.corr <- temp.corr[temp.corr.select.index,]
@@ -2157,10 +2153,8 @@ sirir <- function(graph, vertices = V(graph),
 
     if(nrow(temp.corr.diff.only)>diff.only.temp.corr.nrow) {
 
-      temp.corr.diff.only.select.index <- utils::tail(match(seq(nrow(temp.corr.diff.only)),
-                                                  rank(temp.corr.diff.only$cor,
-                                                       ties.method = "first")),
-                                            n = diff.only.temp.corr.nrow)
+      temp.corr.diff.only.select.index <- utils::tail(order(temp.corr.diff.only$cor),
+                                                      n = diff.only.temp.corr.nrow)
 
       temp.corr.diff.only <- temp.corr.diff.only[temp.corr.diff.only.select.index,]
     }
@@ -2170,9 +2164,7 @@ sirir <- function(graph, vertices = V(graph),
 
     if(nrow(temp.corr)>(max.connections-nrow(temp.corr.diff.only))) {
 
-      temp.corr.select.index <- utils::tail(match(seq(nrow(temp.corr)),
-                                                  rank(temp.corr$cor,
-                                                       ties.method = "first")),
+      temp.corr.select.index <- utils::tail(order(temp.corr$cor),
                                             n = (max.connections-nrow(temp.corr.diff.only)))
 
       temp.corr <- temp.corr[temp.corr.select.index,]
@@ -3238,15 +3230,11 @@ sirir <- function(graph, vertices = V(graph),
       if(driver.type == "combined" & nrow(top.N.driver.table)> n) {
 
         if(basis == "Rank") {
-          top.drivers.index <- utils::head(match(base::seq_along(rownames(top.N.driver.table)),
-                                                 base::rank(top.N.driver.table$Rank,
-                                                            ties.method = "first")),
+          top.drivers.index <- utils::head(order(top.N.driver.table$Rank),
                                            n = n)
 
         } else if(basis == "Adjusted p-value") {
-          top.drivers.index <- utils::head(match(base::seq_along(rownames(top.N.driver.table)),
-                                                 base::rank(top.N.driver.table$P.adj,
-                                                            ties.method = "first")),
+          top.drivers.index <- utils::head(order(top.N.driver.table$P.adj),
                                            n = n)
         }
         top.N.driver.table <- top.N.driver.table[top.drivers.index,]
@@ -3259,15 +3247,11 @@ sirir <- function(graph, vertices = V(graph),
                                            Type == "Accelerator")
         if(nrow(top.N.driver.table)> n) {
           if(basis == "Rank") {
-            top.drivers.index <- utils::head(match(base::seq_along(rownames(top.N.driver.table)),
-                                                   base::rank(top.N.driver.table$Rank,
-                                                              ties.method = "first")),
+            top.drivers.index <- utils::head(order(top.N.driver.table$Rank),
                                              n = n)
 
           } else if(basis == "Adjusted p-value") {
-            top.drivers.index <- utils::head(match(base::seq_along(rownames(top.N.driver.table)),
-                                                   base::rank(top.N.driver.table$P.adj,
-                                                              ties.method = "first")),
+            top.drivers.index <- utils::head(order(top.N.driver.table$P.adj),
                                              n = n)
           }
           top.N.driver.table <- top.N.driver.table[top.drivers.index,]
@@ -3279,15 +3263,11 @@ sirir <- function(graph, vertices = V(graph),
                                            Type == "Decelerator")
         if(nrow(top.N.driver.table)> n) {
           if(basis == "Rank") {
-            top.drivers.index <- utils::head(match(base::seq_along(rownames(top.N.driver.table)),
-                                                   base::rank(top.N.driver.table$Rank,
-                                                              ties.method = "first")),
+            top.drivers.index <- utils::head(order(top.N.driver.table$Rank),
                                              n = n)
 
           } else if(basis == "Adjusted p-value") {
-            top.drivers.index <- utils::head(match(base::seq_along(rownames(top.N.driver.table)),
-                                                   base::rank(top.N.driver.table$P.adj,
-                                                              ties.method = "first")),
+            top.drivers.index <- utils::head(order(top.N.driver.table$P.adj),
                                              n = n)
           }
           top.N.driver.table <- top.N.driver.table[top.drivers.index,]
@@ -3314,15 +3294,11 @@ sirir <- function(graph, vertices = V(graph),
       if(biomarker.type == "combined" & nrow(top.N.biomarker.table)> n) {
 
         if(basis == "Rank") {
-          top.biomarkers.index <- utils::head(match(base::seq_along(rownames(top.N.biomarker.table)),
-                                                    base::rank(top.N.biomarker.table$Rank,
-                                                               ties.method = "first")),
+          top.biomarkers.index <- utils::head(order(top.N.biomarker.table$Rank),
                                               n = n)
 
         } else if(basis == "Adjusted p-value") {
-          top.biomarkers.index <- utils::head(match(base::seq_along(rownames(top.N.biomarker.table)),
-                                                    base::rank(top.N.biomarker.table$P.adj,
-                                                               ties.method = "first")),
+          top.biomarkers.index <- utils::head(order(top.N.biomarker.table$P.adj),
                                               n = n)
         }
         top.N.biomarker.table <- top.N.biomarker.table[top.biomarkers.index,]
@@ -3335,15 +3311,11 @@ sirir <- function(graph, vertices = V(graph),
                                               Type == "Up-regulated")
         if(nrow(top.N.biomarker.table)> n) {
           if(basis == "Rank") {
-            top.biomarkers.index <- utils::head(match(base::seq_along(rownames(top.N.biomarker.table)),
-                                                      base::rank(top.N.biomarker.table$Rank,
-                                                                 ties.method = "first")),
+            top.biomarkers.index <- utils::head(order(top.N.biomarker.table$Rank),
                                                 n = n)
 
           } else if(basis == "Adjusted p-value") {
-            top.biomarkers.index <- utils::head(match(base::seq_along(rownames(top.N.biomarker.table)),
-                                                      base::rank(top.N.biomarker.table$P.adj,
-                                                                 ties.method = "first")),
+            top.biomarkers.index <- utils::head(order(top.N.biomarker.table$P.adj),
                                                 n = n)
           }
           top.N.biomarker.table <- top.N.biomarker.table[top.biomarkers.index,]
@@ -3355,15 +3327,11 @@ sirir <- function(graph, vertices = V(graph),
                                               Type == "Down-regulated")
         if(nrow(top.N.biomarker.table)> n) {
           if(basis == "Rank") {
-            top.biomarkers.index <- utils::head(match(base::seq_along(rownames(top.N.biomarker.table)),
-                                                      base::rank(top.N.biomarker.table$Rank,
-                                                                 ties.method = "first")),
+            top.biomarkers.index <- utils::head(order(top.N.biomarker.table$Rank),
                                                 n = n)
 
           } else if(basis == "Adjusted p-value") {
-            top.biomarkers.index <- utils::head(match(base::seq_along(rownames(top.N.biomarker.table)),
-                                                      base::rank(top.N.biomarker.table$P.adj,
-                                                                 ties.method = "first")),
+            top.biomarkers.index <- utils::head(order(top.N.biomarker.table$P.adj),
                                                 n = n)
           }
           top.N.biomarker.table <- top.N.biomarker.table[top.biomarkers.index,]
@@ -3392,15 +3360,11 @@ sirir <- function(graph, vertices = V(graph),
       if(nrow(top.N.nonDE.mediator.table)> n) {
 
         if(basis == "Rank") {
-          top.nonDE.mediators.index <- utils::head(match(base::seq_along(rownames(top.N.nonDE.mediator.table)),
-                                                         base::rank(top.N.nonDE.mediator.table$Rank,
-                                                                    ties.method = "first")),
+          top.nonDE.mediators.index <- utils::head(order(top.N.nonDE.mediator.table$Rank),
                                                    n = n)
 
         } else if(basis == "Adjusted p-value") {
-          top.nonDE.mediators.index <- utils::head(match(base::seq_along(rownames(top.N.nonDE.mediator.table)),
-                                                         base::rank(top.N.nonDE.mediator.table$P.adj,
-                                                                    ties.method = "first")),
+          top.nonDE.mediators.index <- utils::head(order(top.N.nonDE.mediator.table$P.adj),
                                                    n = n)
         }
         top.N.nonDE.mediator.table <- top.N.nonDE.mediator.table[top.nonDE.mediators.index,]
@@ -3425,15 +3389,11 @@ sirir <- function(graph, vertices = V(graph),
       if(nrow(top.N.DE.mediator.table)> n) {
 
         if(basis == "Rank") {
-          top.DE.mediators.index <- utils::head(match(base::seq_along(rownames(top.N.DE.mediator.table)),
-                                                      base::rank(top.N.DE.mediator.table$Rank,
-                                                                 ties.method = "first")),
+          top.DE.mediators.index <- utils::head(order(top.N.DE.mediator.table$Rank),
                                                 n = n)
 
         } else if(basis == "Adjusted p-value") {
-          top.DE.mediators.index <- utils::head(match(base::seq_along(rownames(top.N.DE.mediator.table)),
-                                                      base::rank(top.N.DE.mediator.table$P.adj,
-                                                                 ties.method = "first")),
+          top.DE.mediators.index <- utils::head(order(top.N.DE.mediator.table$P.adj),
                                                 n = n)
         }
         top.N.DE.mediator.table <- top.N.DE.mediator.table[top.DE.mediators.index,]
