@@ -3420,6 +3420,16 @@ sirir <- function(graph, vertices = V(graph),
     }
 
     # correct the P.adj to be used as the dot size
+      if(min(exir.for.plot$P.adj)==0) {
+
+        #range normalize the primitive P.adj
+        temp.min_P.adj <- base::sort(base::unique(exir.for.plot$P.adj))[2]
+
+        exir.for.plot$P.adj <- temp.min_P.adj+
+          (((exir.for.plot$P.adj-min(exir.for.plot$P.adj))*(max(exir.for.plot$P.adj)-temp.min_P.adj))/
+             (max(exir.for.plot$P.adj)-min(exir.for.plot$P.adj)))
+      }
+
     exir.for.plot$P.adj <- dot.size.min+(((-log10(exir.for.plot$P.adj)-min(-log10(exir.for.plot$P.adj)))*(dot.size.max-dot.size.min))/
                                            (max(-log10(exir.for.plot$P.adj))-min(-log10(exir.for.plot$P.adj))))
 
