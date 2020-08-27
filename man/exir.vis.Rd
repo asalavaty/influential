@@ -10,6 +10,10 @@ exir.vis(
   n = 10,
   driver.type = "combined",
   biomarker.type = "combined",
+  show.drivers = TRUE,
+  show.biomarkers = TRUE,
+  show.de.mediators = TRUE,
+  show.nonDE.mediators = TRUE,
   basis = "Rank",
   dot.size.min = 2,
   dot.size.max = 5,
@@ -24,6 +28,7 @@ exir.vis(
   show.plot.title = TRUE,
   plot.title = "auto",
   title.position = "left",
+  plot.title.size = 12,
   show.plot.subtitle = TRUE,
   plot.subtitle = "auto",
   subtitle.position = "left",
@@ -47,6 +52,14 @@ include \code{"combined"} (meaning both driver types), \code{"accelerator"} and 
 
 \item{biomarker.type}{A string specifying the type of biomarkers to be used for the selection of top N candidates. Possible types
 include \code{"combined"} (meaning both biomarker types), \code{"up-regulated"} and \code{"down-regulated"} (default is set to "combined").}
+
+\item{show.drivers}{Logical scalar, whether to show Drivers or not (default is set to TRUE).}
+
+\item{show.biomarkers}{Logical scalar, whether to show Biomarkers or not (default is set to TRUE).}
+
+\item{show.de.mediators}{Logical scalar, whether to show DE-mediators or not (default is set to TRUE).}
+
+\item{show.nonDE.mediators}{Logical scalar, whether to show nonDE-mediators or not (default is set to TRUE).}
 
 \item{basis}{A string specifying the basis for the selection of top N candidates from each category of the results. Possible options include
 \code{"Rank"} and \code{"Adjusted p-value"} (default is set to "Rank").}
@@ -82,6 +95,8 @@ The default is set to "vertical".}
 \item{plot.title}{The plot title in the string format (default is set to "auto" which automatically generates a title for the plot).}
 
 \item{title.position}{The position of title ("left", "center", or "right"). The default is set to "left".}
+
+\item{plot.title.size}{The font size of the plot title (default is set to 12).}
 
 \item{show.plot.subtitle}{Logical scalar, whether to show the plot subtitle or not (default is set to TRUE).}
 

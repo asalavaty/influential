@@ -3148,6 +3148,10 @@ sirir <- function(graph, vertices = V(graph),
   #' include \code{"combined"} (meaning both driver types), \code{"accelerator"} and \code{"decelerator"} (default is set to "combined").
   #' @param biomarker.type A string specifying the type of biomarkers to be used for the selection of top N candidates. Possible types
   #' include \code{"combined"} (meaning both biomarker types), \code{"up-regulated"} and \code{"down-regulated"} (default is set to "combined").
+  #' @param show.drivers Logical scalar, whether to show Drivers or not (default is set to TRUE).
+  #' @param show.biomarkers Logical scalar, whether to show Biomarkers or not (default is set to TRUE).
+  #' @param show.de.mediators Logical scalar, whether to show DE-mediators or not (default is set to TRUE).
+  #' @param show.nonDE.mediators Logical scalar, whether to show nonDE-mediators or not (default is set to TRUE).
   #' @param basis A string specifying the basis for the selection of top N candidates from each category of the results. Possible options include
   #' \code{"Rank"} and \code{"Adjusted p-value"} (default is set to "Rank").
   #' @param dot.size.min The size of dots with the lowest statistical significance (default is set to 2).
@@ -3169,6 +3173,7 @@ sirir <- function(graph, vertices = V(graph),
   #' @param show.plot.title Logical scalar, whether to show the plot title or not (default is set to TRUE).
   #' @param plot.title The plot title in the string format (default is set to "auto" which automatically generates a title for the plot).
   #' @param title.position The position of title ("left", "center", or "right"). The default is set to "left".
+  #' @param plot.title.size The font size of the plot title (default is set to 12).
   #' @param show.plot.subtitle Logical scalar, whether to show the plot subtitle or not (default is set to TRUE).
   #' @param plot.subtitle The plot subtitle in the string format (default is set to "auto" which automatically generates a subtitle for the plot).
   #' @param subtitle.position The position of subtitle ("left", "center", or "right"). The default is set to "left".
@@ -3189,6 +3194,10 @@ sirir <- function(graph, vertices = V(graph),
                        n = 10,
                        driver.type = "combined",
                        biomarker.type = "combined",
+                       show.drivers = TRUE,
+                       show.biomarkers = TRUE,
+                       show.de.mediators = TRUE,
+                       show.nonDE.mediators = TRUE,
                        basis = "Rank",
                        dot.size.min = 2,
                        dot.size.max = 5,
@@ -3203,6 +3212,7 @@ sirir <- function(graph, vertices = V(graph),
                        show.plot.title = TRUE,
                        plot.title = "auto",
                        title.position = "left",
+                       plot.title.size = 12,
                        show.plot.subtitle = TRUE,
                        plot.subtitle = "auto",
                        subtitle.position = "left",
@@ -3419,20 +3429,6 @@ sirir <- function(graph, vertices = V(graph),
       exir.for.plot$Feature <- synonyms.table[synonyms.index,2]
     }
 
-    # correct the P.adj to be used as the dot size
-      if(min(exir.for.plot$P.adj)==0) {
-
-        #range normalize the primitive P.adj
-        temp.min_P.adj <- base::sort(base::unique(exir.for.plot$P.adj))[2]
-
-        exir.for.plot$P.adj <- temp.min_P.adj+
-          (((exir.for.plot$P.adj-min(exir.for.plot$P.adj))*(max(exir.for.plot$P.adj)-temp.min_P.adj))/
-             (max(exir.for.plot$P.adj)-min(exir.for.plot$P.adj)))
-      }
-
-    exir.for.plot$P.adj <- dot.size.min+(((-log10(exir.for.plot$P.adj)-min(-log10(exir.for.plot$P.adj)))*(dot.size.max-dot.size.min))/
-                                           (max(-log10(exir.for.plot$P.adj))-min(-log10(exir.for.plot$P.adj))))
-
     # correct the Type levels
     driver.levels <- base::unique(exir.for.plot$Type[base::grep("driver", exir.for.plot$Type)])
     biomarker.levels <- base::unique(exir.for.plot$Type[base::grep("biomarker", exir.for.plot$Type)])
@@ -3450,6 +3446,37 @@ sirir <- function(graph, vertices = V(graph),
                                         levels = c("Driver",
                                                    "Biomarker",
                                                    mediators.class.levels))
+
+    # remove undesired classes
+    if(isFALSE(show.drivers) & any(exir.for.plot$Class == "Driver")) {
+      exir.for.plot <- exir.for.plot[-c(which(exir.for.plot$Class == "Driver")),]
+    }
+
+    if(isFALSE(show.biomarkers) & any(exir.for.plot$Class == "Biomarker")) {
+      exir.for.plot <- exir.for.plot[-c(which(exir.for.plot$Class == "Biomarker")),]
+    }
+
+    if(isFALSE(show.de.mediators) & any(exir.for.plot$Class == "DE-mediator")) {
+      exir.for.plot <- exir.for.plot[-c(which(exir.for.plot$Class == "DE-mediator")),]
+    }
+
+    if(isFALSE(show.nonDE.mediators) & any(exir.for.plot$Class == "nonDE-mediator")) {
+      exir.for.plot <- exir.for.plot[-c(which(exir.for.plot$Class == "nonDE-mediator")),]
+    }
+
+    # correct the P.adj to be used as the dot size
+    if(min(exir.for.plot$P.adj)==0) {
+
+      #range normalize the primitive P.adj
+      temp.min_P.adj <- base::sort(base::unique(exir.for.plot$P.adj))[2]
+
+      exir.for.plot$P.adj <- temp.min_P.adj+
+        (((exir.for.plot$P.adj-min(exir.for.plot$P.adj))*(max(exir.for.plot$P.adj)-temp.min_P.adj))/
+           (max(exir.for.plot$P.adj)-min(exir.for.plot$P.adj)))
+    }
+
+    exir.for.plot$P.adj <- dot.size.min+(((-log10(exir.for.plot$P.adj)-min(-log10(exir.for.plot$P.adj)))*(dot.size.max-dot.size.min))/
+                                           (max(-log10(exir.for.plot$P.adj))-min(-log10(exir.for.plot$P.adj))))
 
     ####*******************************####
 
@@ -3613,16 +3640,21 @@ sirir <- function(graph, vertices = V(graph),
 
     subtitle.position <- base::as.numeric(subtitle.position)
 
+    title.size <- plot.title.size - 2
+
     # set title position
     if(show.plot.title) {
       temp.exir.plot <- temp.exir.plot +
-        ggplot2::theme(plot.title = ggplot2::element_text(hjust = title.position))
+        ggplot2::theme(plot.title = ggplot2::element_text(size = title.size,
+                                                          hjust = title.position))
     }
 
     # set subtitle position
     if(show.plot.subtitle) {
+      subtitle.size <- title.size - 2
       temp.exir.plot <- temp.exir.plot +
-        ggplot2::theme(plot.subtitle = ggplot2::element_text(hjust = subtitle.position))
+        ggplot2::theme(plot.subtitle = ggplot2::element_text(size = subtitle.size,
+                                                             hjust = subtitle.position))
     }
 
     ##***********##
