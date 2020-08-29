@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# influential <a href='https://github.com/asalavaty/influential'><img src='man/figures/logo.png' align="right" height="173" /></a>
+# influential <a href='https://github.com/asalavaty/influential'><img src='man/figures/logo.png' align="right" height="221" /></a>
 
 <!-- badges: start -->
 
