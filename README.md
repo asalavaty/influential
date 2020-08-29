@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# influential
+# influential <a href='https://github.com/asalavaty/influential'><img src='man/figures/logo.png' align="right" height="173" /></a>
 
 <!-- badges: start -->
 
@@ -14,9 +14,6 @@ status](https://ci.appveyor.com/api/projects/status/github/asalavaty/influential
 [![](https://img.shields.io/badge/SIR--based%20Influence%20Ranking-SIRIR-green.svg)](https://doi.org/10.1016/j.patter.2020.100052)
 [![](https://img.shields.io/badge/Experimental%20data--based%20Integrative%20Ranking-ExIR-blue.svg)](https://github.com/asalavaty/influential)
 <!-- badges: end -->
-
-![The influential R package
-logo](https://github.com/asalavaty/influential/blob/master/logo.png)
 
 ## Overview
 
