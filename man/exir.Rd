@@ -18,6 +18,7 @@ exir(
   max.connections = 20000,
   alpha = 0.05,
   num_trees = 10000,
+  mtry = NULL,
   num_permutations = 100,
   inf_const = 10^10,
   seed = 1234,
@@ -68,10 +69,13 @@ Higher max.connections might increase the computation time, cost, and accuracy o
 
 \item{alpha}{The threshold of the statistical significance (p-value) used throughout the entir model (default is 0.05)}
 
-\item{num_trees}{Number of trees to be used for the random forest classification (supervised machine learning) Default is set to 10000.}
+\item{num_trees}{Number of trees to be used for the random forests classification (supervised machine learning). Default is set to 10000.}
+
+\item{mtry}{Number of features to possibly split at in each node. Default is the (rounded down) square root of the
+number of variables. Alternatively, a single argument function returning an integer, given the number of independent variables.}
 
 \item{num_permutations}{Number of permutations to be used for computation of the statistical significances (p-values) of
-the importance scores resulted from random forest classification (default is 100).}
+the importance scores resulted from random forests classification (default is 100).}
 
 \item{inf_const}{The constant value to be multiplied by the maximum absolute value of differential (logFC)
 values for the substitution with infinite differential values. This results in noticeably high biomarker values for features

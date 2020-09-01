@@ -1783,9 +1783,11 @@ sirir <- function(graph, vertices = V(graph),
   #' @param max.connections The maximum number of connections to be included in the association network.
   #' Higher max.connections might increase the computation time, cost, and accuracy of the results (default is 20000).
   #' @param alpha The threshold of the statistical significance (p-value) used throughout the entir model (default is 0.05)
-  #' @param num_trees Number of trees to be used for the random forest classification (supervised machine learning) Default is set to 10000.
+  #' @param num_trees Number of trees to be used for the random forests classification (supervised machine learning). Default is set to 10000.
+  #' @param mtry Number of features to possibly split at in each node. Default is the (rounded down) square root of the
+  #' number of variables. Alternatively, a single argument function returning an integer, given the number of independent variables.
   #' @param num_permutations Number of permutations to be used for computation of the statistical significances (p-values) of
-  #' the importance scores resulted from random forest classification (default is 100).
+  #' the importance scores resulted from random forests classification (default is 100).
   #' @param inf_const The constant value to be multiplied by the maximum absolute value of differential (logFC)
   #' values for the substitution with infinite differential values. This results in noticeably high biomarker values for features
   #' with infinite differential values compared with other features. Having said that, the user can still use the
@@ -1834,7 +1836,7 @@ sirir <- function(graph, vertices = V(graph),
                    Diff_data, Diff_value, Regr_value = NULL, Sig_value,
                    Exptl_data, Condition_colname, Normalize = FALSE,
                    r = 0, max.connections = 20000, alpha = 0.05,
-                   num_trees = 10000, num_permutations = 100,
+                   num_trees = 10000, mtry = NULL, num_permutations = 100,
                    inf_const = 10^10, seed = 1234, verbose = TRUE) {
 
     # Setup progress bar
@@ -1957,9 +1959,9 @@ sirir <- function(graph, vertices = V(graph),
       utils::setTxtProgressBar(pb = pb, value = 20)
     }
 
-    #ProgressBar: Performing the random forest classification (supervised machine learning)
+    #ProgressBar: Performing the random forests classification (supervised machine learning)
     if(verbose) {
-      print(unname(as.data.frame("Performing the random forest classification (supervised machine learning)")),quote = FALSE, row.names = FALSE)
+      print(unname(as.data.frame("Performing the random forests classification (supervised machine learning)")),quote = FALSE, row.names = FALSE)
     }
 
     #4 Calculation of the Integrated Value of Influence (IVI)
@@ -1976,11 +1978,13 @@ sirir <- function(graph, vertices = V(graph),
     exptl.for.super.learn <- Exptl_data[,sig.diff.index]
     exptl.for.super.learn$condition <- Exptl_data[,condition.index]
 
-    #b Perform random forest classification
+    #b Perform random forests classification
     base::set.seed(seed = seed)
     rf.diff.exptl <- ranger::ranger(formula = condition ~ .,
                                     data = exptl.for.super.learn,
-                                    num.trees = num_trees, importance = "impurity_corrected",
+                                    num.trees = num_trees,
+                                    mtry = mtry,
+                                    importance = "impurity_corrected",
                                     write.forest = FALSE)
 
     base::set.seed(seed = seed)
@@ -2039,7 +2043,7 @@ sirir <- function(graph, vertices = V(graph),
            (max(rf.diff.exptl.pvalue[,"pvalue"])-min(rf.diff.exptl.pvalue[,"pvalue"])))
     }
 
-    #ProgressBar: Performing the random forest classification (supervised machine learning)
+    #ProgressBar: Performing the random forests classification (supervised machine learning)
     if(verbose) {
       utils::setTxtProgressBar(pb = pb, value = 35)
     }
