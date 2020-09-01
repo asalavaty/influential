@@ -2320,8 +2320,10 @@ sirir <- function(graph, vertices = V(graph),
     if(nrow(as.data.frame(Driver.table))==0) {Driver.table <- NULL} else {
 
       #range normalize final driver score
-      Driver.table$final.Driver.score <- 1+(((Driver.table$final.Driver.score-min(Driver.table$final.Driver.score))*(100-1))/
-                                              (max(Driver.table$final.Driver.score)-min(Driver.table$final.Driver.score)))
+      ifelse(length(unique(Driver.table$final.Driver.score)) > 1,
+             Driver.table$final.Driver.score <- 1+(((Driver.table$final.Driver.score-min(Driver.table$final.Driver.score))*(100-1))/
+                                                     (max(Driver.table$final.Driver.score)-min(Driver.table$final.Driver.score))),
+             Driver.table$final.Driver.score <- 1)
 
       #add Z.score
       Driver.table$Z.score <- base::scale(Driver.table$final.Driver.score)
@@ -2451,8 +2453,11 @@ sirir <- function(graph, vertices = V(graph),
       }
 
       #range normalize biomarker score
-      Biomarker.table$final.biomarker.score <- 1+(((Biomarker.table$final.biomarker.score-min(Biomarker.table$final.biomarker.score))*(100-1))/
-                                                    (max(Biomarker.table$final.biomarker.score)-min(Biomarker.table$final.biomarker.score)))
+      ifelse(length(unique(Biomarker.table$final.biomarker.score)) > 1,
+             Biomarker.table$final.biomarker.score <- 1+(((Biomarker.table$final.biomarker.score-min(Biomarker.table$final.biomarker.score))*(100-1))/
+                                                           (max(Biomarker.table$final.biomarker.score)-min(Biomarker.table$final.biomarker.score))),
+             Biomarker.table$final.biomarker.score <- 1)
+
 
       #add biomarker Z.score
       Biomarker.table$Z.score <- base::scale(Biomarker.table$final.biomarker.score)
@@ -2538,8 +2543,10 @@ sirir <- function(graph, vertices = V(graph),
     if(nrow(as.data.frame(DE.mediator.table))==0) {DE.mediator.table <- NULL} else {
 
       #range normalize DE mediators score
-      DE.mediator.table$DE.mediator.score <- 1+(((DE.mediator.table$DE.mediator.score-min(DE.mediator.table$DE.mediator.score))*(100-1))/
-                                                  (max(DE.mediator.table$DE.mediator.score)-min(DE.mediator.table$DE.mediator.score)))
+      ifelse(length(unique(DE.mediator.table$DE.mediator.score)) > 1,
+             DE.mediator.table$DE.mediator.score <- 1+(((DE.mediator.table$DE.mediator.score-min(DE.mediator.table$DE.mediator.score))*(100-1))/
+                                                         (max(DE.mediator.table$DE.mediator.score)-min(DE.mediator.table$DE.mediator.score))),
+             DE.mediator.table$DE.mediator.score <- 1)
 
       #add DE mediators Z score
       DE.mediator.table$Z.score <- base::scale(DE.mediator.table$DE.mediator.score)
@@ -2607,9 +2614,11 @@ sirir <- function(graph, vertices = V(graph),
 
       non.DE.mediators.table$non.DE.mediator.score <- non.DE.mediators.table$N.score*non.DE.mediators.table$ivi
 
-      #range normalize DE mediators score
-      non.DE.mediators.table$non.DE.mediator.score <- 1+(((non.DE.mediators.table$non.DE.mediator.score-min(non.DE.mediators.table$non.DE.mediator.score))*(100-1))/
-                                                           (max(non.DE.mediators.table$non.DE.mediator.score)-min(non.DE.mediators.table$non.DE.mediator.score)))
+      #range normalize nonDE mediators score
+      ifelse(length(unique(non.DE.mediators.table$non.DE.mediator.score)) > 1,
+             non.DE.mediators.table$non.DE.mediator.score <- 1+(((non.DE.mediators.table$non.DE.mediator.score-min(non.DE.mediators.table$non.DE.mediator.score))*(100-1))/
+                                                                  (max(non.DE.mediators.table$non.DE.mediator.score)-min(non.DE.mediators.table$non.DE.mediator.score))),
+             non.DE.mediators.table$non.DE.mediator.score <- 1)
 
       #add non-DE mediators Z.score
       non.DE.mediators.table$Z.score <- base::scale(non.DE.mediators.table$non.DE.mediator.score)
