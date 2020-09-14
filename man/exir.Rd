@@ -14,7 +14,7 @@ exir(
   Exptl_data,
   Condition_colname,
   Normalize = FALSE,
-  r = 0,
+  r = 0.3,
   max.connections = 20000,
   alpha = 0.05,
   num_trees = 10000,
@@ -62,19 +62,19 @@ The experimental data could come from a variety sources such as transcriptomics 
 \item{Normalize}{Logical; whether the experimental data should be normalized or not (default is FALSE). If TRUE, the
 experimental data will be log2 transformed.}
 
-\item{r}{The threshold of Pearson correlation coefficient for the selection of correlated features (default is 0).}
+\item{r}{The threshold of Spearman correlation coefficient for the selection of correlated features (default is 0.3).}
 
 \item{max.connections}{The maximum number of connections to be included in the association network.
 Higher max.connections might increase the computation time, cost, and accuracy of the results (default is 20000).}
 
-\item{alpha}{The threshold of the statistical significance (p-value) used throughout the entir model (default is 0.05)}
+\item{alpha}{The threshold of the statistical significance (p-value) used throughout the entire model (default is 0.05)}
 
 \item{num_trees}{Number of trees to be used for the random forests classification (supervised machine learning). Default is set to 10000.}
 
 \item{mtry}{Number of features to possibly split at in each node. Default is the (rounded down) square root of the
 number of variables. Alternatively, a single argument function returning an integer, given the number of independent variables.}
 
-\item{num_permutations}{Number of permutations to be used for computation of the statistical significances (p-values) of
+\item{num_permutations}{Number of permutations to be used for computation of the statistical significance (p-values) of
 the importance scores resulted from random forests classification (default is 100).}
 
 \item{inf_const}{The constant value to be multiplied by the maximum absolute value of differential (logFC)
