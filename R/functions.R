@@ -1779,14 +1779,14 @@ sirir <- function(graph, vertices = V(graph),
   #' @param Condition_colname A string or character vector specifying the name of the column "condition" of the Exptl_data dataframe.
   #' @param Normalize Logical; whether the experimental data should be normalized or not (default is FALSE). If TRUE, the
   #' experimental data will be log2 transformed.
-  #' @param r The threshold of Pearson correlation coefficient for the selection of correlated features (default is 0).
+  #' @param r The threshold of Spearman correlation coefficient for the selection of correlated features (default is 0.3).
   #' @param max.connections The maximum number of connections to be included in the association network.
   #' Higher max.connections might increase the computation time, cost, and accuracy of the results (default is 20000).
-  #' @param alpha The threshold of the statistical significance (p-value) used throughout the entir model (default is 0.05)
+  #' @param alpha The threshold of the statistical significance (p-value) used throughout the entire model (default is 0.05)
   #' @param num_trees Number of trees to be used for the random forests classification (supervised machine learning). Default is set to 10000.
   #' @param mtry Number of features to possibly split at in each node. Default is the (rounded down) square root of the
   #' number of variables. Alternatively, a single argument function returning an integer, given the number of independent variables.
-  #' @param num_permutations Number of permutations to be used for computation of the statistical significances (p-values) of
+  #' @param num_permutations Number of permutations to be used for computation of the statistical significance (p-values) of
   #' the importance scores resulted from random forests classification (default is 100).
   #' @param inf_const The constant value to be multiplied by the maximum absolute value of differential (logFC)
   #' values for the substitution with infinite differential values. This results in noticeably high biomarker values for features
@@ -1835,7 +1835,7 @@ sirir <- function(graph, vertices = V(graph),
   exir <- function(Desired_list = NULL,
                    Diff_data, Diff_value, Regr_value = NULL, Sig_value,
                    Exptl_data, Condition_colname, Normalize = FALSE,
-                   r = 0, max.connections = 20000, alpha = 0.05,
+                   r = 0.3, max.connections = 20000, alpha = 0.05,
                    num_trees = 10000, mtry = NULL, num_permutations = 100,
                    inf_const = 10^10, seed = 1234, verbose = TRUE) {
 
@@ -2093,7 +2093,7 @@ sirir <- function(graph, vertices = V(graph),
 
     temp.corr <- reshape2::melt(data = temp.corr, value.name = "cor")
 
-    #filterring low level correlations
+    #filtering low level correlations
     cor.thresh <- r
     temp.corr <- base::subset(temp.corr, temp.corr[,3]>cor.thresh)
 
@@ -2142,7 +2142,7 @@ sirir <- function(graph, vertices = V(graph),
 
     temp.corr <- reshape2::melt(data = temp.corr, value.name = "cor")
 
-    #filterring low level correlations
+    #filtering low level correlations
     cor.thresh <- r
     temp.corr <- base::subset(temp.corr, temp.corr[,3]>cor.thresh)
 
