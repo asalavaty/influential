@@ -22,8 +22,9 @@ exir.vis(
   stroke.alpha = 1,
   dot.color.low = "blue",
   dot.color.high = "red",
-  legend.position = "right",
+  legend.position = "bottom",
   legend.direction = "vertical",
+  legends.layout = "horizontal",
   boxed.legend = TRUE,
   show.plot.title = TRUE,
   plot.title = "auto",
@@ -85,8 +86,11 @@ be a number between 0 and 1 (default is set to 1).}
 \item{legend.position}{The position of legends ("none", "left", "right",
 "bottom", "top", or two-element numeric vector). The default is set to "right".}
 
-\item{legend.direction}{layout of items in legends ("horizontal" or "vertical").
+\item{legend.direction}{Layout of items in legends ("horizontal" or "vertical").
 The default is set to "vertical".}
+
+\item{legends.layout}{Layout of different legends of the plot ("horizontal" or "vertical").
+The default is set to "horizontal".}
 
 \item{boxed.legend}{Logical scalar, whether to draw a box around the legend or not (default is set to TRUE).}
 
