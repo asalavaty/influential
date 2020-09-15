@@ -3180,8 +3180,10 @@ sirir <- function(graph, vertices = V(graph),
   #' @param dot.color.high The color to be used for the visualization of dots (features) with the highest Z-score values (default is set to "blue").
   #' @param legend.position The position of legends ("none", "left", "right",
   #' "bottom", "top", or two-element numeric vector). The default is set to "right".
-  #' @param legend.direction layout of items in legends ("horizontal" or "vertical").
+  #' @param legend.direction Layout of items in legends ("horizontal" or "vertical").
   #' The default is set to "vertical".
+  #' @param legends.layout Layout of different legends of the plot ("horizontal" or "vertical").
+  #' The default is set to "horizontal".
   #' @param boxed.legend Logical scalar, whether to draw a box around the legend or not (default is set to TRUE).
   #' @param show.plot.title Logical scalar, whether to show the plot title or not (default is set to TRUE).
   #' @param plot.title The plot title in the string format (default is set to "auto" which automatically generates a title for the plot).
@@ -3219,8 +3221,9 @@ sirir <- function(graph, vertices = V(graph),
                        stroke.alpha = 1,
                        dot.color.low = "blue",
                        dot.color.high = "red",
-                       legend.position = "right",
+                       legend.position = "bottom",
                        legend.direction = "vertical",
+                       legends.layout = "horizontal",
                        boxed.legend = TRUE,
                        show.plot.title = TRUE,
                        plot.title = "auto",
@@ -3589,6 +3592,7 @@ sirir <- function(graph, vertices = V(graph),
                                   limits = x.axis.limits) +
 
       ggplot2::theme(legend.title = ggplot2::element_text(size = 10),
+                     legend.box = legends.layout,
                      legend.position = legend.position,
                      legend.direction = legend.direction) +
 
