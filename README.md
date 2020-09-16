@@ -85,7 +85,7 @@ You may browse Vignettes from within R using the following code.
 browseVignettes("influential")
 ```
 
-## An Example for Calculation of IVI
+## An Example for the Calculation of IVI
 
 This is a basic example which shows you how to solve a common problem:
 
