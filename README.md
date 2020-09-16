@@ -73,8 +73,11 @@ devtools::install_github("asalavaty/influential")
 
 ## Vignettes
 
-[Detailed description of the functions and their
-outputs](https://github.com/asalavaty/influential/blob/master/vignettes/Vignettes.md)
+  - [Detailed description of functions and their
+    outputs](https://cran.r-project.org/web/packages/influential/vignettes/Vignettes.html)
+
+  - [Vignettes of the developmental version of the
+    package](https://github.com/asalavaty/influential/blob/master/vignettes/Vignettes.md)
 
 You may browse Vignettes from within R using the following code.
 
