@@ -4,7 +4,6 @@
 ^README\.Rmd$
 ^data-raw$
 data-raw/
-docs/
 influential.Rproj
 .Rproj.user/
 .Rhistory
@@ -26,3 +25,4 @@ logo.png
 ^Meta$
 ^CRAN-RELEASE$
 vignettes/NNS_scatter.plot.pdf
+Vignettes.html
