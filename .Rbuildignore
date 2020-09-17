@@ -4,6 +4,7 @@
 ^README\.Rmd$
 ^data-raw$
 data-raw/
+docs/
 influential.Rproj
 .Rproj.user/
 .Rhistory
