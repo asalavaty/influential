@@ -85,27 +85,6 @@ You may browse Vignettes from within R using the following code.
 browseVignettes("influential")
 ```
 
-## An Example for the Calculation of IVI
-
-This is a basic example which shows you how to solve a common problem:
-
-``` r
-library(influential)
-
-MyData <- centrality.measures # A data frame of centrality measures
-
-# This function calculates the Integrated Value of Influence (IVI)
-My.vertices.IVI <- ivi.from.indices(DC = centrality.measures$DC,       # Calculation of IVI
-                                   CR = centrality.measures$CR,
-                                   NC = centrality.measures$NC,
-                                   LH_index = centrality.measures$LH_index,
-                                   BC = centrality.measures$BC,
-                                   CI = centrality.measures$CI)
-
-print(head(My.vertices.IVI))
-#> [1] 24.670056  8.344337 18.621049  1.017768 29.437028 33.512598
-```
-
 ## How to cite `influential`
 
 To cite `influential`, please cite its associated paper:
