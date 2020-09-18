@@ -17,11 +17,9 @@ data-raw/coexpression.data.csv
 data-raw/DATASET.R
 .git/
 .gitignore
-vignettes/.gitignore
 ^\.travis\.yml$
 ^appveyor\.yml$
 logo.png
 ^doc$
 ^Meta$
 ^CRAN-RELEASE$
-vignettes/NNS_scatter.plot.pdf
