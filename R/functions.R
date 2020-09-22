@@ -3026,6 +3026,7 @@ sirir <- function(graph, vertices = V(graph),
   node.shape <- base::as.numeric(node.shape[,1])
 
   # add stroke color
+  base::suppressWarnings(
   if(stroke.color == "identical") {
     temp.plot <- temp.plot +
       ggplot2::geom_point(data = plotcord, ggplot2::aes(x = X, y = Y, colour = cent.metric),
@@ -3046,6 +3047,7 @@ sirir <- function(graph, vertices = V(graph),
                           alpha = stroke.alpha,
                           show.legend = FALSE)
   }
+  )
 
   # add node objects
   temp.plot <- temp.plot +
