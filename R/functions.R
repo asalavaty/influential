@@ -2007,7 +2007,7 @@ sirir <- function(graph, vertices = V(graph),
                             100)
 
       if(length(which(rf.diff.exptl.pvalue[,"pvalue"] <alpha)) >= select.number) {
-        rf.diff.exptl.pvalue <- base::subset(rf.diff.exptl.pvalue, pvalue < alpha)
+        rf.diff.exptl.pvalue <- base::subset(rf.diff.exptl.pvalue, rf.diff.exptl.pvalue$pvalue < alpha)
 
       } else {
         rf.pval.select <- which(rf.diff.exptl.pvalue[,"pvalue"] <alpha)
@@ -3008,7 +3008,7 @@ sirir <- function(graph, vertices = V(graph),
   # add nodes
 
   # define node shapes
-  node.shape <- base::as.data.frame(node.shape)
+  node.shape <- base::as.data.frame(node.shape, stringsAsFactors = FALSE)
   for (i in 1:nrow(node.shape)) {
       if(node.shape[i,1] == "circle") {
         node.shape[i,1] <- 21
@@ -3439,7 +3439,7 @@ sirir <- function(graph, vertices = V(graph),
 
     # correct the features names
     if(!is.null(synonyms.table)) {
-      synonyms.table <- base::as.data.frame(synonyms.table)
+      synonyms.table <- base::as.data.frame(synonyms.table, stringsAsFactors = FALSE)
       synonyms.index <- base::match(exir.for.plot$Feature,
                                     synonyms.table[,1])
       exir.for.plot$Feature <- synonyms.table[synonyms.index,2]
