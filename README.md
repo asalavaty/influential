@@ -68,7 +68,7 @@ Or the development version from GitHub:
 
 ``` r
 ## install.packages("devtools")
-devtools::install_github("asalavaty/influential")
+devtools::install_github("asalavaty/influential", build_vignettes = TRUE)
 ```
 
 ## Vignettes
