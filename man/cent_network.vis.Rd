@@ -57,7 +57,7 @@ in the network \code{(V(graph))}.}
 underlying algorithms please refer to the function \code{\link[igraph]{layout_}}.}
 
 \item{node.color}{A character string indicating the colormap option to use.
-Four options are available: "magma" (or "A"), "inferno" (or "B"), "plasma"
+Five options are available: "magma" (or "A"), "inferno" (or "B"), "plasma"
 (or "C"), "viridis" (or "D", the default option) and "cividis" (or "E").}
 
 \item{node.size.min}{The size of nodes with the lowest value of the centrality measure (default is set to 3).}

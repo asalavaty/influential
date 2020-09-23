@@ -2765,7 +2765,7 @@ sirir <- function(graph, vertices = V(graph),
   #' (default is set to "kk"). For a complete description of different layouts and their
   #' underlying algorithms please refer to the function \code{\link[igraph]{layout_}}.
   #' @param node.color A character string indicating the colormap option to use.
-  #' Four options are available: "magma" (or "A"), "inferno" (or "B"), "plasma"
+  #' Five options are available: "magma" (or "A"), "inferno" (or "B"), "plasma"
   #' (or "C"), "viridis" (or "D", the default option) and "cividis" (or "E").
   #' @param node.size.min The size of nodes with the lowest value of the centrality measure (default is set to 3).
   #' @param node.size.max The size of nodes with the highest value of the centrality measure (default is set to 15).
