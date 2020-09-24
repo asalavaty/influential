@@ -3181,7 +3181,7 @@ sirir <- function(graph, vertices = V(graph),
   #' @param dot.color.low The color to be used for the visualization of dots (features) with the lowest Z-score values (default is set to "blue").
   #' @param dot.color.high The color to be used for the visualization of dots (features) with the highest Z-score values (default is set to "blue").
   #' @param legend.position The position of legends ("none", "left", "right",
-  #' "bottom", "top", or two-element numeric vector). The default is set to "right".
+  #' "bottom", "top", or two-element numeric vector). The default is set to "bottom".
   #' @param legend.direction Layout of items in legends ("horizontal" or "vertical").
   #' The default is set to "vertical".
   #' @param legends.layout Layout of different legends of the plot ("horizontal" or "vertical").

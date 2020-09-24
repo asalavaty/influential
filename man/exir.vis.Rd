@@ -84,7 +84,7 @@ be a number between 0 and 1 (default is set to 1).}
 \item{dot.color.high}{The color to be used for the visualization of dots (features) with the highest Z-score values (default is set to "blue").}
 
 \item{legend.position}{The position of legends ("none", "left", "right",
-"bottom", "top", or two-element numeric vector). The default is set to "right".}
+"bottom", "top", or two-element numeric vector). The default is set to "bottom".}
 
 \item{legend.direction}{Layout of items in legends ("horizontal" or "vertical").
 The default is set to "vertical".}
