@@ -1,11 +1,6 @@
 influential
 ================
 
-  - [influential 2.0.0 (CRAN version)](#influential-2.0.0-cran-version)
-  - [influential 1.1.2 (CRAN version)](#influential-1.1.2-cran-version)
-  - [influential 1.1.1 (CRAN version)](#influential-1.1.1-cran-version)
-  - [influential 1.0.0 (CRAN version)](#influential-1.0.0-cran-version)
-
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
 # influential 2.0.0 (CRAN version)
