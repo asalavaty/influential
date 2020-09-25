@@ -43,7 +43,7 @@ You may check the latest developmental version of the \emph{influential} package
 \itemize{
   \item Fred Viole and David Nawrocki (2013, ISBN:1490523995).
   \item Csardi G, Nepusz T (2006). “The igraph software package for complex network research.”
-InterJournal, Complex Systems, 1695. \url{http://igraph.org}.
+InterJournal, Complex Systems, 1695. \url{https://igraph.org/}.
 }
 
 \strong{Note:} Adopted algorithms and sources are referenced in function document.
@@ -51,8 +51,8 @@ InterJournal, Complex Systems, 1695. \url{http://igraph.org}.
 \seealso{
 Useful links:
 \itemize{
-  \item \url{http://github.com/asalavaty/influential}
-  \item Report bugs at \url{http://github.com/asalavaty/influential/issues}
+  \item \url{https://github.com/asalavaty/influential}
+  \item Report bugs at \url{https://github.com/asalavaty/influential/issues}
 }
 
 }

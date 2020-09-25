@@ -55,7 +55,7 @@
 #' \itemize{
 #'   \item Fred Viole and David Nawrocki (2013, ISBN:1490523995).
 #'   \item Csardi G, Nepusz T (2006). “The igraph software package for complex network research.”
-#' InterJournal, Complex Systems, 1695. \url{http://igraph.org}.
+#' InterJournal, Complex Systems, 1695. \url{https://igraph.org/}.
 #' }
 #'
 #' \strong{Note:} Adopted algorithms and sources are referenced in function document.

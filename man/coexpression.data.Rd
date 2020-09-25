@@ -13,7 +13,7 @@ A data frame with 2410 rows and 2 variables:
 }
 }
 \source{
-\url{https://www.ncbi.nlm.nih.gov/pubmed/31211495/}
+\url{https://pubmed.ncbi.nlm.nih.gov/31211495/}
 }
 \usage{
 coexpression.data
