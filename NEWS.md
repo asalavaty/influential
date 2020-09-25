@@ -1,9 +1,14 @@
 influential
 ================
 
+  - [influential 2.0.0 (CRAN version)](#influential-2.0.0-cran-version)
+  - [influential 1.1.2 (CRAN version)](#influential-1.1.2-cran-version)
+  - [influential 1.1.1 (CRAN version)](#influential-1.1.1-cran-version)
+  - [influential 1.0.0 (CRAN version)](#influential-1.0.0-cran-version)
+
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-# influential 1.1.2.9000 (Developmental version)
+# influential 2.0.0 (CRAN version)
 
   - The ReadMe file is updated.
 
@@ -27,7 +32,7 @@ influential
   - The Z-score and statistical significance is added to the results of
     function `ExIR`.
 
-  - The function `ExIR` is upddated so that the experimental data are
+  - The function `ExIR` is updated so that the experimental data are
     ranked prior to correlation analysis. This will result in the
     assessment of the association based on the Spearman method, a more
     robust algorithm in variable conditions and/or non-parametric
@@ -39,7 +44,7 @@ influential
 
   - The `ExIR` function is updated to prevent outputting NULL results.
 
-  - Package logo is updated in acorddance with the design of R packages.
+  - Package logo is updated in accordance with the design of R packages.
 
   - Some documentations in the Read Me file are corrected.
 
