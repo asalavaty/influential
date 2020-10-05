@@ -1978,6 +1978,14 @@ sirir <- function(graph, vertices = V(graph),
     exptl.for.super.learn <- Exptl_data[,sig.diff.index]
     exptl.for.super.learn$condition <- Exptl_data[,condition.index]
 
+    #correct the names of features
+      #first preserve a copy of original names
+      features.exptl.for.super.learn <- colnames(exptl.for.super.learn)[-ncol(exptl.for.super.learn)]
+
+    colnames(exptl.for.super.learn) <- base::gsub(pattern = "([[:blank:]])|([[:punct:]])",
+                                                  replacement = "_",
+                                                  x = colnames(exptl.for.super.learn))
+
     #b Perform random forests classification
     base::set.seed(seed = seed)
     rf.diff.exptl <- ranger::ranger(formula = condition ~ .,
@@ -1993,6 +2001,9 @@ sirir <- function(graph, vertices = V(graph),
                                                                      num.permutations = num_permutations,
                                                                      data = exptl.for.super.learn,
                                                                      method = "altmann"))
+
+    #replace feature names (rownames) with their original names
+    rownames(rf.diff.exptl.pvalue) <- features.exptl.for.super.learn
 
     if(any(is.na(rf.diff.exptl.pvalue[,"pvalue"])) |
        any(is.nan(rf.diff.exptl.pvalue[,"pvalue"]))) {
