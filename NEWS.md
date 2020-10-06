@@ -3,6 +3,10 @@ influential
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
+# influential 2.0.0.9000 (Developmental version)
+
+  - The function `ExIR` is debugged.
+
 # influential 2.0.0 (CRAN version)
 
   - The ReadMe file is updated.
@@ -21,11 +25,11 @@ influential
     (imported from the *igraph* package) for the network reconstruction
     from an incidence matrix.
 
-  - A new column named **Type** is added to the *Biomarker* tabel of the
+  - A new column named **Type** is added to the *Biomarker* table of the
     function `ExIR`.
 
-  - The Z-score and statistical significance is added to the results of
-    function `ExIR`.
+  - The Z-score and statistical significance are added to the results of
+    the function `ExIR`.
 
   - The function `ExIR` is updated so that the experimental data are
     ranked prior to correlation analysis. This will result in the
@@ -39,7 +43,8 @@ influential
 
   - The `ExIR` function is updated to prevent outputting NULL results.
 
-  - Package logo is updated in accordance with the design of R packages.
+  - The package logo is updated in accordance with the logo design of
+    well-known R packages.
 
   - Some documentations in the Read Me file are corrected.
 
@@ -64,7 +69,7 @@ influential
     classification and ranking of top candidate features.
 
   - The function `clusterrank` is upgraded to `clusterRank` in order to
-    calculate the ClusterRank centrality intenally.
+    calculate the ClusterRank centrality internally.
 
   - The function `neighborhood.connectivity` is undergone minor
     modifications to enhance the performance speed.
@@ -87,10 +92,10 @@ influential
   - The function `sirir` is added for the unsupervised influence ranking
     of network nodes.
 
-  - The function `hubness.score` is added for the calculation of Hubness
-    score.
+  - The function `hubness.score` is added for the calculation of the
+    Hubness score.
 
-  - The function `spreading.score` is added for the calculation of
+  - The function `spreading.score` is added for the calculation of the
     Spreading score.
 
   - The function `ivi` is added for the influential node identification
@@ -99,7 +104,7 @@ influential
   - The function `ivi.from.indices` is added for the influential node
     identification from indices.
 
-  - The function `ihs` is removed as a refined formual is added for
+  - The function `ihs` is removed as a refined formula is added for
     influential node identification.
 
   - Updating the normality assessment results of association functions
@@ -123,7 +128,7 @@ influential
   - The formatting of return values in the documentation of each
     function is corrected.
 
-  - The `citation` details of the package is updated according to its
+  - The `citation` details of the package are updated according to its
     associated published paper.
 
   - The error regarding the use of `NNS` since the second use of
