@@ -1982,7 +1982,7 @@ sirir <- function(graph, vertices = V(graph),
       #first preserve a copy of original names
       features.exptl.for.super.learn <- colnames(exptl.for.super.learn)[-ncol(exptl.for.super.learn)]
 
-    colnames(exptl.for.super.learn) <- base::gsub(pattern = "([[:blank:]])|([[:punct:]])",
+    colnames(exptl.for.super.learn) <- base::gsub(pattern = "^\\d+|'%'|\'|\"|([[:blank:]])|([[:punct:]])",
                                                   replacement = "_",
                                                   x = colnames(exptl.for.super.learn))
 
