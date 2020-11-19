@@ -3,7 +3,7 @@ influential
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-# influential 2.0.0.9000 (Developmental version)
+# influential 2.0.1 (CRAN version)
 
   - The function `ExIR` is debugged.
 

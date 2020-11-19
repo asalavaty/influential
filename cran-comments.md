@@ -1,20 +1,18 @@
 CRAN Comments
 ================
 Adrian (Abbas) Salavaty
-15/01/2020 (updated on 25 September, 2020)
+15/01/2020 (updated on 20 November, 2020)
 
-## 2.0.0 New version resubmission
+## 2.0.1 New version resubmission
 
-  - This is a resubmission of the package `influential`. Comments were
-    addressed on 25-09-2020 and Re-ran R CMD check –as-cran with no new
-    warnings, errors or notes.
+  - This is a new submission of the new version of the package
+    `influential`. Some bugs in the `ExIR` function were removed.
 
 <!-- end list -->
 
-1.  Please change http –\> https, add trailing slashes, or follow moved
-    content as appropriate.
+1.  No comments.
 
-> *All of the URLs were corrected as requested.*
+> *No response is required.*
 
 ## Test environments
 

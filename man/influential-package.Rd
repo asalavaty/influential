@@ -34,8 +34,8 @@ You may check the latest developmental version of the \emph{influential} package
 \itemize{
   \item Package: influential
   \item Type: Package
-  \item Version: 2.0.0.9000
-  \item Date: 29-09-2020
+  \item Version: 2.0.1
+  \item Date: 20-11-2020
   \item License: GPL-3
 }
 }
