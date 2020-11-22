@@ -2095,22 +2095,32 @@ sirir <- function(graph, vertices = V(graph),
                                                          MARGIN = 1, base::rank))
 
     temp.corr <- coop::pcor(Exptl_data[,-condition.index])
+
+    #reshape the cor matrix
+    flt.Corr.Matrix <- function(cormat) {
+      ut <- base::upper.tri(cormat)
+      data.frame(
+        row = base::rownames(cormat)[base::row(cormat)[ut]],
+        column = base::rownames(cormat)[base::col(cormat)[ut]],
+        cor  = (cormat)[ut]
+      )
+    }
+
+    temp.corr <- flt.Corr.Matrix(cormat=temp.corr)
+
+    #save a second copy of all cor data
     temp.corr.for.sec.round <- temp.corr
 
     #filter corr data for only those corr between diff features and themselves/others
-    filter.corr.index <- stats::na.omit(base::unique(base::match(rownames(rf.diff.exptl.pvalue),
-                                                                 colnames(temp.corr))))
-    temp.corr <- temp.corr[,filter.corr.index]
-
-    temp.corr <- reshape2::melt(data = temp.corr, value.name = "cor")
+    filter.corr.index <- stats::na.omit(base::unique(c(base::match(rownames(rf.diff.exptl.pvalue),
+                                                                 temp.corr$row),
+                                                       base::match(rownames(rf.diff.exptl.pvalue),
+                                                                   temp.corr$column))))
+    temp.corr <- temp.corr[filter.corr.index,]
 
     #filtering low level correlations
     cor.thresh <- r
     temp.corr <- base::subset(temp.corr, temp.corr[,3]>cor.thresh)
-
-    # removing self-correlations
-    temp.corr <- temp.corr[-which(as.character(temp.corr$Var1)==
-                                    as.character(temp.corr$Var2)),]
 
     if(nrow(temp.corr)> (max.connections*0.95)) {
 
@@ -2121,7 +2131,7 @@ sirir <- function(graph, vertices = V(graph),
 
     }
 
-    diff.only.temp.corr.nrow <- nrow(temp.corr)
+    diff.only.temp.corr <- temp.corr
 
     #getting the list of diff features and their correlated features
     diff.plus.corr.features <- base::unique(c(base::as.character(temp.corr[,1]),
@@ -2130,7 +2140,7 @@ sirir <- function(graph, vertices = V(graph),
     #find the diff features amongst diff.plus.corr.features
     diff.only.features.index <- stats::na.omit(base::unique(base::match(rownames(rf.diff.exptl.pvalue),
                                                                         diff.plus.corr.features)))
-    diff.only.features <- diff.plus.corr.features[diff.only.features.index]
+    non.diff.only.features <- diff.plus.corr.features[-diff.only.features.index]
 
     #ProgressBar: Performing first round of association analysis
     if(verbose) {
@@ -2147,46 +2157,36 @@ sirir <- function(graph, vertices = V(graph),
     rm(temp.corr.for.sec.round)
 
     #filter corr data for only those corr between diff.plus.corr.features and themselves/others
-    filter.corr.index <- stats::na.omit(match(diff.plus.corr.features,
-                                              colnames(temp.corr)))
-    temp.corr <- temp.corr[,filter.corr.index]
-
-    temp.corr <- reshape2::melt(data = temp.corr, value.name = "cor")
+    filter.corr.index <- stats::na.omit(base::unique(c(base::match(non.diff.only.features,
+                                                                   temp.corr$row),
+                                                       base::match(non.diff.only.features,
+                                                                   temp.corr$column))))
+    temp.corr <- temp.corr[filter.corr.index,]
 
     #filtering low level correlations
     cor.thresh <- r
     temp.corr <- base::subset(temp.corr, temp.corr[,3]>cor.thresh)
 
-    # removing self-correlations
-    temp.corr <- temp.corr[-which(as.character(temp.corr$Var1)==
-                                    as.character(temp.corr$Var2)),]
+    # separate non.diff.only features
+    temp.corr.diff.only.index <- stats::na.omit(base::unique(c(base::match(rownames(rf.diff.exptl.pvalue),
+                                                                           temp.corr$row),
+                                                               base::match(rownames(rf.diff.exptl.pvalue),
+                                                                           temp.corr$column))))
 
-    # separate diff.only features
-    temp.corr.diff.only.index <- base::unique(c(which(temp.corr$Var1 %in% diff.only.features),
-                                                which(temp.corr$Var2 %in% diff.only.features)))
-    temp.corr.diff.only <- temp.corr[temp.corr.diff.only.index,]
-
-    if(nrow(temp.corr.diff.only)>diff.only.temp.corr.nrow) {
-
-      temp.corr.diff.only.select.index <- utils::tail(order(temp.corr.diff.only$cor),
-                                                      n = diff.only.temp.corr.nrow)
-
-      temp.corr.diff.only <- temp.corr.diff.only[temp.corr.diff.only.select.index,]
+    if(base::length(temp.corr.diff.only.index)>0) {
+      temp.corr <- temp.corr[-temp.corr.diff.only.index,]
     }
 
-    # remove diff.only features from temp.corr
-    temp.corr <- temp.corr[-temp.corr.diff.only.index,]
-
-    if(nrow(temp.corr)>(max.connections-nrow(temp.corr.diff.only))) {
+    if(nrow(temp.corr)>(max.connections-nrow(diff.only.temp.corr))) {
 
       temp.corr.select.index <- utils::tail(order(temp.corr$cor),
-                                            n = (max.connections-nrow(temp.corr.diff.only)))
+                                            n = (max.connections-nrow(diff.only.temp.corr)))
 
       temp.corr <- temp.corr[temp.corr.select.index,]
     }
 
-    # recombine the temp.corr.diff.only data and temp.corr
-    temp.corr <- base::rbind(temp.corr, temp.corr.diff.only)
+    # recombine the diff.only.temp.corr data and temp.corr
+    temp.corr <- base::rbind(temp.corr, diff.only.temp.corr)
 
     #ProgressBar: Performing second round of association analysis
     if(verbose) {
