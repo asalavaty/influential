@@ -3,6 +3,13 @@ influential
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
+# influential 2.0.1.9000 (Developmental version)
+
+  - The dependence of the function `ExIR` on the package reshape2 is
+    removed.
+
+  - The function `ExIR` is debugged.
+
 # influential 2.0.1 (CRAN version)
 
   - The function `ExIR` is debugged.

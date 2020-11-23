@@ -18,7 +18,6 @@ Imports:
     igraph,
     ranger,
     coop,
-    reshape2,
     ggplot2
 Suggests:
     Hmisc (>= 4.3-0),

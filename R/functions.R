@@ -2152,11 +2152,13 @@ sirir <- function(graph, vertices = V(graph),
       print(unname(as.data.frame("Performing the second round of association analysis")),quote = FALSE, row.names = FALSE)
     }
 
+    if(base::length(non.diff.only.features) > 0) {
+
     #redo correlation analysis
     temp.corr <- temp.corr.for.sec.round
     rm(temp.corr.for.sec.round)
 
-    #filter corr data for only those corr between diff.plus.corr.features and themselves/others
+    #filter corr data for only those corr between non.diff.only.features and themselves/others
     filter.corr.index <- stats::na.omit(base::unique(c(base::match(non.diff.only.features,
                                                                    temp.corr$row),
                                                        base::match(non.diff.only.features,
@@ -2187,6 +2189,11 @@ sirir <- function(graph, vertices = V(graph),
 
     # recombine the diff.only.temp.corr data and temp.corr
     temp.corr <- base::rbind(temp.corr, diff.only.temp.corr)
+
+    } else {
+      temp.corr <- diff.only.temp.corr
+      rm(temp.corr.for.sec.round, diff.only.temp.corr)
+    }
 
     #ProgressBar: Performing second round of association analysis
     if(verbose) {
