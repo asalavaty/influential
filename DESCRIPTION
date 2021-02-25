@@ -18,7 +18,8 @@ Imports:
     igraph,
     ranger,
     coop,
-    ggplot2
+    ggplot2,
+    shiny
 Suggests:
     Hmisc (>= 4.3-0),
     mgcv (>= 1.8-31),

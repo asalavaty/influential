@@ -10,7 +10,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<meta name="author" content="Adrian (Abbas) Salavaty 29-Sep-2020" />
+<meta name="author" content="Adrian (Abbas) Salavaty 25-Feb-2021" />
 
 
 <title>Introduction to influential</title>
@@ -44,6 +44,15 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 </script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
 
 
 <style type="text/css">code{white-space: pre;}</style>
@@ -133,6 +142,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   }
 })();
 </script>
+
 
 
 
@@ -340,7 +350,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">Introduction to influential</h1>
 <h3 class="subtitle"><em>Identification and classification of the most influential nodes</em></h3>
-<h4 class="author">Adrian (Abbas) Salavaty 29-Sep-2020</h4>
+<h4 class="author">Adrian (Abbas) Salavaty 25-Feb-2021</h4>
 
 
 <div id="TOC">
@@ -375,6 +385,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <li><a href="#integrated-value-of-influence-ivi-from-centrality-measures"><span class="toc-section-number">5.1</span> Integrated Value of Influence (IVI) from centrality measures</a></li>
 <li><a href="#integrated-value-of-influence-ivi-from-a-graph"><span class="toc-section-number">5.2</span> Integrated Value of Influence (IVI) from a graph</a></li>
 <li><a href="#NetVis"><span class="toc-section-number">5.3</span> Network visualization</a></li>
+<li><a href="#IVIShiny"><span class="toc-section-number">5.4</span> IVI shiny app</a></li>
 </ul></li>
 <li><a href="#SpreadingScore"><span class="toc-section-number">6</span> Identification of the most important network spreaders</a></li>
 <li><a href="#HubnessScore"><span class="toc-section-number">7</span> Identification of the most important network hubs</a></li>
@@ -971,7 +982,7 @@ A sample appropriate data frame is brought below:</p>
 </div>
 <div id="IVI" class="section level1" number="5">
 <h1 number="5"><span class="header-section-number">5</span> Identification of the most <code>influential</code> network nodes</h1>
-<p><strong>IVI</strong> : <code>IVI</code> is the first integrative method for the identification of network most influential nodes in a way that captures all network topological dimensions. The <code>IVI</code> formula integrates the most important local (i.e. degree centrality and ClusterRank), semi-local (i.e. neighborhood connectivity and local H-index) and global (i.e. betweenness centrality and collective influence) centrality measures in such a way that both synergize their effects and remove their biases.</p>
+<p><strong>IVI</strong> : <code>IVI</code> is the first integrative method for the identification of network most influential nodes in a way that captures all network topological dimensions. The <code>IVI</code> formula integrates the most important local (i.e. degree centrality and ClusterRank), semi-local (i.e. neighborhood connectivity and local H-index) and global (i.e. betweenness centrality and collective influence) centrality measures in such a way that both synergizes their effects and removes their biases.</p>
 <div id="integrated-value-of-influence-ivi-from-centrality-measures" class="section level2" number="5.1">
 <h2 number="5.1"><span class="header-section-number">5.1</span> Integrated Value of Influence (IVI) from centrality measures</h2>
 <div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="co"># Preparing the data</span></span>
@@ -1040,6 +1051,12 @@ A sample appropriate data frame is brought below:</p>
 <p>The following tutorial video demonstrates how to visualize a network based on the centrality of nodes (e.g. their <code>IVI</code> values).</p>
 <iframe width="100%" height="400" src="https://www.youtube.com/embed/kCmEdOoIUD4" frameborder="0" allowfullscreen>
 </iframe>
+</div>
+<div id="IVIShiny" class="section level2" number="5.4">
+<h2 number="5.4"><span class="header-section-number">5.4</span> IVI shiny app</h2>
+<p>A shiny app has also been developed for the calculation of IVI as well as IVI-based network visualization, which is accessible using the following command.<br />
+<code>influential::runExample(&quot;IVI&quot;)</code><br />
+You can also access the shiny app online at <a href="https://asalavaty.shinyapps.io/IVI_Shiny_app/">IVI Shiny App server</a>.</p>
 <p><a href="#top">Back to top</a></p>
 </div>
 </div>

@@ -5,6 +5,14 @@ influential
 
 # influential 2.0.1.9000 (Developmental version)
 
+  - Documentation on how to access IVI shiny app is added to the Read Me
+    file, vignettes, and the corresponding functions’ documentations.
+
+  - The IVI shiny app is added to the package.
+
+  - A Shiny app is developed for the calculation of IVI as well as
+    IVI-based network visualization.
+
   - The dependence of the function `ExIR` on the package reshape2 is
     removed.
 

@@ -1029,6 +1029,9 @@ double.cent.assess.noRegression <- function(data, nodes.colname,
 #' measures. This function is not dependent to other packages and the required centrality
 #' measures, namely degree centrality, ClusterRank, betweenness centrality, Collective Influence,
 #' local H-index, and neighborhood connectivity could have been calculated by any means beforehand.
+#' A shiny app has also been developed for the calculation of IVI as well as IVI-based network
+#' visualization, which is accessible using the `influential::runExample("IVI")` command.
+#' You can also access the shiny app online at https://asalavaty.shinyapps.io/IVI_Shiny_app/.
 #' @param DC A vector containing the values of degree centrality of the desired vertices.
 #' @param CR A vector containing the values of ClusterRank of the desired vertices.
 #' @param LH_index A vector containing the values of local H-index of the desired vertices.
@@ -1132,6 +1135,9 @@ ivi.from.indices <- function(DC, CR, LH_index, NC, BC, CI, scaled = TRUE) {
 #' Integrated Value of Influence (IVI)
 #'
 #' This function calculates the IVI of the desired nodes from a graph.
+#' #' A shiny app has also been developed for the calculation of IVI as well as IVI-based network
+#' visualization, which is accessible using the `influential::runExample("IVI")` command.
+#' You can also access the shiny app online at https://asalavaty.shinyapps.io/IVI_Shiny_app/.
 #' @param graph A graph (network) of the igraph class.
 #' @param vertices A vector of desired vertices, which could be obtained by the V function.
 #' @param weights Optional positive weight vector for calculating weighted betweenness centrality
@@ -2770,6 +2776,9 @@ sirir <- function(graph, vertices = V(graph),
   #' applying a centrality measure to the size and color of network nodes. You are
   #' also able to adjust the directedness and weight of connections. Some of the documentations
   #' of the arguments of this function have been adapted from ggplot2 and igraph packages.
+  #' A shiny app has also been developed for the calculation of IVI as well as IVI-based network
+  #' visualization, which is accessible using the `influential::runExample("IVI")` command.
+  #' You can also access the shiny app online at https://asalavaty.shinyapps.io/IVI_Shiny_app/.
   #' @param graph A graph (network) of the igraph class.
   #' @param cent.metric A numeric vector of the desired centrality measure previously
   #' calculated by any means. For example, you may use the function \code{\link[influential]{ivi}}
