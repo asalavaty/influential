@@ -1988,9 +1988,7 @@ sirir <- function(graph, vertices = V(graph),
       #first preserve a copy of original names
       features.exptl.for.super.learn <- colnames(exptl.for.super.learn)[-ncol(exptl.for.super.learn)]
 
-    colnames(exptl.for.super.learn) <- base::gsub(pattern = "^\\d+|'%'|\'|\"|([[:blank:]])|([[:punct:]])",
-                                                  replacement = "_",
-                                                  x = colnames(exptl.for.super.learn))
+    colnames(exptl.for.super.learn) <- janitor::make_clean_names(colnames(exptl.for.super.learn))
 
     #b Perform random forests classification
     base::set.seed(seed = seed)

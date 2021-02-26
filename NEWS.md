@@ -5,6 +5,11 @@ influential
 
 # influential 2.0.1.9000 (Developmental version)
 
+  - Debug the function ExIR.
+
+  - Add dependence to R package janitor for the correction of illegal
+    characters in feature names.
+
   - Documentation on how to access IVI shiny app is added to the Read Me
     file, vignettes, and the corresponding functions’ documentations.
 

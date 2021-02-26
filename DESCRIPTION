@@ -16,6 +16,7 @@ Description: Contains functions for the classification and ranking of top candid
     Adopted algorithms and sources are referenced in function document.
 Imports:
     igraph,
+    janitor,
     ranger,
     coop,
     ggplot2,
