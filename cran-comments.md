@@ -1,18 +1,16 @@
 CRAN Comments
 ================
 Adrian (Abbas) Salavaty
-15/01/2020 (updated on 20 November, 2020)
+15/01/2020 (updated on 17 April, 2021)
 
-## 2.0.1 New version resubmission
+## 2.2.0 New version submission
 
   - This is a new submission of the new version of the package
-    `influential`. Some bugs in the `ExIR` function were removed.
-
-<!-- end list -->
-
-1.  No comments.
-
-> *No response is required.*
+    `influential`. Some bugs in the `ExIR` and `IVI` functions were
+    removed. A new function named `comp_manipulate` was added. Also,
+    vignettes were updataed along with several other miror improvements.
+    Also, two shiny apps were added to the package. Please see News for
+    complete details.
 
 ## Test environments
 
