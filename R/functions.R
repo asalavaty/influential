@@ -31,12 +31,15 @@
 #' You may check the latest developmental version of the \emph{influential} package on its
 #' \href{https://github.com/asalavaty/influential}{GitHub repository}
 #'
+#' Also, a web-based \href{https://influential.erc.monash.edu/}{Influential Software Package} with a convenient
+#' user-interface (UI) has been developed for the comfort of all users including those without a coding background.
+#'
 #' @details
 #' \itemize{
 #'   \item Package: influential
 #'   \item Type: Package
-#'   \item Version: 2.0.1
-#'   \item Date: 20-11-2020
+#'   \item Version: 2.2.0
+#'   \item Date: 18-04-2021
 #'   \item License: GPL-3
 #' }
 #'
@@ -66,6 +69,66 @@
 ## usethis namespace: start
 ## usethis namespace: end
 NULL
+
+#=============================================================================
+#
+#    Code chunk 0.5: Run shiny apps (examples)
+#
+#=============================================================================
+
+#' @title Run shiny app
+#' @description Run shiny apps included in the influential R package.
+#' Also, a web-based \href{https://influential.erc.monash.edu/}{Influential Software Package} with a convenient
+#' user-interface (UI) has been developed for the comfort of all users including those without a coding background.
+#' @param shinyApp The name of the shiny app you want to run. You can get the exact name of the available
+#' shiny apps via the following command.
+#' \emph{list.files(system.file("ShinyApps", package = "influential"))}. Please also note this function is
+#' case-sensitive.
+#' @return A shiny app.
+#' @keywords runShinyApp
+#' @export runShinyApp
+#' @example
+#' \dontrun{
+#' runShinyApp(shinyApp = "IVI")
+#' }
+runShinyApp <- function(shinyApp) {
+
+  if(!requireNamespace(c("shiny", "shinythemes", "shinyWidgets", "shinyjs",
+                         "shinycssloaders", "colourpicker", "DT", "janitor",
+                         "ranger", "coop", "influential", "ggplot2", "igraph"), quietly = TRUE)) {
+    stop("The packages \"shiny\", \"shinythemes\", \"shinyWidgets\", \"shinyjs\", \"shinycssloaders\", \"colourpicker\",
+    \"DT\", \"ranger\", \"coop\", and \"ggplot2\"
+    are required for the shiny apps to work. Please install the required packages before using this function.
+
+  You can install the packages via the following command:
+
+         install.packages(\"Package Name\")",
+         call. = FALSE)
+
+  } else {
+    # locate all the shiny app examples that exist
+    validExamples <- list.files(system.file("ShinyApps", package = "influential"))
+
+    validExamplesMsg <-
+      paste0(
+        "Valid shiny apps are: '",
+        paste(validExamples, collapse = "', '"),
+        "'")
+
+    # if an invalid shiny app is given, throw an error
+    if (missing(shinyApp) || !nzchar(shinyApp) ||
+        !shinyApp %in% validExamples) {
+      stop(
+        'Please run `influential::runShinyApp()` with a valid shiny app name as an argument.\n',
+        validExamplesMsg,
+        call. = FALSE)
+    }
+
+    # find and launch the app
+    appDir <- system.file("ShinyApps", shinyApp, package = "influential")
+    shiny::runApp(appDir, display.mode = "normal")
+  }
+}
 
 #=============================================================================
 #
@@ -1031,7 +1094,7 @@ double.cent.assess.noRegression <- function(data, nodes.colname,
 #' local H-index, and neighborhood connectivity could have been calculated by any means beforehand.
 #' A shiny app has also been developed for the calculation of IVI as well as IVI-based network
 #' visualization, which is accessible using the `influential::runExample("IVI")` command.
-#' You can also access the shiny app online at https://asalavaty.shinyapps.io/IVI_Shiny_app/.
+#' You can also access the shiny app online at https://influential.erc.monash.edu/.
 #' @param DC A vector containing the values of degree centrality of the desired vertices.
 #' @param CR A vector containing the values of ClusterRank of the desired vertices.
 #' @param LH_index A vector containing the values of local H-index of the desired vertices.
@@ -1103,13 +1166,13 @@ ivi.from.indices <- function(DC, CR, LH_index, NC, BC, CI, scaled = TRUE) {
 
   spreading.rank <- ((temp.NC+temp.CR)*(temp.BC+temp.CI))
 
-  if(sum(spreading.rank) == 0) {
+  if(sum(spreading.rank) == 0 || is.nan(sum(spreading.rank)) || is.na(sum(spreading.rank))) {
     spreading.rank[] <- 1
   }
 
   hubness.rank <- (temp.DC+temp.LH_index)
 
-  if(sum(hubness.rank) == 0) {
+  if(sum(hubness.rank) == 0 || is.nan(sum(hubness.rank)) || is.na(sum(hubness.rank))) {
     hubness.rank[] <- 1
   }
   temp.ivi <- (hubness.rank)*(spreading.rank)
@@ -1137,7 +1200,7 @@ ivi.from.indices <- function(DC, CR, LH_index, NC, BC, CI, scaled = TRUE) {
 #' This function calculates the IVI of the desired nodes from a graph.
 #' #' A shiny app has also been developed for the calculation of IVI as well as IVI-based network
 #' visualization, which is accessible using the `influential::runExample("IVI")` command.
-#' You can also access the shiny app online at https://asalavaty.shinyapps.io/IVI_Shiny_app/.
+#' You can also access the shiny app online at https://influential.erc.monash.edu/.
 #' @param graph A graph (network) of the igraph class.
 #' @param vertices A vector of desired vertices, which could be obtained by the V function.
 #' @param weights Optional positive weight vector for calculating weighted betweenness centrality
@@ -1233,13 +1296,13 @@ ivi <- function(graph, vertices = V(graph), weights = NULL, directed = FALSE,
 
   spreading.rank <- ((temp.NC+temp.CR)*(temp.BC+temp.CI))
 
-  if(sum(spreading.rank) == 0) {
+  if(sum(spreading.rank) == 0 || is.nan(sum(spreading.rank)) || is.na(sum(spreading.rank))) {
     spreading.rank[] <- 1
   }
 
   hubness.rank <- (temp.DC+temp.LH_index)
 
-  if(sum(hubness.rank) == 0) {
+  if(sum(hubness.rank) == 0 || is.nan(sum(hubness.rank)) || is.na(sum(hubness.rank))) {
     hubness.rank[] <- 1
   }
   temp.ivi <- (hubness.rank)*(spreading.rank)
@@ -1757,6 +1820,10 @@ sirir <- function(graph, vertices = V(graph),
   #' This function runs the Experimental data-based Integrated Ranking (ExIR)
   #' model for the classification and ranking of top candidate features. The input
   #' data could come from any type of experiment such as transcriptomics and proteomics.
+  #' A shiny app has also been developed for Running the ExIR model, visualization of its results as well as computational
+  #' simulation of knockout and/or up-regulation of its top candidate outputs, which is accessible using
+  #' the `influential::runExample("ExIR")` command.
+  #' You can also access the shiny app online at https://influential.erc.monash.edu/.
   #' @param Desired_list (Optional) A character vector of your desired features. This vector could be, for
   #' instance, a list of features obtained from cluster analysis, time-course analysis,
   #' or a list of dysregulated features with a specific sign.
@@ -1803,7 +1870,7 @@ sirir <- function(graph, vertices = V(graph),
   #' value is preserved (default is 10^10).
   #' @param seed The seed to be used for all of the random processes throughout the model (default is 1234).
   #' @param verbose Logical; whether the accomplishment of different stages of the model should be printed (default is TRUE).
-  #' @return A list of one to four tables including:
+  #' @return A list of one graph and one to four tables including:
   #'
   #' - Driver table: Top candidate drivers
   #'
@@ -2682,7 +2749,8 @@ sirir <- function(graph, vertices = V(graph),
     Results <- list("Driver table" = Driver.table,
                     "DE-mediator table" = DE.mediator.table,
                     "nonDE-mediator table" = non.DE.mediators.table,
-                    "Biomarker table" = Biomarker.table)
+                    "Biomarker table" = Biomarker.table,
+                    "Graph" = temp.corr.graph)
 
     Results.Non.Null.vector <- vector()
 
@@ -2711,7 +2779,8 @@ sirir <- function(graph, vertices = V(graph),
   #' beforehand according to your desired thresholds and, consequently, should only include the significant data.
   #' Each dataset provided should be a dataframe with one or two columns.
   #' The first column should always include differential/regression values
-  #' and the second one (if provided) the significance values.
+  #' and the second one (if provided) the significance values. Please also note that the significance (adjusted P-value)
+  #' column is mandatory for differential datasets.
   #' @param ... Desired datasets/dataframes.
   #' @return A dataframe including the collective list of features in rows and all of the
   #' differential/regression data and their statistical significance in columns with the same
@@ -2776,7 +2845,7 @@ sirir <- function(graph, vertices = V(graph),
   #' of the arguments of this function have been adapted from ggplot2 and igraph packages.
   #' A shiny app has also been developed for the calculation of IVI as well as IVI-based network
   #' visualization, which is accessible using the `influential::runExample("IVI")` command.
-  #' You can also access the shiny app online at https://asalavaty.shinyapps.io/IVI_Shiny_app/.
+  #' You can also access the shiny app online at https://influential.erc.monash.edu/.
   #' @param graph A graph (network) of the igraph class.
   #' @param cent.metric A numeric vector of the desired centrality measure previously
   #' calculated by any means. For example, you may use the function \code{\link[influential]{ivi}}
@@ -3177,6 +3246,10 @@ sirir <- function(graph, vertices = V(graph),
   #'
   #' This function has been developed for the visualization of ExIR results. Some of the documentations
   #' of the arguments of this function have been adapted from ggplot2 package.
+  #' A shiny app has also been developed for Running the ExIR model, visualization of its results as well as computational
+  #' simulation of knockout and/or up-regulation of its top candidate outputs, which is accessible using
+  #' the `influential::runExample("ExIR")` command.
+  #' You can also access the shiny app online at https://influential.erc.monash.edu/.
   #' @param exir.results An object of class \code{"ExIR_Result"} which is the output of the function \code{"exir"}.
   #' @param synonyms.table (Optional) A data frame or matrix with two columns including a column for the used feature
   #' names in the input data of the \code{"exir"} model and the other column their synonyms. Note, the original feature names should
@@ -3204,7 +3277,7 @@ sirir <- function(graph, vertices = V(graph),
   #' @param stroke.alpha The transparency of the stroke (border) around the dots which should
   #' be a number between 0 and 1 (default is set to 1).
   #' @param dot.color.low The color to be used for the visualization of dots (features) with the lowest Z-score values (default is set to "blue").
-  #' @param dot.color.high The color to be used for the visualization of dots (features) with the highest Z-score values (default is set to "blue").
+  #' @param dot.color.high The color to be used for the visualization of dots (features) with the highest Z-score values (default is set to "red").
   #' @param legend.position The position of legends ("none", "left", "right",
   #' "bottom", "top", or two-element numeric vector). The default is set to "bottom".
   #' @param legend.direction Layout of items in legends ("horizontal" or "vertical").
@@ -3709,6 +3782,247 @@ sirir <- function(graph, vertices = V(graph),
     }
 
     return(temp.exir.plot)
+  }
+
+#=============================================================================
+#
+#    Code chunk 20: Computational manipulation of cells
+#
+#=============================================================================
+
+  #' Computational manipulation of cells
+  #'
+  #' This function works based on the SIRIR (SIR-based Influence Ranking) model and could be applied on the
+  #' output of the ExIR model or any other independent association network. For feature (gene/protein/etc.)
+  #' knockout the SIRIR model is used to remove the feature from the network and assess its impact on the
+  #' flow of information (signaling) within the network. On the other hand, in case of up-regulation a node similar
+  #' to the desired node is added to the network with exactly the same connections (edges) as of the original node.
+  #' Next, the SIRIR model is used to evaluate the difference in the flow of information/signaling after adding (up-regulating)
+  #' the desired feature/node compared with the original network. In case you are applying this function on the output of
+  #' ExIR model, you may note that as the gene/protein knockout would impact on the integrity of the under-investigation network
+  #' as well as the networks of other overlapping biological processes/pathways, it is recommended to select those features that
+  #' simultaneously have the highest (most significant) ExIR-based rank and lowest knockout rank. In contrast, as the up-regulation
+  #' would not affect the integrity of the network, you may select the features with highest (most significant) ExIR-based and
+  #' up-regulation-based ranks.
+  #' A shiny app has also been developed for Running the ExIR model, visualization of its results as well as computational
+  #' simulation of knockout and/or up-regulation of its top candidate outputs, which is accessible using
+  #' the `influential::runExample("ExIR")` command.
+  #' You can also access the shiny app online at https://influential.erc.monash.edu/.
+  #' @param exir_output The output of the ExIR model (optional).
+  #' @param graph A graph (network) of the igraph class (not required if the exir_output is inputted).
+  #' @param ko_vertices A vector of desired vertices/features to knockout. Default is set to V(graph) meaning to assess
+  #' the knockout of all vertices/features.
+  #' @param upregulate_vertices A vector of desired vertices/features to up-regulate. Default is set to V(graph) meaning to assess
+  #' the up-regulation of all vertices/features.
+  #' @param beta Non-negative scalar corresponding to the SIRIR model. The rate of infection of an individual that is susceptible
+  #' and has a single infected neighbor. The infection rate of a susceptible individual with n
+  #' infected neighbors is n times beta. Formally this is the rate parameter of an exponential
+  #' distribution.
+  #' @param gamma Positive scalar corresponding to the SIRIR model. The rate of recovery of an infected individual.
+  #' Formally, this is the rate parameter of an exponential distribution.
+  #' @param no.sim Integer scalar corresponding to the SIRIR model. The number of simulation runs to perform SIR model on for the
+  #' original network as well perturbed networks generated by leave-one-out technique.
+  #' You may choose a different no.sim based on the available memory on your system.
+  #' @param seed A single value, interpreted as an integer to be used for random number generation.
+  #' @return Depending on the input data, a list including one to three data frames of knockout/up-regulation rankings.
+  #' @keywords comp_manipulate
+  #' @family integrative ranking functions
+  #' @seealso \code{\link[influential]{exir}}, \code{\link[influential]{sirir}},
+  #' and \code{\link[igraph]{sir}} for a complete description on SIR model
+  #' @export comp_manipulate
+  #' @examples
+  #' \dontrun{
+  #' set.seed(1234)
+  #' My_graph <- igraph::sample_gnp(n=50, p=0.05)
+  #' GraphVertices <- V(My_graph)
+  #' Computational_manipulation <- comp_manipulate(graph = My_graph, beta = 0.5,
+  #'                                               gamma = 1, no.sim = 10, seed = 1234)
+  #'                                               }
+  #' @importFrom igraph vcount as_ids sir
+
+  comp_manipulate <- function(exir_output = NULL,
+                              graph = NULL,
+                              ko_vertices = V(graph),
+                              upregulate_vertices = V(graph),
+                              beta = 0.5,
+                              gamma = 1,
+                              no.sim = igraph::vcount(graph) * 100,
+                              seed = 1234) {
+
+    ##**************************##
+    # Take care of input graph
+    if(!is.null(exir_output) && class(exir_output) == "ExIR_Result") {
+      graph <- exir_output$Graph
+    }
+
+    ##**************************##
+    # Over-expression function
+
+    overexpr <- function (graph, vertices = V(graph), beta = 0.5, gamma = 1,
+                          no.sim = igraph::vcount(graph) * 100, seed = 1234)
+    {
+      temp.loocr.table <- data.frame(difference.value = vector("numeric",
+                                                               length = length(vertices)), rank = vector("integer",
+                                                                                                         length = length(vertices)))
+      if (class(vertices) == "character") {
+        rownames(temp.loocr.table) <- vertices
+      } else if (class(vertices) == "igraph.vs") {
+        rownames(temp.loocr.table) <- igraph::as_ids(vertices)
+      }
+      set.seed(seed)
+      all.included.spread <- igraph::sir(graph = graph, beta = beta,
+                                         gamma = gamma, no.sim = no.sim)
+      all.mean.spread <- vector("numeric", length = length(all.included.spread))
+      for (i in 1:length(all.included.spread)) {
+        all.mean.spread[i] <- max(all.included.spread[[i]]$NR)
+      }
+      all.mean.spread <- mean(all.mean.spread)
+      for (s in 1:length(vertices)) {
+
+        all.edges <- as.data.frame(igraph::as_edgelist(graph))
+        all.desired.edges.index <- unlist(apply(X = all.edges, MARGIN = 2,
+                                                FUN = function(i) which(i %in% rownames(temp.loocr.table)[s])))
+
+        all.edges <- all.edges[c(all.desired.edges.index),]
+
+        all.edges.from.indices <- unlist(lapply(X = all.edges[,1],
+                                                FUN = function(i) which(igraph::as_ids(V(graph)) %in% i)))
+
+        all.edges.to.indices <- unlist(lapply(X = all.edges[,2],
+                                              FUN = function(i) which(igraph::as_ids(V(graph)) %in% i)))
+
+        all.edges.desired.indices <- data.frame(from = all.edges.from.indices, to = all.edges.to.indices)
+
+        temp.graph <- igraph::add_vertices(graph = graph, nv = 1,
+                                           name = paste0(rownames(temp.loocr.table)[s], "Fold1"))
+
+        desired.vertex.index <- match(rownames(temp.loocr.table)[s], igraph::as_ids(V(temp.graph)))
+
+        desired.vertexFold1.index <- match(paste0(rownames(temp.loocr.table)[s], "Fold1"),
+                                           igraph::as_ids(V(temp.graph)))
+
+        all.edges.desired.indices[which(all.edges.desired.indices[,1] == desired.vertex.index),1] <- desired.vertexFold1.index
+        all.edges.desired.indices[which(all.edges.desired.indices[,2] == desired.vertex.index),2] <- desired.vertexFold1.index
+        all.edges.desired.indices <- apply(X = all.edges.desired.indices, MARGIN = 1,
+                                           FUN = function(i) paste(i[1], i[2], sep = ","))
+
+        all.edges.desired.indices <- paste(all.edges.desired.indices, collapse = ",")
+
+        all.edges.desired.indices <- as.numeric(unlist(strsplit(x = all.edges.desired.indices, split = ",")))
+
+        temp.graph <- igraph::add_edges(graph = temp.graph, edges = all.edges.desired.indices)
+
+        set.seed(seed)
+        loocr.spread <- igraph::sir(graph = temp.graph, beta = beta,
+                                    gamma = gamma, no.sim = no.sim)
+        loocr.mean.spread <- vector("numeric", length = length(loocr.spread))
+        for (h in 1:length(loocr.spread)) {
+          loocr.mean.spread[h] <- max(loocr.spread[[h]]$NR)
+        }
+        loocr.mean.spread <- mean(loocr.mean.spread)
+        temp.loocr.table$difference.value[s] <- loocr.mean.spread - all.mean.spread
+        loocr.mean.spread
+      }
+      temp.loocr.table$rank <- rank(-temp.loocr.table$difference.value,
+                                    ties.method = "min")
+      return(temp.loocr.table)
+    }
+
+    ##**************************##
+    # Knockout results
+    if(!is.null(ko_vertices)) {
+      base::suppressWarnings(
+      ko_results <- influential::sirir(
+        graph = graph,
+        vertices = ko_vertices,
+        beta = beta,
+        gamma = gamma,
+        no.sim = no.sim,
+        seed = seed
+      )
+      )
+
+      ko_results <- cbind(Feature_name = rownames(ko_results),
+                          ko_results,
+                          Manipulation_type = "Knockout")
+
+      rownames(ko_results) <- NULL
+      colnames(ko_results)[3] <- "Rank"
+
+      # correct the orders
+      ko_results <- ko_results[order(ko_results[,3]),]
+
+    } else {ko_results <- NULL}
+
+    ##**************************##
+
+    # Over-expression results
+    if(!is.null(upregulate_vertices)) {
+      base::suppressWarnings(
+      overexpr_results <- overexpr(
+        graph = graph,
+        vertices = upregulate_vertices,
+        beta = beta,
+        gamma = gamma,
+        no.sim = no.sim,
+        seed = seed
+      )
+      )
+
+      overexpr_results <- cbind(Feature_name = rownames(overexpr_results),
+                                overexpr_results,
+                                Manipulation_type = "Up-regulation")
+
+      rownames(overexpr_results) <- NULL
+      colnames(overexpr_results)[3] <- "Rank"
+
+      # correct the orders
+      overexpr_results <- overexpr_results[order(overexpr_results[,3]),]
+
+    } else {overexpr_results <- NULL}
+
+    ##**************************##
+
+    # Combined results
+    if(!is.null(ko_results) && !is.null(overexpr_results)) {
+      combined_results <- rbind(ko_results,
+                                overexpr_results)
+
+      # Correct the combined ranks
+      combined_results[,3] <- rank(-combined_results[,2],
+                                   ties.method = "min")
+
+      # correct the orders
+      combined_results <- combined_results[order(combined_results[,3]),]
+
+    } else {
+      combined_results <- NULL
+    }
+
+    ##**************************##
+
+    # Correct results data frames
+
+    ko_results <- ko_results[,-2]
+    overexpr_results <- overexpr_results[,-2]
+    combined_results <- combined_results[,-2]
+
+    ##**************************##
+
+    # Final results
+    final.results <- list(Knockout = ko_results,
+                          Up_regulation = overexpr_results,
+                          Combined = combined_results
+    )
+    if(sum(sapply(final.results, is.null)) == 3) {
+      cat("You should input the name of at least a vertix (feature/gene/etc)
+        in the 'ko_vertices' or 'upregulate_vertices' argument.")
+    } else {
+      non_null_index <- which(sapply(final.results, function(i) (!is.null(i))))
+      final.results <- final.results[non_null_index]
+      names(final.results) <- names(non_null_index)
+      return(final.results)
+    }
   }
 
 #=============================================================================

@@ -53,6 +53,7 @@ Hubness.score <- hubness.score(graph = My_graph, vertices = GraphVertices,
 \code{\link[influential]{cent_network.vis}}
 
 Other integrative ranking functions: 
+\code{\link{comp_manipulate}()},
 \code{\link{exir}()},
 \code{\link{ivi.from.indices}()},
 \code{\link{ivi}()},

@@ -3,7 +3,25 @@ influential
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-# influential 2.0.1.9000 (Developmental version)
+# influential 2.2.0.9000 (Developmental version)
+
+  - 
+# influential 2.2.0 (CRAN version)
+
+  - Update package vignettes.
+
+  - Documentation on how to access ExIR shiny app is added to the Read
+    Me file, vignettes, and the corresponding functions’ documentations.
+
+  - The ExIR shiny app is added to the package.
+
+  - A Shiny app is developed for the running the ExIR model and
+    visualization of its output.
+
+  - Add the `comp_manipulate` function for the simulation of gene
+    knockout and up-regulation.
+
+  - Debug the function IVI.
 
   - Debug the function ExIR.
 

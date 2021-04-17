@@ -81,7 +81,7 @@ be a number between 0 and 1 (default is set to 1).}
 
 \item{dot.color.low}{The color to be used for the visualization of dots (features) with the lowest Z-score values (default is set to "blue").}
 
-\item{dot.color.high}{The color to be used for the visualization of dots (features) with the highest Z-score values (default is set to "blue").}
+\item{dot.color.high}{The color to be used for the visualization of dots (features) with the highest Z-score values (default is set to "red").}
 
 \item{legend.position}{The position of legends ("none", "left", "right",
 "bottom", "top", or two-element numeric vector). The default is set to "bottom".}
@@ -118,6 +118,10 @@ A plot with the class ggplot.
 \description{
 This function has been developed for the visualization of ExIR results. Some of the documentations
 of the arguments of this function have been adapted from ggplot2 package.
+A shiny app has also been developed for Running the ExIR model, visualization of its results as well as computational
+simulation of knockout and/or up-regulation of its top candidate outputs, which is accessible using
+the `influential::runExample("ExIR")` command.
+You can also access the shiny app online at https://influential.erc.monash.edu/.
 }
 \examples{
 \dontrun{

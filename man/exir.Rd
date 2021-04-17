@@ -90,7 +90,7 @@ value is preserved (default is 10^10).}
 \item{verbose}{Logical; whether the accomplishment of different stages of the model should be printed (default is TRUE).}
 }
 \value{
-A list of one to four tables including:
+A list of one graph and one to four tables including:
 
 - Driver table: Top candidate drivers
 
@@ -106,6 +106,10 @@ The number of returned tables depends on the input data and specified arguments.
 This function runs the Experimental data-based Integrated Ranking (ExIR)
 model for the classification and ranking of top candidate features. The input
 data could come from any type of experiment such as transcriptomics and proteomics.
+A shiny app has also been developed for Running the ExIR model, visualization of its results as well as computational
+simulation of knockout and/or up-regulation of its top candidate outputs, which is accessible using
+the `influential::runExample("ExIR")` command.
+You can also access the shiny app online at https://influential.erc.monash.edu/.
 }
 \seealso{
 \code{\link[influential]{exir.vis}},
@@ -116,6 +120,7 @@ data could come from any type of experiment such as transcriptomics and proteomi
 \code{\link[ranger]{importance_pvalues}}
 
 Other integrative ranking functions: 
+\code{\link{comp_manipulate}()},
 \code{\link{hubness.score}()},
 \code{\link{ivi.from.indices}()},
 \code{\link{ivi}()},

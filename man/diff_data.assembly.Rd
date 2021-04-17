@@ -21,7 +21,8 @@ as many differential/regression data as you wish. Also, the datasets should be f
 beforehand according to your desired thresholds and, consequently, should only include the significant data.
 Each dataset provided should be a dataframe with one or two columns.
 The first column should always include differential/regression values
-and the second one (if provided) the significance values.
+and the second one (if provided) the significance values. Please also note that the significance (adjusted P-value)
+column is mandatory for differential datasets.
 }
 \examples{
 \dontrun{

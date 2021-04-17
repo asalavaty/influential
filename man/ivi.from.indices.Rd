@@ -32,7 +32,7 @@ measures, namely degree centrality, ClusterRank, betweenness centrality, Collect
 local H-index, and neighborhood connectivity could have been calculated by any means beforehand.
 A shiny app has also been developed for the calculation of IVI as well as IVI-based network
 visualization, which is accessible using the `influential::runExample("IVI")` command.
-You can also access the shiny app online at https://asalavaty.shinyapps.io/IVI_Shiny_app/.
+You can also access the shiny app online at https://influential.erc.monash.edu/.
 }
 \examples{
 MyData <- centrality.measures
@@ -47,6 +47,7 @@ My.vertices.IVI <- ivi.from.indices(DC = centrality.measures$DC,
 \code{\link[influential]{cent_network.vis}}
 
 Other integrative ranking functions: 
+\code{\link{comp_manipulate}()},
 \code{\link{exir}()},
 \code{\link{hubness.score}()},
 \code{\link{ivi}()},

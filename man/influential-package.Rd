@@ -29,13 +29,16 @@ means in opposite directions.
 
 You may check the latest developmental version of the \emph{influential} package on its
 \href{https://github.com/asalavaty/influential}{GitHub repository}
+
+Also, a web-based \href{https://influential.erc.monash.edu/}{Influential Software Package} with a convenient
+user-interface (UI) has been developed for the comfort of all users including those without a coding background.
 }
 \details{
 \itemize{
   \item Package: influential
   \item Type: Package
-  \item Version: 2.0.1
-  \item Date: 20-11-2020
+  \item Version: 2.2.0
+  \item Date: 18-04-2021
   \item License: GPL-3
 }
 }

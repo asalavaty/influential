@@ -52,7 +52,7 @@ A numeric vector with the IVI values based on the provided centrality measures.
 This function calculates the IVI of the desired nodes from a graph.
 #' A shiny app has also been developed for the calculation of IVI as well as IVI-based network
 visualization, which is accessible using the `influential::runExample("IVI")` command.
-You can also access the shiny app online at https://asalavaty.shinyapps.io/IVI_Shiny_app/.
+You can also access the shiny app online at https://influential.erc.monash.edu/.
 }
 \examples{
 \dontrun{
@@ -68,6 +68,7 @@ My.vertices.IVI <- ivi(graph = My_graph, vertices = GraphVertices,
 \code{\link[influential]{cent_network.vis}}
 
 Other integrative ranking functions: 
+\code{\link{comp_manipulate}()},
 \code{\link{exir}()},
 \code{\link{hubness.score}()},
 \code{\link{ivi.from.indices}()},

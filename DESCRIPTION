@@ -1,7 +1,8 @@
 Package: influential
 Type: Package
 Title: Identification and Classification of the Most Influential Nodes
-Version: 2.0.1
+Language: en-US
+Version: 2.2.0
 Author: Adrian (Abbas) Salavaty [aut, cre], Mirana Ramialison [ths], Peter D. Currie [ths]
 Maintainer: Adrian Salavaty <abbas.salavaty@gmail.com>
 Description: Contains functions for the classification and ranking of top candidate features, reconstruction of networks from
@@ -19,14 +20,20 @@ Imports:
     janitor,
     ranger,
     coop,
-    ggplot2,
-    shiny
+    ggplot2
 Suggests:
     Hmisc (>= 4.3-0),
     mgcv (>= 1.8-31),
     nortest (>= 1.0-4),
     NNS (>= 0.4.7.1),
     parallel,
+    shiny,
+    shinythemes,
+    shinyWidgets,
+    shinyjs,
+    shinycssloaders,
+    colourpicker,
+    DT,
     knitr,
     rmarkdown
 Depends: R (>= 2.10)
