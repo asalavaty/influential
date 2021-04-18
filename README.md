@@ -86,15 +86,29 @@ browseVignettes("influential")
 
 ## Shiny apps
 
-  - [IVI Shiny App](https://influential.erc.monash.edu/): A shiny app
-    for the calculation of the Integrated Value of Influence (IVI) of
-    network nodes as well as IVI-based visualization of the network.
+  - [Influential Software Package web
+    portal](https://influential.erc.monash.edu/)
+
+  - [IVI Shiny App](https://influential.erc.monash.edu/IVI/): A shiny
+    app for the calculation of the Integrated Value of Influence (IVI)
+    of network nodes as well as IVI-based visualization of the network.
 
 You can also access the IVI shiny app offline from within R and run it
 on your local machine using the following command.
 
 ``` r
-influential::runExample("IVI")
+influential::runShinyApp("IVI")
+```
+
+  - [ExIR Shiny App](https://influential.erc.monash.edu/ExIR/): A shiny
+    app for running the Experimental-data-based Integrative Ranking
+    (ExIR) model as well as visualization of its results.
+
+You can also access the ExIR shiny app offline from within R and run it
+on your local machine using the following command.
+
+``` r
+influential::runShinyApp("ExIR")
 ```
 
 ## How to cite `influential`
