@@ -145,7 +145,7 @@ applying a centrality measure to the size and color of network nodes. You are
 also able to adjust the directedness and weight of connections. Some of the documentations
 of the arguments of this function have been adapted from ggplot2 and igraph packages.
 A shiny app has also been developed for the calculation of IVI as well as IVI-based network
-visualization, which is accessible using the `influential::runExample("IVI")` command.
+visualization, which is accessible using the `influential::runShinyApp("IVI")` command.
 You can also access the shiny app online at https://influential.erc.monash.edu/.
 }
 \examples{

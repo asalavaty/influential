@@ -1093,7 +1093,7 @@ double.cent.assess.noRegression <- function(data, nodes.colname,
 #' measures, namely degree centrality, ClusterRank, betweenness centrality, Collective Influence,
 #' local H-index, and neighborhood connectivity could have been calculated by any means beforehand.
 #' A shiny app has also been developed for the calculation of IVI as well as IVI-based network
-#' visualization, which is accessible using the `influential::runExample("IVI")` command.
+#' visualization, which is accessible using the `influential::runShinyApp("IVI")` command.
 #' You can also access the shiny app online at https://influential.erc.monash.edu/.
 #' @param DC A vector containing the values of degree centrality of the desired vertices.
 #' @param CR A vector containing the values of ClusterRank of the desired vertices.
@@ -1199,7 +1199,7 @@ ivi.from.indices <- function(DC, CR, LH_index, NC, BC, CI, scaled = TRUE) {
 #'
 #' This function calculates the IVI of the desired nodes from a graph.
 #' #' A shiny app has also been developed for the calculation of IVI as well as IVI-based network
-#' visualization, which is accessible using the `influential::runExample("IVI")` command.
+#' visualization, which is accessible using the `influential::runShinyApp("IVI")` command.
 #' You can also access the shiny app online at https://influential.erc.monash.edu/.
 #' @param graph A graph (network) of the igraph class.
 #' @param vertices A vector of desired vertices, which could be obtained by the V function.
@@ -1822,7 +1822,7 @@ sirir <- function(graph, vertices = V(graph),
   #' data could come from any type of experiment such as transcriptomics and proteomics.
   #' A shiny app has also been developed for Running the ExIR model, visualization of its results as well as computational
   #' simulation of knockout and/or up-regulation of its top candidate outputs, which is accessible using
-  #' the `influential::runExample("ExIR")` command.
+  #' the `influential::runShinyApp("ExIR")` command.
   #' You can also access the shiny app online at https://influential.erc.monash.edu/.
   #' @param Desired_list (Optional) A character vector of your desired features. This vector could be, for
   #' instance, a list of features obtained from cluster analysis, time-course analysis,
@@ -2844,7 +2844,7 @@ sirir <- function(graph, vertices = V(graph),
   #' also able to adjust the directedness and weight of connections. Some of the documentations
   #' of the arguments of this function have been adapted from ggplot2 and igraph packages.
   #' A shiny app has also been developed for the calculation of IVI as well as IVI-based network
-  #' visualization, which is accessible using the `influential::runExample("IVI")` command.
+  #' visualization, which is accessible using the `influential::runShinyApp("IVI")` command.
   #' You can also access the shiny app online at https://influential.erc.monash.edu/.
   #' @param graph A graph (network) of the igraph class.
   #' @param cent.metric A numeric vector of the desired centrality measure previously
@@ -3248,7 +3248,7 @@ sirir <- function(graph, vertices = V(graph),
   #' of the arguments of this function have been adapted from ggplot2 package.
   #' A shiny app has also been developed for Running the ExIR model, visualization of its results as well as computational
   #' simulation of knockout and/or up-regulation of its top candidate outputs, which is accessible using
-  #' the `influential::runExample("ExIR")` command.
+  #' the `influential::runShinyApp("ExIR")` command.
   #' You can also access the shiny app online at https://influential.erc.monash.edu/.
   #' @param exir.results An object of class \code{"ExIR_Result"} which is the output of the function \code{"exir"}.
   #' @param synonyms.table (Optional) A data frame or matrix with two columns including a column for the used feature
@@ -3806,7 +3806,7 @@ sirir <- function(graph, vertices = V(graph),
   #' up-regulation-based ranks.
   #' A shiny app has also been developed for Running the ExIR model, visualization of its results as well as computational
   #' simulation of knockout and/or up-regulation of its top candidate outputs, which is accessible using
-  #' the `influential::runExample("ExIR")` command.
+  #' the `influential::runShinyApp("ExIR")` command.
   #' You can also access the shiny app online at https://influential.erc.monash.edu/.
   #' @param exir_output The output of the ExIR model (optional).
   #' @param graph A graph (network) of the igraph class (not required if the exir_output is inputted).

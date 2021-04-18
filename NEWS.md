@@ -5,10 +5,17 @@ influential
 
 # influential 2.2.0.9000 (Developmental version)
 
-  - 
+  - The News file is updated.
+
+  - Documentations of several functions are updated.
+
+  - The Vignettes is updated.
+
+  - The Read Me file is updated.
+
 # influential 2.2.0 (CRAN version)
 
-  - Update package vignettes.
+  - Update package Vignettes.
 
   - Documentation on how to access ExIR shiny app is added to the Read
     Me file, vignettes, and the corresponding functions’ documentations.

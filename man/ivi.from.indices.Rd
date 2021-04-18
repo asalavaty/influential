@@ -31,7 +31,7 @@ measures. This function is not dependent to other packages and the required cent
 measures, namely degree centrality, ClusterRank, betweenness centrality, Collective Influence,
 local H-index, and neighborhood connectivity could have been calculated by any means beforehand.
 A shiny app has also been developed for the calculation of IVI as well as IVI-based network
-visualization, which is accessible using the `influential::runExample("IVI")` command.
+visualization, which is accessible using the `influential::runShinyApp("IVI")` command.
 You can also access the shiny app online at https://influential.erc.monash.edu/.
 }
 \examples{

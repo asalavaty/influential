@@ -58,7 +58,7 @@ would not affect the integrity of the network, you may select the features with 
 up-regulation-based ranks.
 A shiny app has also been developed for Running the ExIR model, visualization of its results as well as computational
 simulation of knockout and/or up-regulation of its top candidate outputs, which is accessible using
-the `influential::runExample("ExIR")` command.
+the `influential::runShinyApp("ExIR")` command.
 You can also access the shiny app online at https://influential.erc.monash.edu/.
 }
 \examples{
