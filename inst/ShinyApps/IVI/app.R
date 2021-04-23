@@ -379,7 +379,7 @@ devtools::install_github('asalavaty/influential',
                               a("influential R package", href = "https://github.com/asalavaty/influential", style = "color:blue"),
                               ". You may have a look at the", em("CITATION"), "tab to get more information regarding the influential R package and how to install it.", style="text-align: justify"),
                             br(),
-                            p("To get more information about the", tags$b("Influential Software Package team"), "refer to the", tags$em("About"), "page of the",  a("Influential Software Package portal", href = "https://github.com/asalavaty/influential", style = "color:blue"), "."),
+                            p("To get more information about the", tags$b("Influential Software Package team"), "refer to the", tags$em("About"), "page of the",  a("Influential Software Package portal", href = "https://influential.erc.monash.edu/", style = "color:blue"), "."),
                             br(),
                             p("Also, there is a", a("Youtube channel", href = "https://www.youtube.com/playlist?list=PL38ZLo00h-YHu2SbnQ-lfh4iaIsMQ99Qj", style = "color:blue"),
                               "dedicated to tutorial videos of different functions of the influential R package.", style="text-align: justify")
