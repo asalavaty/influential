@@ -38,7 +38,7 @@
 #' \itemize{
 #'   \item Package: influential
 #'   \item Type: Package
-#'   \item Version: 2.2.0
+#'   \item Version: 2.2.1
 #'   \item Date: 18-04-2021
 #'   \item License: GPL-3
 #' }
@@ -94,10 +94,10 @@ NULL
 runShinyApp <- function(shinyApp) {
 
   if(!requireNamespace(c("shiny", "shinythemes", "shinyWidgets", "shinyjs",
-                         "shinycssloaders", "colourpicker", "DT", "janitor",
+                         "shinycssloaders", "colourpicker", "DT", "magrittr", "janitor",
                          "ranger", "coop", "influential", "ggplot2", "igraph"), quietly = TRUE)) {
     stop("The packages \"shiny\", \"shinythemes\", \"shinyWidgets\", \"shinyjs\", \"shinycssloaders\", \"colourpicker\",
-    \"DT\", \"ranger\", \"coop\", and \"ggplot2\"
+    \"DT\", \"magrittr\", \"ranger\", \"coop\", and \"ggplot2\"
     are required for the shiny apps to work. Please install the required packages before using this function.
 
   You can install the packages via the following command:
