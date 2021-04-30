@@ -38,8 +38,8 @@
 #' \itemize{
 #'   \item Package: influential
 #'   \item Type: Package
-#'   \item Version: 2.2.1
-#'   \item Date: 18-04-2021
+#'   \item Version: 2.2.2
+#'   \item Date: 30-04-2021
 #'   \item License: GPL-3
 #' }
 #'
@@ -2306,20 +2306,28 @@ sirir <- function(graph, vertices = V(graph),
 
     #a calculate first level driver score based on #3 and #4
 
-    Diff_data$IVI <- 0
     Diff_data.IVI.index <- stats::na.omit(match(names(temp.corr.ivi),
                                                 rownames(Diff_data)))
 
-    temp.corr.ivi.for.Diff_data.IVI.index <- stats::na.omit(match(rownames(Diff_data)[Diff_data.IVI.index],
-                                                                  names(temp.corr.ivi)))
+    if(length(Diff_data.IVI.index) > 0) {
 
-    Diff_data$IVI[Diff_data.IVI.index] <- temp.corr.ivi[temp.corr.ivi.for.Diff_data.IVI.index]
+      Diff_data$IVI <- 0
 
-    #range normalize the IVI
-    Diff_data$IVI <- 1+(((Diff_data$IVI-min(Diff_data$IVI))*(100-1))/
-                          (max(Diff_data$IVI)-min(Diff_data$IVI)))
+      temp.corr.ivi.for.Diff_data.IVI.index <- stats::na.omit(match(rownames(Diff_data)[Diff_data.IVI.index],
+                                                                    names(temp.corr.ivi)))
+
+      Diff_data$IVI[Diff_data.IVI.index] <- temp.corr.ivi[temp.corr.ivi.for.Diff_data.IVI.index]
+
+      #range normalize the IVI
+      Diff_data$IVI <- 1+(((Diff_data$IVI-min(Diff_data$IVI))*(100-1))/
+                            (max(Diff_data$IVI)-min(Diff_data$IVI)))
+
+    } else {
+      Diff_data$IVI <- 1
+    }
 
     Diff_data$first.Driver.Rank <- 1
+
     for (i in 1:nrow(Diff_data)) {
       if(c(any(Diff_data[i,Diff_value, drop = FALSE]<0) & any(Diff_data[i,Diff_value, drop = FALSE]>0))) {
         Diff_data$first.Driver.Rank[i] <- 0

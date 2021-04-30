@@ -3,9 +3,17 @@ influential
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-# influential 2.2.1.9000 (Developmental version)
+# influential 2.2.2.9000 (Developmental version)
 
   - 
+# influential 2.2.2 (CRAN version)
+
+  - The DESCRIPTION file is updated.
+
+  - The function `ExIR` as well as the ExIR shiny app are debugged.
+
+  - Documentations of some functions are updated.
+
 # influential 2.2.1 (CRAN version)
 
   - The DESCRIPTION file is updated.

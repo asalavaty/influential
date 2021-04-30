@@ -9,3 +9,5 @@ NEWS.Rmd
 cran-comments.Rmd
 data-raw
 doc
+/doc/
+/Meta/
