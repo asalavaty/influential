@@ -2299,10 +2299,8 @@ server <- function(input, output, session,
         temp.corr.for.sec.round <- temp.corr
 
         #filter corr data for only those corr between diff features and themselves/others
-        filter.corr.index <- stats::na.omit(base::unique(c(base::match(rownames(rf.diff.exptl.pvalue),
-                                                                       temp.corr$row),
-                                                           base::match(rownames(rf.diff.exptl.pvalue),
-                                                                       temp.corr$column))))
+        filter.corr.index <- stats::na.omit(base::unique(c(base::which(temp.corr$row %in% rownames(rf.diff.exptl.pvalue)),
+                                                           base::which(temp.corr$column %in% rownames(rf.diff.exptl.pvalue)))))
         temp.corr <- temp.corr[filter.corr.index,]
 
         #filtering low level correlations
@@ -2354,10 +2352,8 @@ server <- function(input, output, session,
             rm(temp.corr.for.sec.round)
 
             #filter corr data for only those corr between non.diff.only.features and themselves/others
-            filter.corr.index <- stats::na.omit(base::unique(c(base::match(non.diff.only.features,
-                                                                           temp.corr$row),
-                                                               base::match(non.diff.only.features,
-                                                                           temp.corr$column))))
+            filter.corr.index <- stats::na.omit(base::unique(c(base::which(temp.corr$row %in% non.diff.only.features),
+                                                               base::which(temp.corr$column %in% non.diff.only.features))))
             temp.corr <- temp.corr[filter.corr.index,]
 
             #filtering low level correlations
@@ -2365,10 +2361,8 @@ server <- function(input, output, session,
             temp.corr <- base::subset(temp.corr, temp.corr[,3]>cor.thresh)
 
             # separate non.diff.only features
-            temp.corr.diff.only.index <- stats::na.omit(base::unique(c(base::match(rownames(rf.diff.exptl.pvalue),
-                                                                                   temp.corr$row),
-                                                                       base::match(rownames(rf.diff.exptl.pvalue),
-                                                                                   temp.corr$column))))
+            temp.corr.diff.only.index <- stats::na.omit(base::unique(c(base::which(temp.corr$row %in% rownames(rf.diff.exptl.pvalue)),
+                                                                       base::which(temp.corr$column %in% rownames(rf.diff.exptl.pvalue)))))
 
             if(base::length(temp.corr.diff.only.index)>0) {
                 temp.corr <- temp.corr[-temp.corr.diff.only.index,]

@@ -1,14 +1,13 @@
 CRAN Comments
 ================
 Adrian (Abbas) Salavaty
-15/01/2020 (updated on 30 April, 2021)
+15/01/2020 (updated on 17 July, 2021)
 
-## 2.2.2 New version submission
+## 2.2.3 New version submission
 
   - This is a new submission of the new version of the package
     `influential`. Some bugs in the `ExIR` function as well as the ExIR
-    shiny app were removed. Also, documentations of some functions were
-    updated. Please see News for complete details.
+    shiny app were removed.
 
 ## Test environments
 
