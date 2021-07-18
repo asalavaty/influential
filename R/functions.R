@@ -38,7 +38,7 @@
 #' \itemize{
 #'   \item Package: influential
 #'   \item Type: Package
-#'   \item Version: 2.2.3
+#'   \item Version: 2.2.3.9000
 #'   \item Date: 18-06-2021
 #'   \item License: GPL-3
 #' }
@@ -1852,7 +1852,7 @@ sirir <- function(graph, vertices = V(graph),
   #' @param Condition_colname A string or character vector specifying the name of the column "condition" of the Exptl_data dataframe.
   #' @param Normalize Logical; whether the experimental data should be normalized or not (default is FALSE). If TRUE, the
   #' experimental data will be log2 transformed.
-  #' @param r The threshold of Spearman correlation coefficient for the selection of correlated features (default is 0.3).
+  #' @param r The threshold of Spearman correlation coefficient for the selection of correlated features (default is 0.5).
   #' @param max.connections The maximum number of connections to be included in the association network.
   #' Higher max.connections might increase the computation time, cost, and accuracy of the results (default is 20000).
   #' @param alpha The threshold of the statistical significance (p-value) used throughout the entire model (default is 0.05)
@@ -1908,7 +1908,7 @@ sirir <- function(graph, vertices = V(graph),
   exir <- function(Desired_list = NULL,
                    Diff_data, Diff_value, Regr_value = NULL, Sig_value,
                    Exptl_data, Condition_colname, Normalize = FALSE,
-                   r = 0.3, max.connections = 20000, alpha = 0.05,
+                   r = 0.5, max.connections = 20000, alpha = 0.05,
                    num_trees = 10000, mtry = NULL, num_permutations = 100,
                    inf_const = 10^10, seed = 1234, verbose = TRUE) {
 

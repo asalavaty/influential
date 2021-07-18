@@ -3,6 +3,11 @@ influential
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
+# influential 2.2.3.9000 (Developmental version)
+
+  - The default correlation coefficient is changed from 0.3 to 0.5 in
+    the ExIR function and its shiny app.
+
 # influential 2.2.3 (CRAN version)
 
   - The ExIR shiny app is debugged and updated.

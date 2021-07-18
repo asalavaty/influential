@@ -14,7 +14,7 @@ exir(
   Exptl_data,
   Condition_colname,
   Normalize = FALSE,
-  r = 0.3,
+  r = 0.5,
   max.connections = 20000,
   alpha = 0.05,
   num_trees = 10000,
@@ -62,7 +62,7 @@ The experimental data could come from a variety sources such as transcriptomics 
 \item{Normalize}{Logical; whether the experimental data should be normalized or not (default is FALSE). If TRUE, the
 experimental data will be log2 transformed.}
 
-\item{r}{The threshold of Spearman correlation coefficient for the selection of correlated features (default is 0.3).}
+\item{r}{The threshold of Spearman correlation coefficient for the selection of correlated features (default is 0.5).}
 
 \item{max.connections}{The maximum number of connections to be included in the association network.
 Higher max.connections might increase the computation time, cost, and accuracy of the results (default is 20000).}

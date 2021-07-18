@@ -611,7 +611,7 @@ ui <- navbarPageWithText(id = "inTabset",
                                                           ### Specify the r
                                                           sliderInput(inputId = "correlationCoeff",
                                                                       label = "Correlation coefficient threshold (for association network reconstruction):",
-                                                                      min = 0, max = 1, value = 0.3, step = 0.1,
+                                                                      min = 0, max = 1, value = 0.5, step = 0.1,
                                                                       ticks = TRUE, animate = FALSE),
 
                                                           # max.connections
