@@ -23,3 +23,6 @@ logo.png
 ^doc$
 ^Meta$
 ^CRAN-RELEASE$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$

@@ -55,6 +55,7 @@ InterJournal, Complex Systems, 1695. \url{https://igraph.org/}.
 Useful links:
 \itemize{
   \item \url{https://github.com/asalavaty/influential}
+  \item \url{https://asalavaty.github.io/influential/}
   \item Report bugs at \url{https://github.com/asalavaty/influential/issues}
 }
 
