@@ -1,6 +1,6 @@
 #=============================================================================
 #
-#    Code chunk 0: Influential package description document
+#    Code chunk 0: Influential package description
 #
 #=============================================================================
 
