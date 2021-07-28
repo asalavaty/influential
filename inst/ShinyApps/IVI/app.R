@@ -9,7 +9,7 @@ library(influential)
 library(ggplot2)
 library(igraph)
 
-options(shiny.maxRequestSize = 100 * 1024^2)
+options(shiny.maxRequestSize = Inf)
 options(warn=-1)
 
 ####**********************************************####
