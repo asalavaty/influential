@@ -3659,9 +3659,9 @@ sirir <- function(graph, vertices = V(graph),
       ##***********##
 
       # add facets
-      ggplot2::facet_grid(. ~ Class,
+      ggplot2::facet_wrap(. ~ Class,
                           scales = "free_x",
-                          space = "free_x") +
+                          strip.position = "right") +
 
 
       ##***********##
