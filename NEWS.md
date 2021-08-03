@@ -5,6 +5,8 @@ influential
 
 # influential 2.2.3.9000 (Developmental version)
 
+-   The `exir.vis` function is debugged.
+
 -   The upload file size limit is removed from the local shiny apps.
 
 -   The package website build with pkgdown is added to github.

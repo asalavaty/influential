@@ -3671,7 +3671,13 @@ sirir <- function(graph, vertices = V(graph),
       ggplot2::theme_bw()
 
     # set the x axis breaks
-    by.x_continuous <- base::round(n/5)
+    rank.uniqueness <- base::vector(mode = "integer")
+    for(i in base::unique(exir.for.plot$Class)) {
+      rank.uniqueness <- base::append(x = rank.uniqueness, values =
+                                        length(unique(exir.for.plot$Rank[exir.for.plot$Class == i]))
+      )
+    }
+    by.x_continuous <- base::ifelse(any(rank.uniqueness == 1), 1, base::round(n/5))
 
     # set the x axis numbers and start
     x.axis.numbers <- function(x) {
