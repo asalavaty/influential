@@ -993,6 +993,8 @@ ui <- navbarPageWithText(id = "inTabset",
                                                               choices = NULL,
                                                               options = list(
                                                                   style = "btn-sm btn-primary",
+                                                                  size = 10,
+                                                                  `live-search` = TRUE,
                                                                   `selected-text-format` = "count > 3"),
                                                               multiple = TRUE
                                                           ),
@@ -1004,6 +1006,8 @@ ui <- navbarPageWithText(id = "inTabset",
                                                               choices = NULL,
                                                               options = list(
                                                                   style = "btn-sm btn-danger",
+                                                                  size = 10,
+                                                                  `live-search` = TRUE,
                                                                   `selected-text-format` = "count > 3"),
                                                               multiple = TRUE
                                                           ),
@@ -1478,10 +1482,47 @@ server <- function(input, output, session,
         return(df)
     }
 
-    ###############
+    ##############################
+
+    properExpData <- reactiveValues(value = 0)
+
+    ## Check duplications in row names
+    observeEvent(input$normExptlData, {
+
+        ext <- tools::file_ext(input$normExptlData$name)
+        df4CheckingDuplicates = switch(ext,
+                                       csv = read.csv(input$normExptlData$datapath, skip = 0, nrows = 1, row.names = NULL, header = TRUE),
+                                       txt = read.delim(input$normExptlData$datapath, sep = "\t", skip = 0, nrows = 1, row.names = NULL, header = TRUE),
+                                       validate("Invalid file; Please upload a .csv, or .txt file")
+        )
+
+        dfColNumbers <- ncol(df4CheckingDuplicates) - 1
+
+        df4CheckingDuplicates <- switch(ext,
+                                        csv = read.csv(input$normExptlData$datapath, skip = 0, row.names = NULL, colClasses = c("character", rep("NULL", dfColNumbers)), header = TRUE),
+                                        txt = read.delim(input$normExptlData$datapath, sep = "\t", skip = 0, row.names = NULL, colClasses = c("character", rep("NULL", dfColNumbers)), header = TRUE),
+                                        validate("Invalid file; Please upload a .csv, or .txt file")
+        )
+
+        if(any(duplicated(df4CheckingDuplicates[,1]))) {
+            sendSweetAlert(
+                session = session,
+                title = "The input Experimental data has duplicated row (feature) names!",
+                text = tags$p("Please clean your input experimental data and re-upload that."),
+                type = "warning"
+            )
+            properExpData$value <- 0
+        } else {
+            properExpData$value <- 1
+        }
+
+    })
 
     ## Experimental data
     experimentalData <- reactive({
+
+        if(properExpData$value == 1) {
+
         req(input$normExptlData)
 
         n_rows = length(count.fields(input$normExptlData$datapath))
@@ -1498,6 +1539,8 @@ server <- function(input, output, session,
                                           no_batches = 10)
 
         return(df_out)
+
+        }
     })
 
     ###############
@@ -3638,18 +3681,25 @@ server <- function(input, output, session,
 
         # Take care of inputs
 
+        ## Define the choices of vertices
+        if(is.null(isolate(desiredFeatures()))) {
+            vertexChoices <- igraph::as_ids(V(isolate(input_ExIR_results)$Graph))
+        } else {
+            vertexChoices <- igraph::as_ids(V(isolate(input_ExIR_results)$Graph))[which(igraph::as_ids(V(isolate(input_ExIR_results)$Graph)) %in% isolate(desiredFeatures()))]
+        }
+
         observe({
             if(!is.null(input_ExIR_results())) {
                 updatePickerInput(
                     session = session,
                     inputId = "ko_vertices",
-                    choices = igraph::as_ids(V(input_ExIR_results()$Graph))
+                    choices = vertexChoices
                 )
 
                 updatePickerInput(
                     session = session,
                     inputId = "upregulate_vertices",
-                    choices = igraph::as_ids(V(input_ExIR_results()$Graph))
+                    choices = vertexChoices
                 )
             }
         })
@@ -3660,7 +3710,7 @@ server <- function(input, output, session,
 
         shinySirir <- function(graph, vertices = V(graph),
                                beta = 0.5, gamma = 1,
-                               no.sim = igraph::vcount(graph)*100,  seed = 1234) {
+                               no.sim = igraph::vcount(graph)*10,  seed = 1234) {
 
             #Define a data frame
             temp.loocr.table <- data.frame(difference.value = vector("numeric", length = length(vertices)),
@@ -3727,7 +3777,7 @@ server <- function(input, output, session,
                                          upregulate_vertices = NULL,
                                          beta = 0.5,
                                          gamma = 1,
-                                         no.sim = igraph::vcount(graph) * 100,
+                                         no.sim = igraph::vcount(graph) * 10,
                                          seed = 1234) {
 
             ##**************************##
@@ -3749,7 +3799,7 @@ server <- function(input, output, session,
             # Over-expression function
 
             overexpr <- function (graph, vertices = V(graph), beta = 0.5, gamma = 1,
-                                  no.sim = igraph::vcount(graph) * 100, seed = 1234)
+                                  no.sim = igraph::vcount(graph) * 10, seed = 1234)
             {
                 temp.loocr.table <- data.frame(difference.value = vector("numeric",
                                                                          length = length(vertices)), rank = vector("integer",
@@ -3940,7 +3990,7 @@ server <- function(input, output, session,
                 beta = 0.5,
                 gamma = 1,
                 no.sim = ifelse(input$no.sim_option == TRUE,
-                                igraph::vcount(ExIRGraph) * 100,
+                                igraph::vcount(ExIRGraph) * 10,
                                 input$no.sim),
                 seed = input$seed_forCompMan
             )
