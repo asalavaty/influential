@@ -23,14 +23,16 @@ navbarPageWithText <- function(..., text) {
     if(as.integer(paste(unlist(packageVersion(pkg = "shiny")), collapse = "")) <= 160) {
         navbar <- navbarPage(...)
         textEl <- tags$p(class = "navbar-text", text)
-        navbar[[3]][[1]]$children[[1]] <- htmltools::tagAppendChild(textEl,
-                                                                    navbar[[3]][[1]]$children[[1]])
+        navbar[[3]][[1]]$children[[1]] <- htmltools::tagAppendChild(
+            navbar[[3]][[1]]$children[[1]],
+            textEl)
         navbar
     } else {
         navbar <- navbarPage(...)
         textEl <- tags$p(class = "navbar-text", text)
-        navbar[[4]][[1]][[1]]$children[[1]] <- htmltools::tagAppendChild(textEl,
-                                                                         navbar[[4]][[1]][[1]]$children[[1]])
+        navbar[[4]][[1]][[1]]$children[[1]] <- htmltools::tagAppendChild(
+            navbar[[4]][[1]][[1]]$children[[1]],
+            textEl)
         navbar
     }
 }
@@ -1133,7 +1135,7 @@ ui <- navbarPageWithText(id = "inTabset",
                                       column(2),
                                       column(8,
                                              br(),
-                                             h4(icon("paper"), "Please cite the following two papers if you used this shiny app in your study."),
+                                             h4(icon("scroll"), "Please cite the following two papers if you used this shiny app in your study."),
                                              br(),
                                              panel(footer = "",heading = "", status = "primary",
                                       h3(tags$b("ExIR: a versatile one-stop model for the extraction, classification, and prioritization of candidate genes from experimental data"),
@@ -3593,7 +3595,7 @@ server <- function(input, output, session,
         # Add restored ExIR reactive values
         restored_exir_results <- reactiveVal()
 
-        # Save IVI results
+        # Save ExIR results
         output$save_exir_results <- downloadHandler(
             filename = function() {
                 paste0("Session_dataset-", Sys.Date(), ".rds")
@@ -3691,14 +3693,16 @@ server <- function(input, output, session,
         # Take care of inputs
 
         ## Define the choices of vertices
-        if(is.null(isolate(desiredFeatures()))) {
-            vertexChoices <- igraph::as_ids(V(isolate(input_ExIR_results)$Graph))
-        } else {
-            vertexChoices <- igraph::as_ids(V(isolate(input_ExIR_results)$Graph))[which(igraph::as_ids(V(isolate(input_ExIR_results)$Graph)) %in% isolate(desiredFeatures()))]
-        }
 
         observe({
             if(!is.null(input_ExIR_results())) {
+
+                if(is.null(isolate(desiredFeatures()))) {
+                    vertexChoices <- igraph::as_ids(V(isolate(input_ExIR_results()$Graph)))
+                } else {
+                    vertexChoices <- igraph::as_ids(V(isolate(input_ExIR_results()$Graph)))[which(igraph::as_ids(V(isolate(input_ExIR_results()$Graph))) %in% isolate(desiredFeatures()))]
+                }
+
                 updatePickerInput(
                     session = session,
                     inputId = "ko_vertices",

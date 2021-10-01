@@ -19,14 +19,16 @@ navbarPageWithText <- function(..., text) {
   if(as.integer(paste(unlist(packageVersion(pkg = "shiny")), collapse = "")) <= 160) {
     navbar <- navbarPage(...)
     textEl <- tags$p(class = "navbar-text", text)
-    navbar[[3]][[1]]$children[[1]] <- htmltools::tagAppendChild(textEl,
-                                                                navbar[[3]][[1]]$children[[1]])
+    navbar[[3]][[1]]$children[[1]] <- htmltools::tagAppendChild(
+                                                                navbar[[3]][[1]]$children[[1]],
+                                                                textEl)
     navbar
   } else {
     navbar <- navbarPage(...)
     textEl <- tags$p(class = "navbar-text", text)
-    navbar[[4]][[1]][[1]]$children[[1]] <- htmltools::tagAppendChild(textEl,
-                                                                     navbar[[4]][[1]][[1]]$children[[1]])
+    navbar[[4]][[1]][[1]]$children[[1]] <- htmltools::tagAppendChild(
+                                                                     navbar[[4]][[1]][[1]]$children[[1]],
+                                                                     textEl)
     navbar
   }
 }
