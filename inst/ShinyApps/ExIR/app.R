@@ -19,11 +19,20 @@ options(warn=-1)
 ####**********************************************####
 
 navbarPageWithText <- function(..., text) {
-    navbar <- navbarPage(...)
-    textEl <- tags$p(class = "navbar-text", text)
-    navbar[[3]][[1]]$children[[1]] <- htmltools::tagAppendChild(
-        navbar[[3]][[1]]$children[[1]], textEl)
-    navbar
+
+    if(as.integer(paste(unlist(packageVersion(pkg = "shiny")), collapse = "")) <= 160) {
+        navbar <- navbarPage(...)
+        textEl <- tags$p(class = "navbar-text", text)
+        navbar[[3]][[1]]$children[[1]] <- htmltools::tagAppendChild(textEl,
+                                                                    navbar[[3]][[1]]$children[[1]])
+        navbar
+    } else {
+        navbar <- navbarPage(...)
+        textEl <- tags$p(class = "navbar-text", text)
+        navbar[[4]][[1]][[1]]$children[[1]] <- htmltools::tagAppendChild(textEl,
+                                                                         navbar[[4]][[1]][[1]]$children[[1]])
+        navbar
+    }
 }
 
 ####**********************************************####
@@ -3061,7 +3070,7 @@ server <- function(input, output, session,
     # Take care of ExIR outputs
 
         ## Drivers
-        output$driversTable <- DT::renderDataTable(
+        output$driversTable <- DT::renderDataTable(server = FALSE,
             if(!is.null(input_ExIR_results()) && !is.null(input_ExIR_results()$`Driver table`)) {
 
                 input$restore_exir_dataset # Update on file upload
@@ -3130,7 +3139,7 @@ server <- function(input, output, session,
         #***********#
 
         ## Biomarkers
-        output$biomarkersTable <- DT::renderDataTable(
+        output$biomarkersTable <- DT::renderDataTable(server = FALSE,
             if(!is.null(input_ExIR_results()) && !is.null(input_ExIR_results()$`Biomarker table`)) {
 
                 input$restore_exir_dataset # Update on file upload
@@ -3200,7 +3209,7 @@ server <- function(input, output, session,
         #***********#
 
         ## NonDE Mediators
-        output$NonDEMediatorsTable <- DT::renderDataTable(
+        output$NonDEMediatorsTable <- DT::renderDataTable(server = FALSE,
             if(!is.null(input_ExIR_results()) && !is.null(input_ExIR_results()$`nonDE-mediator table`)) {
 
                 input$restore_exir_dataset # Update on file upload
@@ -3266,7 +3275,7 @@ server <- function(input, output, session,
         #***********#
 
         ## DE Mediators
-        output$DEMediatorsTable <- DT::renderDataTable(
+        output$DEMediatorsTable <- DT::renderDataTable(server = FALSE,
             if(!is.null(input_ExIR_results()) && !is.null(input_ExIR_results()$`DE-mediator table`)) {
 
                 input$restore_exir_dataset # Update on file upload
@@ -4001,7 +4010,7 @@ server <- function(input, output, session,
         # Take care of output of computational manipulation
 
         ## Knockouts
-        output$knockoutRankingsTable <- DT::renderDataTable(
+        output$knockoutRankingsTable <- DT::renderDataTable(server = FALSE,
             if(!is.null(compManiResults()) && !is.null(compManiResults()$Knockout)) {
 
                 brks_ko <- quantile(compManiResults()$Knockout$Rank, probs = seq(.05, .95, .05), na.rm = TRUE)
@@ -4066,7 +4075,7 @@ server <- function(input, output, session,
         #***********#
 
         ## Up-regulation
-        output$upregulationRankingsTable <- DT::renderDataTable(
+        output$upregulationRankingsTable <- DT::renderDataTable(server = FALSE,
             if(!is.null(compManiResults()) && !is.null(compManiResults()$Up_regulation)) {
 
                 brks_upreg <- quantile(compManiResults()$Up_regulation$Rank, probs = seq(.05, .95, .05), na.rm = TRUE)
@@ -4131,7 +4140,7 @@ server <- function(input, output, session,
         #***********#
 
         ## Combined
-        output$combinedRankingsTable <- DT::renderDataTable(
+        output$combinedRankingsTable <- DT::renderDataTable(server = FALSE,
             if(!is.null(compManiResults()) && !is.null(compManiResults()$Combined)) {
 
                 brks_combined <- quantile(compManiResults()$Combined$Rank, probs = seq(.05, .95, .05), na.rm = TRUE)
