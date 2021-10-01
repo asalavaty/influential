@@ -7,11 +7,13 @@ influential
 
 -   The implementations of shiny apps are optimized.
 
+-   -   Shiny apps are debugged.
+
 -   The `exir.vis` function is debugged.
 
 -   The upload file size limit is removed from the local shiny apps.
 
--   The package website build with pkgdown is added to github.
+-   The package website built with pkgdown is added to github.
 
 -   The default correlation coefficient is changed from 0.3 to 0.5 in
     the ExIR function and its shiny app.
