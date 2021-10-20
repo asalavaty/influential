@@ -7,7 +7,10 @@ influential
 
 -   The implementations of shiny apps are optimized.
 
--   -   Shiny apps are debugged.
+-   Shiny apps are debugged.
+
+-   A new argument, `label.position`, is added to the `exir.vis`
+    function.
 
 -   The `exir.vis` function is debugged.
 
