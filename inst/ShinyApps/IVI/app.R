@@ -70,7 +70,7 @@ ui <- navbarPageWithText(id = "inTabset",
         column(4,
                tags$h5("Calculation of the Integrated Value of Influence (IVI)"),
         sidebarPanel(width = 12,
-                     style = "overflow-y:scroll; max-height: 800px; position:relative;",
+                     style = "overflow-y:scroll; max-height: 90vh; position:relative;",
         ## Input for IVI calculation
         ### Upload the file
         fileInput("file", label = "Upload your data",
