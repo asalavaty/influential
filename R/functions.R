@@ -3269,6 +3269,8 @@ sirir <- function(graph, vertices = V(graph),
   #' @param show.nonDE.mediators Logical scalar, whether to show nonDE-mediators or not (default is set to TRUE).
   #' @param basis A string specifying the basis for the selection of top N candidates from each category of the results. Possible options include
   #' \code{"Rank"} and \code{"Adjusted p-value"} (default is set to "Rank").
+  #' @param label.position By default, the labels are displayed on the top of the plot. Using label.position it is possible
+  #' to place the labels on either of the four sides by setting label.position = c("top", "bottom", "left", "right").
   #' @param dot.size.min The size of dots with the lowest statistical significance (default is set to 2).
   #' @param dot.size.max The size of dots with the highest statistical significance (default is set to 5).
   #' @param type.color A character string or function indicating the color palette to be used for the visualization of
@@ -3316,6 +3318,7 @@ sirir <- function(graph, vertices = V(graph),
                        show.de.mediators = TRUE,
                        show.nonDE.mediators = TRUE,
                        basis = "Rank",
+                       label.position = "top",
                        dot.size.min = 2,
                        dot.size.max = 5,
                        type.color = "viridis",
@@ -3661,7 +3664,7 @@ sirir <- function(graph, vertices = V(graph),
       # add facets
       ggplot2::facet_wrap(. ~ Class,
                           scales = "free_x",
-                          strip.position = "right") +
+                          strip.position = label.position) +
 
 
       ##***********##

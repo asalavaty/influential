@@ -155,6 +155,7 @@ You can also access the shiny app online at https://influential.erc.monash.edu/.
   show.de.mediators <span class='op'>=</span> <span class='cn'>TRUE</span>,
   show.nonDE.mediators <span class='op'>=</span> <span class='cn'>TRUE</span>,
   basis <span class='op'>=</span> <span class='st'>"Rank"</span>,
+  label.position <span class='op'>=</span> <span class='st'>"top"</span>,
   dot.size.min <span class='op'>=</span> <span class='fl'>2</span>,
   dot.size.max <span class='op'>=</span> <span class='fl'>5</span>,
   type.color <span class='op'>=</span> <span class='st'>"viridis"</span>,
@@ -226,6 +227,11 @@ include <code>"combined"</code> (meaning both biomarker types), <code>"up-regula
       <th>basis</th>
       <td><p>A string specifying the basis for the selection of top N candidates from each category of the results. Possible options include
 <code>"Rank"</code> and <code>"Adjusted p-value"</code> (default is set to "Rank").</p></td>
+    </tr>
+    <tr>
+      <th>label.position</th>
+      <td><p>By default, the labels are displayed on the top of the plot. Using label.position it is possible
+to place the labels on either of the four sides by setting label.position = c("top", "bottom", "left", "right").</p></td>
     </tr>
     <tr>
       <th>dot.size.min</th>
