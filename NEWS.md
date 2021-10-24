@@ -12,7 +12,7 @@ influential
 -   A new argument, `label.position`, is added to the `exir.vis`
     function.
 
--   The `exir.vis` function is debugged.
+-   The `exir.vis` function is debugged and optimized.
 
 -   The upload file size limit is removed from the local shiny apps.
 
