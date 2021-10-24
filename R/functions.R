@@ -3602,10 +3602,10 @@ sirir <- function(graph, vertices = V(graph),
     # Correct the levels of Features based on each class
     visClassLength <- base::length(base::unique(exir.for.plot$Class))
 
-    visFeatureLevels <- base::unique(base::unlist(base::sapply(X = 1:visClassLength,
+    visFeatureLevels <- base::unique(base::as.character(base::unlist(base::sapply(X = 1:visClassLength,
                                                                FUN = function(i) {
                                                                  exir.for.plot$Feature[which(exir.for.plot$Class %in% base::unique(exir.for.plot$Class)[i])]
-                                                               })))
+                                                               }))))
 
     exir.for.plot$Feature <- base::factor(exir.for.plot$Feature,
                                           levels = visFeatureLevels)
