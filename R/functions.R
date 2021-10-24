@@ -3599,6 +3599,17 @@ sirir <- function(graph, vertices = V(graph),
     exir.for.plot$P.adj <- dot.size.min+(((-log10(exir.for.plot$P.adj)-min(-log10(exir.for.plot$P.adj)))*(dot.size.max-dot.size.min))/
                                            (max(-log10(exir.for.plot$P.adj))-min(-log10(exir.for.plot$P.adj))))
 
+    # Correct the levels of Features based on each class
+    visClassLength <- base::length(base::unique(exir.for.plot$Class))
+
+    visFeatureLevels <- base::unique(base::unlist(base::sapply(X = 1:visClassLength,
+                                                               FUN = function(i) {
+                                                                 exir.for.plot$Feature[which(exir.for.plot$Class %in% base::unique(exir.for.plot$Class)[i])]
+                                                               })))
+
+    exir.for.plot$Feature <- base::factor(exir.for.plot$Feature,
+                                          levels = visFeatureLevels)
+
     ####*******************************####
 
     # draw the plot
