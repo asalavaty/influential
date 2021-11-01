@@ -3,7 +3,9 @@ influential
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-# influential 2.2.3.9000 (Developmental version)
+# influential 2.2.4 (CRAN version)
+
+-   The package vignettes are updated.
 
 -   The implementations of shiny apps are optimized.
 

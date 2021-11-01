@@ -16,6 +16,7 @@ exir.vis(
   show.nonDE.mediators = TRUE,
   basis = "Rank",
   label.position = "top",
+  nrow = 1,
   dot.size.min = 2,
   dot.size.max = 5,
   type.color = "viridis",
@@ -68,6 +69,8 @@ include \code{"combined"} (meaning both biomarker types), \code{"up-regulated"} 
 
 \item{label.position}{By default, the labels are displayed on the top of the plot. Using label.position it is possible
 to place the labels on either of the four sides by setting label.position = c("top", "bottom", "left", "right").}
+
+\item{nrow}{Number of rows of the plot (default is set to 1).}
 
 \item{dot.size.min}{The size of dots with the lowest statistical significance (default is set to 2).}
 

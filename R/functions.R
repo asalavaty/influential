@@ -38,8 +38,8 @@
 #' \itemize{
 #'   \item Package: influential
 #'   \item Type: Package
-#'   \item Version: 2.2.3.9000
-#'   \item Date: 18-06-2021
+#'   \item Version: 2.2.4
+#'   \item Date: 02-11-2021
 #'   \item License: GPL-3
 #' }
 #'
@@ -3271,6 +3271,7 @@ sirir <- function(graph, vertices = V(graph),
   #' \code{"Rank"} and \code{"Adjusted p-value"} (default is set to "Rank").
   #' @param label.position By default, the labels are displayed on the top of the plot. Using label.position it is possible
   #' to place the labels on either of the four sides by setting label.position = c("top", "bottom", "left", "right").
+  #' @param nrow Number of rows of the plot (default is set to 1).
   #' @param dot.size.min The size of dots with the lowest statistical significance (default is set to 2).
   #' @param dot.size.max The size of dots with the highest statistical significance (default is set to 5).
   #' @param type.color A character string or function indicating the color palette to be used for the visualization of
@@ -3319,6 +3320,7 @@ sirir <- function(graph, vertices = V(graph),
                        show.nonDE.mediators = TRUE,
                        basis = "Rank",
                        label.position = "top",
+                       nrow = 1,
                        dot.size.min = 2,
                        dot.size.max = 5,
                        type.color = "viridis",
@@ -3675,7 +3677,8 @@ sirir <- function(graph, vertices = V(graph),
       # add facets
       ggplot2::facet_wrap(. ~ Class,
                           scales = "free_x",
-                          strip.position = label.position) +
+                          strip.position = label.position,
+                          nrow = nrow) +
 
 
       ##***********##
