@@ -1750,8 +1750,19 @@ sirir <- function(graph, vertices = V(graph),
   #' GraphVertices <- V(My_graph)
   #' My_graph_betweenness <- betweenness(My_graph, v = GraphVertices,
   #'                         directed = FALSE, normalized = FALSE)
-  #' @importFrom igraph betweenness
-  betweenness <- igraph::betweenness
+  betweenness <- function(graph,
+                          v = V(graph),
+                          directed = TRUE,
+                          weights = NULL,
+                          nobigint = TRUE,
+                          normalized = FALSE, ...) {
+    igraph::betweenness(graph = graph,
+                        v = v,
+                        directed=directed,
+                        weights = weights,
+                        nobigint = nobigint,
+                        normalized = normalized, ...)
+  }
 
   #*****************************************************************#
 
