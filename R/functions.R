@@ -164,7 +164,7 @@ runShinyApp <- function(shinyApp) {
 neighborhood.connectivity <- function(graph, vertices = V(graph), mode = "all") {
 
   # Getting the names of vertices
-  if(class(vertices) == "igraph.vs") {
+  if(inherits(vertices, "igraph.vs")) {
     node.names <- as.character(igraph::as_ids(vertices))
   } else {
     node.names <- as.character(vertices)
@@ -272,7 +272,7 @@ neighborhood.connectivity <- function(graph, vertices = V(graph), mode = "all") 
   }
 
   # Getting the names of vertices
-  if(class(vertices) == "igraph.vs") {
+  if(inherits(vertices, "igraph.vs")) {
     node.names <- as.character(igraph::as_ids(vertices))
   } else {
     node.names <- as.character(vertices)
@@ -327,7 +327,7 @@ neighborhood.connectivity <- function(graph, vertices = V(graph), mode = "all") 
                                 mode = mode))
     }
     # Getting the names of vertices
-    if(class(vertices) == "igraph.vs") {
+    if(inherits(vertices, "igraph.vs")) {
       node.names <- as.character(igraph::as_ids(vertices))
     } else {
       node.names <- as.character(vertices)
@@ -396,7 +396,7 @@ neighborhood.connectivity <- function(graph, vertices = V(graph), mode = "all") 
     }
 
     # Getting the names of vertices
-    if(class(vertices) == "igraph.vs") {
+    if(inherits(vertices, "igraph.vs")) {
       node.names <- as.character(igraph::as_ids(vertices))
     } else {
       node.names <- as.character(vertices)
@@ -464,7 +464,7 @@ neighborhood.connectivity <- function(graph, vertices = V(graph), mode = "all") 
 
   }
 
-  if(class(vids) == "igraph.vs") {
+  if(inherits(vids, "igraph.vs")) {
     vertices.index <- stats::na.omit(match(vids, V(graph)))
   } else {
     vertices.index <- stats::na.omit(match(vids, igraph::as_ids(V(graph))))
@@ -1549,9 +1549,9 @@ sirir <- function(graph, vertices = V(graph),
   temp.loocr.table <- data.frame(difference.value = vector("numeric", length = length(vertices)),
                                  rank = vector("integer", length = length(vertices)))
 
-  if(class(vertices) == "character") {
+  if(inherits(vertices, "character")) {
     rownames(temp.loocr.table) <- vertices
-  } else if(class(vertices) == "igraph.vs") {
+  } else if(inherits(vertices, "igraph.vs")) {
     rownames(temp.loocr.table) <- igraph::as_ids(vertices)
   }
 
@@ -3888,7 +3888,7 @@ sirir <- function(graph, vertices = V(graph),
 
     ##**************************##
     # Take care of input graph
-    if(!is.null(exir_output) && class(exir_output) == "ExIR_Result") {
+    if(!is.null(exir_output) && inherits(exir_output, "ExIR_Result")) {
       graph <- exir_output$Graph
     }
 
@@ -3901,9 +3901,9 @@ sirir <- function(graph, vertices = V(graph),
       temp.loocr.table <- data.frame(difference.value = vector("numeric",
                                                                length = length(vertices)), rank = vector("integer",
                                                                                                          length = length(vertices)))
-      if (class(vertices) == "character") {
+      if (inherits(vertices, "character")) {
         rownames(temp.loocr.table) <- vertices
-      } else if (class(vertices) == "igraph.vs") {
+      } else if (inherits(vertices, "igraph.vs")) {
         rownames(temp.loocr.table) <- igraph::as_ids(vertices)
       }
       set.seed(seed)
