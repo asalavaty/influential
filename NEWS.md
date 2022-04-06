@@ -3,6 +3,16 @@ influential
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
+# influential 2.2.5 (CRAN version)
+
+-   The package vignettes are updated.
+
+-   The `betweenness` function is corrected.
+
+-   Documentation of some functions corrected.
+
+-   Links to my personal website are corrected.
+
 # influential 2.2.4 (CRAN version)
 
 -   The package vignettes are updated.

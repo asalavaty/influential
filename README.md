@@ -46,8 +46,8 @@ underpinning methods and analyses.
 
 ## Author
 
-The `influential` package was written by [Adrian (Abbas)
-Salavaty](https://www.abbassalavaty.com/)
+The `influential` package was written by [Abbas (Adrian)
+Salavaty](https://www.asalavaty.com/)
 
 ## Advisors
 

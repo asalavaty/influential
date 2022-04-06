@@ -52,7 +52,7 @@
 #' Maintainer: Adrian (Abbas) Salavaty \email{abbas.salavaty@@gmail.com}
 #'
 #'
-#' You may find more information on my personal website at \href{https://www.abbassalavaty.com/}{www.AbbasSalavaty.com}
+#' You may find more information on my personal website at \href{https://www.asalavaty.com/}{www.ASalavaty.com}
 #'
 #' @references
 #' \itemize{
@@ -1736,6 +1736,7 @@ sirir <- function(graph, vertices = V(graph),
   #' This is only required for lattice-like graphs that have very many shortest paths between a pair of vertices.
   #' If TRUE (the default), then big integers are not used.
   #' @param normalized Logical scalar, whether to normalize the betweenness scores. If TRUE, then the results are normalized.
+  #' @param ... Additional arguments according to the original \code{\link[igraph]{betweenness}} function in the package igraph.
   #' @return A numeric vector with the betweenness score for each vertex in v.
   #' @aliases BC
   #' @keywords betweenness_centrality

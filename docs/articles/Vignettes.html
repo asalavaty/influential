@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">influential</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.2.3.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.4.9000</span>
       </span>
     </div>
 
@@ -43,7 +43,7 @@
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
@@ -75,15 +75,15 @@
 
       
 
-      </header><script src="Vignettes_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Introduction to influential</h1>
             <h3 data-toc-skip class="subtitle"><em>Identification and classification of the most influential nodes</em></h3>
-                        <h4 data-toc-skip class="author">Adrian (Abbas) Salavaty 01-Nov-2021</h4>
+                        <h4 data-toc-skip class="author">Abbas (Adrian) Salavaty 06-Apr-2022</h4>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/asalavaty/influential/blob/master/vignettes/Vignettes.Rmd" class="external-link"><code>vignettes/Vignettes.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/asalavaty/influential/blob/HEAD/vignettes/Vignettes.Rmd" class="external-link"><code>vignettes/Vignettes.Rmd</code></a></small>
       <div class="hidden name"><code>Vignettes.Rmd</code></div>
 
     </div>
@@ -94,10 +94,10 @@
 body {
 text-align: justify}
 </style>
-<div id="overview" class="section level1">
-<h1 class="hasAnchor">
-<a href="#overview" class="anchor" aria-hidden="true"></a>Overview</h1>
-<p><img src="../man/figures/Symbol.png" width="25%" style="float:right; padding:10px"></p>
+<div class="section level2">
+<h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
+</h2>
+<p><img src="../reference/figures/Symbol.png" width="25%" style="float:right; padding:10px"></p>
 <p><code>influential</code> is an R package mainly for the identification of the most influential nodes in a network as well as the classification and ranking of top candidate features. The <code>influential</code> package contains several functions that could be categorized into five groups according to their purpose:</p>
 <ul>
 <li>Network reconstruction</li>
@@ -119,13 +119,13 @@ text-align: justify}
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/asalavaty/influential" class="external-link">influential</a></span><span class="op">)</span></code></pre></div>
 </div>
-<div id="network-reconstruction" class="section level1">
-<h1 class="hasAnchor">
-<a href="#network-reconstruction" class="anchor" aria-hidden="true"></a>Network reconstruction</h1>
+<div class="section level2">
+<h2 id="network-reconstruction">Network reconstruction<a class="anchor" aria-label="anchor" href="#network-reconstruction"></a>
+</h2>
 <p>Three functions have been obtained from the <code>igraph</code><a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> R package for the reconstruction of networks.</p>
-<div id="from-a-data-frame" class="section level2">
-<h2 class="hasAnchor">
-<a href="#from-a-data-frame" class="anchor" aria-hidden="true"></a>From a data frame</h2>
+<div class="section level3">
+<h3 id="from-a-data-frame">From a data frame<a class="anchor" aria-label="anchor" href="#from-a-data-frame"></a>
+</h3>
 <p>In the data frame the first and second columns should be composed of source and target nodes.<br>
 A sample appropriate data frame is brought below:</p>
 <table class="table">
@@ -172,9 +172,9 @@ A sample appropriate data frame is brought below:</p>
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span>
 <span class="co">#&gt; [1] "igraph"</span></code></pre></div>
 </div>
-<div id="from-an-adjacency-matrix" class="section level2">
-<h2 class="hasAnchor">
-<a href="#from-an-adjacency-matrix" class="anchor" aria-hidden="true"></a>From an adjacency matrix</h2>
+<div class="section level3">
+<h3 id="from-an-adjacency-matrix">From an adjacency matrix<a class="anchor" aria-label="anchor" href="#from-an-adjacency-matrix"></a>
+</h3>
 <p>A sample appropriate adjacency matrix is brought below:</p>
 <table class="table">
 <thead><tr class="header">
@@ -253,9 +253,9 @@ A sample appropriate data frame is brought below:</p>
 <span class="co"># Reconstructing the graph</span>
 <span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_from_adjacency_matrix.html">graph_from_adjacency_matrix</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        </code></pre></div>
 </div>
-<div id="from-an-incidence-matrix" class="section level2">
-<h2 class="hasAnchor">
-<a href="#from-an-incidence-matrix" class="anchor" aria-hidden="true"></a>From an incidence matrix</h2>
+<div class="section level3">
+<h3 id="from-an-incidence-matrix">From an incidence matrix<a class="anchor" aria-label="anchor" href="#from-an-incidence-matrix"></a>
+</h3>
 <p>A sample appropriate incidence matrix is brought below:</p>
 <table class="table">
 <thead><tr class="header">
@@ -305,9 +305,9 @@ A sample appropriate data frame is brought below:</p>
 <code class="sourceCode R"><span class="co"># Reconstructing the graph</span>
 <span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_from_adjacency_matrix.html">graph_from_adjacency_matrix</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        </code></pre></div>
 </div>
-<div id="from-a-sif-file" class="section level2">
-<h2 class="hasAnchor">
-<a href="#from-a-sif-file" class="anchor" aria-hidden="true"></a>From a SIF file</h2>
+<div class="section level3">
+<h3 id="from-a-sif-file">From a SIF file<a class="anchor" aria-label="anchor" href="#from-a-sif-file"></a>
+</h3>
 <p>SIF is the common output format of the Cytoscape software.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Reconstructing the graph</span>
@@ -318,16 +318,16 @@ A sample appropriate data frame is brought below:</p>
 <p><a href="#top">Back to top</a></p>
 </div>
 </div>
-<div id="calculation-of-centrality-measures" class="section level1">
-<h1 class="hasAnchor">
-<a href="#calculation-of-centrality-measures" class="anchor" aria-hidden="true"></a>Calculation of centrality measures</h1>
+<div class="section level2">
+<h2 id="calculation-of-centrality-measures">Calculation of centrality measures<a class="anchor" aria-label="anchor" href="#calculation-of-centrality-measures"></a>
+</h2>
 <p>To calculate the centrality of nodes within a network several different options are available. The following sections describe how to obtain the names of network nodes and use different functions to calculate the centrality of nodes within a network. Although several centrality functions are provided, we recommend the <a href="#IVI">IVI</a> for the identification of the most <code>influential</code> nodes within a network.</p>
 <blockquote>
 <p>By the way, the results of all of the following centrality functions could be conveniently illustrated using the <a href="#NetVis">centrality-based network visualization function</a>.</p>
 </blockquote>
-<div id="network-vertices" class="section level2">
-<h2 class="hasAnchor">
-<a href="#network-vertices" class="anchor" aria-hidden="true"></a>Network vertices</h2>
+<div class="section level3">
+<h3 id="network-vertices">Network vertices<a class="anchor" aria-label="anchor" href="#network-vertices"></a>
+</h3>
 <p>Network vertices (nodes) are required in order to calculate their centrality measures. Thus, before calculation of network centrality measures we need to obtain the name of required network vertices. To this end, we use the <code>V</code> function, which is obtained from the <code>igraph</code> package. However, you may provide a character vector of the name of your desired nodes manually.</p>
 <ul>
 <li>Note in many of the centrality index functions the entire network nodes are assessed if no vector of desired vertices is provided.</li>
@@ -346,9 +346,9 @@ A sample appropriate data frame is brought below:</p>
 <span class="co">#&gt; + 6/794 vertices, named, from 775cff6:</span>
 <span class="co">#&gt; [1] ADAMTS9-AS2 C8orf34-AS1 CADM3-AS1   FAM83A-AS1  FENDRR      LANCL1-AS1</span></code></pre></div>
 </div>
-<div id="degree-centrality" class="section level2">
-<h2 class="hasAnchor">
-<a href="#degree-centrality" class="anchor" aria-hidden="true"></a>Degree centrality</h2>
+<div class="section level3">
+<h3 id="degree-centrality">Degree centrality<a class="anchor" aria-label="anchor" href="#degree-centrality"></a>
+</h3>
 <p>Degree centrality is the most commonly used local centrality measure which could be calculated via the <code>degree</code> function obtained from the <code>igraph</code> package.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Preparing the data</span>
@@ -368,9 +368,9 @@ A sample appropriate data frame is brought below:</p>
 <span class="co">#&gt;         172         121         168          26         189         176</span></code></pre></div>
 <p>Degree centrality could be also calculated for <em>directed</em> graphs via specifying the <code>mode</code> parameter.</p>
 </div>
-<div id="betweenness-centrality" class="section level2">
-<h2 class="hasAnchor">
-<a href="#betweenness-centrality" class="anchor" aria-hidden="true"></a>Betweenness centrality</h2>
+<div class="section level3">
+<h3 id="betweenness-centrality">Betweenness centrality<a class="anchor" aria-label="anchor" href="#betweenness-centrality"></a>
+</h3>
 <p>Betweenness centrality, like degree centrality, is one of the most commonly used centrality measures but is representative of the global centrality of a node. This centrality metric could also be calculated using a function obtained from the <code>igraph</code> package.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Preparing the data</span>
@@ -391,9 +391,9 @@ A sample appropriate data frame is brought below:</p>
 <span class="co">#&gt;   21719.857   28185.199   26946.625    2940.467   33333.369   21830.511</span></code></pre></div>
 <p>Betweenness centrality could be also calculated for <em>directed</em> and/or <em>weighted</em> graphs via specifying the <code>directed</code> and <code>weights</code> parameters, respectively.</p>
 </div>
-<div id="neighborhood-connectivity" class="section level2">
-<h2 class="hasAnchor">
-<a href="#neighborhood-connectivity" class="anchor" aria-hidden="true"></a>Neighborhood connectivity</h2>
+<div class="section level3">
+<h3 id="neighborhood-connectivity">Neighborhood connectivity<a class="anchor" aria-label="anchor" href="#neighborhood-connectivity"></a>
+</h3>
 <p>Neighborhood connectivity is one of the other important centrality measures that reflect the semi-local centrality of a node. This centrality measure was first represented in a Science paper<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a> in 2002 and is for the first time calculable in R environment via the <code>influential</code> package.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Preparing the data</span>
@@ -415,9 +415,9 @@ A sample appropriate data frame is brought below:</p>
 <span class="co">#&gt;   11.290698    4.983471    7.970238    3.000000   15.153439   13.465909</span></code></pre></div>
 <p>Neighborhood connectivity could be also calculated for <em>directed</em> graphs via specifying the <code>mode</code> parameter.</p>
 </div>
-<div id="h-index" class="section level2">
-<h2 class="hasAnchor">
-<a href="#h-index" class="anchor" aria-hidden="true"></a>H-index</h2>
+<div class="section level3">
+<h3 id="h-index">H-index<a class="anchor" aria-label="anchor" href="#h-index"></a>
+</h3>
 <p>H-index is H-index is another semi-local centrality measure that was inspired from its application in assessing the impact of researchers and is for the first time calculable in R environment via the <code>influential</code> package.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Preparing the data</span>
@@ -439,9 +439,9 @@ A sample appropriate data frame is brought below:</p>
 <span class="co">#&gt;          11           9          11           2          12          12</span></code></pre></div>
 <p>H-index could be also calculated for <em>directed</em> graphs via specifying the <code>mode</code> parameter.</p>
 </div>
-<div id="local-h-index" class="section level2">
-<h2 class="hasAnchor">
-<a href="#local-h-index" class="anchor" aria-hidden="true"></a>Local H-index</h2>
+<div class="section level3">
+<h3 id="local-h-index">Local H-index<a class="anchor" aria-label="anchor" href="#local-h-index"></a>
+</h3>
 <p>Local H-index (LH-index) is a semi-local centrality measure and an improved version of H-index centrality that leverages the H-index to the second order neighbors of a node and is for the first time calculable in R environment via the <code>influential</code> package.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Preparing the data</span>
@@ -463,9 +463,9 @@ A sample appropriate data frame is brought below:</p>
 <span class="co">#&gt;        1165         446         994          34        1289        1265</span></code></pre></div>
 <p>Local H-index could be also calculated for <em>directed</em> graphs via specifying the <code>mode</code> parameter.</p>
 </div>
-<div id="collective-influence" class="section level2">
-<h2 class="hasAnchor">
-<a href="#collective-influence" class="anchor" aria-hidden="true"></a>Collective Influence</h2>
+<div class="section level3">
+<h3 id="collective-influence">Collective Influence<a class="anchor" aria-label="anchor" href="#collective-influence"></a>
+</h3>
 <p>Collective Influence (CI) is a global centrality measure that calculates the product of the reduced degree (degree - 1) of a node and the total reduced degree of all nodes at a distance d from the node. This centrality measure is for the first time provided in an R package.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Preparing the data</span>
@@ -487,9 +487,9 @@ A sample appropriate data frame is brought below:</p>
 <span class="co">#&gt;        9918       70560       39078         675       10716        7350</span></code></pre></div>
 <p>Collective Influence could be also calculated for <em>directed</em> graphs via specifying the <code>mode</code> parameter.</p>
 </div>
-<div id="clusterrank" class="section level2">
-<h2 class="hasAnchor">
-<a href="#clusterrank" class="anchor" aria-hidden="true"></a>ClusterRank</h2>
+<div class="section level3">
+<h3 id="clusterrank">ClusterRank<a class="anchor" aria-label="anchor" href="#clusterrank"></a>
+</h3>
 <p>ClusterRank is a local centrality measure that makes a connection between local and semi-local characteristics of a node and at the same time removes the negative effects of local clustering.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Preparing the data</span>
@@ -513,12 +513,12 @@ A sample appropriate data frame is brought below:</p>
 <p><a href="#top">Back to top</a></p>
 </div>
 </div>
-<div id="assessment-of-the-association-of-centrality-measures" class="section level1">
-<h1 class="hasAnchor">
-<a href="#assessment-of-the-association-of-centrality-measures" class="anchor" aria-hidden="true"></a>Assessment of the association of centrality measures</h1>
-<div id="conditional-probability-of-deviation-from-means" class="section level2">
-<h2 class="hasAnchor">
-<a href="#conditional-probability-of-deviation-from-means" class="anchor" aria-hidden="true"></a>Conditional probability of deviation from means</h2>
+<div class="section level2">
+<h2 id="assessment-of-the-association-of-centrality-measures">Assessment of the association of centrality measures<a class="anchor" aria-label="anchor" href="#assessment-of-the-association-of-centrality-measures"></a>
+</h2>
+<div class="section level3">
+<h3 id="conditional-probability-of-deviation-from-means">Conditional probability of deviation from means<a class="anchor" aria-label="anchor" href="#conditional-probability-of-deviation-from-means"></a>
+</h3>
 <p>The function <code>cond.prob.analysis</code> assesses the conditional probability of deviation of two centrality measures (or any other two continuous variables) from their corresponding means in opposite directions.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Preparing the data</span>
@@ -542,9 +542,9 @@ A sample appropriate data frame is brought below:</p>
 <em>The higher the conditional probability the more two centrality measures behave in contrary manners</em>.</li>
 </ul>
 </div>
-<div id="nature-of-association-considering-dependent-and-independent" class="section level2">
-<h2 class="hasAnchor">
-<a href="#nature-of-association-considering-dependent-and-independent" class="anchor" aria-hidden="true"></a>Nature of association (considering dependent and independent)</h2>
+<div class="section level3">
+<h3 id="nature-of-association-considering-dependent-and-independent">Nature of association (considering dependent and independent)<a class="anchor" aria-label="anchor" href="#nature-of-association-considering-dependent-and-independent"></a>
+</h3>
 <p>The function <code>double.cent.assess</code> could be used to automatically assess both the distribution mode of centrality measures (two continuous variables) and the nature of their association. The analyses done through this formula are as follows:</p>
 <ol style="list-style-type: decimal">
 <li>
@@ -653,9 +653,9 @@ A sample appropriate data frame is brought below:</p>
 <span class="co">#&gt; [1] 55.90331</span></code></pre></div>
 <p><strong>Note</strong>: It should also be noted that as a single regression line does not fit all models with a certain degree of freedom, based on the size and correlation mode of the variables provided, this function might return an error due to incapability of running step 2. In this case, you may follow each step manually or as an alternative run the other function named <code>double.cent.assess.noRegression</code> which does not perform any regression test and consequently it is not required to determine the dependent and independent variables.</p>
 </div>
-<div id="nature-of-association-without-considering-dependence-direction" class="section level2">
-<h2 class="hasAnchor">
-<a href="#nature-of-association-without-considering-dependence-direction" class="anchor" aria-hidden="true"></a>Nature of association (without considering dependence direction)</h2>
+<div class="section level3">
+<h3 id="nature-of-association-without-considering-dependence-direction">Nature of association (without considering dependence direction)<a class="anchor" aria-label="anchor" href="#nature-of-association-without-considering-dependence-direction"></a>
+</h3>
 <p>The function <code>double.cent.assess.noRegression</code> could be used to automatically assess both the distribution mode of centrality measures (two continuous variables) and the nature of their association. The analyses done through this formula are as follows:</p>
 <ol style="list-style-type: decimal">
 <li>
@@ -741,13 +741,13 @@ A sample appropriate data frame is brought below:</p>
 <p><a href="#top">Back to top</a></p>
 </div>
 </div>
-<div id="IVI" class="section level1">
-<h1 class="hasAnchor">
-<a href="#IVI" class="anchor" aria-hidden="true"></a>Identification of the most <code>influential</code> network nodes</h1>
+<div class="section level2">
+<h2 id="IVI">Identification of the most <code>influential</code> network nodes<a class="anchor" aria-label="anchor" href="#IVI"></a>
+</h2>
 <p><strong>IVI</strong> : <code>IVI</code> is the first integrative method for the identification of network most influential nodes in a way that captures all network topological dimensions. The <code>IVI</code> formula integrates the most important local (i.e. degree centrality and ClusterRank), semi-local (i.e. neighborhood connectivity and local H-index) and global (i.e. betweenness centrality and collective influence) centrality measures in such a way that both synergizes their effects and removes their biases.</p>
-<div id="integrated-value-of-influence-ivi-from-centrality-measures" class="section level2">
-<h2 class="hasAnchor">
-<a href="#integrated-value-of-influence-ivi-from-centrality-measures" class="anchor" aria-hidden="true"></a>Integrated Value of Influence (IVI) from centrality measures</h2>
+<div class="section level3">
+<h3 id="integrated-value-of-influence-ivi-from-centrality-measures">Integrated Value of Influence (IVI) from centrality measures<a class="anchor" aria-label="anchor" href="#integrated-value-of-influence-ivi-from-centrality-measures"></a>
+</h3>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Preparing the data</span>
 <span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">centrality.measures</span>        
@@ -763,9 +763,9 @@ A sample appropriate data frame is brought below:</p>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">My.vertices.IVI</span><span class="op">)</span>
 <span class="co">#&gt; [1] 24.670056  8.344337 18.621049  1.017768 29.437028 33.512598</span></code></pre></div>
 </div>
-<div id="integrated-value-of-influence-ivi-from-a-graph" class="section level2">
-<h2 class="hasAnchor">
-<a href="#integrated-value-of-influence-ivi-from-a-graph" class="anchor" aria-hidden="true"></a>Integrated Value of Influence (IVI) from a graph</h2>
+<div class="section level3">
+<h3 id="integrated-value-of-influence-ivi-from-a-graph">Integrated Value of Influence (IVI) from a graph<a class="anchor" aria-label="anchor" href="#integrated-value-of-influence-ivi-from-a-graph"></a>
+</h3>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Preparing the data</span>
 <span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">coexpression.data</span>        
@@ -787,12 +787,12 @@ A sample appropriate data frame is brought below:</p>
 <p>IVI could be also calculated for <em>directed</em> and/or <em>weighted</em> graphs via specifying the <code>directed</code>, <code>mode</code>, and <code>weights</code> parameters.</p>
 <p>Check out <a href="https://doi.org/10.1016/j.patter.2020.100052" class="external-link">our paper</a><a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a> for a more complete description of the IVI formula and all of its underpinning methods and analyses.</p>
 <p>The following tutorial video demonstrates how to simply calculate the IVI value of all of the nodes within a network.</p>
-<iframe width="100%" height="400" src="https://www.youtube.com/embed/nF9qe4dvuJc%0A" frameborder="0" allowfullscreen>
+<iframe width="100%" height="400" src="https://www.youtube.com/embed/nF9qe4dvuJc" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen data-external="1">
 </iframe>
 </div>
-<div id="NetVis" class="section level2">
-<h2 class="hasAnchor">
-<a href="#NetVis" class="anchor" aria-hidden="true"></a>Network visualization</h2>
+<div class="section level3">
+<h3 id="NetVis">Network visualization<a class="anchor" aria-label="anchor" href="#NetVis"></a>
+</h3>
 <p>The <code>cent_network.vis</code> is a function for the visualization of a network based on applying a centrality measure to the size and color of network nodes. The centrality of network nodes could be calculated by any means and based on any centrality index. Here, we demonstrate the visualization of a network according to <a href="#IVI">IVI</a> values.</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Reconstructing the graph</span>
@@ -810,26 +810,26 @@ A sample appropriate data frame is brought below:</p>
                                      legend.title <span class="op">=</span> <span class="st">"IVI value"</span><span class="op">)</span>
 
 <span class="va">My_graph_IVI_Vis</span></code></pre></div>
-<p><img src="../man/figures/IVI_Net_Vis.png"></p>
+<p><img src="../reference/figures/IVI_Net_Vis.png"></p>
 <p>The above figure illustrates a simple use case of the function <code>cent_network.vis</code>. You can apply this function to directed/undirected and/or weighted/unweighted networks. Also, a complete flexibility (list of arguments) have been provided for the adjustment of colors, transparencies, sizes, titles, etc. Additionally, several different layouts have been provided that could be conveniently applied to a network.</p>
 <blockquote>
 <p>In the case of highly crowded networks, the “<strong>grid</strong>” layout would be most appropriate.</p>
 </blockquote>
 <p>The following tutorial video demonstrates how to visualize a network based on the centrality of nodes (e.g. their <code>IVI</code> values).</p>
-<iframe width="100%" height="400" src="https://www.youtube.com/embed/kCmEdOoIUD4" frameborder="0" allowfullscreen>
+<iframe width="100%" height="400" src="https://www.youtube.com/embed/kCmEdOoIUD4" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen data-external="1">
 </iframe>
 </div>
-<div id="IVIShiny" class="section level2">
-<h2 class="hasAnchor">
-<a href="#IVIShiny" class="anchor" aria-hidden="true"></a>IVI shiny app</h2>
+<div class="section level3">
+<h3 id="IVIShiny">IVI shiny app<a class="anchor" aria-label="anchor" href="#IVIShiny"></a>
+</h3>
 <p>A shiny app has also been developed for the calculation of IVI as well as IVI-based network visualization, which is accessible using the following command.<br><code>influential::runShinyApp("IVI")</code><br>
 You can also access the shiny app online at the <a href="https://influential.erc.monash.edu/" class="external-link">Influential Software Package server</a>.</p>
 <p><a href="#top">Back to top</a></p>
 </div>
 </div>
-<div id="SpreadingScore" class="section level1">
-<h1 class="hasAnchor">
-<a href="#SpreadingScore" class="anchor" aria-hidden="true"></a>Identification of the most important network spreaders</h1>
+<div class="section level2">
+<h2 id="SpreadingScore">Identification of the most important network spreaders<a class="anchor" aria-label="anchor" href="#SpreadingScore"></a>
+</h2>
 <p>Sometimes we seek to identify not necessarily the most influential nodes but the nodes with most potential in spreading of information throughout the network.</p>
 <p><strong>Spreading score</strong> : <code>spreading.score</code> is an integrative score made up of four different centrality measures including ClusterRank, neighborhood connectivity, betweenness centrality, and collective influence. Also, Spreading score reflects the spreading potential of each node within a network and is one of the major components of the <a href="#IVI"><code>IVI</code></a>.</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
@@ -854,9 +854,9 @@ You can also access the shiny app online at the <a href="https://influential.erc
 <p>Spreading score could be also calculated for <em>directed</em> and/or <em>weighted</em> graphs via specifying the <code>directed</code>, <code>mode</code>, and <code>weights</code> parameters. The results could be conveniently illustrated using the <a href="#NetVis">centrality-based network visualization function</a>.</p>
 <p><a href="#top">Back to top</a></p>
 </div>
-<div id="HubnessScore" class="section level1">
-<h1 class="hasAnchor">
-<a href="#HubnessScore" class="anchor" aria-hidden="true"></a>Identification of the most important network hubs</h1>
+<div class="section level2">
+<h2 id="HubnessScore">Identification of the most important network hubs<a class="anchor" aria-label="anchor" href="#HubnessScore"></a>
+</h2>
 <p>In some cases we want to identify not the nodes with the most sovereignty in their surrounding local environments.</p>
 <p><strong>Hubness score</strong> : <code>hubness.score</code> is an integrative score made up of two different centrality measures including degree centrality and local H-index. Also, Hubness score reflects the power of each node in its surrounding environment and is one of the major components of the <a href="#IVI"><code>IVI</code></a>.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
@@ -881,9 +881,9 @@ You can also access the shiny app online at the <a href="https://influential.erc
 <p>Spreading score could be also calculated for <em>directed</em> graphs via specifying the <code>directed</code> and <code>mode</code> parameters. The results could be conveniently illustrated using the <a href="#NetVis">centrality-based network visualization function</a>.</p>
 <p><a href="#top">Back to top</a></p>
 </div>
-<div id="SIRIR" class="section level1">
-<h1 class="hasAnchor">
-<a href="#SIRIR" class="anchor" aria-hidden="true"></a>Ranking the influence of nodes on the topology of a network based on the <code>SIRIR</code> model</h1>
+<div class="section level2">
+<h2 id="SIRIR">Ranking the influence of nodes on the topology of a network based on the <code>SIRIR</code> model<a class="anchor" aria-label="anchor" href="#SIRIR"></a>
+</h2>
 <p><strong>SIRIR</strong> : <code>SIRIR</code> is achieved by the integration of susceptible-infected-recovered (SIR) model with the leave-one-out cross validation technique and ranks network nodes based on their true universal influence on the network topology and spread of information. One of the applications of this function is the assessment of performance of a novel algorithm in identification of network influential nodes.</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Reconstructing the graph</span>
@@ -957,9 +957,9 @@ You can also access the shiny app online at the <a href="https://influential.erc
 </table>
 <p><a href="#top">Back to top</a></p>
 </div>
-<div id="ExIR" class="section level1">
-<h1 class="hasAnchor">
-<a href="#ExIR" class="anchor" aria-hidden="true"></a>Experimental data-based classification and ranking of top candidate features</h1>
+<div class="section level2">
+<h2 id="ExIR">Experimental data-based classification and ranking of top candidate features<a class="anchor" aria-label="anchor" href="#ExIR"></a>
+</h2>
 <p><strong>ExIR</strong> : <code>ExIR</code> is a model for the classification and ranking of top candidate features. The input data could come from any type of experiment such as transcriptomics and proteomics. This model is based on multi-level filtration and scoring based on several supervised and unsupervised analyses followed by the classification and integrative ranking of top candidate features. Using this function and depending on the input data and specified arguments, the user can get a graph object and one to four tables including:</p>
 <ul>
 <li>
@@ -995,9 +995,9 @@ You can also access the shiny app online at the <a href="https://influential.erc
 
 <span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">80</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">regression.data</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">gene.names</span>, size <span class="op">=</span> <span class="fl">800</span><span class="op">)</span></code></pre></div>
-<div id="assembling-the-diff_data" class="section level2">
-<h2 class="hasAnchor">
-<a href="#assembling-the-diff_data" class="anchor" aria-hidden="true"></a>Assembling the Diff_data</h2>
+<div class="section level3">
+<h3 id="assembling-the-diff_data">Assembling the Diff_data<a class="anchor" aria-label="anchor" href="#assembling-the-diff_data"></a>
+</h3>
 <p>Use the function <code>diff_data.assembly</code> to automatically generate the Diff_data table for the <code>ExIR</code> model.</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">my_Diff_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/diff_data.assembly.html">diff_data.assembly</a></span><span class="op">(</span><span class="va">tp2.vs.tp1.DEGs</span>,
@@ -1099,9 +1099,9 @@ You can also access the shiny app online at the <a href="https://influential.erc
 </tbody>
 </table>
 </div>
-<div id="preparing-the-exptl_data" class="section level2">
-<h2 class="hasAnchor">
-<a href="#preparing-the-exptl_data" class="anchor" aria-hidden="true"></a>Preparing the Exptl_data</h2>
+<div class="section level3">
+<h3 id="preparing-the-exptl_data">Preparing the Exptl_data<a class="anchor" aria-label="anchor" href="#preparing-the-exptl_data"></a>
+</h3>
 <p>Now, prepare a sample normalized experimental data matrix</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">60</span><span class="op">)</span>
@@ -1221,9 +1221,9 @@ You can also access the shiny app online at the <a href="https://influential.erc
 <code class="sourceCode R"><span class="va">MyExptl_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">MyExptl_data</span><span class="op">)</span>
 <span class="va">MyExptl_data</span><span class="op">$</span><span class="va">condition</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"C"</span>, <span class="fl">25</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"N"</span>, <span class="fl">25</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="running-the-exir-model" class="section level2">
-<h2 class="hasAnchor">
-<a href="#running-the-exir-model" class="anchor" aria-hidden="true"></a>Running the <code>ExIR</code> model</h2>
+<div class="section level3">
+<h3 id="running-the-exir-model">Running the <code>ExIR</code> model<a class="anchor" aria-label="anchor" href="#running-the-exir-model"></a>
+</h3>
 <p>Finally, prepare the other required input data for the <code>ExIR</code> model.</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R">
@@ -1535,13 +1535,13 @@ seed <span class="op">=</span> <span class="fl">60</span>, verbose <span class="
 </tbody>
 </table>
 <p>The following tutorial video demonstrates how to run the <code>ExIR</code> model on a sample experimental data.</p>
-<iframe width="100%" height="400" src="https://www.youtube.com/embed/-08nn4_-OUE" frameborder="0" allowfullscreen>
+<iframe width="100%" height="400" src="https://www.youtube.com/embed/-08nn4_-OUE" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen data-external="1">
 </iframe>
 <p>You can also <a href="#CompManipulate">computationally simulate knockout and/or up-regulation</a> of the top candidate features outputted by ExIR to evaluate the impact of their manipulations on the flow of information/signaling and integrity of the network prior to taking them to your lab bench.</p>
 </div>
-<div id="exir-visualization" class="section level2">
-<h2 class="hasAnchor">
-<a href="#exir-visualization" class="anchor" aria-hidden="true"></a>ExIR visualization</h2>
+<div class="section level3">
+<h3 id="exir-visualization">ExIR visualization<a class="anchor" aria-label="anchor" href="#exir-visualization"></a>
+</h3>
 <p>The <code>exir.vis</code> is a function for the visualization of the output of the <a href="#ExIR">ExIR</a> model. The function simply gets the output of the ExIR model as a single argument and returns a plot of the top 10 prioritized features of all classes. Here, we visualize the top five candidates of the results of the <code>ExIR</code> model obtained in the previous step .</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">My.exir.Vis</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/exir.vis.html">exir.vis</a></span><span class="op">(</span>exir.results <span class="op">=</span> <span class="va">My.exir</span>, 
@@ -1549,23 +1549,23 @@ seed <span class="op">=</span> <span class="fl">60</span>, verbose <span class="
                         y.axis.title <span class="op">=</span> <span class="st">"Gene"</span><span class="op">)</span>
 
 <span class="va">My.exir.Vis</span></code></pre></div>
-<p><img src="../man/figures/ExIR_Vis.png"></p>
+<p><img src="../reference/figures/ExIR_Vis.png"></p>
 <p>However, a complete flexibility (list of arguments) has been provided for the adjustment of all of the visual features of the plot and selection of the desired classes, feature types, and the number of top candidates.</p>
 <p>The following tutorial video demonstrates how to visualize the results of <code>ExIR</code> model.</p>
-<iframe width="100%" height="400" src="https://www.youtube.com/embed/Ie19y6PuBDg" frameborder="0" allowfullscreen>
+<iframe width="100%" height="400" src="https://www.youtube.com/embed/Ie19y6PuBDg" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen data-external="1">
 </iframe>
 </div>
-<div id="ExIRShiny" class="section level2">
-<h2 class="hasAnchor">
-<a href="#ExIRShiny" class="anchor" aria-hidden="true"></a>ExIR shiny app</h2>
+<div class="section level3">
+<h3 id="ExIRShiny">ExIR shiny app<a class="anchor" aria-label="anchor" href="#ExIRShiny"></a>
+</h3>
 <p>A shiny app has also been developed for Running the ExIR model, visualization of its results as well as computational simulation of knockout and/or up-regulation of its top candidate outputs, which is accessible using the following command.<br><code>influential::runShinyApp("ExIR")</code><br>
 You can also access the shiny app online at the <a href="https://influential.erc.monash.edu/" class="external-link">Influential Software Package server</a>.</p>
 <p><a href="#top">Back to top</a></p>
 </div>
 </div>
-<div id="CompManipulate" class="section level1">
-<h1 class="hasAnchor">
-<a href="#CompManipulate" class="anchor" aria-hidden="true"></a>Computational manipulation of cells</h1>
+<div class="section level2">
+<h2 id="CompManipulate">Computational manipulation of cells<a class="anchor" aria-label="anchor" href="#CompManipulate"></a>
+</h2>
 <p>The <code>comp_manipulate</code> is a function for the simulation of feature (gene, protein, etc.) knockout and/or up-regulation in cells. This function works based on the <a href="#SIRIR">SIRIR</a> (SIR-based Influence Ranking) model and could be applied on the output of the <a href="#ExIR">ExIR</a> model or any other independent association network. For feature (gene/protein/etc.) knockout the <a href="#SIRIR">SIRIR</a> model is used to remove the feature from the network and assess its impact on the flow of information (signaling) within the network. On the other hand, in case of up-regulation a node similar to the desired node is added to the network with exactly the same connections (edges) as of the original node. Next, the <a href="#SIRIR">SIRIR</a> model is used to evaluate the difference in the flow of information/signaling after adding (up-regulating) the desired feature/node compared with the original network. In case you are applying this function on the output of <a href="#ExIR">ExIR</a> model, you may note that as the gene/protein knockout would impact on the integrity of the under-investigation network as well as the networks of other overlapping biological processes/pathways, it is recommended to select those features that simultaneously have the highest (most significant) <a href="#ExIR">ExIR</a>-based rank and lowest knockout rank. In contrast, as the up-regulation would not affect the integrity of the network, you may select the features with highest (most significant) <a href="#ExIR">ExIR</a>-based and up-regulation-based ranks. Altogether, it is recommended to select the features with the highest (most significant) <a href="#ExIR">ExIR</a>-based (major drivers or mediators of the under-investigation biological process/disease) and <em>Up-regulation</em>-based (having higher impact on the signaling within the under-investigation network when up-regulated) ranks, but with the lowest <em>Knockout</em>-based rank (having the lowest disturbance to the under-investigation as well as other overlapping networks). Below is an example of running this function on the same <a href="#ExIR">ExIR</a> output generated above.</p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Select which genes to knockout</span>
@@ -1736,9 +1736,9 @@ You can also access the shiny app online at the <a href="https://influential.erc
 </table>
 <p><a href="#top">Back to top</a></p>
 </div>
-<div id="references" class="section level1">
-<h1 class="hasAnchor">
-<a href="#references" class="anchor" aria-hidden="true"></a>References</h1>
+<div class="section level2">
+<h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+</h2>
 </div>
 <div class="footnotes">
 <hr>
@@ -1769,7 +1769,7 @@ You can also access the shiny app online at the <a href="https://influential.erc
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link external-link">pkgdown</a> 1.6.1.9001.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
 </div>
 
       </footer>

@@ -11,7 +11,8 @@ betweenness(
   directed = TRUE,
   weights = NULL,
   nobigint = TRUE,
-  normalized = FALSE
+  normalized = FALSE,
+  ...
 )
 }
 \arguments{
@@ -29,6 +30,8 @@ This is only required for lattice-like graphs that have very many shortest paths
 If TRUE (the default), then big integers are not used.}
 
 \item{normalized}{Logical scalar, whether to normalize the betweenness scores. If TRUE, then the results are normalized.}
+
+\item{...}{Additional arguments according to the original \code{\link[igraph]{betweenness}} function in the package igraph.}
 }
 \value{
 A numeric vector with the betweenness score for each vertex in v.
