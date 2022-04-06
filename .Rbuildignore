@@ -27,3 +27,4 @@ logo.png
 ^docs$
 ^pkgdown$
 ^\.github$
+^CRAN-SUBMISSION$
