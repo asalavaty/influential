@@ -52,7 +52,7 @@
 #' Maintainer: Adrian (Abbas) Salavaty \email{abbas.salavaty@@gmail.com}
 #'
 #'
-#' You may find more information on my personal website at \href{https://www.asalavaty.com/}{www.ASalavaty.com}
+#' You may find more information on my personal website at \href{https://asalavaty.com/}{www.ASalavaty.com}
 #'
 #' @references
 #' \itemize{
