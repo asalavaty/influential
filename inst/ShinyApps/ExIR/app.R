@@ -619,6 +619,24 @@ ui <- navbarPageWithText(id = "inTabset",
                                                                     label = "Condition row name:",
                                                                     value = NULL, placeholder = "Condition row name"),
 
+                                                          ### specify corr coeff method
+                                                          radioGroupButtons(
+                                                            inputId = "corrThreshMethod",
+                                                            size = "sm",
+                                                            label = "Correlation thresholding method",
+                                                            choices = c("Mutual Rank", "Correlation Coefficient"),
+                                                            justified = TRUE,
+                                                            checkIcon = list(
+                                                              yes = icon("ok",
+                                                                         lib = "glyphicon"))
+                                                          ),
+
+                                                          ### Specify the mr
+                                                          sliderInput(inputId = "mutualRank",
+                                                                      label = "Mutual rank threshold (for association network reconstruction):",
+                                                                      min = 1, max = 100, value = 20, step = 1,
+                                                                      ticks = TRUE, animate = FALSE),
+
                                                           ### Specify the r
                                                           sliderInput(inputId = "correlationCoeff",
                                                                       label = "Correlation coefficient threshold (for association network reconstruction):",
@@ -1270,6 +1288,25 @@ server <- function(input, output, session,
     runjs("$('#DifferentialDataset8').parent().removeClass('btn-default').addClass('btn-danger');")
     runjs("$('#DifferentialDataset9').parent().removeClass('btn-default').addClass('btn-danger');")
     runjs("$('#DifferentialDataset10').parent().removeClass('btn-default').addClass('btn-danger');")
+
+    ###*********************###
+
+    # Take care of corr thresh method
+    observe({
+      if(input$corrThreshMethod == "Correlation Coefficient") {
+        shinyjs::enable(id = "correlationCoeff")
+      } else {
+        shinyjs::disable(id = "correlationCoeff")
+      }
+    })
+
+    observe({
+      if(input$corrThreshMethod == "Mutual Rank") {
+        shinyjs::enable(id = "mutualRank")
+      } else {
+        shinyjs::disable(id = "mutualRank")
+      }
+    })
 
     # Take care of the mtry parameter
     shinyjs::hide("mtry")
@@ -2030,7 +2067,7 @@ server <- function(input, output, session,
     # Define the Shiny ExIR function
 
     shinyExIR <- function(Diff_data, Regr_nCol, Exptl_data, Desired_list, Condition_colname,
-                          Normalize, r, max.connections, alpha, num_trees,
+                          Normalize, cor_thresh_method, r, mr, max.connections, alpha, num_trees,
                           num_permutations, inf_const, seed) {
 
         progressSweetAlert(
@@ -2342,23 +2379,8 @@ server <- function(input, output, session,
 
         #c Performing correlation analysis
 
-        #make ranked experimental data
-        Exptl_data[,-condition.index] <- base::t(base::apply(X = Exptl_data[,-condition.index],
-                                                             MARGIN = 1, base::rank))
-
-        temp.corr <- coop::pcor(Exptl_data[,-condition.index])
-
-        #reshape the cor matrix
-        flt.Corr.Matrix <- function(cormat) {
-            ut <- base::upper.tri(cormat)
-            data.frame(
-                row = base::rownames(cormat)[base::row(cormat)[ut]],
-                column = base::rownames(cormat)[base::col(cormat)[ut]],
-                cor  = (cormat)[ut]
-            )
-        }
-
-        temp.corr <- flt.Corr.Matrix(cormat=temp.corr)
+        temp.corr <- fcor(data = Exptl_data[,-condition.index],
+                          method = "spearman", mutualRank = ifelse(mr == "Mutual Rank", TRUE, FALSE))
 
         #save a second copy of all cor data
         temp.corr.for.sec.round <- temp.corr
@@ -2370,15 +2392,32 @@ server <- function(input, output, session,
 
         #filtering low level correlations
         cor.thresh <- r
-        temp.corr <- base::subset(temp.corr, temp.corr[,3]>cor.thresh)
+        mr.thresh <- mr
+        if(cor_thresh_method == "Mutual Rank") {
 
-        if(nrow(temp.corr)> (max.connections*0.95)) {
+          temp.corr <- base::subset(temp.corr, temp.corr[,4] < mr.thresh)
+
+          if(nrow(temp.corr)> (max.connections*0.95)) {
+
+            temp.corr.select.index <- utils::head(order(temp.corr$mr),
+                                                  n = round(max.connections*0.95))
+
+            temp.corr <- temp.corr[temp.corr.select.index,]
+
+          }
+
+        } else if(cor_thresh_method == "Correlation Coefficient") {
+
+          temp.corr <- base::subset(temp.corr, base::abs(temp.corr[,3])>cor.thresh)
+
+          if(nrow(temp.corr)> (max.connections*0.95)) {
 
             temp.corr.select.index <- utils::tail(order(temp.corr$cor),
                                                   n = round(max.connections*0.95))
 
             temp.corr <- temp.corr[temp.corr.select.index,]
 
+          }
         }
 
         diff.only.temp.corr <- temp.corr
@@ -2423,7 +2462,13 @@ server <- function(input, output, session,
 
             #filtering low level correlations
             cor.thresh <- r
-            temp.corr <- base::subset(temp.corr, temp.corr[,3]>cor.thresh)
+            mr.thresh <- mr
+            if(cor_thresh_method == "Mutual Rank") {
+              temp.corr <- base::subset(temp.corr, temp.corr[,4] < mr.thresh)
+
+            } else if(cor_thresh_method == "Correlation Coefficient") {
+              temp.corr <- base::subset(temp.corr, base::abs(temp.corr[,3])>cor.thresh)
+            }
 
             # separate non.diff.only features
             temp.corr.diff.only.index <- stats::na.omit(base::unique(c(base::which(temp.corr$row %in% rownames(rf.diff.exptl.pvalue)),
@@ -2435,8 +2480,14 @@ server <- function(input, output, session,
 
             if(nrow(temp.corr)>(max.connections-nrow(diff.only.temp.corr))) {
 
+              if(cor_thresh_method == "Mutual Rank") {
+                temp.corr.select.index <- utils::head(order(temp.corr$mr),
+                                                      n = (max.connections-nrow(diff.only.temp.corr)))
+
+              } else if(cor_thresh_method == "Correlation Coefficient") {
                 temp.corr.select.index <- utils::tail(order(temp.corr$cor),
                                                       n = (max.connections-nrow(diff.only.temp.corr)))
+              }
 
                 temp.corr <- temp.corr[temp.corr.select.index,]
             }
@@ -3057,6 +3108,8 @@ server <- function(input, output, session,
                     Desired_list = desiredFeatures(),
                     Condition_colname = input$conditionRowname,
                     Normalize = input$Normalize,
+                    cor_thresh_method = input$corrThreshMethod,
+                    mr = input$mutualRank,
                     r = input$correlationCoeff,
                     max.connections = input$max.connections,
                     alpha = input$alpha,
