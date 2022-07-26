@@ -1,16 +1,17 @@
 CRAN Comments
 ================
 Adrian (Abbas) Salavaty
-15/01/2020 (updated on 06 April, 2022)
+15/01/2020 (updated on 26 July, 2022)
 
-## 2.2.4 New version submission
+## 2.2.6 New version submission
 
 -   This is a new submission of the new version of the package
-    `influential`. The Vignettes are amended and figure sizes are
-    corrected. The betweenness centrality function is corrected to
-    resolve the warning message on CRAN. Also, documentation of several
-    functions and the Read Me file were updated along with several other
-    minor improvements. Please see News for complete details.
+    `influential`. A new function named `fcor` is added. The `ExIR`
+    function and its visuzalization are optimized. Shiny apps are
+    updated. The Vignettes are amended and figure sizes are corrected.
+    Also, documentation of several functions and the Read Me file were
+    updated along with a couple of other minor improvements. Please see
+    News for complete details.
 
 ## Test environments
 
