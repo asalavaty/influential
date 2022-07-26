@@ -10,7 +10,6 @@ betweenness(
   v = V(graph),
   directed = TRUE,
   weights = NULL,
-  nobigint = TRUE,
   normalized = FALSE,
   ...
 )
@@ -24,10 +23,6 @@ betweenness(
 
 \item{weights}{Optional positive weight vector for calculating weighted betweenness.
 If the graph has a weight edge attribute, then this is used by default. Weights are used to calculate weighted shortest paths, so they are interpreted as distances.}
-
-\item{nobigint}{Logical scalar, whether to use big integers during the calculation.
-This is only required for lattice-like graphs that have very many shortest paths between a pair of vertices.
-If TRUE (the default), then big integers are not used.}
 
 \item{normalized}{Logical scalar, whether to normalize the betweenness scores. If TRUE, then the results are normalized.}
 
