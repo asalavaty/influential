@@ -2,7 +2,7 @@ Package: influential
 Type: Package
 Title: Identification and Classification of the Most Influential Nodes
 Language: en-US
-Version: 2.2.5
+Version: 2.2.6
 Author: Abbas (Adrian) Salavaty [aut, cre], Mirana Ramialison [ths], Peter D. Currie [ths]
 Maintainer: Adrian Salavaty <abbas.salavaty@gmail.com>
 Description: Contains functions for the classification and ranking of top candidate features, reconstruction of networks from
@@ -20,6 +20,7 @@ Imports:
     janitor,
     ranger,
     coop,
+    data.table,
     ggplot2
 Suggests:
     Hmisc (>= 4.3-0),
@@ -43,5 +44,5 @@ BugReports: https://github.com/asalavaty/influential/issues
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.1
 VignetteBuilder: knitr
