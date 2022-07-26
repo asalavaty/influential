@@ -3,6 +3,24 @@ influential
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
+# influential 2.2.6 (CRAN version)
+
+-   ExIR Shiny app is updated according to the ExIR function.
+
+-   ExIR visualization function, `exir.vis`, is optimized.
+
+-   The package vignettes are updated and the `fcor` function described
+    and exemplified in the vignettes.
+
+-   The ExIR function is optimized (corrected for proper Spearman
+    correlation analysis and added Mutual rank as a measure for
+    filtering top correlations) and speeded up (using the data.table
+    package).
+
+-   A function named `fcor` is added to the package for super-fast
+    correlation analysis of large datasets and simultaneous P-value and
+    Mutual Rank calculations.
+
 # influential 2.2.5 (CRAN version)
 
 -   The package vignettes are updated.
@@ -202,7 +220,7 @@ influential
     influential node identification.
 
 -   Updating the normality assessment results of association functions
-    for vectors of length &lt; 4
+    for vectors of length \< 4
 
 -   The function `clusterrank` is added for the calculation of
     ClusterRank.
