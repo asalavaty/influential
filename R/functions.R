@@ -38,7 +38,7 @@
 #' \itemize{
 #'   \item Package: influential
 #'   \item Type: Package
-#'   \item Version: 2.2.4.9000
+#'   \item Version: 2.2.6
 #'   \item Date: 20-12-2021
 #'   \item License: GPL-3
 #' }
@@ -1732,9 +1732,6 @@ sirir <- function(graph, vertices = V(graph),
   #' @param directed Logical, whether directed paths should be considered while determining the shortest paths.
   #' @param weights Optional positive weight vector for calculating weighted betweenness.
   #' If the graph has a weight edge attribute, then this is used by default. Weights are used to calculate weighted shortest paths, so they are interpreted as distances.
-  #' @param nobigint Logical scalar, whether to use big integers during the calculation.
-  #' This is only required for lattice-like graphs that have very many shortest paths between a pair of vertices.
-  #' If TRUE (the default), then big integers are not used.
   #' @param normalized Logical scalar, whether to normalize the betweenness scores. If TRUE, then the results are normalized.
   #' @param ... Additional arguments according to the original \code{\link[igraph]{betweenness}} function in the package igraph.
   #' @return A numeric vector with the betweenness score for each vertex in v.
@@ -1755,13 +1752,11 @@ sirir <- function(graph, vertices = V(graph),
                           v = V(graph),
                           directed = TRUE,
                           weights = NULL,
-                          nobigint = TRUE,
                           normalized = FALSE, ...) {
     igraph::betweenness(graph = graph,
                         v = v,
                         directed=directed,
                         weights = weights,
-                        nobigint = nobigint,
                         normalized = normalized, ...)
   }
 
@@ -1864,9 +1859,13 @@ sirir <- function(graph, vertices = V(graph),
   #' @param Condition_colname A string or character vector specifying the name of the column "condition" of the Exptl_data dataframe.
   #' @param Normalize Logical; whether the experimental data should be normalized or not (default is FALSE). If TRUE, the
   #' experimental data will be log2 transformed.
+  #' @param cor_thresh_method A character string indicating the method for filtering the correlation results, either
+  #' "mr" (default; Mutual Rank) or "cor.coefficient".
+  #' @param mr An integer determining the threshold of mutual rank for the selection of correlated features (default is 20). Note that
+  #' higher mr values considerably increase the computation time.
   #' @param r The threshold of Spearman correlation coefficient for the selection of correlated features (default is 0.5).
   #' @param max.connections The maximum number of connections to be included in the association network.
-  #' Higher max.connections might increase the computation time, cost, and accuracy of the results (default is 20000).
+  #' Higher max.connections might increase the computation time, cost, and accuracy of the results (default is 50,000).
   #' @param alpha The threshold of the statistical significance (p-value) used throughout the entire model (default is 0.05)
   #' @param num_trees Number of trees to be used for the random forests classification (supervised machine learning). Default is set to 10000.
   #' @param mtry Number of features to possibly split at in each node. Default is the (rounded down) square root of the
@@ -1920,7 +1919,8 @@ sirir <- function(graph, vertices = V(graph),
   exir <- function(Desired_list = NULL,
                    Diff_data, Diff_value, Regr_value = NULL, Sig_value,
                    Exptl_data, Condition_colname, Normalize = FALSE,
-                   r = 0.5, max.connections = 20000, alpha = 0.05,
+                   cor_thresh_method = "mr", r = 0.5, mr = 20,
+                   max.connections = 50000, alpha = 0.05,
                    num_trees = 10000, mtry = NULL, num_permutations = 100,
                    inf_const = 10^10, seed = 1234, verbose = TRUE) {
 
@@ -2172,24 +2172,8 @@ sirir <- function(graph, vertices = V(graph),
     }
 
     #c Performing correlation analysis
-
-    #make ranked experimental data
-    Exptl_data[,-condition.index] <- base::t(base::apply(X = Exptl_data[,-condition.index],
-                                                         MARGIN = 1, base::rank))
-
-    temp.corr <- coop::pcor(Exptl_data[,-condition.index])
-
-    #reshape the cor matrix
-    flt.Corr.Matrix <- function(cormat) {
-      ut <- base::upper.tri(cormat)
-      data.frame(
-        row = base::rownames(cormat)[base::row(cormat)[ut]],
-        column = base::rownames(cormat)[base::col(cormat)[ut]],
-        cor  = (cormat)[ut]
-      )
-    }
-
-    temp.corr <- flt.Corr.Matrix(cormat=temp.corr)
+    temp.corr <- fcor(data = Exptl_data[,-condition.index],
+                      method = "spearman", mutualRank = ifelse(cor_thresh_method == "mr", TRUE, FALSE))
 
     #save a second copy of all cor data
     temp.corr.for.sec.round <- temp.corr
@@ -2201,15 +2185,33 @@ sirir <- function(graph, vertices = V(graph),
 
     #filtering low level correlations
     cor.thresh <- r
-    temp.corr <- base::subset(temp.corr, temp.corr[,3]>cor.thresh)
+    mr.thresh <- mr
 
-    if(nrow(temp.corr)> (max.connections*0.95)) {
+    if(cor_thresh_method == "mr") {
 
-      temp.corr.select.index <- utils::tail(order(temp.corr$cor),
-                                            n = round(max.connections*0.95))
+      temp.corr <- base::subset(temp.corr, temp.corr[,4] < mr.thresh)
 
-      temp.corr <- temp.corr[temp.corr.select.index,]
+      if(nrow(temp.corr)> (max.connections*0.95)) {
 
+        temp.corr.select.index <- utils::head(order(temp.corr$mr),
+                                              n = round(max.connections*0.95))
+
+        temp.corr <- temp.corr[temp.corr.select.index,]
+
+      }
+
+    } else if(cor_thresh_method == "cor.coefficient") {
+
+      temp.corr <- base::subset(temp.corr, base::abs(temp.corr[,3])>cor.thresh)
+
+      if(nrow(temp.corr)> (max.connections*0.95)) {
+
+        temp.corr.select.index <- utils::tail(order(temp.corr$cor),
+                                              n = round(max.connections*0.95))
+
+        temp.corr <- temp.corr[temp.corr.select.index,]
+
+      }
     }
 
     diff.only.temp.corr <- temp.corr
@@ -2246,7 +2248,14 @@ sirir <- function(graph, vertices = V(graph),
 
     #filtering low level correlations
     cor.thresh <- r
-    temp.corr <- base::subset(temp.corr, temp.corr[,3]>cor.thresh)
+    mr.thresh <- mr
+
+    if(cor_thresh_method == "mr") {
+      temp.corr <- base::subset(temp.corr, temp.corr[,4] < mr.thresh)
+
+    } else if(cor_thresh_method == "cor.coefficient") {
+      temp.corr <- base::subset(temp.corr, base::abs(temp.corr[,3])>cor.thresh)
+    }
 
     # separate non.diff.only features
     temp.corr.diff.only.index <- stats::na.omit(base::unique(c(base::which(temp.corr$row %in% rownames(rf.diff.exptl.pvalue)),
@@ -2258,8 +2267,14 @@ sirir <- function(graph, vertices = V(graph),
 
     if(nrow(temp.corr)>(max.connections-nrow(diff.only.temp.corr))) {
 
-      temp.corr.select.index <- utils::tail(order(temp.corr$cor),
-                                            n = (max.connections-nrow(diff.only.temp.corr)))
+      if(cor_thresh_method == "mr") {
+        temp.corr.select.index <- utils::head(order(temp.corr$mr),
+                                              n = (max.connections-nrow(diff.only.temp.corr)))
+
+      } else if(cor_thresh_method == "cor.coefficient") {
+        temp.corr.select.index <- utils::tail(order(temp.corr$cor),
+                                              n = (max.connections-nrow(diff.only.temp.corr)))
+      }
 
       temp.corr <- temp.corr[temp.corr.select.index,]
     }
@@ -3390,7 +3405,7 @@ sirir <- function(graph, vertices = V(graph),
       } else if(driver.type == "accelerator") {
         top.N.driver.table <- base::subset(top.N.driver.table,
                                            Type == "Accelerator")
-        if(nrow(top.N.driver.table)> n) {
+
           if(basis == "Rank") {
             top.drivers.index <- utils::head(order(top.N.driver.table$Rank),
                                              n = n)
@@ -3402,11 +3417,9 @@ sirir <- function(graph, vertices = V(graph),
           top.N.driver.table <- top.N.driver.table[top.drivers.index,]
           top.N.driver.table$Rank <- base::rank(top.N.driver.table$Rank,
                                                 ties.method = "min")
-        }
       } else if(driver.type == "decelerator") {
         top.N.driver.table <- base::subset(top.N.driver.table,
                                            Type == "Decelerator")
-        if(nrow(top.N.driver.table)> n) {
           if(basis == "Rank") {
             top.drivers.index <- utils::head(order(top.N.driver.table$Rank),
                                              n = n)
@@ -3418,7 +3431,6 @@ sirir <- function(graph, vertices = V(graph),
           top.N.driver.table <- top.N.driver.table[top.drivers.index,]
           top.N.driver.table$Rank <- base::rank(top.N.driver.table$Rank,
                                                 ties.method = "min")
-        }
       }
       base::rownames(top.N.driver.table) <- NULL
       top.N.driver.table$Type[top.N.driver.table$Type == "Accelerator"] <- "Accelerator\ndriver"
@@ -3454,7 +3466,6 @@ sirir <- function(graph, vertices = V(graph),
       } else if(biomarker.type == "up-regulated") {
         top.N.biomarker.table <- base::subset(top.N.biomarker.table,
                                               Type == "Up-regulated")
-        if(nrow(top.N.biomarker.table)> n) {
           if(basis == "Rank") {
             top.biomarkers.index <- utils::head(order(top.N.biomarker.table$Rank),
                                                 n = n)
@@ -3466,11 +3477,10 @@ sirir <- function(graph, vertices = V(graph),
           top.N.biomarker.table <- top.N.biomarker.table[top.biomarkers.index,]
           top.N.biomarker.table$Rank <- base::rank(top.N.biomarker.table$Rank,
                                                 ties.method = "min")
-        }
+
       } else if(biomarker.type == "down-regulated") {
         top.N.biomarker.table <- base::subset(top.N.biomarker.table,
                                               Type == "Down-regulated")
-        if(nrow(top.N.biomarker.table)> n) {
           if(basis == "Rank") {
             top.biomarkers.index <- utils::head(order(top.N.biomarker.table$Rank),
                                                 n = n)
@@ -3482,7 +3492,7 @@ sirir <- function(graph, vertices = V(graph),
           top.N.biomarker.table <- top.N.biomarker.table[top.biomarkers.index,]
           top.N.biomarker.table$Rank <- base::rank(top.N.biomarker.table$Rank,
                                                    ties.method = "min")
-        }
+
       }
       base::rownames(top.N.biomarker.table) <- NULL
       top.N.biomarker.table$Type[top.N.biomarker.table$Type == "Up-regulated"] <- "Up-regulated\nbiomarker"
@@ -3502,7 +3512,6 @@ sirir <- function(graph, vertices = V(graph),
       top.N.nonDE.mediator.table$Class <- "nonDE-mediator"
 
       # top N combined
-      if(nrow(top.N.nonDE.mediator.table)> n) {
 
         if(basis == "Rank") {
           top.nonDE.mediators.index <- utils::head(order(top.N.nonDE.mediator.table$Rank),
@@ -3515,7 +3524,6 @@ sirir <- function(graph, vertices = V(graph),
         top.N.nonDE.mediator.table <- top.N.nonDE.mediator.table[top.nonDE.mediators.index,]
         top.N.nonDE.mediator.table$Rank <- base::rank(top.N.nonDE.mediator.table$Rank,
                                                  ties.method = "min")
-      }
       base::rownames(top.N.nonDE.mediator.table) <- NULL
       exir.for.plot <- base::append(x = exir.for.plot,
                                     values = base::list(top.N.nonDE.mediator.table))
@@ -3531,7 +3539,6 @@ sirir <- function(graph, vertices = V(graph),
       top.N.DE.mediator.table$Class <- "DE-mediator"
 
       # top N combined
-      if(nrow(top.N.DE.mediator.table)> n) {
 
         if(basis == "Rank") {
           top.DE.mediators.index <- utils::head(order(top.N.DE.mediator.table$Rank),
@@ -3544,7 +3551,6 @@ sirir <- function(graph, vertices = V(graph),
         top.N.DE.mediator.table <- top.N.DE.mediator.table[top.DE.mediators.index,]
         top.N.DE.mediator.table$Rank <- base::rank(top.N.DE.mediator.table$Rank,
                                                       ties.method = "min")
-      }
       base::rownames(top.N.DE.mediator.table) <- NULL
       exir.for.plot <- base::append(x = exir.for.plot,
                                     values = base::list(top.N.DE.mediator.table))
@@ -3600,6 +3606,12 @@ sirir <- function(graph, vertices = V(graph),
     }
 
     # correct the P.adj to be used as the dot size
+
+    exir.for.plot$P.value[is.nan(exir.for.plot$P.value)] <- 1
+    exir.for.plot$P.adj[is.nan(exir.for.plot$P.adj)] <- 1
+    exir.for.plot$P.value[is.na(exir.for.plot$P.value)] <- 1
+    exir.for.plot$P.adj[is.na(exir.for.plot$P.adj)] <- 1
+
     if(min(exir.for.plot$P.adj)==0) {
 
       #range normalize the primitive P.adj
@@ -3610,8 +3622,14 @@ sirir <- function(graph, vertices = V(graph),
            (max(exir.for.plot$P.adj)-min(exir.for.plot$P.adj)))
     }
 
-    exir.for.plot$P.adj <- dot.size.min+(((-log10(exir.for.plot$P.adj)-min(-log10(exir.for.plot$P.adj)))*(dot.size.max-dot.size.min))/
-                                           (max(-log10(exir.for.plot$P.adj))-min(-log10(exir.for.plot$P.adj))))
+    # Set the P.adj based on min and max arguments
+    if(length(unique(exir.for.plot$P.adj)) == 1) {
+      exir.for.plot$P.adj <- mean(c(dot.size.min, dot.size.max))
+
+    } else {
+      exir.for.plot$P.adj <- dot.size.min+(((-log10(exir.for.plot$P.adj)-min(-log10(exir.for.plot$P.adj)))*(dot.size.max-dot.size.min))/
+                                             (max(-log10(exir.for.plot$P.adj))-min(-log10(exir.for.plot$P.adj))))
+    }
 
     # Correct the levels of Features based on each class
     visClassLength <- base::length(base::unique(exir.for.plot$Class))
@@ -3810,6 +3828,13 @@ sirir <- function(graph, vertices = V(graph),
         ggplot2::theme(plot.subtitle = ggplot2::element_text(size = subtitle.size,
                                                              hjust = subtitle.position))
     }
+
+    ##***********##
+
+    # Set the order of legends
+
+    temp.exir.plot <- temp.exir.plot + ggplot2::guides(color = ggplot2::guide_legend(order = 1),
+                                                       size = ggplot2::guide_legend(order = 2))
 
     ##***********##
 
@@ -4060,6 +4085,129 @@ sirir <- function(graph, vertices = V(graph),
       names(final.results) <- names(non_null_index)
       return(final.results)
     }
+  }
+
+#=============================================================================
+#
+#    Code chunk 21: Fast correlation and mutual rank analysis
+#
+#=============================================================================
+
+  #' Fast correlation and mutual rank analysis
+  #'
+  #' This function calculates Pearson/Spearman correlations between all pairs of features in a matrix/dataframe much faster than the base R cor function.
+  #' It is also possible to simultaneously calculate mutual rank (MR) of correlations as well as their p-values and adjusted p-values.
+  #' Additionally, this function can automatically combine and flatten the result matrices. Selecting correlated features using an MR-based threshold
+  #' rather than based on their correlation coefficients or an arbitrary p-value is more efficient and accurate in inferring
+  #' functional associations in systems, for example in gene regulatory networks.
+  #' @param data A numeric dataframe/matrix (features on columns and samples on rows).
+  #' @param use The NA handler, as in R's cov() and cor() functions. Options are "everything", "all.obs", and "complete.obs".
+  #' @param method a character string indicating which correlation coefficient is to be computed. One of "pearson" or "spearman" (default).
+  #' @param mutualRank logical, whether to calculate mutual ranks of correlations or not.
+  #' @param pvalue logical, whether to calculate p-values of correlations or not.
+  #' @param adjust p-value correction method (when pvalue = TRUE), a character string including any of "BH" (default),
+  #' "bonferroni", holm", "hochberg", "hommel", or "none".
+  #' @param flat logical, whether to combine and flatten the result matrices or not.
+  #' @return Depending on the input data, a dataframe or list including cor (correlation coefficients),
+  #' mr (mutual ranks of correlation coefficients), p (p-values of correlation coefficients), and p.adj (adjusted p-values).
+  #' @keywords fcor
+  #' @seealso \code{\link[coop]{pcor}}, \code{\link[stats]{p.adjust}},
+  #' and \code{\link[influential]{graph_from_data_frame}}
+  #' @export fcor
+  #' @examples
+  #' \dontrun{
+  #' set.seed(1234)
+  #' data <- datasets::attitude
+  #' cor <- fcor(data = data)
+  #' }
+
+  fcor <- function(data,
+                   use = "everything",
+                   method = "spearman",
+                   mutualRank = TRUE,
+                   pvalue = FALSE,
+                   adjust = "BH",
+                   flat = TRUE) {
+
+    if(method == "spearman") {
+      data <- base::apply(X = data, MARGIN = 2, data.table::frankv)
+    }
+
+    #######################
+
+    # Set initial NULL values
+    r = NULL
+    mutR = NULL
+    p = NULL
+    pa = NULL
+
+    #######################
+
+    # Perform correlation analysis using coop::pcor
+    r <- coop::pcor(x = data, use = use)
+
+    if(pvalue) {
+
+      # Calculate n required for p-value measurement
+      n <- nrow(data)
+
+      # Calculate t required for p-value measurement
+      t <- (r * sqrt(n - 2))/sqrt(1 - r^2)
+
+      # Calculate p-value
+      p <- -2 * expm1(stats::pt(abs(t), (n - 2), log.p = TRUE))
+      p[p > 1 | is.nan(p)] <- 1
+
+      # Calculate adjusted p-value
+      if (adjust != "none") {
+        pa <- stats::p.adjust(p, adjust)
+      }
+    }
+
+    # Calculate Mutual Rank based on absolute of correlations (absolute because in GRNs we consider both positive and negative correlations)
+    ## We set the order= -1 so that higher correlations get higher ranks (highest cor will be first rank)
+
+    if(mutualRank) {
+      r_rank <- base::apply(base::abs(r), 1, data.table::frankv, order= -1) # Fast rank the correlation of each gene with all the other genes
+      rownames(r_rank) <- rownames(r) # Add back row names since it is lost in the 'frankv' function
+      mutR <- base::sqrt(r_rank*t(r_rank))
+    }
+
+    #######################
+
+    # Flatten the results
+
+    ## Define a function for flattening the corr matrix
+    #reshape the cor matrix
+    flt.Corr.Matrix <- function(cormat, mrmat = NULL,
+                                pmat = NULL, p.adjmat = NULL) {
+      ut <- base::upper.tri(cormat)
+      flt_data <-
+        data.frame(
+          row = base::rownames(cormat)[base::row(cormat)[ut]],
+          column = base::rownames(cormat)[base::col(cormat)[ut]],
+          cor  = cormat[ut]
+        )
+
+      if(!is.null(mrmat)) flt_data$mr <- mrmat[ut]
+      if(!is.null(pmat)) flt_data$p <- pmat[ut]
+      if(!is.null(p.adjmat)) flt_data$p.adj <- p.adjmat[ut]
+
+      return(flt_data)
+    }
+
+    if(flat) {
+      result <- flt.Corr.Matrix(cormat = r, mrmat = mutR,
+                                pmat = p, p.adjmat = pa)
+    } else {
+      result <- list(r = r,
+                     mr = mutR,
+                     p = p,
+                     p.adj = pa)
+    }
+
+    class(result) <- c(class(result), "fcor", "influential")
+    return(result)
   }
 
 #=============================================================================
