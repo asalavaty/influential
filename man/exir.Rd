@@ -14,8 +14,10 @@ exir(
   Exptl_data,
   Condition_colname,
   Normalize = FALSE,
+  cor_thresh_method = "mr",
   r = 0.5,
-  max.connections = 20000,
+  mr = 20,
+  max.connections = 50000,
   alpha = 0.05,
   num_trees = 10000,
   mtry = NULL,
@@ -62,10 +64,16 @@ The experimental data could come from a variety sources such as transcriptomics 
 \item{Normalize}{Logical; whether the experimental data should be normalized or not (default is FALSE). If TRUE, the
 experimental data will be log2 transformed.}
 
+\item{cor_thresh_method}{A character string indicating the method for filtering the correlation results, either
+"mr" (default; Mutual Rank) or "cor.coefficient".}
+
 \item{r}{The threshold of Spearman correlation coefficient for the selection of correlated features (default is 0.5).}
 
+\item{mr}{An integer determining the threshold of mutual rank for the selection of correlated features (default is 20). Note that
+higher mr values considerably increase the computation time.}
+
 \item{max.connections}{The maximum number of connections to be included in the association network.
-Higher max.connections might increase the computation time, cost, and accuracy of the results (default is 20000).}
+Higher max.connections might increase the computation time, cost, and accuracy of the results (default is 50,000).}
 
 \item{alpha}{The threshold of the statistical significance (p-value) used throughout the entire model (default is 0.05)}
 
