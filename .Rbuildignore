@@ -5,6 +5,7 @@
 ^data-raw$
 data-raw/
 influential.Rproj
+influential package.R
 .Rproj.user/
 .Rhistory
 README.Rmd
