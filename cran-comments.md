@@ -1,24 +1,21 @@
 CRAN Comments
 ================
 Adrian (Abbas) Salavaty
-15/01/2020 (updated on 26 July, 2022)
+15/01/2020 (updated on 10 January, 2023)
 
-## 2.2.6 New version submission
+## 2.2.6.9000 New version submission (Developmental version)
 
--   This is a new submission of the new version of the package
-    `influential`. A new function named `fcor` is added. The `ExIR`
-    function and its visuzalization are optimized. Shiny apps are
-    updated. The Vignettes are amended and figure sizes are corrected.
-    Also, documentation of several functions and the Read Me file were
-    updated along with a couple of other minor improvements. Please see
-    News for complete details.
+- This is a new submission of the new version of the package
+  `influential`. The `collective_influence` function is optimized. Also,
+  documentation of several functions were updated along with a couple of
+  other minor improvements. Please see News for complete details.
 
 ## Test environments
 
--   local OS X install, R 4.1.0
--   windows server (on appvoyer-ci), 4.1.0
--   ubuntu (r-hub ci), devel and release
--   win-builder (devel and release)
+- local OS X install, R 4.1.0
+- windows server (on appvoyer-ci), 4.1.0
+- ubuntu (r-hub ci), devel and release
+- win-builder (devel and release)
 
 ## R CMD check results
 
