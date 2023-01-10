@@ -33,8 +33,8 @@ This function calculates the collective influence of input vertices and
 works with both directed and undirected networks. This function and its descriptions are
 obtained from https://github.com/ronammar/collective_influence with minor modifications.
 Collective Influence as described by Morone & Makse (2015). In simple terms,
-it is the product of the reduced degree (degree - 1) of a node and the total reduced
-degree of all nodes at a distance d from the node.
+it is the product of the reduced degree (degree - 1) of a node and the total (sum of) reduced
+degrees of all nodes at a distance d from the node.
 }
 \examples{
 MyData <- coexpression.data
