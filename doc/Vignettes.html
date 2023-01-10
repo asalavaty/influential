@@ -10,7 +10,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<meta name="author" content="Abbas (Adrian) Salavaty 26-Jul-2022" />
+<meta name="author" content="Abbas (Adrian) Salavaty 10-Jan-2023" />
 
 
 <title>Introduction to influential</title>
@@ -30,23 +30,23 @@ document.addEventListener('DOMContentLoaded', function(e) {
 </script>
 
 <style type="text/css">
-  code{white-space: pre-wrap;}
-  span.smallcaps{font-variant: small-caps;}
-  span.underline{text-decoration: underline;}
-  div.column{display: inline-block; vertical-align: top; width: 50%;}
-  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-  ul.task-list{list-style: none;}
-    </style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
 
 
 
 <style type="text/css">
-  code {
-    white-space: pre;
-  }
-  .sourceCode {
-    overflow: visible;
-  }
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
 </style>
 <style type="text/css" data-origin="pandoc">
 pre > code.sourceCode { white-space: pre; position: relative; }
@@ -64,55 +64,54 @@ pre > code.sourceCode { white-space: pre-wrap; }
 pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
-  { counter-reset: source-line 0; }
+{ counter-reset: source-line 0; }
 pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
+{ position: relative; left: -4em; counter-increment: source-line; }
 pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    color: #aaaaaa;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
 div.sourceCode
-  {   }
+{ }
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
 </style>
 <script>
 // apply pandoc div.sourceCode style to pre.sourceCode instead
@@ -121,13 +120,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   for (var i = 0; i < sheets.length; i++) {
     if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
     try { var rules = sheets[i].cssRules; } catch (e) { continue; }
-    for (var j = 0; j < rules.length; j++) {
+    var j = 0;
+    while (j < rules.length) {
       var rule = rules[j];
       // check if there is a div.sourceCode rule
-      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
       var style = rule.style.cssText;
       // check if color or background-color is set
-      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
       // replace div.sourceCode by a pre.sourceCode rule
       sheets[i].deleteRule(j);
       sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
@@ -344,81 +350,71 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <h1 class="title toc-ignore">Introduction to influential</h1>
 <h3 class="subtitle"><em>Identification and classification of the most
 influential nodes</em></h3>
-<h4 class="author">Abbas (Adrian) Salavaty 26-Jul-2022</h4>
+<h4 class="author">Abbas (Adrian) Salavaty 10-Jan-2023</h4>
 
 
 <div id="TOC">
 <ul>
-<li><a href="#overview"><span class="toc-section-number">1</span>
-Overview</a></li>
-<li><a href="#fase-correlation-analysis"><span class="toc-section-number">2</span> Fase correlation analysis</a></li>
-<li><a href="#network-reconstruction"><span class="toc-section-number">3</span> Network reconstruction</a>
+<li><a href="#overview" id="toc-overview"><span class="toc-section-number">1</span> Overview</a></li>
+<li><a href="#fase-correlation-analysis" id="toc-fase-correlation-analysis"><span class="toc-section-number">2</span> Fase correlation analysis</a></li>
+<li><a href="#network-reconstruction" id="toc-network-reconstruction"><span class="toc-section-number">3</span> Network reconstruction</a>
 <ul>
-<li><a href="#from-a-data-frame"><span class="toc-section-number">3.1</span> From a data frame</a></li>
-<li><a href="#from-an-adjacency-matrix"><span class="toc-section-number">3.2</span> From an adjacency matrix</a></li>
-<li><a href="#from-an-incidence-matrix"><span class="toc-section-number">3.3</span> From an incidence matrix</a></li>
-<li><a href="#from-a-sif-file"><span class="toc-section-number">3.4</span> From a SIF file</a></li>
+<li><a href="#from-a-data-frame" id="toc-from-a-data-frame"><span class="toc-section-number">3.1</span> From a data frame</a></li>
+<li><a href="#from-an-adjacency-matrix" id="toc-from-an-adjacency-matrix"><span class="toc-section-number">3.2</span> From an adjacency matrix</a></li>
+<li><a href="#from-an-incidence-matrix" id="toc-from-an-incidence-matrix"><span class="toc-section-number">3.3</span> From an incidence matrix</a></li>
+<li><a href="#from-a-sif-file" id="toc-from-a-sif-file"><span class="toc-section-number">3.4</span> From a SIF file</a></li>
 </ul></li>
-<li><a href="#calculation-of-centrality-measures"><span class="toc-section-number">4</span> Calculation of centrality
+<li><a href="#calculation-of-centrality-measures" id="toc-calculation-of-centrality-measures"><span class="toc-section-number">4</span> Calculation of centrality
 measures</a>
 <ul>
-<li><a href="#network-vertices"><span class="toc-section-number">4.1</span> Network vertices</a></li>
-<li><a href="#degree-centrality"><span class="toc-section-number">4.2</span> Degree centrality</a></li>
-<li><a href="#betweenness-centrality"><span class="toc-section-number">4.3</span> Betweenness centrality</a></li>
-<li><a href="#neighborhood-connectivity"><span class="toc-section-number">4.4</span> Neighborhood connectivity</a></li>
-<li><a href="#h-index"><span class="toc-section-number">4.5</span>
-H-index</a></li>
-<li><a href="#local-h-index"><span class="toc-section-number">4.6</span>
-Local H-index</a></li>
-<li><a href="#collective-influence"><span class="toc-section-number">4.7</span> Collective Influence</a></li>
-<li><a href="#clusterrank"><span class="toc-section-number">4.8</span>
-ClusterRank</a></li>
+<li><a href="#network-vertices" id="toc-network-vertices"><span class="toc-section-number">4.1</span> Network vertices</a></li>
+<li><a href="#degree-centrality" id="toc-degree-centrality"><span class="toc-section-number">4.2</span> Degree centrality</a></li>
+<li><a href="#betweenness-centrality" id="toc-betweenness-centrality"><span class="toc-section-number">4.3</span> Betweenness centrality</a></li>
+<li><a href="#neighborhood-connectivity" id="toc-neighborhood-connectivity"><span class="toc-section-number">4.4</span> Neighborhood connectivity</a></li>
+<li><a href="#h-index" id="toc-h-index"><span class="toc-section-number">4.5</span> H-index</a></li>
+<li><a href="#local-h-index" id="toc-local-h-index"><span class="toc-section-number">4.6</span> Local H-index</a></li>
+<li><a href="#collective-influence" id="toc-collective-influence"><span class="toc-section-number">4.7</span> Collective Influence</a></li>
+<li><a href="#clusterrank" id="toc-clusterrank"><span class="toc-section-number">4.8</span> ClusterRank</a></li>
 </ul></li>
-<li><a href="#assessment-of-the-association-of-centrality-measures"><span class="toc-section-number">5</span> Assessment of the association of
+<li><a href="#assessment-of-the-association-of-centrality-measures" id="toc-assessment-of-the-association-of-centrality-measures"><span class="toc-section-number">5</span> Assessment of the association of
 centrality measures</a>
 <ul>
-<li><a href="#conditional-probability-of-deviation-from-means"><span class="toc-section-number">5.1</span> Conditional probability of
+<li><a href="#conditional-probability-of-deviation-from-means" id="toc-conditional-probability-of-deviation-from-means"><span class="toc-section-number">5.1</span> Conditional probability of
 deviation from means</a></li>
-<li><a href="#nature-of-association-considering-dependent-and-independent"><span class="toc-section-number">5.2</span> Nature of association (considering
+<li><a href="#nature-of-association-considering-dependent-and-independent" id="toc-nature-of-association-considering-dependent-and-independent"><span class="toc-section-number">5.2</span> Nature of association (considering
 dependent and independent)</a></li>
-<li><a href="#nature-of-association-without-considering-dependence-direction"><span class="toc-section-number">5.3</span> Nature of association (without
+<li><a href="#nature-of-association-without-considering-dependence-direction" id="toc-nature-of-association-without-considering-dependence-direction"><span class="toc-section-number">5.3</span> Nature of association (without
 considering dependence direction)</a></li>
 </ul></li>
-<li><a href="#IVI"><span class="toc-section-number">6</span>
-Identification of the most <code>influential</code> network nodes</a>
+<li><a href="#IVI" id="toc-IVI"><span class="toc-section-number">6</span> Identification of the most
+<code>influential</code> network nodes</a>
 <ul>
-<li><a href="#integrated-value-of-influence-ivi-from-centrality-measures"><span class="toc-section-number">6.1</span> Integrated Value of Influence
+<li><a href="#integrated-value-of-influence-ivi-from-centrality-measures" id="toc-integrated-value-of-influence-ivi-from-centrality-measures"><span class="toc-section-number">6.1</span> Integrated Value of Influence
 (IVI) from centrality measures</a></li>
-<li><a href="#integrated-value-of-influence-ivi-from-a-graph"><span class="toc-section-number">6.2</span> Integrated Value of Influence
+<li><a href="#integrated-value-of-influence-ivi-from-a-graph" id="toc-integrated-value-of-influence-ivi-from-a-graph"><span class="toc-section-number">6.2</span> Integrated Value of Influence
 (IVI) from a graph</a></li>
-<li><a href="#NetVis"><span class="toc-section-number">6.3</span>
-Network visualization</a></li>
-<li><a href="#IVIShiny"><span class="toc-section-number">6.4</span> IVI
-shiny app</a></li>
+<li><a href="#NetVis" id="toc-NetVis"><span class="toc-section-number">6.3</span> Network visualization</a></li>
+<li><a href="#IVIShiny" id="toc-IVIShiny"><span class="toc-section-number">6.4</span> IVI shiny app</a></li>
 </ul></li>
-<li><a href="#SpreadingScore"><span class="toc-section-number">7</span>
-Identification of the most important network spreaders</a></li>
-<li><a href="#HubnessScore"><span class="toc-section-number">8</span>
-Identification of the most important network hubs</a></li>
-<li><a href="#SIRIR"><span class="toc-section-number">9</span> Ranking
-the influence of nodes on the topology of a network based on the
-<code>SIRIR</code> model</a></li>
-<li><a href="#ExIR"><span class="toc-section-number">10</span>
-Experimental data-based classification and ranking of top candidate
-features</a>
+<li><a href="#SpreadingScore" id="toc-SpreadingScore"><span class="toc-section-number">7</span> Identification of the most important
+network spreaders</a></li>
+<li><a href="#HubnessScore" id="toc-HubnessScore"><span class="toc-section-number">8</span> Identification of the most important
+network hubs</a></li>
+<li><a href="#SIRIR" id="toc-SIRIR"><span class="toc-section-number">9</span> Ranking the influence of nodes on
+the topology of a network based on the <code>SIRIR</code> model</a></li>
+<li><a href="#ExIR" id="toc-ExIR"><span class="toc-section-number">10</span> Experimental data-based
+classification and ranking of top candidate features</a>
 <ul>
-<li><a href="#assembling-the-diff_data"><span class="toc-section-number">10.1</span> Assembling the Diff_data</a></li>
-<li><a href="#preparing-the-exptl_data"><span class="toc-section-number">10.2</span> Preparing the Exptl_data</a></li>
-<li><a href="#running-the-exir-model"><span class="toc-section-number">10.3</span> Running the <code>ExIR</code>
+<li><a href="#assembling-the-diff_data" id="toc-assembling-the-diff_data"><span class="toc-section-number">10.1</span> Assembling the Diff_data</a></li>
+<li><a href="#preparing-the-exptl_data" id="toc-preparing-the-exptl_data"><span class="toc-section-number">10.2</span> Preparing the Exptl_data</a></li>
+<li><a href="#running-the-exir-model" id="toc-running-the-exir-model"><span class="toc-section-number">10.3</span> Running the <code>ExIR</code>
 model</a></li>
-<li><a href="#exir-visualization"><span class="toc-section-number">10.4</span> ExIR visualization</a></li>
-<li><a href="#ExIRShiny"><span class="toc-section-number">10.5</span>
-ExIR shiny app</a></li>
+<li><a href="#exir-visualization" id="toc-exir-visualization"><span class="toc-section-number">10.4</span> ExIR visualization</a></li>
+<li><a href="#ExIRShiny" id="toc-ExIRShiny"><span class="toc-section-number">10.5</span> ExIR shiny app</a></li>
 </ul></li>
-<li><a href="#CompManipulate"><span class="toc-section-number">11</span>
-Computational manipulation of cells</a></li>
-<li><a href="#references"><span class="toc-section-number">12</span>
-References</a></li>
+<li><a href="#CompManipulate" id="toc-CompManipulate"><span class="toc-section-number">11</span> Computational manipulation of
+cells</a></li>
+<li><a href="#references" id="toc-references"><span class="toc-section-number">12</span> References</a></li>
 </ul>
 </div>
 
