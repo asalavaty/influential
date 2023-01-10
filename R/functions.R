@@ -348,8 +348,8 @@ neighborhood.connectivity <- function(graph, vertices = V(graph), mode = "all") 
   #' works with both directed and undirected networks. This function and its descriptions are
   #' obtained from https://github.com/ronammar/collective_influence with minor modifications.
   #' Collective Influence as described by Morone & Makse (2015). In simple terms,
-  #' it is the product of the reduced degree (degree - 1) of a node and the total reduced
-  #' degree of all nodes at a distance d from the node.
+  #' it is the product of the reduced degree (degree - 1) of a node and the total (sum of) reduced
+  #' degrees of all nodes at a distance d from the node.
   #' @param graph A graph (network) of the igraph class.
   #' @param vertices A vector of desired vertices, which could be obtained by the V function.
   #' @param mode The mode of collective influence depending on the directedness of the graph.
@@ -379,19 +379,27 @@ neighborhood.connectivity <- function(graph, vertices = V(graph), mode = "all") 
 
     ci <- vector(mode="numeric", length=length(vertices))  # collective influence output
 
+    # Calculate the reduced degree of nodes
     reduced.degrees <- degree(graph = graph,
                               v = vertices,
                               mode = mode) - 1
 
-    # Only identify nodes at distance d
+    # Identify only neighbors at distance d
     nodes.at.distance <- igraph::neighborhood(graph = graph, nodes = vertices,
                                               mode = mode, order=d, mindist=d)
-
+    
+    # Get the non-duplicated vector of node names of neighbors at distance d
+    nodes.at.distance_names <- base::sapply(nodes.at.distance, igraph::as_ids) %>% base::unlist() %>% base::unique()
+    
+    # Calculate the reduced degree of neighbors at distance d
+    nodes.at.distance_reduced.degrees <- degree(graph = graph,
+                                                v = nodes.at.distance_names,
+                                                mode = mode) - 1
+    
+    # Calculate the collective influence
     for (i in 1:length(nodes.at.distance)) {
       rd <- reduced.degrees[i]  # i is the index of the node
-      rd.list <- reduced.degrees[igraph::as_ids(nodes.at.distance[[i]])]
-      # Setting 0 as default in case the graph doesn't have 2nd-order neighbours
-      rd.neighbours <- ifelse(length(rd.list) > 0, sum(rd.list), 0)
+      rd.neighbours <- sum(nodes.at.distance_reduced.degrees[igraph::as_ids(nodes.at.distance[[i]])]) # calculate the cumulative reduced degree of neighbors
       ci[i] <- rd * rd.neighbours
     }
 
