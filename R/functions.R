@@ -389,7 +389,7 @@ neighborhood.connectivity <- function(graph, vertices = V(graph), mode = "all") 
                                               mode = mode, order=d, mindist=d)
     
     # Get the non-duplicated vector of node names of neighbors at distance d
-    nodes.at.distance_names <- base::sapply(nodes.at.distance, igraph::as_ids) %>% base::unlist() %>% base::unique()
+    nodes.at.distance_names <- base::unique(base::unlist(base::sapply(nodes.at.distance, igraph::as_ids)))
     
     # Calculate the reduced degree of neighbors at distance d
     nodes.at.distance_reduced.degrees <- degree(graph = graph,
