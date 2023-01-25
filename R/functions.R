@@ -1173,16 +1173,21 @@ ivi.from.indices <- function(DC, CR, LH_index, NC, BC, CI, scaled = TRUE) {
   #Calculation of IVI
 
   spreading.rank <- ((temp.NC+temp.CR)*(temp.BC+temp.CI))
-
-  if(sum(spreading.rank) == 0 || is.nan(sum(spreading.rank)) || is.na(sum(spreading.rank))) {
-    spreading.rank[] <- 1
-  }
+  
+  suppressWarnings(
+    if(any(na.omit(spreading.rank) == 0 | is.na(spreading.rank))) {
+      spreading.rank[which(spreading.rank == 0 | is.na(spreading.rank))] <- 1
+    }
+  )
 
   hubness.rank <- (temp.DC+temp.LH_index)
-
-  if(sum(hubness.rank) == 0 || is.nan(sum(hubness.rank)) || is.na(sum(hubness.rank))) {
-    hubness.rank[] <- 1
-  }
+  
+  suppressWarnings(
+    if(any(na.omit(hubness.rank) == 0 | is.na(hubness.rank))) {
+      hubness.rank[which(hubness.rank == 0 | is.na(hubness.rank))] <- 1
+    }
+  )
+  
   temp.ivi <- (hubness.rank)*(spreading.rank)
 
   #1-100 normalization of IVI
@@ -1304,15 +1309,20 @@ ivi <- function(graph, vertices = V(graph), weights = NULL, directed = FALSE,
 
   spreading.rank <- ((temp.NC+temp.CR)*(temp.BC+temp.CI))
 
-  if(sum(spreading.rank) == 0 || is.nan(sum(spreading.rank)) || is.na(sum(spreading.rank))) {
-    spreading.rank[] <- 1
-  }
+  suppressWarnings(
+    if(any(na.omit(spreading.rank) == 0 | is.na(spreading.rank))) {
+      spreading.rank[which(spreading.rank == 0 | is.na(spreading.rank))] <- 1
+    }
+  )
 
   hubness.rank <- (temp.DC+temp.LH_index)
 
-  if(sum(hubness.rank) == 0 || is.nan(sum(hubness.rank)) || is.na(sum(hubness.rank))) {
-    hubness.rank[] <- 1
-  }
+  suppressWarnings(
+    if(any(na.omit(hubness.rank) == 0 | is.na(hubness.rank))) {
+      hubness.rank[which(hubness.rank == 0 | is.na(hubness.rank))] <- 1
+    }
+  )
+  
   temp.ivi <- (hubness.rank)*(spreading.rank)
 
   #1-100 normalization of IVI
@@ -4054,7 +4064,7 @@ sirir <- function(graph, vertices = V(graph),
     ##**************************##
 
     # Combined results
-    if(!is.null(ko_results) && !is.null(overexpr_results)) {
+    if(!is.null(ko_results) & !is.null(overexpr_results)) {
       combined_results <- rbind(ko_results,
                                 overexpr_results)
 
