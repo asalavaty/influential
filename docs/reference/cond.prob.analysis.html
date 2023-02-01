@@ -19,7 +19,7 @@ means in opposite directions."><!-- mathjax --><script src="https://cdnjs.cloudf
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">influential</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.6.9000</span>
       </span>
     </div>
 
@@ -67,7 +67,7 @@ means in opposite directions.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">cond.prob.analysis</span><span class="op">(</span><span class="va">data</span>, <span class="va">nodes.colname</span>, <span class="va">Desired.colname</span>, <span class="va">Condition.colname</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">cond.prob.analysis</span><span class="op">(</span><span class="va">data</span>, <span class="va">nodes.colname</span>, <span class="va">Desired.colname</span>, <span class="va">Condition.colname</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -75,19 +75,28 @@ means in opposite directions.</p>
     <dl><dt>data</dt>
 <dd><p>A data frame containing the values of two continuous variables and the name of
 observations (nodes).</p></dd>
+
+
 <dt>nodes.colname</dt>
 <dd><p>The character format (quoted) name of the column containing
 the name of observations (nodes).</p></dd>
+
+
 <dt>Desired.colname</dt>
 <dd><p>The character format (quoted) name of the column containing
 the values of the desired variable.</p></dd>
+
+
 <dt>Condition.colname</dt>
 <dd><p>The character format (quoted) name of the column containing
 the values of the condition variable.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A list of two objects including the conditional probability of deviation of two
+    
+
+<p>A list of two objects including the conditional probability of deviation of two
 centrality measures (or any two other continuous variables) from their corresponding
 means in opposite directions based on both the entire network and the split-half random
 sample of network nodes.</p>
@@ -101,11 +110,11 @@ sample of network nodes.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">centrality.measures</span></span>
-<span class="r-in"><span class="va">My.conditional.prob</span> <span class="op">&lt;-</span> <span class="fu">cond.prob.analysis</span><span class="op">(</span>data <span class="op">=</span> <span class="va">MyData</span>,</span>
-<span class="r-in">                                          nodes.colname <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>,</span>
-<span class="r-in">                                          Desired.colname <span class="op">=</span> <span class="st">"BC"</span>,</span>
-<span class="r-in">                                          Condition.colname <span class="op">=</span> <span class="st">"NC"</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">centrality.measures</span></span></span>
+<span class="r-in"><span><span class="va">My.conditional.prob</span> <span class="op">&lt;-</span> <span class="fu">cond.prob.analysis</span><span class="op">(</span>data <span class="op">=</span> <span class="va">MyData</span>,</span></span>
+<span class="r-in"><span>                                          nodes.colname <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                                          Desired.colname <span class="op">=</span> <span class="st">"BC"</span>,</span></span>
+<span class="r-in"><span>                                          Condition.colname <span class="op">=</span> <span class="st">"NC"</span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -120,7 +129,7 @@ sample of network nodes.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

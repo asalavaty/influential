@@ -19,7 +19,7 @@ one of the major components of the IVI."><!-- mathjax --><script src="https://cd
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">influential</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.6.9000</span>
       </span>
     </div>
 
@@ -67,52 +67,69 @@ one of the major components of the IVI.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">spreading.score</span><span class="op">(</span>
-  <span class="va">graph</span>,
-  vertices <span class="op">=</span> <span class="fu"><a href="V.html">V</a></span><span class="op">(</span><span class="va">graph</span><span class="op">)</span>,
-  weights <span class="op">=</span> <span class="cn">NULL</span>,
-  directed <span class="op">=</span> <span class="cn">FALSE</span>,
-  mode <span class="op">=</span> <span class="st">"all"</span>,
-  loops <span class="op">=</span> <span class="cn">TRUE</span>,
-  d <span class="op">=</span> <span class="fl">3</span>,
-  scaled <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">spreading.score</span><span class="op">(</span></span>
+<span>  <span class="va">graph</span>,</span>
+<span>  vertices <span class="op">=</span> <span class="fu"><a href="V.html">V</a></span><span class="op">(</span><span class="va">graph</span><span class="op">)</span>,</span>
+<span>  weights <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  directed <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  mode <span class="op">=</span> <span class="st">"all"</span>,</span>
+<span>  loops <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  d <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>  scaled <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>graph</dt>
 <dd><p>A graph (network) of the igraph class.</p></dd>
+
+
 <dt>vertices</dt>
 <dd><p>A vector of desired vertices, which could be obtained by the V function.</p></dd>
+
+
 <dt>weights</dt>
 <dd><p>Optional positive weight vector for calculating weighted betweenness centrality
-of nodes as a requirement for calculation of IVI. If the graph has a weight edge attribute,
+of nodes as a requirement for calculation of spreading score. If the graph has a weight edge attribute,
 then this is used by default. Weights are used to calculate weighted shortest paths,
 so they are interpreted as distances.</p></dd>
+
+
 <dt>directed</dt>
 <dd><p>Logical scalar, whether to directed graph is analyzed. This argument
 is ignored for undirected graphs.</p></dd>
+
+
 <dt>mode</dt>
 <dd><p>The mode of Spreading score depending on the directedness of the graph.
 If the graph is undirected, the mode "all" should be specified.
 Otherwise, for the calculation of Spreading score based on
 incoming connections select "in" and for the outgoing connections select "out".
 Also, if all of the connections are desired, specify the "all" mode. Default mode is set to "all".</p></dd>
+
+
 <dt>loops</dt>
 <dd><p>Logical; whether the loop edges are also counted.</p></dd>
+
+
 <dt>d</dt>
 <dd><p>The distance, expressed in number of steps from a given node (default=3). Distance
 must be &gt; 0. According to Morone &amp; Makse (https://doi.org/10.1038/nature14604), optimal
 results can be reached at d=3,4, but this depends on the size/"radius" of the network.
 NOTE: the distance d is not inclusive. This means that nodes at a distance of 3 from
 our node-of-interest do not include nodes at distances 1 and 2. Only 3.</p></dd>
+
+
 <dt>scaled</dt>
 <dd><p>Logical; whether the end result should be 1-100 range normalized or not (default is TRUE).</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A numeric vector with Spreading scores.</p>
+    
+
+<p>A numeric vector with Spreading scores.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -127,14 +144,14 @@ our node-of-interest do not include nodes at distances 1 and 2. Only 3.</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">coexpression.data</span></span>
-<span class="r-in"><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="graph_from_data_frame.html">graph_from_data_frame</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="V.html">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">Spreading.score</span> <span class="op">&lt;-</span> <span class="fu">spreading.score</span><span class="op">(</span>graph <span class="op">=</span> <span class="va">My_graph</span>, vertices <span class="op">=</span> <span class="va">GraphVertices</span>,</span>
-<span class="r-in">                                   weights <span class="op">=</span> <span class="cn">NULL</span>, directed <span class="op">=</span> <span class="cn">FALSE</span>, mode <span class="op">=</span> <span class="st">"all"</span>,</span>
-<span class="r-in">                                   loops <span class="op">=</span> <span class="cn">TRUE</span>, d <span class="op">=</span> <span class="fl">3</span>, scaled <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">coexpression.data</span></span></span>
+<span class="r-in"><span><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="graph_from_data_frame.html">graph_from_data_frame</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="V.html">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">Spreading.score</span> <span class="op">&lt;-</span> <span class="fu">spreading.score</span><span class="op">(</span>graph <span class="op">=</span> <span class="va">My_graph</span>, vertices <span class="op">=</span> <span class="va">GraphVertices</span>,</span></span>
+<span class="r-in"><span>                                   weights <span class="op">=</span> <span class="cn">NULL</span>, directed <span class="op">=</span> <span class="cn">FALSE</span>, mode <span class="op">=</span> <span class="st">"all"</span>,</span></span>
+<span class="r-in"><span>                                   loops <span class="op">=</span> <span class="cn">TRUE</span>, d <span class="op">=</span> <span class="fl">3</span>, scaled <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -149,7 +166,7 @@ our node-of-interest do not include nodes at distances 1 and 2. Only 3.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

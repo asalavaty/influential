@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">influential</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.6.9000</span>
       </span>
     </div>
 
@@ -63,34 +63,45 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">degree</span><span class="op">(</span>
-  <span class="va">graph</span>,
-  v <span class="op">=</span> <span class="fu"><a href="V.html">V</a></span><span class="op">(</span><span class="va">graph</span><span class="op">)</span>,
-  mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"all"</span>, <span class="st">"out"</span>, <span class="st">"in"</span>, <span class="st">"total"</span><span class="op">)</span>,
-  loops <span class="op">=</span> <span class="cn">TRUE</span>,
-  normalized <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">degree</span><span class="op">(</span></span>
+<span>  <span class="va">graph</span>,</span>
+<span>  v <span class="op">=</span> <span class="fu"><a href="V.html">V</a></span><span class="op">(</span><span class="va">graph</span><span class="op">)</span>,</span>
+<span>  mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"all"</span>, <span class="st">"out"</span>, <span class="st">"in"</span>, <span class="st">"total"</span><span class="op">)</span>,</span>
+<span>  loops <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  normalized <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>graph</dt>
 <dd><p>The graph to analyze (an igraph graph).</p></dd>
+
+
 <dt>v</dt>
 <dd><p>The ids of vertices of which the degree will be calculated.</p></dd>
+
+
 <dt>mode</dt>
 <dd><p>Character string, “out” for out-degree, “in” for in-degree or “total” for the sum of the two.
 For undirected graphs this argument is ignored. “all” is a synonym of “total”.</p></dd>
+
+
 <dt>loops</dt>
 <dd><p>Logical; whether the loop edges are also counted.
 If the graph has a weight edge attribute, then this is used by default. Weights are used to calculate weighted shortest paths, so they are interpreted as distances.</p></dd>
+
+
 <dt>normalized</dt>
 <dd><p>Logical scalar, whether to normalize the degree.
 If TRUE then the result is divided by n-1, where n is the number of vertices in the graph.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A numeric vector of the same length as argument v.</p>
+    
+
+<p>A numeric vector of the same length as argument v.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -109,10 +120,10 @@ and <code><a href="https://rdrr.io/pkg/igraph/man/degree.html" class="external-l
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">coexpression.data</span></span>
-<span class="r-in"><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="graph_from_data_frame.html">graph_from_data_frame</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="V.html">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">My_graph_degree</span> <span class="op">&lt;-</span> <span class="fu">degree</span><span class="op">(</span><span class="va">My_graph</span>, v <span class="op">=</span> <span class="va">GraphVertices</span>, normalized <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">coexpression.data</span></span></span>
+<span class="r-in"><span><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="graph_from_data_frame.html">graph_from_data_frame</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="V.html">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">My_graph_degree</span> <span class="op">&lt;-</span> <span class="fu">degree</span><span class="op">(</span><span class="va">My_graph</span>, v <span class="op">=</span> <span class="va">GraphVertices</span>, normalized <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -127,7 +138,7 @@ and <code><a href="https://rdrr.io/pkg/igraph/man/degree.html" class="external-l
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

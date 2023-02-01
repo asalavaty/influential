@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">influential</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.6.9000</span>
       </span>
     </div>
 
@@ -79,8 +79,10 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Introduction to influential</h1>
-            <h3 data-toc-skip class="subtitle"><em>Identification and classification of the most influential nodes</em></h3>
-                        <h4 data-toc-skip class="author">Abbas (Adrian) Salavaty 14-Apr-2022</h4>
+            <h3 data-toc-skip class="subtitle"><em>Identification and
+classification of the most influential nodes</em></h3>
+                        <h4 data-toc-skip class="author">Abbas (Adrian)
+Salavaty 01-Feb-2023</h4>
             
       
       <small class="dont-index">Source: <a href="https://github.com/asalavaty/influential/blob/HEAD/vignettes/Vignettes.Rmd" class="external-link"><code>vignettes/Vignettes.Rmd</code></a></small>
@@ -98,15 +100,23 @@ text-align: justify}
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
 <p><img src="../reference/figures/Symbol.png" width="25%" style="float:right; padding:10px"></p>
-<p><code>influential</code> is an R package mainly for the identification of the most influential nodes in a network as well as the classification and ranking of top candidate features. The <code>influential</code> package contains several functions that could be categorized into five groups according to their purpose:</p>
+<p><code>influential</code> is an R package mainly for the
+identification of the most influential nodes in a network as well as the
+classification and ranking of top candidate features. The
+<code>influential</code> package contains several functions that could
+be categorized into five groups according to their purpose:</p>
 <ul>
 <li>Network reconstruction</li>
 <li>Calculation of centrality measures</li>
 <li>Assessment of the association of centrality measures</li>
-<li>Identification of the most <code>influential</code> network nodes</li>
+<li>Identification of the most <code>influential</code> network
+nodes</li>
 <li>Experimental data-based classification and ranking of features</li>
 </ul>
-<p>The sections below introduce these five categories. However, if you wish not going through all of the functions and their applications, you may skip to any of the novel methods proposed by the <code>influential</code>, including:</p>
+<p>The sections below introduce these five categories. However, if you
+wish not going through all of the functions and their applications, you
+may skip to any of the novel methods proposed by the
+<code>influential</code>, including:</p>
 <ul>
 <li><a href="#ExIR">ExIR</a></li>
 <li><a href="#IVI">IVI</a></li>
@@ -117,16 +127,207 @@ text-align: justify}
 </ul>
 <hr>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/asalavaty/influential" class="external-link">influential</a></span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/asalavaty/influential" class="external-link">influential</a></span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="fase-correlation-analysis">Fase correlation analysis<a class="anchor" aria-label="anchor" href="#fase-correlation-analysis"></a>
+</h2>
+<p>Correlation (association/similarity/dissimilarity) analysis is the
+first required step before network reconstructions. Although R base
+<code>cor</code> function makes it possible to perform correlation
+analysis of a table, this function is notably slow in the correlation
+analysis of large datasets. Also, calculation of probability values is
+not possible for all correlations between all pairs of features
+simultaneously. The <code>fcor</code> function calculates
+Pearson/Spearman correlations between all pairs of features in a
+matrix/dataframe much faster than the base R cor function. It is also
+possible to simultaneously calculate mutual rank (MR) of correlations as
+well as their p-values and adjusted p-values. Additionally, this
+function can automatically combine and flatten the result matrices.
+Selecting correlated features using an MR-based threshold rather than
+based on their correlation coefficients or an arbitrary p-value is more
+efficient and accurate in inferring functional associations in systems,
+for example in gene regulatory networks.</p>
+<p>Here is an example of performing correlation analysis using the
+<code>fcor</code> function.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="co"># Prepare a sample dataset</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">60</span><span class="op">)</span></span>
+<span><span class="va">my_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">10000</span>, min <span class="op">=</span> <span class="fl">2</span>, max <span class="op">=</span> <span class="fl">300</span><span class="op">)</span>, </span>
+<span>                       nrow <span class="op">=</span> <span class="fl">50</span>, ncol <span class="op">=</span> <span class="fl">200</span>, </span>
+<span>                       dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"sample"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">50</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">"_"</span><span class="op">)</span><span class="op">)</span>, </span>
+<span>                                       <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"gene"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">200</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">"_"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>Have a look at top 5 samples and gene (rows and columns) of the
+<code>my_data</code>:</p>
+<table class="table">
+<thead><tr class="header">
+<th align="left"></th>
+<th align="right">gene_1</th>
+<th align="right">gene_2</th>
+<th align="right">gene_3</th>
+<th align="right">gene_4</th>
+<th align="right">gene_5</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">sample_1</td>
+<td align="right">229.80194</td>
+<td align="right">202.09477</td>
+<td align="right">286.98031</td>
+<td align="right">212.86299</td>
+<td align="right">255.15716</td>
+</tr>
+<tr class="even">
+<td align="left">sample_2</td>
+<td align="right">107.12704</td>
+<td align="right">262.56776</td>
+<td align="right">92.47135</td>
+<td align="right">263.67454</td>
+<td align="right">188.00376</td>
+</tr>
+<tr class="odd">
+<td align="left">sample_3</td>
+<td align="right">208.04590</td>
+<td align="right">123.99512</td>
+<td align="right">284.35705</td>
+<td align="right">173.80360</td>
+<td align="right">270.60758</td>
+</tr>
+<tr class="even">
+<td align="left">sample_4</td>
+<td align="right">209.36913</td>
+<td align="right">141.90713</td>
+<td align="right">154.59261</td>
+<td align="right">130.17074</td>
+<td align="right">219.54511</td>
+</tr>
+<tr class="odd">
+<td align="left">sample_5</td>
+<td align="right">86.21945</td>
+<td align="right">14.10478</td>
+<td align="right">258.05186</td>
+<td align="right">40.89961</td>
+<td align="right">18.83074</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="co"># Calculate correlations between all pairs of genes</span></span>
+<span></span>
+<span><span class="va">correlation_tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fcor.html">fcor</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">my_data</span>, </span>
+<span>                        method <span class="op">=</span> <span class="st">"spearman"</span>, </span>
+<span>                        mutualRank <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>                        pvalue <span class="op">=</span> <span class="st">"TRUE"</span>, adjust <span class="op">=</span> <span class="st">"BH"</span>,</span>
+<span>                        flat <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p>Now have a look at the top 10 rows of the
+<code>correlation_tbl</code>:</p>
+<table class="table">
+<thead><tr class="header">
+<th align="left">row</th>
+<th align="left">column</th>
+<th align="right">cor</th>
+<th align="right">mr</th>
+<th align="right">p</th>
+<th align="right">p.adj</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">gene_1</td>
+<td align="left">gene_2</td>
+<td align="right">0.3373349</td>
+<td align="right">3.872983</td>
+<td align="right">0.0165899</td>
+<td align="right">0.8096184</td>
+</tr>
+<tr class="even">
+<td align="left">gene_1</td>
+<td align="left">gene_3</td>
+<td align="right">0.0721729</td>
+<td align="right">122.270193</td>
+<td align="right">0.6184265</td>
+<td align="right">0.9981266</td>
+</tr>
+<tr class="odd">
+<td align="left">gene_2</td>
+<td align="left">gene_3</td>
+<td align="right">0.0002401</td>
+<td align="right">200.000000</td>
+<td align="right">0.9986797</td>
+<td align="right">0.9995793</td>
+</tr>
+<tr class="even">
+<td align="left">gene_1</td>
+<td align="left">gene_4</td>
+<td align="right">-0.0636255</td>
+<td align="right">132.864593</td>
+<td align="right">0.6606863</td>
+<td align="right">0.9981266</td>
+</tr>
+<tr class="odd">
+<td align="left">gene_2</td>
+<td align="left">gene_4</td>
+<td align="right">0.0124370</td>
+<td align="right">182.931681</td>
+<td align="right">0.9316877</td>
+<td align="right">0.9981266</td>
+</tr>
+<tr class="even">
+<td align="left">gene_3</td>
+<td align="left">gene_4</td>
+<td align="right">-0.0945498</td>
+<td align="right">108.958708</td>
+<td align="right">0.5136765</td>
+<td align="right">0.9981266</td>
+</tr>
+<tr class="odd">
+<td align="left">gene_1</td>
+<td align="left">gene_5</td>
+<td align="right">-0.0616086</td>
+<td align="right">136.167177</td>
+<td align="right">0.6708188</td>
+<td align="right">0.9981266</td>
+</tr>
+<tr class="even">
+<td align="left">gene_2</td>
+<td align="left">gene_5</td>
+<td align="right">-0.1063625</td>
+<td align="right">90.862533</td>
+<td align="right">0.4622400</td>
+<td align="right">0.9981266</td>
+</tr>
+<tr class="odd">
+<td align="left">gene_3</td>
+<td align="left">gene_5</td>
+<td align="right">0.2174790</td>
+<td align="right">25.922963</td>
+<td align="right">0.1292321</td>
+<td align="right">0.9700054</td>
+</tr>
+<tr class="even">
+<td align="left">gene_4</td>
+<td align="left">gene_5</td>
+<td align="right">0.0341417</td>
+<td align="right">171.499271</td>
+<td align="right">0.8139135</td>
+<td align="right">0.9981266</td>
+</tr>
+</tbody>
+</table>
+<p><a href="#top">Back to top</a></p>
 </div>
 <div class="section level2">
 <h2 id="network-reconstruction">Network reconstruction<a class="anchor" aria-label="anchor" href="#network-reconstruction"></a>
 </h2>
-<p>Three functions have been obtained from the <code>igraph</code><a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> R package for the reconstruction of networks.</p>
+<p>Three functions have been obtained from the <code>igraph</code><a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> R package
+for the reconstruction of networks.</p>
 <div class="section level3">
 <h3 id="from-a-data-frame">From a data frame<a class="anchor" aria-label="anchor" href="#from-a-data-frame"></a>
 </h3>
-<p>In the data frame the first and second columns should be composed of source and target nodes.<br>
+<p>In the data frame the first and second columns should be composed of
+source and target nodes.<br>
 A sample appropriate data frame is brought below:</p>
 <table class="table">
 <thead><tr class="header">
@@ -160,23 +361,34 @@ A sample appropriate data frame is brought below:</p>
 </tr>
 </tbody>
 </table>
-<p>This is a co-expression dataset obtained from a paper by Salavaty <strong>et al</strong>.<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a></p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Preparing the data</span>
-<span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">coexpression.data</span>
-
-<span class="co"># Reconstructing the graph</span>
-<span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_from_data_frame.html">graph_from_data_frame</a></span><span class="op">(</span>d<span class="op">=</span><span class="va">MyData</span><span class="op">)</span></code></pre></div>
-<p>If you look at the class of <code>My_graph</code> you should see that it has an <code>igraph</code> class:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span>
-<span class="co">#&gt; [1] "igraph"</span></code></pre></div>
+<p>This is a co-expression dataset obtained from a paper by Salavaty
+<strong>et al</strong>.<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a></p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Preparing the data</span></span>
+<span><span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">coexpression.data</span></span>
+<span></span>
+<span><span class="co"># Reconstructing the graph</span></span>
+<span><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_from_data_frame.html">graph_from_data_frame</a></span><span class="op">(</span>d<span class="op">=</span><span class="va">MyData</span><span class="op">)</span></span></code></pre></div>
+<p>If you look at the class of <code>My_graph</code> you should see that
+it has an <code>igraph</code> class:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "igraph"</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="from-an-adjacency-matrix">From an adjacency matrix<a class="anchor" aria-label="anchor" href="#from-an-adjacency-matrix"></a>
 </h3>
 <p>A sample appropriate adjacency matrix is brought below:</p>
 <table class="table">
+<colgroup>
+<col width="14%">
+<col width="14%">
+<col width="14%">
+<col width="14%">
+<col width="14%">
+<col width="13%">
+<col width="13%">
+</colgroup>
 <thead><tr class="header">
 <th align="left"></th>
 <th align="right">LINC00891</th>
@@ -246,12 +458,12 @@ A sample appropriate data frame is brought below:</p>
 <ul>
 <li>Note that the matrix has the same number of rows and columns.</li>
 </ul>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Preparing the data</span>
-<span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">coexpression.adjacency</span>        
-
-<span class="co"># Reconstructing the graph</span>
-<span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_from_adjacency_matrix.html">graph_from_adjacency_matrix</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        </code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Preparing the data</span></span>
+<span><span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">coexpression.adjacency</span>        </span>
+<span></span>
+<span><span class="co"># Reconstructing the graph</span></span>
+<span><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_from_adjacency_matrix.html">graph_from_adjacency_matrix</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        </span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="from-an-incidence-matrix">From an incidence matrix<a class="anchor" aria-label="anchor" href="#from-an-incidence-matrix"></a>
@@ -301,215 +513,257 @@ A sample appropriate data frame is brought below:</p>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Reconstructing the graph</span>
-<span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_from_adjacency_matrix.html">graph_from_adjacency_matrix</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        </code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Reconstructing the graph</span></span>
+<span><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_from_adjacency_matrix.html">graph_from_adjacency_matrix</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        </span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="from-a-sif-file">From a SIF file<a class="anchor" aria-label="anchor" href="#from-a-sif-file"></a>
 </h3>
 <p>SIF is the common output format of the Cytoscape software.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Reconstructing the graph</span>
-<span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sif2igraph.html">sif2igraph</a></span><span class="op">(</span>Path <span class="op">=</span> <span class="st">"Sample_SIF.sif"</span><span class="op">)</span>        
-
-<span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span>
-<span class="co">#&gt; [1] "igraph"</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Reconstructing the graph</span></span>
+<span><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sif2igraph.html">sif2igraph</a></span><span class="op">(</span>Path <span class="op">=</span> <span class="st">"Sample_SIF.sif"</span><span class="op">)</span>        </span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "igraph"</span></span></code></pre></div>
 <p><a href="#top">Back to top</a></p>
 </div>
 </div>
 <div class="section level2">
 <h2 id="calculation-of-centrality-measures">Calculation of centrality measures<a class="anchor" aria-label="anchor" href="#calculation-of-centrality-measures"></a>
 </h2>
-<p>To calculate the centrality of nodes within a network several different options are available. The following sections describe how to obtain the names of network nodes and use different functions to calculate the centrality of nodes within a network. Although several centrality functions are provided, we recommend the <a href="#IVI">IVI</a> for the identification of the most <code>influential</code> nodes within a network.</p>
+<p>To calculate the centrality of nodes within a network several
+different options are available. The following sections describe how to
+obtain the names of network nodes and use different functions to
+calculate the centrality of nodes within a network. Although several
+centrality functions are provided, we recommend the <a href="#IVI">IVI</a> for the identification of the most
+<code>influential</code> nodes within a network.</p>
 <blockquote>
-<p>By the way, the results of all of the following centrality functions could be conveniently illustrated using the <a href="#NetVis">centrality-based network visualization function</a>.</p>
+<p>By the way, the results of all of the following centrality functions
+could be conveniently illustrated using the <a href="#NetVis">centrality-based network visualization function</a>.</p>
 </blockquote>
 <div class="section level3">
 <h3 id="network-vertices">Network vertices<a class="anchor" aria-label="anchor" href="#network-vertices"></a>
 </h3>
-<p>Network vertices (nodes) are required in order to calculate their centrality measures. Thus, before calculation of network centrality measures we need to obtain the name of required network vertices. To this end, we use the <code>V</code> function, which is obtained from the <code>igraph</code> package. However, you may provide a character vector of the name of your desired nodes manually.</p>
+<p>Network vertices (nodes) are required in order to calculate their
+centrality measures. Thus, before calculation of network centrality
+measures we need to obtain the name of required network vertices. To
+this end, we use the <code>V</code> function, which is obtained from the
+<code>igraph</code> package. However, you may provide a character vector
+of the name of your desired nodes manually.</p>
 <ul>
-<li>Note in many of the centrality index functions the entire network nodes are assessed if no vector of desired vertices is provided.</li>
+<li>Note in many of the centrality index functions the entire network
+nodes are assessed if no vector of desired vertices is provided.</li>
 </ul>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Preparing the data</span>
-<span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">coexpression.data</span>        
-
-<span class="co"># Reconstructing the graph</span>
-<span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_from_data_frame.html">graph_from_data_frame</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        
-
-<span class="co"># Extracting the vertices</span>
-<span class="va">My_graph_vertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/V.html">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span>        
-
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">My_graph_vertices</span><span class="op">)</span>
-<span class="co">#&gt; + 6/794 vertices, named, from 775cff6:</span>
-<span class="co">#&gt; [1] ADAMTS9-AS2 C8orf34-AS1 CADM3-AS1   FAM83A-AS1  FENDRR      LANCL1-AS1</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Preparing the data</span></span>
+<span><span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">coexpression.data</span>        </span>
+<span></span>
+<span><span class="co"># Reconstructing the graph</span></span>
+<span><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_from_data_frame.html">graph_from_data_frame</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        </span>
+<span></span>
+<span><span class="co"># Extracting the vertices</span></span>
+<span><span class="va">My_graph_vertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/V.html">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span>        </span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">My_graph_vertices</span><span class="op">)</span></span>
+<span><span class="co">#&gt; + 6/794 vertices, named, from 775cff6:</span></span>
+<span><span class="co">#&gt; [1] ADAMTS9-AS2 C8orf34-AS1 CADM3-AS1   FAM83A-AS1  FENDRR      LANCL1-AS1</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="degree-centrality">Degree centrality<a class="anchor" aria-label="anchor" href="#degree-centrality"></a>
 </h3>
-<p>Degree centrality is the most commonly used local centrality measure which could be calculated via the <code>degree</code> function obtained from the <code>igraph</code> package.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Preparing the data</span>
-<span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">coexpression.data</span>        
-
-<span class="co"># Reconstructing the graph</span>
-<span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_from_data_frame.html">graph_from_data_frame</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        
-
-<span class="co"># Extracting the vertices</span>
-<span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/V.html">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span>        
-
-<span class="co"># Calculating degree centrality</span>
-<span class="va">My_graph_degree</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/degree.html">degree</a></span><span class="op">(</span><span class="va">My_graph</span>, v <span class="op">=</span> <span class="va">GraphVertices</span>, normalized <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> 
-
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">My_graph_degree</span><span class="op">)</span>
-<span class="co">#&gt; ADAMTS9-AS2 C8orf34-AS1   CADM3-AS1  FAM83A-AS1      FENDRR  LANCL1-AS1 </span>
-<span class="co">#&gt;         172         121         168          26         189         176</span></code></pre></div>
-<p>Degree centrality could be also calculated for <em>directed</em> graphs via specifying the <code>mode</code> parameter.</p>
+<p>Degree centrality is the most commonly used local centrality measure
+which could be calculated via the <code>degree</code> function obtained
+from the <code>igraph</code> package.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Preparing the data</span></span>
+<span><span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">coexpression.data</span>        </span>
+<span></span>
+<span><span class="co"># Reconstructing the graph</span></span>
+<span><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_from_data_frame.html">graph_from_data_frame</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        </span>
+<span></span>
+<span><span class="co"># Extracting the vertices</span></span>
+<span><span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/V.html">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span>        </span>
+<span></span>
+<span><span class="co"># Calculating degree centrality</span></span>
+<span><span class="va">My_graph_degree</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/degree.html">degree</a></span><span class="op">(</span><span class="va">My_graph</span>, v <span class="op">=</span> <span class="va">GraphVertices</span>, normalized <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> </span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">My_graph_degree</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ADAMTS9-AS2 C8orf34-AS1   CADM3-AS1  FAM83A-AS1      FENDRR  LANCL1-AS1 </span></span>
+<span><span class="co">#&gt;         172         121         168          26         189         176</span></span></code></pre></div>
+<p>Degree centrality could be also calculated for <em>directed</em>
+graphs via specifying the <code>mode</code> parameter.</p>
 </div>
 <div class="section level3">
 <h3 id="betweenness-centrality">Betweenness centrality<a class="anchor" aria-label="anchor" href="#betweenness-centrality"></a>
 </h3>
-<p>Betweenness centrality, like degree centrality, is one of the most commonly used centrality measures but is representative of the global centrality of a node. This centrality metric could also be calculated using a function obtained from the <code>igraph</code> package.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Preparing the data</span>
-<span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">coexpression.data</span>        
-
-<span class="co"># Reconstructing the graph</span>
-<span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_from_data_frame.html">graph_from_data_frame</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        
-
-<span class="co"># Extracting the vertices</span>
-<span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/V.html">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span>        
-
-<span class="co"># Calculating betweenness centrality</span>
-<span class="va">My_graph_betweenness</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/betweenness.html">betweenness</a></span><span class="op">(</span><span class="va">My_graph</span>, v <span class="op">=</span> <span class="va">GraphVertices</span>,    
-                                    directed <span class="op">=</span> <span class="cn">FALSE</span>, normalized <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">My_graph_betweenness</span><span class="op">)</span>
-<span class="co">#&gt; ADAMTS9-AS2 C8orf34-AS1   CADM3-AS1  FAM83A-AS1      FENDRR  LANCL1-AS1 </span>
-<span class="co">#&gt;   21719.857   28185.199   26946.625    2940.467   33333.369   21830.511</span></code></pre></div>
-<p>Betweenness centrality could be also calculated for <em>directed</em> and/or <em>weighted</em> graphs via specifying the <code>directed</code> and <code>weights</code> parameters, respectively.</p>
+<p>Betweenness centrality, like degree centrality, is one of the most
+commonly used centrality measures but is representative of the global
+centrality of a node. This centrality metric could also be calculated
+using a function obtained from the <code>igraph</code> package.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Preparing the data</span></span>
+<span><span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">coexpression.data</span>        </span>
+<span></span>
+<span><span class="co"># Reconstructing the graph</span></span>
+<span><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_from_data_frame.html">graph_from_data_frame</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        </span>
+<span></span>
+<span><span class="co"># Extracting the vertices</span></span>
+<span><span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/V.html">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span>        </span>
+<span></span>
+<span><span class="co"># Calculating betweenness centrality</span></span>
+<span><span class="va">My_graph_betweenness</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/betweenness.html">betweenness</a></span><span class="op">(</span><span class="va">My_graph</span>, v <span class="op">=</span> <span class="va">GraphVertices</span>,    </span>
+<span>                                    directed <span class="op">=</span> <span class="cn">FALSE</span>, normalized <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">My_graph_betweenness</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ADAMTS9-AS2 C8orf34-AS1   CADM3-AS1  FAM83A-AS1      FENDRR  LANCL1-AS1 </span></span>
+<span><span class="co">#&gt;   21719.857   28185.199   26946.625    2940.467   33333.369   21830.511</span></span></code></pre></div>
+<p>Betweenness centrality could be also calculated for <em>directed</em>
+and/or <em>weighted</em> graphs via specifying the <code>directed</code>
+and <code>weights</code> parameters, respectively.</p>
 </div>
 <div class="section level3">
 <h3 id="neighborhood-connectivity">Neighborhood connectivity<a class="anchor" aria-label="anchor" href="#neighborhood-connectivity"></a>
 </h3>
-<p>Neighborhood connectivity is one of the other important centrality measures that reflect the semi-local centrality of a node. This centrality measure was first represented in a Science paper<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a> in 2002 and is for the first time calculable in R environment via the <code>influential</code> package.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Preparing the data</span>
-<span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">coexpression.data</span>        
-
-<span class="co"># Reconstructing the graph</span>
-<span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_from_data_frame.html">graph_from_data_frame</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        
-
-<span class="co"># Extracting the vertices</span>
-<span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/V.html">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span>        
-
-<span class="co"># Calculating neighborhood connectivity</span>
-<span class="va">neighrhood.co</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/neighborhood.connectivity.html">neighborhood.connectivity</a></span><span class="op">(</span>graph <span class="op">=</span> <span class="va">My_graph</span>,    
-                                           vertices <span class="op">=</span> <span class="va">GraphVertices</span>,
-                                           mode <span class="op">=</span> <span class="st">"all"</span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">neighrhood.co</span><span class="op">)</span>
-<span class="co">#&gt;  ADAMTS9-AS2 C8orf34-AS1   CADM3-AS1  FAM83A-AS1      FENDRR  LANCL1-AS1 </span>
-<span class="co">#&gt;   11.290698    4.983471    7.970238    3.000000   15.153439   13.465909</span></code></pre></div>
-<p>Neighborhood connectivity could be also calculated for <em>directed</em> graphs via specifying the <code>mode</code> parameter.</p>
+<p>Neighborhood connectivity is one of the other important centrality
+measures that reflect the semi-local centrality of a node. This
+centrality measure was first represented in a Science paper<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a> in 2002
+and is for the first time calculable in R environment via the
+<code>influential</code> package.</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Preparing the data</span></span>
+<span><span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">coexpression.data</span>        </span>
+<span></span>
+<span><span class="co"># Reconstructing the graph</span></span>
+<span><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_from_data_frame.html">graph_from_data_frame</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        </span>
+<span></span>
+<span><span class="co"># Extracting the vertices</span></span>
+<span><span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/V.html">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span>        </span>
+<span></span>
+<span><span class="co"># Calculating neighborhood connectivity</span></span>
+<span><span class="va">neighrhood.co</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/neighborhood.connectivity.html">neighborhood.connectivity</a></span><span class="op">(</span>graph <span class="op">=</span> <span class="va">My_graph</span>,    </span>
+<span>                                           vertices <span class="op">=</span> <span class="va">GraphVertices</span>,</span>
+<span>                                           mode <span class="op">=</span> <span class="st">"all"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">neighrhood.co</span><span class="op">)</span></span>
+<span><span class="co">#&gt;  ADAMTS9-AS2 C8orf34-AS1   CADM3-AS1  FAM83A-AS1      FENDRR  LANCL1-AS1 </span></span>
+<span><span class="co">#&gt;   11.290698    4.983471    7.970238    3.000000   15.153439   13.465909</span></span></code></pre></div>
+<p>Neighborhood connectivity could be also calculated for
+<em>directed</em> graphs via specifying the <code>mode</code>
+parameter.</p>
 </div>
 <div class="section level3">
 <h3 id="h-index">H-index<a class="anchor" aria-label="anchor" href="#h-index"></a>
 </h3>
-<p>H-index is H-index is another semi-local centrality measure that was inspired from its application in assessing the impact of researchers and is for the first time calculable in R environment via the <code>influential</code> package.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Preparing the data</span>
-<span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">coexpression.data</span>        
-
-<span class="co"># Reconstructing the graph</span>
-<span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_from_data_frame.html">graph_from_data_frame</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        
-
-<span class="co"># Extracting the vertices</span>
-<span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/V.html">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span>        
-
-<span class="co"># Calculating H-index</span>
-<span class="va">h.index</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/h_index.html">h_index</a></span><span class="op">(</span>graph <span class="op">=</span> <span class="va">My_graph</span>,    
-                   vertices <span class="op">=</span> <span class="va">GraphVertices</span>,
-                   mode <span class="op">=</span> <span class="st">"all"</span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">h.index</span><span class="op">)</span>
-<span class="co">#&gt; ADAMTS9-AS2 C8orf34-AS1   CADM3-AS1  FAM83A-AS1      FENDRR  LANCL1-AS1 </span>
-<span class="co">#&gt;          11           9          11           2          12          12</span></code></pre></div>
-<p>H-index could be also calculated for <em>directed</em> graphs via specifying the <code>mode</code> parameter.</p>
+<p>H-index is H-index is another semi-local centrality measure that was
+inspired from its application in assessing the impact of researchers and
+is for the first time calculable in R environment via the
+<code>influential</code> package.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Preparing the data</span></span>
+<span><span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">coexpression.data</span>        </span>
+<span></span>
+<span><span class="co"># Reconstructing the graph</span></span>
+<span><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_from_data_frame.html">graph_from_data_frame</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        </span>
+<span></span>
+<span><span class="co"># Extracting the vertices</span></span>
+<span><span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/V.html">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span>        </span>
+<span></span>
+<span><span class="co"># Calculating H-index</span></span>
+<span><span class="va">h.index</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/h_index.html">h_index</a></span><span class="op">(</span>graph <span class="op">=</span> <span class="va">My_graph</span>,    </span>
+<span>                   vertices <span class="op">=</span> <span class="va">GraphVertices</span>,</span>
+<span>                   mode <span class="op">=</span> <span class="st">"all"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">h.index</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ADAMTS9-AS2 C8orf34-AS1   CADM3-AS1  FAM83A-AS1      FENDRR  LANCL1-AS1 </span></span>
+<span><span class="co">#&gt;          11           9          11           2          12          12</span></span></code></pre></div>
+<p>H-index could be also calculated for <em>directed</em> graphs via
+specifying the <code>mode</code> parameter.</p>
 </div>
 <div class="section level3">
 <h3 id="local-h-index">Local H-index<a class="anchor" aria-label="anchor" href="#local-h-index"></a>
 </h3>
-<p>Local H-index (LH-index) is a semi-local centrality measure and an improved version of H-index centrality that leverages the H-index to the second order neighbors of a node and is for the first time calculable in R environment via the <code>influential</code> package.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Preparing the data</span>
-<span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">coexpression.data</span>        
-
-<span class="co"># Reconstructing the graph</span>
-<span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_from_data_frame.html">graph_from_data_frame</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        
-
-<span class="co"># Extracting the vertices</span>
-<span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/V.html">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span>        
-
-<span class="co"># Calculating Local H-index</span>
-<span class="va">lh.index</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/lh_index.html">lh_index</a></span><span class="op">(</span>graph <span class="op">=</span> <span class="va">My_graph</span>,    
-                   vertices <span class="op">=</span> <span class="va">GraphVertices</span>,
-                   mode <span class="op">=</span> <span class="st">"all"</span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">lh.index</span><span class="op">)</span>
-<span class="co">#&gt; ADAMTS9-AS2 C8orf34-AS1   CADM3-AS1  FAM83A-AS1      FENDRR  LANCL1-AS1 </span>
-<span class="co">#&gt;        1165         446         994          34        1289        1265</span></code></pre></div>
-<p>Local H-index could be also calculated for <em>directed</em> graphs via specifying the <code>mode</code> parameter.</p>
+<p>Local H-index (LH-index) is a semi-local centrality measure and an
+improved version of H-index centrality that leverages the H-index to the
+second order neighbors of a node and is for the first time calculable in
+R environment via the <code>influential</code> package.</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Preparing the data</span></span>
+<span><span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">coexpression.data</span>        </span>
+<span></span>
+<span><span class="co"># Reconstructing the graph</span></span>
+<span><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_from_data_frame.html">graph_from_data_frame</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        </span>
+<span></span>
+<span><span class="co"># Extracting the vertices</span></span>
+<span><span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/V.html">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span>        </span>
+<span></span>
+<span><span class="co"># Calculating Local H-index</span></span>
+<span><span class="va">lh.index</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/lh_index.html">lh_index</a></span><span class="op">(</span>graph <span class="op">=</span> <span class="va">My_graph</span>,    </span>
+<span>                   vertices <span class="op">=</span> <span class="va">GraphVertices</span>,</span>
+<span>                   mode <span class="op">=</span> <span class="st">"all"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">lh.index</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ADAMTS9-AS2 C8orf34-AS1   CADM3-AS1  FAM83A-AS1      FENDRR  LANCL1-AS1 </span></span>
+<span><span class="co">#&gt;        1165         446         994          34        1289        1265</span></span></code></pre></div>
+<p>Local H-index could be also calculated for <em>directed</em> graphs
+via specifying the <code>mode</code> parameter.</p>
 </div>
 <div class="section level3">
 <h3 id="collective-influence">Collective Influence<a class="anchor" aria-label="anchor" href="#collective-influence"></a>
 </h3>
-<p>Collective Influence (CI) is a global centrality measure that calculates the product of the reduced degree (degree - 1) of a node and the total reduced degree of all nodes at a distance d from the node. This centrality measure is for the first time provided in an R package.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Preparing the data</span>
-<span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">coexpression.data</span>        
-
-<span class="co"># Reconstructing the graph</span>
-<span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_from_data_frame.html">graph_from_data_frame</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        
-
-<span class="co"># Extracting the vertices</span>
-<span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/V.html">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span>        
-
-<span class="co"># Calculating Collective Influence</span>
-<span class="va">ci</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/collective.influence.html">collective.influence</a></span><span class="op">(</span>graph <span class="op">=</span> <span class="va">My_graph</span>,    
-                          vertices <span class="op">=</span> <span class="va">GraphVertices</span>,
-                          mode <span class="op">=</span> <span class="st">"all"</span>, d<span class="op">=</span><span class="fl">3</span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">ci</span><span class="op">)</span>
-<span class="co">#&gt; ADAMTS9-AS2 C8orf34-AS1   CADM3-AS1  FAM83A-AS1      FENDRR  LANCL1-AS1 </span>
-<span class="co">#&gt;        9918       70560       39078         675       10716        7350</span></code></pre></div>
-<p>Collective Influence could be also calculated for <em>directed</em> graphs via specifying the <code>mode</code> parameter.</p>
+<p>Collective Influence (CI) is a global centrality measure that
+calculates the product of the reduced degree (degree - 1) of a node and
+the total reduced degree of all nodes at a distance d from the node.
+This centrality measure is for the first time provided in an R
+package.</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Preparing the data</span></span>
+<span><span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">coexpression.data</span>        </span>
+<span></span>
+<span><span class="co"># Reconstructing the graph</span></span>
+<span><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_from_data_frame.html">graph_from_data_frame</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        </span>
+<span></span>
+<span><span class="co"># Extracting the vertices</span></span>
+<span><span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/V.html">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span>        </span>
+<span></span>
+<span><span class="co"># Calculating Collective Influence</span></span>
+<span><span class="va">ci</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/collective.influence.html">collective.influence</a></span><span class="op">(</span>graph <span class="op">=</span> <span class="va">My_graph</span>,    </span>
+<span>                          vertices <span class="op">=</span> <span class="va">GraphVertices</span>,</span>
+<span>                          mode <span class="op">=</span> <span class="st">"all"</span>, d<span class="op">=</span><span class="fl">3</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">ci</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ADAMTS9-AS2 C8orf34-AS1   CADM3-AS1  FAM83A-AS1      FENDRR  LANCL1-AS1 </span></span>
+<span><span class="co">#&gt;        9918       70560       39078         675       10716        7350</span></span></code></pre></div>
+<p>Collective Influence could be also calculated for <em>directed</em>
+graphs via specifying the <code>mode</code> parameter.</p>
 </div>
 <div class="section level3">
 <h3 id="clusterrank">ClusterRank<a class="anchor" aria-label="anchor" href="#clusterrank"></a>
 </h3>
-<p>ClusterRank is a local centrality measure that makes a connection between local and semi-local characteristics of a node and at the same time removes the negative effects of local clustering.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Preparing the data</span>
-<span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">coexpression.data</span>        
-
-<span class="co"># Reconstructing the graph</span>
-<span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_from_data_frame.html">graph_from_data_frame</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        
-
-<span class="co"># Extracting the vertices</span>
-<span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/V.html">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span>        
-
-<span class="co"># Calculating ClusterRank</span>
-<span class="va">cr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/clusterRank.html">clusterRank</a></span><span class="op">(</span>graph <span class="op">=</span> <span class="va">My_graph</span>,    
-                  vids <span class="op">=</span> <span class="va">GraphVertices</span>,
-                  directed <span class="op">=</span> <span class="cn">FALSE</span>, loops <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">cr</span><span class="op">)</span>
-<span class="co">#&gt; ADAMTS9-AS2 C8orf34-AS1   CADM3-AS1  FAM83A-AS1      FENDRR  LANCL1-AS1 </span>
-<span class="co">#&gt;   63.459812    5.185675   21.111776    1.280000  135.098278   81.255195</span></code></pre></div>
-<p>ClusterRank could be also calculated for <em>directed</em> graphs via specifying the <code>directed</code> parameter.</p>
+<p>ClusterRank is a local centrality measure that makes a connection
+between local and semi-local characteristics of a node and at the same
+time removes the negative effects of local clustering.</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Preparing the data</span></span>
+<span><span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">coexpression.data</span>        </span>
+<span></span>
+<span><span class="co"># Reconstructing the graph</span></span>
+<span><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_from_data_frame.html">graph_from_data_frame</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        </span>
+<span></span>
+<span><span class="co"># Extracting the vertices</span></span>
+<span><span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/V.html">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span>        </span>
+<span></span>
+<span><span class="co"># Calculating ClusterRank</span></span>
+<span><span class="va">cr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/clusterRank.html">clusterRank</a></span><span class="op">(</span>graph <span class="op">=</span> <span class="va">My_graph</span>,    </span>
+<span>                  vids <span class="op">=</span> <span class="va">GraphVertices</span>,</span>
+<span>                  directed <span class="op">=</span> <span class="cn">FALSE</span>, loops <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">cr</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ADAMTS9-AS2 C8orf34-AS1   CADM3-AS1  FAM83A-AS1      FENDRR  LANCL1-AS1 </span></span>
+<span><span class="co">#&gt;   63.459812    5.185675   21.111776    1.280000  135.098278   81.255195</span></span></code></pre></div>
+<p>ClusterRank could be also calculated for <em>directed</em> graphs via
+specifying the <code>directed</code> parameter.</p>
 <p><a href="#top">Back to top</a></p>
 </div>
 </div>
@@ -519,40 +773,51 @@ A sample appropriate data frame is brought below:</p>
 <div class="section level3">
 <h3 id="conditional-probability-of-deviation-from-means">Conditional probability of deviation from means<a class="anchor" aria-label="anchor" href="#conditional-probability-of-deviation-from-means"></a>
 </h3>
-<p>The function <code>cond.prob.analysis</code> assesses the conditional probability of deviation of two centrality measures (or any other two continuous variables) from their corresponding means in opposite directions.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Preparing the data</span>
-<span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">centrality.measures</span>        
-
-<span class="co"># Assessing the conditional probability</span>
-<span class="va">My.conditional.prob</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cond.prob.analysis.html">cond.prob.analysis</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">MyData</span>,       
-                                          nodes.colname <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>,
-                                          Desired.colname <span class="op">=</span> <span class="st">"BC"</span>,
-                                          Condition.colname <span class="op">=</span> <span class="st">"NC"</span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">My.conditional.prob</span><span class="op">)</span>
-<span class="co">#&gt; $ConditionalProbability</span>
-<span class="co">#&gt; [1] 51.61871</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $ConditionalProbability_split.half.sample</span>
-<span class="co">#&gt; [1] 51.73611</span></code></pre></div>
+<p>The function <code>cond.prob.analysis</code> assesses the conditional
+probability of deviation of two centrality measures (or any other two
+continuous variables) from their corresponding means in opposite
+directions.</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Preparing the data</span></span>
+<span><span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">centrality.measures</span>        </span>
+<span></span>
+<span><span class="co"># Assessing the conditional probability</span></span>
+<span><span class="va">My.conditional.prob</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cond.prob.analysis.html">cond.prob.analysis</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">MyData</span>,       </span>
+<span>                                          nodes.colname <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>,</span>
+<span>                                          Desired.colname <span class="op">=</span> <span class="st">"BC"</span>,</span>
+<span>                                          Condition.colname <span class="op">=</span> <span class="st">"NC"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">My.conditional.prob</span><span class="op">)</span></span>
+<span><span class="co">#&gt; $ConditionalProbability</span></span>
+<span><span class="co">#&gt; [1] 51.61871</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $ConditionalProbability_split.half.sample</span></span>
+<span><span class="co">#&gt; [1] 51.73611</span></span></code></pre></div>
 <ul>
-<li>As you can see in the results, the whole data is also randomly splitted into half in order to further test the validity of conditional probability assessments.</li>
+<li>As you can see in the results, the whole data is also randomly
+splitted into half in order to further test the validity of conditional
+probability assessments.</li>
 <li>
-<em>The higher the conditional probability the more two centrality measures behave in contrary manners</em>.</li>
+<em>The higher the conditional probability the more two centrality
+measures behave in contrary manners</em>.</li>
 </ul>
 </div>
 <div class="section level3">
 <h3 id="nature-of-association-considering-dependent-and-independent">Nature of association (considering dependent and independent)<a class="anchor" aria-label="anchor" href="#nature-of-association-considering-dependent-and-independent"></a>
 </h3>
-<p>The function <code>double.cent.assess</code> could be used to automatically assess both the distribution mode of centrality measures (two continuous variables) and the nature of their association. The analyses done through this formula are as follows:</p>
+<p>The function <code>double.cent.assess</code> could be used to
+automatically assess both the distribution mode of centrality measures
+(two continuous variables) and the nature of their association. The
+analyses done through this formula are as follows:</p>
 <ol style="list-style-type: decimal">
 <li>
 <strong>Normality assessment</strong>:
 <ul>
-<li>Variables with <strong>lower than</strong> 5000 observations: <em>Shapiro-Wilk test</em>
+<li>Variables with <strong>lower than</strong> 5000 observations:
+<em>Shapiro-Wilk test</em>
 </li>
-<li>Variables with <strong>over</strong> 5000 observations: <em>Anderson-Darling test</em> <br><br>
+<li>Variables with <strong>over</strong> 5000 observations:
+<em>Anderson-Darling test</em> <br><br>
 </li>
 </ul>
 </li>
@@ -560,14 +825,22 @@ A sample appropriate data frame is brought below:</p>
 <strong>Assessment of non-linear/non-monotonic correlation</strong>:
 <ul>
 <li>
-<em>Non-linearity assessment</em>: Fitting a generalized additive model (GAM) with integrated smoothness approximations using the <code>mgcv</code> package <br><br>
+<em>Non-linearity assessment</em>: Fitting a generalized additive
+model (GAM) with integrated smoothness approximations using the
+<code>mgcv</code> package <br><br>
 </li>
 <li>
-<em>Non-monotonicity assessment</em>: Comparing the squared coefficients of the correlation based on Spearman’s rank correlation analysis and ranked regression test with non-linear splines.
+<em>Non-monotonicity assessment</em>: Comparing the squared
+coefficients of the correlation based on Spearman’s rank correlation
+analysis and ranked regression test with non-linear splines.
 <ul>
-<li>Squared coefficient of Spearman’s rank correlation <strong>&gt;</strong> R-squared ranked regression with non-linear splines: <em>Monotonic</em>
+<li>Squared coefficient of Spearman’s rank correlation
+<strong>&gt;</strong> R-squared ranked regression with non-linear
+splines: <em>Monotonic</em>
 </li>
-<li>Squared coefficient of Spearman’s rank correlation <strong>&lt;</strong> R-squared ranked regression with non-linear splines: <em>Non-monotonic</em> <br><br>
+<li>Squared coefficient of Spearman’s rank correlation
+<strong>&lt;</strong> R-squared ranked regression with non-linear
+splines: <em>Non-monotonic</em> <br><br>
 </li>
 </ul>
 </li>
@@ -577,93 +850,126 @@ A sample appropriate data frame is brought below:</p>
 <strong>Dependence assessment</strong>:
 <ul>
 <li>
-<em>Hoeffding’s independence test</em>: Hoeffding’s test of independence is a test based on the population measure of deviation from independence which computes a D Statistics ranging from -0.5 to 1: Greater D values indicate a higher dependence between variables.</li>
+<em>Hoeffding’s independence test</em>: Hoeffding’s test of
+independence is a test based on the population measure of deviation from
+independence which computes a D Statistics ranging from -0.5 to 1:
+Greater D values indicate a higher dependence between variables.</li>
 <li>
-<em>Descriptive non-linear non-parametric dependence test</em>: This assessment is based on non-linear non-parametric statistics (NNS) which outputs a dependence value ranging from 0 to 1. For further details please refer to the NNS R package<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>: Greater values indicate a higher dependence between variables. <br><br>
+<em>Descriptive non-linear non-parametric dependence test</em>: This
+assessment is based on non-linear non-parametric statistics (NNS) which
+outputs a dependence value ranging from 0 to 1. For further details
+please refer to the NNS R package<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>: Greater values indicate a higher
+dependence between variables. <br><br>
 </li>
 </ul>
 </li>
 <li>
-<strong>Correlation assessment</strong>: As the correlation between most of the centrality measures follows a non-monotonic form, this part of the assessment is done based on the NNS statistics which itself calculates the correlation based on partial moments and outputs a correlation value ranging from -1 to 1. For further details please refer to the NNS R package. <br><br>
+<strong>Correlation assessment</strong>: As the correlation between
+most of the centrality measures follows a non-monotonic form, this part
+of the assessment is done based on the NNS statistics which itself
+calculates the correlation based on partial moments and outputs a
+correlation value ranging from -1 to 1. For further details please refer
+to the NNS R package. <br><br>
 </li>
 <li>
-<strong>Assessment of conditional probability of deviation from means</strong> This step assesses the conditional probability of deviation of two centrality measures (or any other two continuous variables) from their corresponding means in opposite directions.
+<strong>Assessment of conditional probability of deviation from
+means</strong> This step assesses the conditional probability of
+deviation of two centrality measures (or any other two continuous
+variables) from their corresponding means in opposite directions.
 <ul>
-<li>The independent centrality measure (variable) is considered as the condition variable and the other as the desired one.</li>
-<li>As you will see in the results, the whole data is also randomly splitted into half in order to further test the validity of conditional probability assessments.</li>
+<li>The independent centrality measure (variable) is considered as the
+condition variable and the other as the desired one.</li>
+<li>As you will see in the results, the whole data is also randomly
+splitted into half in order to further test the validity of conditional
+probability assessments.</li>
 <li>
-<em>The higher the conditional probability the more two centrality measures behave in contrary manners</em>.</li>
+<em>The higher the conditional probability the more two centrality
+measures behave in contrary manners</em>.</li>
 </ul>
 </li>
 </ol>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Preparing the data</span>
-<span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">centrality.measures</span>        
-
-<span class="co"># Association assessment</span>
-<span class="va">My.metrics.assessment</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/double.cent.assess.html">double.cent.assess</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">MyData</span>,       
-                                            nodes.colname <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>,
-                                            dependent.colname <span class="op">=</span> <span class="st">"BC"</span>,
-                                            independent.colname <span class="op">=</span> <span class="st">"NC"</span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">My.metrics.assessment</span><span class="op">)</span>
-<span class="co">#&gt; $Summary_statistics</span>
-<span class="co">#&gt;         BC NC</span>
-<span class="co">#&gt; Min.              0.000000000                   1.2000</span>
-<span class="co">#&gt; 1st Qu.           0.000000000                  66.0000</span>
-<span class="co">#&gt; Median            0.000000000                 156.0000</span>
-<span class="co">#&gt; Mean              0.005813357                 132.3443</span>
-<span class="co">#&gt; 3rd Qu.           0.000340000                 179.3214</span>
-<span class="co">#&gt; Max.              0.529464720                 192.0000</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $Normality_results</span>
-<span class="co">#&gt;                               p.value</span>
-<span class="co">#&gt; BC    1.415450e-50</span>
-<span class="co">#&gt; NC 9.411737e-30</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $Dependent_Normality</span>
-<span class="co">#&gt; [1] "Non-normally distributed"</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $Independent_Normality</span>
-<span class="co">#&gt; [1] "Non-normally distributed"</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $GAM_nonlinear.nonmonotonic.results</span>
-<span class="co">#&gt;      edf  p-value </span>
-<span class="co">#&gt; 8.992406 0.000000 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $Association_type</span>
-<span class="co">#&gt; [1] "nonlinear-nonmonotonic"</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $HoeffdingD_Statistic</span>
-<span class="co">#&gt;         D_statistic P_value</span>
-<span class="co">#&gt; Results  0.01770279   1e-08</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $Dependence_Significance</span>
-<span class="co">#&gt;                       Hoeffding</span>
-<span class="co">#&gt; Results Significantly dependent</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $NNS_dep_results</span>
-<span class="co">#&gt;         Correlation Dependence</span>
-<span class="co">#&gt; Results  -0.7948106  0.8647164</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $ConditionalProbability</span>
-<span class="co">#&gt; [1] 55.35386</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $ConditionalProbability_split.half.sample</span>
-<span class="co">#&gt; [1] 55.90331</span></code></pre></div>
-<p><strong>Note</strong>: It should also be noted that as a single regression line does not fit all models with a certain degree of freedom, based on the size and correlation mode of the variables provided, this function might return an error due to incapability of running step 2. In this case, you may follow each step manually or as an alternative run the other function named <code>double.cent.assess.noRegression</code> which does not perform any regression test and consequently it is not required to determine the dependent and independent variables.</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Preparing the data</span></span>
+<span><span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">centrality.measures</span>        </span>
+<span></span>
+<span><span class="co"># Association assessment</span></span>
+<span><span class="va">My.metrics.assessment</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/double.cent.assess.html">double.cent.assess</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">MyData</span>,       </span>
+<span>                                            nodes.colname <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>,</span>
+<span>                                            dependent.colname <span class="op">=</span> <span class="st">"BC"</span>,</span>
+<span>                                            independent.colname <span class="op">=</span> <span class="st">"NC"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">My.metrics.assessment</span><span class="op">)</span></span>
+<span><span class="co">#&gt; $Summary_statistics</span></span>
+<span><span class="co">#&gt;         BC NC</span></span>
+<span><span class="co">#&gt; Min.              0.000000000                   1.2000</span></span>
+<span><span class="co">#&gt; 1st Qu.           0.000000000                  66.0000</span></span>
+<span><span class="co">#&gt; Median            0.000000000                 156.0000</span></span>
+<span><span class="co">#&gt; Mean              0.005813357                 132.3443</span></span>
+<span><span class="co">#&gt; 3rd Qu.           0.000340000                 179.3214</span></span>
+<span><span class="co">#&gt; Max.              0.529464720                 192.0000</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $Normality_results</span></span>
+<span><span class="co">#&gt;                               p.value</span></span>
+<span><span class="co">#&gt; BC    1.415450e-50</span></span>
+<span><span class="co">#&gt; NC 9.411737e-30</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $Dependent_Normality</span></span>
+<span><span class="co">#&gt; [1] "Non-normally distributed"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $Independent_Normality</span></span>
+<span><span class="co">#&gt; [1] "Non-normally distributed"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $GAM_nonlinear.nonmonotonic.results</span></span>
+<span><span class="co">#&gt;      edf  p-value </span></span>
+<span><span class="co">#&gt; 8.992406 0.000000 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $Association_type</span></span>
+<span><span class="co">#&gt; [1] "nonlinear-nonmonotonic"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $HoeffdingD_Statistic</span></span>
+<span><span class="co">#&gt;         D_statistic P_value</span></span>
+<span><span class="co">#&gt; Results  0.01770279   1e-08</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $Dependence_Significance</span></span>
+<span><span class="co">#&gt;                       Hoeffding</span></span>
+<span><span class="co">#&gt; Results Significantly dependent</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $NNS_dep_results</span></span>
+<span><span class="co">#&gt;         Correlation Dependence</span></span>
+<span><span class="co">#&gt; Results  -0.7948106  0.8647164</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $ConditionalProbability</span></span>
+<span><span class="co">#&gt; [1] 55.35386</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $ConditionalProbability_split.half.sample</span></span>
+<span><span class="co">#&gt; [1] 55.90331</span></span></code></pre></div>
+<p><strong>Note</strong>: It should also be noted that as a single
+regression line does not fit all models with a certain degree of
+freedom, based on the size and correlation mode of the variables
+provided, this function might return an error due to incapability of
+running step 2. In this case, you may follow each step manually or as an
+alternative run the other function named
+<code>double.cent.assess.noRegression</code> which does not perform any
+regression test and consequently it is not required to determine the
+dependent and independent variables.</p>
 </div>
 <div class="section level3">
-<h3 id="nature-of-association-without-considering-dependence-direction">Nature of association (without considering dependence direction)<a class="anchor" aria-label="anchor" href="#nature-of-association-without-considering-dependence-direction"></a>
+<h3 id="nature-of-association-without-considering-dependence-direction">Nature of association (without considering dependence
+direction)<a class="anchor" aria-label="anchor" href="#nature-of-association-without-considering-dependence-direction"></a>
 </h3>
-<p>The function <code>double.cent.assess.noRegression</code> could be used to automatically assess both the distribution mode of centrality measures (two continuous variables) and the nature of their association. The analyses done through this formula are as follows:</p>
+<p>The function <code>double.cent.assess.noRegression</code> could be
+used to automatically assess both the distribution mode of centrality
+measures (two continuous variables) and the nature of their association.
+The analyses done through this formula are as follows:</p>
 <ol style="list-style-type: decimal">
 <li>
 <strong>Normality assessment</strong>:
 <ul>
-<li>Variables with <strong>lower than</strong> 5000 observations: <em>Shapiro-Wilk test</em>
+<li>Variables with <strong>lower than</strong> 5000 observations:
+<em>Shapiro-Wilk test</em>
 </li>
-<li>Variables with <strong>over</strong> 5000 observations: <em>Anderson–Darling test</em> <br><br>
+<li>Variables with <strong>over</strong> 5000 observations:
+<em>Anderson–Darling test</em> <br><br>
 </li>
 </ul>
 </li>
@@ -671,231 +977,304 @@ A sample appropriate data frame is brought below:</p>
 <strong>Dependence assessment</strong>:
 <ul>
 <li>
-<em>Hoeffding’s independence test</em>: Hoeffding’s test of independence is a test based on the population measure of deviation from independence which computes a D Statistics ranging from -0.5 to 1: Greater D values indicate a higher dependence between variables.</li>
+<em>Hoeffding’s independence test</em>: Hoeffding’s test of
+independence is a test based on the population measure of deviation from
+independence which computes a D Statistics ranging from -0.5 to 1:
+Greater D values indicate a higher dependence between variables.</li>
 <li>
-<em>Descriptive non-linear non-parametric dependence test</em>: This assessment is based on non-linear non-parametric statistics (NNS) which outputs a dependence value ranging from 0 to 1. For further details please refer to the NNS R package: Greater values indicate a higher dependence between variables. <br><br>
+<em>Descriptive non-linear non-parametric dependence test</em>: This
+assessment is based on non-linear non-parametric statistics (NNS) which
+outputs a dependence value ranging from 0 to 1. For further details
+please refer to the NNS R package: Greater values indicate a higher
+dependence between variables. <br><br>
 </li>
 </ul>
 </li>
 <li>
-<strong>Correlation assessment</strong>: As the correlation between most of the centrality measures follows a non-monotonic form, this part of the assessment is done based on the NNS statistics which itself calculates the correlation based on partial moments and outputs a correlation value ranging from -1 to 1. For further details please refer to the NNS R package. <br><br>
+<strong>Correlation assessment</strong>: As the correlation between
+most of the centrality measures follows a non-monotonic form, this part
+of the assessment is done based on the NNS statistics which itself
+calculates the correlation based on partial moments and outputs a
+correlation value ranging from -1 to 1. For further details please refer
+to the NNS R package. <br><br>
 </li>
 <li>
-<strong>Assessment of conditional probability of deviation from means</strong> This step assesses the conditional probability of deviation of two centrality measures (or any other two continuous variables) from their corresponding means in opposite directions.
+<strong>Assessment of conditional probability of deviation from
+means</strong> This step assesses the conditional probability of
+deviation of two centrality measures (or any other two continuous
+variables) from their corresponding means in opposite directions.
 <ul>
-<li>The <code>centrality2</code> variable is considered as the condition variable and the other (<code>centrality1</code>) as the desired one.</li>
-<li>As you will see in the results, the whole data is also randomly splitted into half in order to further test the validity of conditional probability assessments.</li>
+<li>The <code>centrality2</code> variable is considered as the condition
+variable and the other (<code>centrality1</code>) as the desired
+one.</li>
+<li>As you will see in the results, the whole data is also randomly
+splitted into half in order to further test the validity of conditional
+probability assessments.</li>
 <li>
-<em>The higher the conditional probability the more two centrality measures behave in contrary manners</em>.</li>
+<em>The higher the conditional probability the more two centrality
+measures behave in contrary manners</em>.</li>
 </ul>
 </li>
 </ol>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Preparing the data</span>
-<span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">centrality.measures</span>        
-
-<span class="co"># Association assessment</span>
-<span class="va">My.metrics.assessment</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/double.cent.assess.noRegression.html">double.cent.assess.noRegression</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">MyData</span>,       
-                                                         nodes.colname <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>,
-                                                         centrality1.colname <span class="op">=</span> <span class="st">"BC"</span>,
-                                                         centrality2.colname <span class="op">=</span> <span class="st">"NC"</span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">My.metrics.assessment</span><span class="op">)</span>
-<span class="co">#&gt; $Summary_statistics</span>
-<span class="co">#&gt;         BC NC</span>
-<span class="co">#&gt; Min.              0.000000000                   1.2000</span>
-<span class="co">#&gt; 1st Qu.           0.000000000                  66.0000</span>
-<span class="co">#&gt; Median            0.000000000                 156.0000</span>
-<span class="co">#&gt; Mean              0.005813357                 132.3443</span>
-<span class="co">#&gt; 3rd Qu.           0.000340000                 179.3214</span>
-<span class="co">#&gt; Max.              0.529464720                 192.0000</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $Normality_results</span>
-<span class="co">#&gt;                               p.value</span>
-<span class="co">#&gt; BC    1.415450e-50</span>
-<span class="co">#&gt; NC 9.411737e-30</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $Centrality1_Normality</span>
-<span class="co">#&gt; [1] "Non-normally distributed"</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $Centrality2_Normality</span>
-<span class="co">#&gt; [1] "Non-normally distributed"</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $HoeffdingD_Statistic</span>
-<span class="co">#&gt;         D_statistic P_value</span>
-<span class="co">#&gt; Results  0.01770279   1e-08</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $Dependence_Significance</span>
-<span class="co">#&gt;                       Hoeffding</span>
-<span class="co">#&gt; Results Significantly dependent</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $NNS_dep_results</span>
-<span class="co">#&gt;         Correlation Dependence</span>
-<span class="co">#&gt; Results  -0.7948106  0.8647164</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $ConditionalProbability</span>
-<span class="co">#&gt; [1] 55.35386</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $ConditionalProbability_split.half.sample</span>
-<span class="co">#&gt; [1] 55.68163</span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Preparing the data</span></span>
+<span><span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">centrality.measures</span>        </span>
+<span></span>
+<span><span class="co"># Association assessment</span></span>
+<span><span class="va">My.metrics.assessment</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/double.cent.assess.noRegression.html">double.cent.assess.noRegression</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">MyData</span>,       </span>
+<span>                                                         nodes.colname <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>,</span>
+<span>                                                         centrality1.colname <span class="op">=</span> <span class="st">"BC"</span>,</span>
+<span>                                                         centrality2.colname <span class="op">=</span> <span class="st">"NC"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">My.metrics.assessment</span><span class="op">)</span></span>
+<span><span class="co">#&gt; $Summary_statistics</span></span>
+<span><span class="co">#&gt;         BC NC</span></span>
+<span><span class="co">#&gt; Min.              0.000000000                   1.2000</span></span>
+<span><span class="co">#&gt; 1st Qu.           0.000000000                  66.0000</span></span>
+<span><span class="co">#&gt; Median            0.000000000                 156.0000</span></span>
+<span><span class="co">#&gt; Mean              0.005813357                 132.3443</span></span>
+<span><span class="co">#&gt; 3rd Qu.           0.000340000                 179.3214</span></span>
+<span><span class="co">#&gt; Max.              0.529464720                 192.0000</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $Normality_results</span></span>
+<span><span class="co">#&gt;                               p.value</span></span>
+<span><span class="co">#&gt; BC    1.415450e-50</span></span>
+<span><span class="co">#&gt; NC 9.411737e-30</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $Centrality1_Normality</span></span>
+<span><span class="co">#&gt; [1] "Non-normally distributed"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $Centrality2_Normality</span></span>
+<span><span class="co">#&gt; [1] "Non-normally distributed"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $HoeffdingD_Statistic</span></span>
+<span><span class="co">#&gt;         D_statistic P_value</span></span>
+<span><span class="co">#&gt; Results  0.01770279   1e-08</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $Dependence_Significance</span></span>
+<span><span class="co">#&gt;                       Hoeffding</span></span>
+<span><span class="co">#&gt; Results Significantly dependent</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $NNS_dep_results</span></span>
+<span><span class="co">#&gt;         Correlation Dependence</span></span>
+<span><span class="co">#&gt; Results  -0.7948106  0.8647164</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $ConditionalProbability</span></span>
+<span><span class="co">#&gt; [1] 55.35386</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $ConditionalProbability_split.half.sample</span></span>
+<span><span class="co">#&gt; [1] 55.68163</span></span></code></pre></div>
 <p><a href="#top">Back to top</a></p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="IVI">Identification of the most <code>influential</code> network nodes<a class="anchor" aria-label="anchor" href="#IVI"></a>
+<h2 id="IVI">Identification of the most <code>influential</code> network
+nodes<a class="anchor" aria-label="anchor" href="#IVI"></a>
 </h2>
-<p><strong>IVI</strong> : <code>IVI</code> is the first integrative method for the identification of network most influential nodes in a way that captures all network topological dimensions. The <code>IVI</code> formula integrates the most important local (i.e. degree centrality and ClusterRank), semi-local (i.e. neighborhood connectivity and local H-index) and global (i.e. betweenness centrality and collective influence) centrality measures in such a way that both synergizes their effects and removes their biases.</p>
+<p><strong>IVI</strong> : <code>IVI</code> is the first integrative
+method for the identification of network most influential nodes in a way
+that captures all network topological dimensions. The <code>IVI</code>
+formula integrates the most important local (i.e. degree centrality and
+ClusterRank), semi-local (i.e. neighborhood connectivity and local
+H-index) and global (i.e. betweenness centrality and collective
+influence) centrality measures in such a way that both synergizes their
+effects and removes their biases.</p>
 <div class="section level3">
 <h3 id="integrated-value-of-influence-ivi-from-centrality-measures">Integrated Value of Influence (IVI) from centrality measures<a class="anchor" aria-label="anchor" href="#integrated-value-of-influence-ivi-from-centrality-measures"></a>
 </h3>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Preparing the data</span>
-<span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">centrality.measures</span>        
-
-<span class="co"># Calculation of IVI</span>
-<span class="va">My.vertices.IVI</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ivi.from.indices.html">ivi.from.indices</a></span><span class="op">(</span>DC <span class="op">=</span> <span class="va">MyData</span><span class="op">$</span><span class="va">DC</span>,       
-                                   CR <span class="op">=</span> <span class="va">MyData</span><span class="op">$</span><span class="va">CR</span>,
-                                   NC <span class="op">=</span> <span class="va">MyData</span><span class="op">$</span><span class="va">NC</span>,
-                                   LH_index <span class="op">=</span> <span class="va">MyData</span><span class="op">$</span><span class="va">LH_index</span>,
-                                   BC <span class="op">=</span> <span class="va">MyData</span><span class="op">$</span><span class="va">BC</span>,
-                                   CI <span class="op">=</span> <span class="va">MyData</span><span class="op">$</span><span class="va">CI</span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">My.vertices.IVI</span><span class="op">)</span>
-<span class="co">#&gt; [1] 24.670056  8.344337 18.621049  1.017768 29.437028 33.512598</span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Preparing the data</span></span>
+<span><span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">centrality.measures</span>        </span>
+<span></span>
+<span><span class="co"># Calculation of IVI</span></span>
+<span><span class="va">My.vertices.IVI</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ivi.from.indices.html">ivi.from.indices</a></span><span class="op">(</span>DC <span class="op">=</span> <span class="va">MyData</span><span class="op">$</span><span class="va">DC</span>,       </span>
+<span>                                   CR <span class="op">=</span> <span class="va">MyData</span><span class="op">$</span><span class="va">CR</span>,</span>
+<span>                                   NC <span class="op">=</span> <span class="va">MyData</span><span class="op">$</span><span class="va">NC</span>,</span>
+<span>                                   LH_index <span class="op">=</span> <span class="va">MyData</span><span class="op">$</span><span class="va">LH_index</span>,</span>
+<span>                                   BC <span class="op">=</span> <span class="va">MyData</span><span class="op">$</span><span class="va">BC</span>,</span>
+<span>                                   CI <span class="op">=</span> <span class="va">MyData</span><span class="op">$</span><span class="va">CI</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">My.vertices.IVI</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 24.670056  8.344337 18.621049  1.017768 29.437028 33.512598</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="integrated-value-of-influence-ivi-from-a-graph">Integrated Value of Influence (IVI) from a graph<a class="anchor" aria-label="anchor" href="#integrated-value-of-influence-ivi-from-a-graph"></a>
 </h3>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Preparing the data</span>
-<span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">coexpression.data</span>        
-
-<span class="co"># Reconstructing the graph</span>
-<span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_from_data_frame.html">graph_from_data_frame</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        
-
-<span class="co"># Extracting the vertices</span>
-<span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/V.html">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span>        
-
-<span class="co"># Calculation of IVI</span>
-<span class="va">My.vertices.IVI</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ivi.html">ivi</a></span><span class="op">(</span>graph <span class="op">=</span> <span class="va">My_graph</span>, vertices <span class="op">=</span> <span class="va">GraphVertices</span>, 
-                       weights <span class="op">=</span> <span class="cn">NULL</span>, directed <span class="op">=</span> <span class="cn">FALSE</span>, mode <span class="op">=</span> <span class="st">"all"</span>,
-                       loops <span class="op">=</span> <span class="cn">TRUE</span>, d <span class="op">=</span> <span class="fl">3</span>, scaled <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">My.vertices.IVI</span><span class="op">)</span>
-<span class="co">#&gt; ADAMTS9-AS2 C8orf34-AS1   CADM3-AS1  FAM83A-AS1      FENDRR  LANCL1-AS1 </span>
-<span class="co">#&gt;    39.53878    19.94999    38.20524     1.12371   100.00000    47.49356</span></code></pre></div>
-<p>IVI could be also calculated for <em>directed</em> and/or <em>weighted</em> graphs via specifying the <code>directed</code>, <code>mode</code>, and <code>weights</code> parameters.</p>
-<p>Check out <a href="https://doi.org/10.1016/j.patter.2020.100052" class="external-link">our paper</a><a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a> for a more complete description of the IVI formula and all of its underpinning methods and analyses.</p>
-<p>The following tutorial video demonstrates how to simply calculate the IVI value of all of the nodes within a network.</p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Preparing the data</span></span>
+<span><span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">coexpression.data</span>        </span>
+<span></span>
+<span><span class="co"># Reconstructing the graph</span></span>
+<span><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_from_data_frame.html">graph_from_data_frame</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        </span>
+<span></span>
+<span><span class="co"># Extracting the vertices</span></span>
+<span><span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/V.html">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span>        </span>
+<span></span>
+<span><span class="co"># Calculation of IVI</span></span>
+<span><span class="va">My.vertices.IVI</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ivi.html">ivi</a></span><span class="op">(</span>graph <span class="op">=</span> <span class="va">My_graph</span>, vertices <span class="op">=</span> <span class="va">GraphVertices</span>, </span>
+<span>                       weights <span class="op">=</span> <span class="cn">NULL</span>, directed <span class="op">=</span> <span class="cn">FALSE</span>, mode <span class="op">=</span> <span class="st">"all"</span>,</span>
+<span>                       loops <span class="op">=</span> <span class="cn">TRUE</span>, d <span class="op">=</span> <span class="fl">3</span>, scaled <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">My.vertices.IVI</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ADAMTS9-AS2 C8orf34-AS1   CADM3-AS1  FAM83A-AS1      FENDRR  LANCL1-AS1 </span></span>
+<span><span class="co">#&gt;    39.53878    19.94999    38.20524     1.12371   100.00000    47.49356</span></span></code></pre></div>
+<p>IVI could be also calculated for <em>directed</em> and/or
+<em>weighted</em> graphs via specifying the <code>directed</code>,
+<code>mode</code>, and <code>weights</code> parameters.</p>
+<p>Check out <a href="https://doi.org/10.1016/j.patter.2020.100052" class="external-link">our
+paper</a><a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a> for a more complete description of the IVI
+formula and all of its underpinning methods and analyses.</p>
+<p>The following tutorial video demonstrates how to simply calculate the
+IVI value of all of the nodes within a network.</p>
 <iframe width="100%" height="400" src="https://www.youtube.com/embed/nF9qe4dvuJc" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen data-external="1">
 </iframe>
 </div>
 <div class="section level3">
 <h3 id="NetVis">Network visualization<a class="anchor" aria-label="anchor" href="#NetVis"></a>
 </h3>
-<p>The <code>cent_network.vis</code> is a function for the visualization of a network based on applying a centrality measure to the size and color of network nodes. The centrality of network nodes could be calculated by any means and based on any centrality index. Here, we demonstrate the visualization of a network according to <a href="#IVI">IVI</a> values.</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Reconstructing the graph</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">70</span><span class="op">)</span>
-<span class="va">My_graph</span> <span class="op">&lt;-</span>  <span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/igraph/man/sample_gnm.html" class="external-link">sample_gnm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">50</span>, m <span class="op">=</span> <span class="fl">120</span>, directed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-
-<span class="co"># Calculating the IVI values</span>
-<span class="va">My_graph_IVI</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ivi.html">ivi</a></span><span class="op">(</span><span class="va">My_graph</span>, directed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-
-<span class="co"># Visualizing the graph based on IVI values</span>
-<span class="va">My_graph_IVI_Vis</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cent_network.vis.html">cent_network.vis</a></span><span class="op">(</span>graph <span class="op">=</span> <span class="va">My_graph</span>,
-                                     cent.metric <span class="op">=</span> <span class="va">My_graph_IVI</span>,
-                                     directed <span class="op">=</span> <span class="cn">TRUE</span>,
-                                     plot.title <span class="op">=</span> <span class="st">"IVI-based Network"</span>,
-                                     legend.title <span class="op">=</span> <span class="st">"IVI value"</span><span class="op">)</span>
-
-<span class="va">My_graph_IVI_Vis</span></code></pre></div>
+<p>The <code>cent_network.vis</code> is a function for the visualization
+of a network based on applying a centrality measure to the size and
+color of network nodes. The centrality of network nodes could be
+calculated by any means and based on any centrality index. Here, we
+demonstrate the visualization of a network according to <a href="#IVI">IVI</a> values.</p>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Reconstructing the graph</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">70</span><span class="op">)</span></span>
+<span><span class="va">My_graph</span> <span class="op">&lt;-</span>  <span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/igraph/man/sample_gnm.html" class="external-link">sample_gnm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">50</span>, m <span class="op">=</span> <span class="fl">120</span>, directed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Calculating the IVI values</span></span>
+<span><span class="va">My_graph_IVI</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ivi.html">ivi</a></span><span class="op">(</span><span class="va">My_graph</span>, directed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Visualizing the graph based on IVI values</span></span>
+<span><span class="va">My_graph_IVI_Vis</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cent_network.vis.html">cent_network.vis</a></span><span class="op">(</span>graph <span class="op">=</span> <span class="va">My_graph</span>,</span>
+<span>                                     cent.metric <span class="op">=</span> <span class="va">My_graph_IVI</span>,</span>
+<span>                                     directed <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>                                     plot.title <span class="op">=</span> <span class="st">"IVI-based Network"</span>,</span>
+<span>                                     legend.title <span class="op">=</span> <span class="st">"IVI value"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">My_graph_IVI_Vis</span></span></code></pre></div>
 <p><img src="../reference/figures/IVI_Net_Vis.png"></p>
-<p>The above figure illustrates a simple use case of the function <code>cent_network.vis</code>. You can apply this function to directed/undirected and/or weighted/unweighted networks. Also, a complete flexibility (list of arguments) have been provided for the adjustment of colors, transparencies, sizes, titles, etc. Additionally, several different layouts have been provided that could be conveniently applied to a network.</p>
+<p>The above figure illustrates a simple use case of the function
+<code>cent_network.vis</code>. You can apply this function to
+directed/undirected and/or weighted/unweighted networks. Also, a
+complete flexibility (list of arguments) have been provided for the
+adjustment of colors, transparencies, sizes, titles, etc. Additionally,
+several different layouts have been provided that could be conveniently
+applied to a network.</p>
 <blockquote>
-<p>In the case of highly crowded networks, the “<strong>grid</strong>” layout would be most appropriate.</p>
+<p>In the case of highly crowded networks, the “<strong>grid</strong>”
+layout would be most appropriate.</p>
 </blockquote>
-<p>The following tutorial video demonstrates how to visualize a network based on the centrality of nodes (e.g. their <code>IVI</code> values).</p>
+<p>The following tutorial video demonstrates how to visualize a network
+based on the centrality of nodes (e.g. their <code>IVI</code>
+values).</p>
 <iframe width="100%" height="400" src="https://www.youtube.com/embed/kCmEdOoIUD4" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen data-external="1">
 </iframe>
 </div>
 <div class="section level3">
 <h3 id="IVIShiny">IVI shiny app<a class="anchor" aria-label="anchor" href="#IVIShiny"></a>
 </h3>
-<p>A shiny app has also been developed for the calculation of IVI as well as IVI-based network visualization, which is accessible using the following command.<br><code>influential::runShinyApp("IVI")</code><br>
-You can also access the shiny app online at the <a href="https://influential.erc.monash.edu/" class="external-link">Influential Software Package server</a>.</p>
+<p>A shiny app has also been developed for the calculation of IVI as
+well as IVI-based network visualization, which is accessible using the
+following command.<br><code>influential::runShinyApp("IVI")</code><br>
+You can also access the shiny app online at the <a href="https://influential.erc.monash.edu/" class="external-link">Influential Software Package
+server</a>.</p>
 <p><a href="#top">Back to top</a></p>
 </div>
 </div>
 <div class="section level2">
 <h2 id="SpreadingScore">Identification of the most important network spreaders<a class="anchor" aria-label="anchor" href="#SpreadingScore"></a>
 </h2>
-<p>Sometimes we seek to identify not necessarily the most influential nodes but the nodes with most potential in spreading of information throughout the network.</p>
-<p><strong>Spreading score</strong> : <code>spreading.score</code> is an integrative score made up of four different centrality measures including ClusterRank, neighborhood connectivity, betweenness centrality, and collective influence. Also, Spreading score reflects the spreading potential of each node within a network and is one of the major components of the <a href="#IVI"><code>IVI</code></a>.</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Preparing the data</span>
-<span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">coexpression.data</span>        
-
-<span class="co"># Reconstructing the graph</span>
-<span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_from_data_frame.html">graph_from_data_frame</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        
-
-<span class="co"># Extracting the vertices</span>
-<span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/V.html">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span>        
-
-<span class="co"># Calculation of Spreading score</span>
-<span class="va">Spreading.score</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spreading.score.html">spreading.score</a></span><span class="op">(</span>graph <span class="op">=</span> <span class="va">My_graph</span>,     
-                                   vertices <span class="op">=</span> <span class="va">GraphVertices</span>, 
-                                   weights <span class="op">=</span> <span class="cn">NULL</span>, directed <span class="op">=</span> <span class="cn">FALSE</span>, mode <span class="op">=</span> <span class="st">"all"</span>,
-                                   loops <span class="op">=</span> <span class="cn">TRUE</span>, d <span class="op">=</span> <span class="fl">3</span>, scaled <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">Spreading.score</span><span class="op">)</span>
-<span class="co">#&gt; ADAMTS9-AS2 C8orf34-AS1   CADM3-AS1  FAM83A-AS1      FENDRR  LANCL1-AS1 </span>
-<span class="co">#&gt;   42.932497   38.094111   45.114648    1.587262  100.000000   49.193292 </span></code></pre></div>
-<p>Spreading score could be also calculated for <em>directed</em> and/or <em>weighted</em> graphs via specifying the <code>directed</code>, <code>mode</code>, and <code>weights</code> parameters. The results could be conveniently illustrated using the <a href="#NetVis">centrality-based network visualization function</a>.</p>
+<p>Sometimes we seek to identify not necessarily the most influential
+nodes but the nodes with most potential in spreading of information
+throughout the network.</p>
+<p><strong>Spreading score</strong> : <code>spreading.score</code> is an
+integrative score made up of four different centrality measures
+including ClusterRank, neighborhood connectivity, betweenness
+centrality, and collective influence. Also, Spreading score reflects the
+spreading potential of each node within a network and is one of the
+major components of the <a href="#IVI"><code>IVI</code></a>.</p>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Preparing the data</span></span>
+<span><span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">coexpression.data</span>        </span>
+<span></span>
+<span><span class="co"># Reconstructing the graph</span></span>
+<span><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_from_data_frame.html">graph_from_data_frame</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        </span>
+<span></span>
+<span><span class="co"># Extracting the vertices</span></span>
+<span><span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/V.html">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span>        </span>
+<span></span>
+<span><span class="co"># Calculation of Spreading score</span></span>
+<span><span class="va">Spreading.score</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spreading.score.html">spreading.score</a></span><span class="op">(</span>graph <span class="op">=</span> <span class="va">My_graph</span>,     </span>
+<span>                                   vertices <span class="op">=</span> <span class="va">GraphVertices</span>, </span>
+<span>                                   weights <span class="op">=</span> <span class="cn">NULL</span>, directed <span class="op">=</span> <span class="cn">FALSE</span>, mode <span class="op">=</span> <span class="st">"all"</span>,</span>
+<span>                                   loops <span class="op">=</span> <span class="cn">TRUE</span>, d <span class="op">=</span> <span class="fl">3</span>, scaled <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">Spreading.score</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ADAMTS9-AS2 C8orf34-AS1   CADM3-AS1  FAM83A-AS1      FENDRR  LANCL1-AS1 </span></span>
+<span><span class="co">#&gt;   42.932497   38.094111   45.114648    1.587262  100.000000   49.193292 </span></span></code></pre></div>
+<p>Spreading score could be also calculated for <em>directed</em> and/or
+<em>weighted</em> graphs via specifying the <code>directed</code>,
+<code>mode</code>, and <code>weights</code> parameters. The results
+could be conveniently illustrated using the <a href="#NetVis">centrality-based network visualization function</a>.</p>
 <p><a href="#top">Back to top</a></p>
 </div>
 <div class="section level2">
 <h2 id="HubnessScore">Identification of the most important network hubs<a class="anchor" aria-label="anchor" href="#HubnessScore"></a>
 </h2>
-<p>In some cases we want to identify not the nodes with the most sovereignty in their surrounding local environments.</p>
-<p><strong>Hubness score</strong> : <code>hubness.score</code> is an integrative score made up of two different centrality measures including degree centrality and local H-index. Also, Hubness score reflects the power of each node in its surrounding environment and is one of the major components of the <a href="#IVI"><code>IVI</code></a>.</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Preparing the data</span>
-<span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">coexpression.data</span>        
-
-<span class="co"># Reconstructing the graph</span>
-<span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_from_data_frame.html">graph_from_data_frame</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        
-
-<span class="co"># Extracting the vertices</span>
-<span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/V.html">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span>        
-
-<span class="co"># Calculation of Hubness score</span>
-<span class="va">Hubness.score</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hubness.score.html">hubness.score</a></span><span class="op">(</span>graph <span class="op">=</span> <span class="va">My_graph</span>,     
-                                   vertices <span class="op">=</span> <span class="va">GraphVertices</span>, 
-                                   directed <span class="op">=</span> <span class="cn">FALSE</span>, mode <span class="op">=</span> <span class="st">"all"</span>,
-                                   loops <span class="op">=</span> <span class="cn">TRUE</span>, scaled <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">Hubness.score</span><span class="op">)</span>
-<span class="co">#&gt; ADAMTS9-AS2 C8orf34-AS1   CADM3-AS1  FAM83A-AS1      FENDRR  LANCL1-AS1 </span>
-<span class="co">#&gt;   84.299719   46.741660   77.441514    8.437142   92.870451   88.734131</span></code></pre></div>
-<p>Spreading score could be also calculated for <em>directed</em> graphs via specifying the <code>directed</code> and <code>mode</code> parameters. The results could be conveniently illustrated using the <a href="#NetVis">centrality-based network visualization function</a>.</p>
+<p>In some cases we want to identify not the nodes with the most
+sovereignty in their surrounding local environments.</p>
+<p><strong>Hubness score</strong> : <code>hubness.score</code> is an
+integrative score made up of two different centrality measures including
+degree centrality and local H-index. Also, Hubness score reflects the
+power of each node in its surrounding environment and is one of the
+major components of the <a href="#IVI"><code>IVI</code></a>.</p>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Preparing the data</span></span>
+<span><span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">coexpression.data</span>        </span>
+<span></span>
+<span><span class="co"># Reconstructing the graph</span></span>
+<span><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_from_data_frame.html">graph_from_data_frame</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        </span>
+<span></span>
+<span><span class="co"># Extracting the vertices</span></span>
+<span><span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/V.html">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span>        </span>
+<span></span>
+<span><span class="co"># Calculation of Hubness score</span></span>
+<span><span class="va">Hubness.score</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hubness.score.html">hubness.score</a></span><span class="op">(</span>graph <span class="op">=</span> <span class="va">My_graph</span>,     </span>
+<span>                                   vertices <span class="op">=</span> <span class="va">GraphVertices</span>, </span>
+<span>                                   directed <span class="op">=</span> <span class="cn">FALSE</span>, mode <span class="op">=</span> <span class="st">"all"</span>,</span>
+<span>                                   loops <span class="op">=</span> <span class="cn">TRUE</span>, scaled <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">Hubness.score</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ADAMTS9-AS2 C8orf34-AS1   CADM3-AS1  FAM83A-AS1      FENDRR  LANCL1-AS1 </span></span>
+<span><span class="co">#&gt;   84.299719   46.741660   77.441514    8.437142   92.870451   88.734131</span></span></code></pre></div>
+<p>Spreading score could be also calculated for <em>directed</em> graphs
+via specifying the <code>directed</code> and <code>mode</code>
+parameters. The results could be conveniently illustrated using the <a href="#NetVis">centrality-based network visualization function</a>.</p>
 <p><a href="#top">Back to top</a></p>
 </div>
 <div class="section level2">
-<h2 id="SIRIR">Ranking the influence of nodes on the topology of a network based on the <code>SIRIR</code> model<a class="anchor" aria-label="anchor" href="#SIRIR"></a>
+<h2 id="SIRIR">Ranking the influence of nodes on the topology of a network based on
+the <code>SIRIR</code> model<a class="anchor" aria-label="anchor" href="#SIRIR"></a>
 </h2>
-<p><strong>SIRIR</strong> : <code>SIRIR</code> is achieved by the integration of susceptible-infected-recovered (SIR) model with the leave-one-out cross validation technique and ranks network nodes based on their true universal influence on the network topology and spread of information. One of the applications of this function is the assessment of performance of a novel algorithm in identification of network influential nodes.</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Reconstructing the graph</span>
-<span class="va">My_graph</span> <span class="op">&lt;-</span>  <span class="fu"><a href="../reference/sif2igraph.html">sif2igraph</a></span><span class="op">(</span>Path <span class="op">=</span> <span class="st">"Sample_SIF.sif"</span><span class="op">)</span>       
-
-<span class="co"># Extracting the vertices</span>
-<span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/V.html">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span>        
-
-<span class="co"># Calculation of influence rank</span>
-<span class="va">Influence.Ranks</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sirir.html">sirir</a></span><span class="op">(</span>graph <span class="op">=</span> <span class="va">My_graph</span>,     
-                                   vertices <span class="op">=</span> <span class="va">GraphVertices</span>, 
-                                   beta <span class="op">=</span> <span class="fl">0.5</span>, gamma <span class="op">=</span> <span class="fl">1</span>, no.sim <span class="op">=</span> <span class="fl">10</span>, seed <span class="op">=</span> <span class="fl">1234</span><span class="op">)</span></code></pre></div>
+<p><strong>SIRIR</strong> : <code>SIRIR</code> is achieved by the
+integration of susceptible-infected-recovered (SIR) model with the
+leave-one-out cross validation technique and ranks network nodes based
+on their true universal influence on the network topology and spread of
+information. One of the applications of this function is the assessment
+of performance of a novel algorithm in identification of network
+influential nodes.</p>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Reconstructing the graph</span></span>
+<span><span class="va">My_graph</span> <span class="op">&lt;-</span>  <span class="fu"><a href="../reference/sif2igraph.html">sif2igraph</a></span><span class="op">(</span>Path <span class="op">=</span> <span class="st">"Sample_SIF.sif"</span><span class="op">)</span>       </span>
+<span></span>
+<span><span class="co"># Extracting the vertices</span></span>
+<span><span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/V.html">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span>        </span>
+<span></span>
+<span><span class="co"># Calculation of influence rank</span></span>
+<span><span class="va">Influence.Ranks</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sirir.html">sirir</a></span><span class="op">(</span>graph <span class="op">=</span> <span class="va">My_graph</span>,     </span>
+<span>                                   vertices <span class="op">=</span> <span class="va">GraphVertices</span>, </span>
+<span>                                   beta <span class="op">=</span> <span class="fl">0.5</span>, gamma <span class="op">=</span> <span class="fl">1</span>, no.sim <span class="op">=</span> <span class="fl">10</span>, seed <span class="op">=</span> <span class="fl">1234</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
 <th align="left"></th>
@@ -958,55 +1337,85 @@ You can also access the shiny app online at the <a href="https://influential.erc
 <p><a href="#top">Back to top</a></p>
 </div>
 <div class="section level2">
-<h2 id="ExIR">Experimental data-based classification and ranking of top candidate features<a class="anchor" aria-label="anchor" href="#ExIR"></a>
+<h2 id="ExIR">Experimental data-based classification and ranking of top candidate
+features<a class="anchor" aria-label="anchor" href="#ExIR"></a>
 </h2>
-<p><strong>ExIR</strong> : <code>ExIR</code> is a model for the classification and ranking of top candidate features. The input data could come from any type of experiment such as transcriptomics and proteomics. This model is based on multi-level filtration and scoring based on several supervised and unsupervised analyses followed by the classification and integrative ranking of top candidate features. Using this function and depending on the input data and specified arguments, the user can get a graph object and one to four tables including:</p>
+<p><strong>ExIR</strong> : <code>ExIR</code> is a model for the
+classification and ranking of top candidate features. The input data
+could come from any type of experiment such as transcriptomics and
+proteomics. This model is based on multi-level filtration and scoring
+based on several supervised and unsupervised analyses followed by the
+classification and integrative ranking of top candidate features. Using
+this function and depending on the input data and specified arguments,
+the user can get a graph object and one to four tables including:</p>
 <ul>
 <li>
-<strong>Drivers</strong>: Prioritized drivers are supposed to have the highest impact on the progression of a biological process or disease under investigation.</li>
+<strong>Drivers</strong>: Prioritized drivers are supposed to have
+the highest impact on the progression of a biological process or disease
+under investigation.</li>
 <li>
-<strong>Biomarkers</strong>: Prioritized biomarkers are supposed to have the highest sensitivity to different conditions under investigation and the severity of each condition.</li>
+<strong>Biomarkers</strong>: Prioritized biomarkers are supposed to
+have the highest sensitivity to different conditions under investigation
+and the severity of each condition.</li>
 <li>
-<strong>DE-mediators</strong>: Prioritized DE-mediators are those features that are differentially expressed/abundant but in a fluctuating manner and play mediatory roles between drivers.</li>
+<strong>DE-mediators</strong>: Prioritized DE-mediators are those
+features that are differentially expressed/abundant but in a fluctuating
+manner and play mediatory roles between drivers.</li>
 <li>
-<strong>nonDE-mediators</strong>: Prioritized nonDE-mediators are those features that are not differentially expressed/abundant but have associations with and play mediatory roles between drivers.</li>
+<strong>nonDE-mediators</strong>: Prioritized nonDE-mediators are
+those features that are not differentially expressed/abundant but have
+associations with and play mediatory roles between drivers.</li>
 </ul>
-<p>First, prepare your data. Suppose we have the data for time-course transcriptomics and we have previously performed differential expression analysis for each step-wise pair of time-points. Also, we have performed trajectory analysis to identify the genes that have significant alterations across all time-points.</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Prepare sample data</span>
-<span class="va">gene.names</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"gene"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">20000</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">"_"</span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">60</span><span class="op">)</span>
-<span class="va">tp2.vs.tp1.DEGs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>logFC <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">700</span>, mean <span class="op">=</span> <span class="fl">2</span>, sd <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>,
-                              FDR <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">700</span>, min <span class="op">=</span> <span class="fl">0.0001</span>, max <span class="op">=</span> <span class="fl">0.049</span><span class="op">)</span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">60</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">tp2.vs.tp1.DEGs</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">gene.names</span>, size <span class="op">=</span> <span class="fl">700</span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">70</span><span class="op">)</span>
-<span class="va">tp3.vs.tp2.DEGs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>logFC <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">1300</span>, mean <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>, sd <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>,
-                              FDR <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">1300</span>, min <span class="op">=</span> <span class="fl">0.0011</span>, max <span class="op">=</span> <span class="fl">0.039</span><span class="op">)</span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">70</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">tp3.vs.tp2.DEGs</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">gene.names</span>, size <span class="op">=</span> <span class="fl">1300</span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">80</span><span class="op">)</span>
-<span class="va">regression.data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>R_squared <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">800</span>, min <span class="op">=</span> <span class="fl">0.1</span>, max <span class="op">=</span> <span class="fl">0.85</span><span class="op">)</span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">80</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">regression.data</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">gene.names</span>, size <span class="op">=</span> <span class="fl">800</span><span class="op">)</span></code></pre></div>
+<p>First, prepare your data. Suppose we have the data for time-course
+transcriptomics and we have previously performed differential expression
+analysis for each step-wise pair of time-points. Also, we have performed
+trajectory analysis to identify the genes that have significant
+alterations across all time-points.</p>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Prepare sample data</span></span>
+<span><span class="va">gene.names</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"gene"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">2000</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">"_"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">60</span><span class="op">)</span></span>
+<span><span class="va">tp2.vs.tp1.DEGs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>logFC <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">700</span>, mean <span class="op">=</span> <span class="fl">2</span>, sd <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>,</span>
+<span>                              FDR <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">700</span>, min <span class="op">=</span> <span class="fl">0.0001</span>, max <span class="op">=</span> <span class="fl">0.049</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">60</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">tp2.vs.tp1.DEGs</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">gene.names</span>, size <span class="op">=</span> <span class="fl">700</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">70</span><span class="op">)</span></span>
+<span><span class="va">tp3.vs.tp2.DEGs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>logFC <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">1300</span>, mean <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>, sd <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>,</span>
+<span>                              FDR <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">1300</span>, min <span class="op">=</span> <span class="fl">0.0011</span>, max <span class="op">=</span> <span class="fl">0.039</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">70</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">tp3.vs.tp2.DEGs</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">gene.names</span>, size <span class="op">=</span> <span class="fl">1300</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">80</span><span class="op">)</span></span>
+<span><span class="va">regression.data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>R_squared <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">800</span>, min <span class="op">=</span> <span class="fl">0.1</span>, max <span class="op">=</span> <span class="fl">0.85</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">80</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">regression.data</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">gene.names</span>, size <span class="op">=</span> <span class="fl">800</span><span class="op">)</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="assembling-the-diff_data">Assembling the Diff_data<a class="anchor" aria-label="anchor" href="#assembling-the-diff_data"></a>
 </h3>
-<p>Use the function <code>diff_data.assembly</code> to automatically generate the Diff_data table for the <code>ExIR</code> model.</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">my_Diff_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/diff_data.assembly.html">diff_data.assembly</a></span><span class="op">(</span><span class="va">tp2.vs.tp1.DEGs</span>,
-                                   <span class="va">tp3.vs.tp2.DEGs</span>,
-                                   <span class="va">regression.data</span><span class="op">)</span>
-
-<span class="va">my_Diff_data</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span>,<span class="op">]</span></code></pre></div>
-<p>Have a look at the top 10 rows of the <code>Diff_data</code> data frame:</p>
-<table class="table">
+<p>Use the function <code>diff_data.assembly</code> to automatically
+generate the Diff_data table for the <code>ExIR</code> model.</p>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">my_Diff_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/diff_data.assembly.html">diff_data.assembly</a></span><span class="op">(</span><span class="va">tp2.vs.tp1.DEGs</span>,</span>
+<span>                                   <span class="va">tp3.vs.tp2.DEGs</span>,</span>
+<span>                                   <span class="va">regression.data</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">my_Diff_data</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span>,<span class="op">]</span></span></code></pre></div>
+<p>Have a look at the top 10 rows of the <code>Diff_data</code> data
+frame:</p>
+<table style="width:100%;" class="table">
+<colgroup>
+<col width="15%">
+<col width="17%">
+<col width="15%">
+<col width="17%">
+<col width="15%">
+<col width="17%">
+</colgroup>
 <thead><tr class="header">
 <th align="left"></th>
 <th align="right">Diff_value1</th>
@@ -1103,19 +1512,20 @@ You can also access the shiny app online at the <a href="https://influential.erc
 <h3 id="preparing-the-exptl_data">Preparing the Exptl_data<a class="anchor" aria-label="anchor" href="#preparing-the-exptl_data"></a>
 </h3>
 <p>Now, prepare a sample normalized experimental data matrix</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">60</span><span class="op">)</span>
-<span class="va">MyExptl_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">1000000</span>, min <span class="op">=</span> <span class="fl">2</span>, max <span class="op">=</span> <span class="fl">300</span><span class="op">)</span>, 
-                       nrow <span class="op">=</span> <span class="fl">50</span>, ncol <span class="op">=</span> <span class="fl">20000</span>, 
-                       dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"cancer_sample"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">25</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">"_"</span><span class="op">)</span>,
-                                         <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"normal_sample"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">25</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">"_"</span><span class="op">)</span><span class="op">)</span>, 
-                                       <span class="va">gene.names</span><span class="op">)</span><span class="op">)</span>
-
-<span class="co"># Log transform the data to bring them closer to normal distribution</span>
-<span class="va">MyExptl_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log2</a></span><span class="op">(</span><span class="va">MyExptl_data</span><span class="op">)</span>
-
-<span class="va">MyExptl_data</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">45</span><span class="op">:</span><span class="fl">50</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span><span class="op">]</span></code></pre></div>
-<p>Have a look at top 5 cancer and normal samples (rows) of the <code>Exptl_data</code>:</p>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">60</span><span class="op">)</span></span>
+<span><span class="va">MyExptl_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">100000</span>, min <span class="op">=</span> <span class="fl">2</span>, max <span class="op">=</span> <span class="fl">300</span><span class="op">)</span>, </span>
+<span>                       nrow <span class="op">=</span> <span class="fl">50</span>, ncol <span class="op">=</span> <span class="fl">2000</span>, </span>
+<span>                       dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"cancer_sample"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">25</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">"_"</span><span class="op">)</span>,</span>
+<span>                                         <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"normal_sample"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">25</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">"_"</span><span class="op">)</span><span class="op">)</span>, </span>
+<span>                                       <span class="va">gene.names</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Log transform the data to bring them closer to normal distribution</span></span>
+<span><span class="va">MyExptl_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log2</a></span><span class="op">(</span><span class="va">MyExptl_data</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">MyExptl_data</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">45</span><span class="op">:</span><span class="fl">50</span><span class="op">)</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
+<p>Have a look at top 5 cancer and normal samples (rows) of the
+<code>Exptl_data</code>:</p>
 <table class="table">
 <thead><tr class="header">
 <th align="left"></th>
@@ -1217,58 +1627,69 @@ You can also access the shiny app online at the <a href="https://influential.erc
 </tbody>
 </table>
 <p>Now add the “condition” column to the Exptl_data table.</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">MyExptl_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">MyExptl_data</span><span class="op">)</span>
-<span class="va">MyExptl_data</span><span class="op">$</span><span class="va">condition</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"C"</span>, <span class="fl">25</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"N"</span>, <span class="fl">25</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">MyExptl_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">MyExptl_data</span><span class="op">)</span></span>
+<span><span class="va">MyExptl_data</span><span class="op">$</span><span class="va">condition</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"C"</span>, <span class="fl">25</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"N"</span>, <span class="fl">25</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="running-the-exir-model">Running the <code>ExIR</code> model<a class="anchor" aria-label="anchor" href="#running-the-exir-model"></a>
 </h3>
-<p>Finally, prepare the other required input data for the <code>ExIR</code> model.</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
-<code class="sourceCode R">
-<span class="co">#The table of differential/regression previously prepared</span>
-<span class="va">my_Diff_data</span>
-
-<span class="co">#The column indices of differential values in the Diff_data table</span>
-<span class="va">Diff_value</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span><span class="op">)</span> 
-
-<span class="co">#The column indices of regression values in the Diff_data table</span>
-<span class="va">Regr_value</span> <span class="op">&lt;-</span> <span class="fl">5</span>
-
-<span class="co">#The column indices of significance (P-value/FDR) values in </span>
-<span class="co"># the Diff_data table</span>
-<span class="va">Sig_value</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">4</span><span class="op">)</span> 
-
-<span class="co">#The matrix/data frame of normalized experimental</span>
-<span class="co"># data previously prepared</span>
-<span class="va">MyExptl_data</span>
-
-<span class="co">#The name of the column delineating the conditions of</span>
-<span class="co"># samples in the Exptl_data matrix</span>
-<span class="va">Condition_colname</span> <span class="op">&lt;-</span> <span class="st">"condition"</span>
-
-<span class="co">#The desired list of features</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">60</span><span class="op">)</span>
-<span class="va">MyDesired_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">gene.names</span>, size <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span>  <span class="co">#Optional</span>
-
-<span class="co">#Running the ExIR model</span>
-<span class="va">My.exir</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/exir.html">exir</a></span><span class="op">(</span>Desired_list <span class="op">=</span> <span class="va">MyDesired_list</span>,
-Diff_data <span class="op">=</span> <span class="va">my_Diff_data</span>, Diff_value <span class="op">=</span> <span class="va">Diff_value</span>,
-Regr_value <span class="op">=</span> <span class="va">Regr_value</span>, Sig_value <span class="op">=</span> <span class="va">Sig_value</span>,
-Exptl_data <span class="op">=</span> <span class="va">MyExptl_data</span>, Condition_colname <span class="op">=</span> <span class="va">Condition_colname</span>,
-seed <span class="op">=</span> <span class="fl">60</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">My.exir</span><span class="op">)</span>
-<span class="co">#&gt; [1] "Driver table"         "DE-mediator table"    "nonDE-mediator table" "Biomarker table"      "Graph"</span>
-
-<span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">My.exir</span><span class="op">)</span>
-<span class="co">#&gt; [1] "ExIR_Result"</span></code></pre></div>
+<p>Finally, prepare the other required input data for the
+<code>ExIR</code> model.</p>
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="co">#The table of differential/regression previously prepared</span></span>
+<span><span class="va">my_Diff_data</span></span>
+<span></span>
+<span><span class="co">#The column indices of differential values in the Diff_data table</span></span>
+<span><span class="va">Diff_value</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span><span class="op">)</span> </span>
+<span></span>
+<span><span class="co">#The column indices of regression values in the Diff_data table</span></span>
+<span><span class="va">Regr_value</span> <span class="op">&lt;-</span> <span class="fl">5</span></span>
+<span></span>
+<span><span class="co">#The column indices of significance (P-value/FDR) values in </span></span>
+<span><span class="co"># the Diff_data table</span></span>
+<span><span class="va">Sig_value</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">4</span><span class="op">)</span> </span>
+<span></span>
+<span><span class="co">#The matrix/data frame of normalized experimental</span></span>
+<span><span class="co"># data previously prepared</span></span>
+<span><span class="va">MyExptl_data</span></span>
+<span></span>
+<span><span class="co">#The name of the column delineating the conditions of</span></span>
+<span><span class="co"># samples in the Exptl_data matrix</span></span>
+<span><span class="va">Condition_colname</span> <span class="op">&lt;-</span> <span class="st">"condition"</span></span>
+<span></span>
+<span><span class="co">#The desired list of features</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">60</span><span class="op">)</span></span>
+<span><span class="va">MyDesired_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">gene.names</span>, size <span class="op">=</span> <span class="fl">500</span><span class="op">)</span>  <span class="co">#Optional</span></span>
+<span></span>
+<span><span class="co">#Running the ExIR model</span></span>
+<span><span class="va">My.exir</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/exir.html">exir</a></span><span class="op">(</span>Desired_list <span class="op">=</span> <span class="va">MyDesired_list</span>,</span>
+<span>                cor_thresh_method <span class="op">=</span> <span class="st">"mr"</span>, mr <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>                Diff_data <span class="op">=</span> <span class="va">my_Diff_data</span>, Diff_value <span class="op">=</span> <span class="va">Diff_value</span>,</span>
+<span>                Regr_value <span class="op">=</span> <span class="va">Regr_value</span>, Sig_value <span class="op">=</span> <span class="va">Sig_value</span>,</span>
+<span>                Exptl_data <span class="op">=</span> <span class="va">MyExptl_data</span>, Condition_colname <span class="op">=</span> <span class="va">Condition_colname</span>,</span>
+<span>                seed <span class="op">=</span> <span class="fl">60</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">My.exir</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "Driver table"         "DE-mediator table"     "Biomarker table"      "Graph"</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">My.exir</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "ExIR_Result"</span></span></code></pre></div>
 <p>Have a look at the heads of the output tables of ExIR:</p>
 <ul>
 <li><strong>Drivers</strong></li>
 </ul>
 <table class="table">
+<colgroup>
+<col width="14%">
+<col width="14%">
+<col width="16%">
+<col width="7%">
+<col width="14%">
+<col width="14%">
+<col width="17%">
+</colgroup>
 <thead><tr class="header">
 <th align="left"></th>
 <th align="right">Score</th>
@@ -1280,58 +1701,58 @@ seed <span class="op">=</span> <span class="fl">60</span>, verbose <span class="
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">gene_17331</td>
-<td align="right">4.837927</td>
-<td align="right">-0.03142096</td>
-<td align="right">135</td>
-<td align="right">0.5125331</td>
-<td align="right">0.6623473</td>
+<td align="left">gene_947</td>
+<td align="right">5.774833</td>
+<td align="right">-0.9620144</td>
+<td align="right">286</td>
+<td align="right">0.8319788</td>
+<td align="right">0.8817412</td>
 <td align="left">Accelerator</td>
 </tr>
 <tr class="even">
-<td align="left">gene_12546</td>
-<td align="right">1.769802</td>
-<td align="right">-0.38897583</td>
-<td align="right">659</td>
-<td align="right">0.6513530</td>
-<td align="right">0.6623473</td>
+<td align="left">gene_90</td>
+<td align="right">35.813378</td>
+<td align="right">0.9440501</td>
+<td align="right">54</td>
+<td align="right">0.1725720</td>
+<td align="right">0.8817412</td>
+<td align="left">Decelerator</td>
+</tr>
+<tr class="odd">
+<td align="left">gene_116</td>
+<td align="right">11.060591</td>
+<td align="right">-0.6266121</td>
+<td align="right">221</td>
+<td align="right">0.7345432</td>
+<td align="right">0.8817412</td>
+<td align="left">Decelerator</td>
+</tr>
+<tr class="even">
+<td align="left">gene_96</td>
+<td align="right">8.687675</td>
+<td align="right">-0.7771830</td>
+<td align="right">248</td>
+<td align="right">0.7814746</td>
+<td align="right">0.8817412</td>
 <td align="left">Accelerator</td>
 </tr>
 <tr class="odd">
-<td align="left">gene_12837</td>
-<td align="right">6.631165</td>
-<td align="right">0.17756047</td>
-<td align="right">93</td>
-<td align="right">0.4295341</td>
-<td align="right">0.6623473</td>
+<td align="left">gene_674</td>
+<td align="right">28.826453</td>
+<td align="right">0.5007021</td>
+<td align="right">77</td>
+<td align="right">0.3082904</td>
+<td align="right">0.8817412</td>
 <td align="left">Decelerator</td>
 </tr>
 <tr class="even">
-<td align="left">gene_18522</td>
-<td align="right">2.126212</td>
-<td align="right">-0.34744030</td>
-<td align="right">467</td>
-<td align="right">0.6358697</td>
-<td align="right">0.6623473</td>
+<td align="left">gene_1017</td>
+<td align="right">24.162479</td>
+<td align="right">0.2047545</td>
+<td align="right">100</td>
+<td align="right">0.4188820</td>
+<td align="right">0.8817412</td>
 <td align="left">Accelerator</td>
-</tr>
-<tr class="odd">
-<td align="left">gene_6260</td>
-<td align="right">1.927154</td>
-<td align="right">-0.37063825</td>
-<td align="right">551</td>
-<td align="right">0.6445465</td>
-<td align="right">0.6623473</td>
-<td align="left">Decelerator</td>
-</tr>
-<tr class="even">
-<td align="left">gene_2722</td>
-<td align="right">3.066216</td>
-<td align="right">-0.23789354</td>
-<td align="right">326</td>
-<td align="right">0.5940182</td>
-<td align="right">0.6623473</td>
-<td align="left">Decelerator</td>
 </tr>
 </tbody>
 </table>
@@ -1340,6 +1761,15 @@ seed <span class="op">=</span> <span class="fl">60</span>, verbose <span class="
 <li><strong>Biomarkers</strong></li>
 </ul>
 <table class="table">
+<colgroup>
+<col width="13%">
+<col width="13%">
+<col width="15%">
+<col width="6%">
+<col width="15%">
+<col width="13%">
+<col width="20%">
+</colgroup>
 <thead><tr class="header">
 <th align="left"></th>
 <th align="right">Score</th>
@@ -1351,122 +1781,58 @@ seed <span class="op">=</span> <span class="fl">60</span>, verbose <span class="
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">gene_17331</td>
-<td align="right">2.612152</td>
-<td align="right">0.34642339</td>
-<td align="right">11</td>
-<td align="right">0.3645123</td>
-<td align="right">0.5264108</td>
-<td align="left">Up-regulated</td>
-</tr>
-<tr class="even">
-<td align="left">gene_12546</td>
-<td align="right">1.000005</td>
-<td align="right">-0.06624912</td>
-<td align="right">539</td>
-<td align="right">0.5264103</td>
-<td align="right">0.5264108</td>
-<td align="left">Up-regulated</td>
-</tr>
-<tr class="odd">
-<td align="left">gene_12837</td>
-<td align="right">1.000735</td>
-<td align="right">-0.06606216</td>
-<td align="right">352</td>
-<td align="right">0.5263358</td>
-<td align="right">0.5264108</td>
-<td align="left">Down-regulated</td>
-</tr>
-<tr class="even">
-<td align="left">gene_18522</td>
+<td align="left">gene_947</td>
 <td align="right">1.000003</td>
-<td align="right">-0.06624973</td>
-<td align="right">615</td>
-<td align="right">0.5264105</td>
-<td align="right">0.5264108</td>
+<td align="right">-0.2050551</td>
+<td align="right">269</td>
+<td align="right">0.58123546</td>
+<td align="right">0.5812356</td>
+<td align="left">Up-regulated</td>
+</tr>
+<tr class="even">
+<td align="left">gene_90</td>
+<td align="right">1.000007</td>
+<td align="right">-0.2050545</td>
+<td align="right">246</td>
+<td align="right">0.58123524</td>
+<td align="right">0.5812356</td>
+<td align="left">Down-regulated</td>
+</tr>
+<tr class="odd">
+<td align="left">gene_116</td>
+<td align="right">1.000002</td>
+<td align="right">-0.2050552</td>
+<td align="right">276</td>
+<td align="right">0.58123549</td>
+<td align="right">0.5812356</td>
+<td align="left">Down-regulated</td>
+</tr>
+<tr class="even">
+<td align="left">gene_96</td>
+<td align="right">1.308484</td>
+<td align="right">-0.1644440</td>
+<td align="right">70</td>
+<td align="right">0.56530917</td>
+<td align="right">0.5812356</td>
 <td align="left">Up-regulated</td>
 </tr>
 <tr class="odd">
-<td align="left">gene_6260</td>
-<td align="right">1.000007</td>
-<td align="right">-0.06624851</td>
-<td align="right">477</td>
-<td align="right">0.5264100</td>
-<td align="right">0.5264108</td>
+<td align="left">gene_674</td>
+<td align="right">1.017092</td>
+<td align="right">-0.2028053</td>
+<td align="right">125</td>
+<td align="right">0.58035641</td>
+<td align="right">0.5812356</td>
 <td align="left">Down-regulated</td>
 </tr>
 <tr class="even">
-<td align="left">gene_2722</td>
-<td align="right">1.001196</td>
-<td align="right">-0.06594418</td>
-<td align="right">339</td>
-<td align="right">0.5262889</td>
-<td align="right">0.5264108</td>
-<td align="left">Down-regulated</td>
-</tr>
-</tbody>
-</table>
-<hr>
-<ul>
-<li><strong>nonDE-mediators</strong></li>
-</ul>
-<table class="table">
-<thead><tr class="header">
-<th align="left"></th>
-<th align="right">Score</th>
-<th align="right">Z.score</th>
-<th align="right">Rank</th>
-<th align="right">P.value</th>
-<th align="right">P.adj</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="left">gene_12988</td>
-<td align="right">1.000000</td>
-<td align="right">-0.1219667</td>
-<td align="right">46</td>
-<td align="right">0.5485373</td>
-<td align="right">0.5485373</td>
-</tr>
-<tr class="even">
-<td align="left">gene_9173</td>
-<td align="right">1.000670</td>
-<td align="right">-0.1218875</td>
-<td align="right">44</td>
-<td align="right">0.5485059</td>
-<td align="right">0.5485373</td>
-</tr>
-<tr class="odd">
-<td align="left">gene_5014</td>
-<td align="right">1.022135</td>
-<td align="right">-0.1193471</td>
-<td align="right">33</td>
-<td align="right">0.5474998</td>
-<td align="right">0.5485373</td>
-</tr>
-<tr class="even">
-<td align="left">gene_7165</td>
-<td align="right">1.000000</td>
-<td align="right">-0.1219667</td>
-<td align="right">46</td>
-<td align="right">0.5485373</td>
-<td align="right">0.5485373</td>
-</tr>
-<tr class="odd">
-<td align="left">gene_2687</td>
-<td align="right">1.000000</td>
-<td align="right">-0.1219667</td>
-<td align="right">46</td>
-<td align="right">0.5485373</td>
-<td align="right">0.5485373</td>
-</tr>
-<tr class="even">
-<td align="left">gene_1873</td>
-<td align="right">1.000000</td>
-<td align="right">-0.1219667</td>
-<td align="right">46</td>
-<td align="right">0.5485373</td>
-<td align="right">0.5485373</td>
+<td align="left">gene_1017</td>
+<td align="right">12.507207</td>
+<td align="right">1.3098553</td>
+<td align="right">12</td>
+<td align="right">0.09512239</td>
+<td align="right">0.5812356</td>
+<td align="left">Up-regulated</td>
 </tr>
 </tbody>
 </table>
@@ -1485,101 +1851,146 @@ seed <span class="op">=</span> <span class="fl">60</span>, verbose <span class="
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">gene_10754</td>
-<td align="right">62.570886</td>
-<td align="right">0.93490127</td>
-<td align="right">2</td>
-<td align="right">0.1749196</td>
-<td align="right">0.7871382</td>
+<td align="left">gene_592</td>
+<td align="right">11.10698</td>
+<td align="right">-1.01338150</td>
+<td align="right">155</td>
+<td align="right">0.8445610</td>
+<td align="right">0.9191820</td>
 </tr>
 <tr class="even">
-<td align="left">gene_9479</td>
-<td align="right">30.044859</td>
-<td align="right">-0.02057836</td>
-<td align="right">4</td>
-<td align="right">0.5082090</td>
-<td align="right">0.8088852</td>
+<td align="left">gene_258</td>
+<td align="right">17.95400</td>
+<td align="right">-0.66579750</td>
+<td align="right">133</td>
+<td align="right">0.7472297</td>
+<td align="right">0.9191820</td>
 </tr>
 <tr class="odd">
-<td align="left">gene_18046</td>
-<td align="right">49.518892</td>
-<td align="right">0.55148787</td>
-<td align="right">3</td>
-<td align="right">0.2906496</td>
-<td align="right">0.8088852</td>
+<td align="left">gene_549</td>
+<td align="right">55.86578</td>
+<td align="right">1.25876700</td>
+<td align="right">25</td>
+<td align="right">0.1040573</td>
+<td align="right">0.7359122</td>
 </tr>
 <tr class="even">
-<td align="left">gene_18954</td>
-<td align="right">1.802499</td>
-<td align="right">-0.85022165</td>
-<td align="right">8</td>
-<td align="right">0.8023991</td>
-<td align="right">0.8088852</td>
-</tr>
-<tr class="odd">
-<td align="left">gene_13827</td>
-<td align="right">7.488785</td>
-<td align="right">-0.68318215</td>
-<td align="right">6</td>
-<td align="right">0.7527541</td>
-<td align="right">0.8088852</td>
-</tr>
-<tr class="even">
-<td align="left">gene_1992</td>
-<td align="right">1.000000</td>
-<td align="right">-0.87379573</td>
+<td align="left">gene_891</td>
+<td align="right">69.81941</td>
+<td align="right">1.96711288</td>
 <td align="right">9</td>
-<td align="right">0.8088852</td>
-<td align="right">0.8088852</td>
+<td align="right">0.0245851</td>
+<td align="right">0.4578919</td>
+</tr>
+<tr class="odd">
+<td align="left">gene_1450</td>
+<td align="right">32.99729</td>
+<td align="right">0.09786426</td>
+<td align="right">68</td>
+<td align="right">0.4610200</td>
+<td align="right">0.9191820</td>
+</tr>
+<tr class="even">
+<td align="left">gene_742</td>
+<td align="right">28.62281</td>
+<td align="right">-0.12420298</td>
+<td align="right">79</td>
+<td align="right">0.5494227</td>
+<td align="right">0.9191820</td>
 </tr>
 </tbody>
 </table>
-<p>The following tutorial video demonstrates how to run the <code>ExIR</code> model on a sample experimental data.</p>
+<p>The following tutorial video demonstrates how to run the
+<code>ExIR</code> model on a sample experimental data.</p>
 <iframe width="100%" height="400" src="https://www.youtube.com/embed/-08nn4_-OUE" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen data-external="1">
 </iframe>
-<p>You can also <a href="#CompManipulate">computationally simulate knockout and/or up-regulation</a> of the top candidate features outputted by ExIR to evaluate the impact of their manipulations on the flow of information/signaling and integrity of the network prior to taking them to your lab bench.</p>
+<p>You can also <a href="#CompManipulate">computationally simulate
+knockout and/or up-regulation</a> of the top candidate features
+outputted by ExIR to evaluate the impact of their manipulations on the
+flow of information/signaling and integrity of the network prior to
+taking them to your lab bench.</p>
 </div>
 <div class="section level3">
 <h3 id="exir-visualization">ExIR visualization<a class="anchor" aria-label="anchor" href="#exir-visualization"></a>
 </h3>
-<p>The <code>exir.vis</code> is a function for the visualization of the output of the <a href="#ExIR">ExIR</a> model. The function simply gets the output of the ExIR model as a single argument and returns a plot of the top 10 prioritized features of all classes. Here, we visualize the top five candidates of the results of the <code>ExIR</code> model obtained in the previous step .</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">My.exir.Vis</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/exir.vis.html">exir.vis</a></span><span class="op">(</span>exir.results <span class="op">=</span> <span class="va">My.exir</span>, 
-                        n <span class="op">=</span> <span class="fl">5</span>,
-                        y.axis.title <span class="op">=</span> <span class="st">"Gene"</span><span class="op">)</span>
-
-<span class="va">My.exir.Vis</span></code></pre></div>
+<p>The <code>exir.vis</code> is a function for the visualization of the
+output of the <a href="#ExIR">ExIR</a> model. The function simply gets
+the output of the ExIR model as a single argument and returns a plot of
+the top 10 prioritized features of all classes. Here, we visualize the
+top five candidates of the results of the <code>ExIR</code> model
+obtained in the previous step .</p>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">My.exir.Vis</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/exir.vis.html">exir.vis</a></span><span class="op">(</span>exir.results <span class="op">=</span> <span class="va">My.exir</span>, </span>
+<span>                        n <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>                        y.axis.title <span class="op">=</span> <span class="st">"Gene"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">My.exir.Vis</span></span></code></pre></div>
 <p><img src="../reference/figures/ExIR_Vis.png"></p>
-<p>However, a complete flexibility (list of arguments) has been provided for the adjustment of all of the visual features of the plot and selection of the desired classes, feature types, and the number of top candidates.</p>
-<p>The following tutorial video demonstrates how to visualize the results of <code>ExIR</code> model.</p>
+<p>However, a complete flexibility (list of arguments) has been provided
+for the adjustment of all of the visual features of the plot and
+selection of the desired classes, feature types, and the number of top
+candidates.</p>
+<p>The following tutorial video demonstrates how to visualize the
+results of <code>ExIR</code> model.</p>
 <iframe width="100%" height="400" src="https://www.youtube.com/embed/Ie19y6PuBDg" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen data-external="1">
 </iframe>
 </div>
 <div class="section level3">
 <h3 id="ExIRShiny">ExIR shiny app<a class="anchor" aria-label="anchor" href="#ExIRShiny"></a>
 </h3>
-<p>A shiny app has also been developed for Running the ExIR model, visualization of its results as well as computational simulation of knockout and/or up-regulation of its top candidate outputs, which is accessible using the following command.<br><code>influential::runShinyApp("ExIR")</code><br>
-You can also access the shiny app online at the <a href="https://influential.erc.monash.edu/" class="external-link">Influential Software Package server</a>.</p>
+<p>A shiny app has also been developed for Running the ExIR model,
+visualization of its results as well as computational simulation of
+knockout and/or up-regulation of its top candidate outputs, which is
+accessible using the following command.<br><code>influential::runShinyApp("ExIR")</code><br>
+You can also access the shiny app online at the <a href="https://influential.erc.monash.edu/" class="external-link">Influential Software Package
+server</a>.</p>
 <p><a href="#top">Back to top</a></p>
 </div>
 </div>
 <div class="section level2">
 <h2 id="CompManipulate">Computational manipulation of cells<a class="anchor" aria-label="anchor" href="#CompManipulate"></a>
 </h2>
-<p>The <code>comp_manipulate</code> is a function for the simulation of feature (gene, protein, etc.) knockout and/or up-regulation in cells. This function works based on the <a href="#SIRIR">SIRIR</a> (SIR-based Influence Ranking) model and could be applied on the output of the <a href="#ExIR">ExIR</a> model or any other independent association network. For feature (gene/protein/etc.) knockout the <a href="#SIRIR">SIRIR</a> model is used to remove the feature from the network and assess its impact on the flow of information (signaling) within the network. On the other hand, in case of up-regulation a node similar to the desired node is added to the network with exactly the same connections (edges) as of the original node. Next, the <a href="#SIRIR">SIRIR</a> model is used to evaluate the difference in the flow of information/signaling after adding (up-regulating) the desired feature/node compared with the original network. In case you are applying this function on the output of <a href="#ExIR">ExIR</a> model, you may note that as the gene/protein knockout would impact on the integrity of the under-investigation network as well as the networks of other overlapping biological processes/pathways, it is recommended to select those features that simultaneously have the highest (most significant) <a href="#ExIR">ExIR</a>-based rank and lowest knockout rank. In contrast, as the up-regulation would not affect the integrity of the network, you may select the features with highest (most significant) <a href="#ExIR">ExIR</a>-based and up-regulation-based ranks. Altogether, it is recommended to select the features with the highest (most significant) <a href="#ExIR">ExIR</a>-based (major drivers or mediators of the under-investigation biological process/disease) and <em>Up-regulation</em>-based (having higher impact on the signaling within the under-investigation network when up-regulated) ranks, but with the lowest <em>Knockout</em>-based rank (having the lowest disturbance to the under-investigation as well as other overlapping networks). Below is an example of running this function on the same <a href="#ExIR">ExIR</a> output generated above.</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Select which genes to knockout</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">60</span><span class="op">)</span>
-<span class="va">ko_vertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/igraph/man/as_ids.html" class="external-link">as_ids</a></span><span class="op">(</span><span class="fu"><a href="../reference/V.html">V</a></span><span class="op">(</span><span class="va">My.exir</span><span class="op">$</span><span class="va">Graph</span><span class="op">)</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>
-
-<span class="co"># Select which genes to up-regulate</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1234</span><span class="op">)</span>
-<span class="va">upregulate_vertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/igraph/man/as_ids.html" class="external-link">as_ids</a></span><span class="op">(</span><span class="fu"><a href="../reference/V.html">V</a></span><span class="op">(</span><span class="va">My.exir</span><span class="op">$</span><span class="va">Graph</span><span class="op">)</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>
-
-<span class="va">Computational_manipulation</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/comp_manipulate.html">comp_manipulate</a></span><span class="op">(</span>exir_output <span class="op">=</span> <span class="va">My.exir</span>, 
-                                              ko_vertices <span class="op">=</span> <span class="va">ko_vertices</span>, 
-                                              upregulate_vertices <span class="op">=</span> <span class="va">upregulate_vertices</span>,
-                                              beta <span class="op">=</span> <span class="fl">0.5</span>, gamma <span class="op">=</span> <span class="fl">1</span>, no.sim <span class="op">=</span> <span class="fl">100</span>, seed <span class="op">=</span> <span class="fl">1234</span><span class="op">)</span></code></pre></div>
+<p>The <code>comp_manipulate</code> is a function for the simulation of
+feature (gene, protein, etc.) knockout and/or up-regulation in cells.
+This function works based on the <a href="#SIRIR">SIRIR</a> (SIR-based
+Influence Ranking) model and could be applied on the output of the <a href="#ExIR">ExIR</a> model or any other independent association
+network. For feature (gene/protein/etc.) knockout the <a href="#SIRIR">SIRIR</a> model is used to remove the feature from the
+network and assess its impact on the flow of information (signaling)
+within the network. On the other hand, in case of up-regulation a node
+similar to the desired node is added to the network with exactly the
+same connections (edges) as of the original node. Next, the <a href="#SIRIR">SIRIR</a> model is used to evaluate the difference in the
+flow of information/signaling after adding (up-regulating) the desired
+feature/node compared with the original network. In case you are
+applying this function on the output of <a href="#ExIR">ExIR</a> model,
+you may note that as the gene/protein knockout would impact on the
+integrity of the under-investigation network as well as the networks of
+other overlapping biological processes/pathways, it is recommended to
+select those features that simultaneously have the highest (most
+significant) <a href="#ExIR">ExIR</a>-based rank and lowest knockout
+rank. In contrast, as the up-regulation would not affect the integrity
+of the network, you may select the features with highest (most
+significant) <a href="#ExIR">ExIR</a>-based and up-regulation-based
+ranks. Altogether, it is recommended to select the features with the
+highest (most significant) <a href="#ExIR">ExIR</a>-based (major drivers
+or mediators of the under-investigation biological process/disease) and
+<em>Up-regulation</em>-based (having higher impact on the signaling
+within the under-investigation network when up-regulated) ranks, but
+with the lowest <em>Knockout</em>-based rank (having the lowest
+disturbance to the under-investigation as well as other overlapping
+networks). Below is an example of running this function on the same <a href="#ExIR">ExIR</a> output generated above.</p>
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Select which genes to knockout</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">60</span><span class="op">)</span></span>
+<span><span class="va">ko_vertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/igraph/man/as_ids.html" class="external-link">as_ids</a></span><span class="op">(</span><span class="fu"><a href="../reference/V.html">V</a></span><span class="op">(</span><span class="va">My.exir</span><span class="op">$</span><span class="va">Graph</span><span class="op">)</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Select which genes to up-regulate</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1234</span><span class="op">)</span></span>
+<span><span class="va">upregulate_vertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/igraph/man/as_ids.html" class="external-link">as_ids</a></span><span class="op">(</span><span class="fu"><a href="../reference/V.html">V</a></span><span class="op">(</span><span class="va">My.exir</span><span class="op">$</span><span class="va">Graph</span><span class="op">)</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">Computational_manipulation</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/comp_manipulate.html">comp_manipulate</a></span><span class="op">(</span>exir_output <span class="op">=</span> <span class="va">My.exir</span>, </span>
+<span>                                              ko_vertices <span class="op">=</span> <span class="va">ko_vertices</span>, </span>
+<span>                                              upregulate_vertices <span class="op">=</span> <span class="va">upregulate_vertices</span>,</span>
+<span>                                              beta <span class="op">=</span> <span class="fl">0.5</span>, gamma <span class="op">=</span> <span class="fl">1</span>, no.sim <span class="op">=</span> <span class="fl">100</span>, seed <span class="op">=</span> <span class="fl">1234</span><span class="op">)</span></span></code></pre></div>
 <p>Have a look at the heads of the output tables:</p>
 <ul>
 <li><strong>Knockout</strong></li>
@@ -1740,14 +2151,20 @@ You can also access the shiny app online at the <a href="https://influential.erc
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
 </div>
-<div class="footnotes">
+<div class="footnotes footnotes-end-of-document">
 <hr>
 <ol>
-<li id="fn1"><p>Csardi G., Nepusz T. <em>The igraph software package for complex network research</em>. InterJournal. 2006; (1695).<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
-<li id="fn2"><p>Salavaty A, Rezvani Z, Najafi A. <em>Survival analysis and functional annotation of long non-coding RNAs in lung adenocarcinoma</em>. J Cell Mol Med. 2019;23:5600–5617. (<a href="https://pubmed.ncbi.nlm.nih.gov/31211495/" class="external-link">PMID: 31211495</a>)<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
-<li id="fn3"><p>Maslov S., Sneppen K. <em>Specificity and stability in topology of protein networks</em>. Science. 2002; 296: 910-913 (<a href="https://pubmed.ncbi.nlm.nih.gov/11988575/" class="external-link">PMID:11988575</a>)<a href="#fnref3" class="footnote-back">↩︎</a></p></li>
+<li id="fn1"><p>Csardi G., Nepusz T. <em>The igraph software package for
+complex network research</em>. InterJournal. 2006; (1695).<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>Salavaty A, Rezvani Z, Najafi A. <em>Survival analysis
+and functional annotation of long non-coding RNAs in lung
+adenocarcinoma</em>. J Cell Mol Med. 2019;23:5600–5617. (<a href="https://pubmed.ncbi.nlm.nih.gov/31211495/" class="external-link">PMID: 31211495</a>)<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn3"><p>Maslov S., Sneppen K. <em>Specificity and stability in
+topology of protein networks</em>. Science. 2002; 296: 910-913 (<a href="https://pubmed.ncbi.nlm.nih.gov/11988575/" class="external-link">PMID:11988575</a>)<a href="#fnref3" class="footnote-back">↩︎</a></p></li>
 <li id="fn4"><p>NNS: Nonlinear Nonparametric Statistics. (<a href="https://cran.r-project.org/package=NNS" class="external-link">CRAN</a>)<a href="#fnref4" class="footnote-back">↩︎</a></p></li>
-<li id="fn5"><p>Salavaty A, Ramialison M, Currie PD. <em>Integrated Value of Influence: An Integrative Method for the Identification of the Most Influential Nodes within Networks</em>. Patterns. 2020.08.14. (<a href="https://doi.org/10.1016/j.patter.2020.100052" class="external-link">Read online</a>)<a href="#fnref5" class="footnote-back">↩︎</a></p></li>
+<li id="fn5"><p>Salavaty A, Ramialison M, Currie PD. <em>Integrated
+Value of Influence: An Integrative Method for the Identification of the
+Most Influential Nodes within Networks</em>. Patterns. 2020.08.14. (<a href="https://doi.org/10.1016/j.patter.2020.100052" class="external-link">Read online</a>)<a href="#fnref5" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
   </div>
@@ -1769,7 +2186,7 @@ You can also access the shiny app online at the <a href="https://influential.erc
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

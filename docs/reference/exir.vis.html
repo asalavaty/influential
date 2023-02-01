@@ -22,7 +22,7 @@ You can also access the shiny app online at https://influential.erc.monash.edu/.
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">influential</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.6.9000</span>
       </span>
     </div>
 
@@ -73,127 +73,192 @@ You can also access the shiny app online at https://influential.erc.monash.edu/.
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">exir.vis</span><span class="op">(</span>
-  <span class="va">exir.results</span>,
-  synonyms.table <span class="op">=</span> <span class="cn">NULL</span>,
-  n <span class="op">=</span> <span class="fl">10</span>,
-  driver.type <span class="op">=</span> <span class="st">"combined"</span>,
-  biomarker.type <span class="op">=</span> <span class="st">"combined"</span>,
-  show.drivers <span class="op">=</span> <span class="cn">TRUE</span>,
-  show.biomarkers <span class="op">=</span> <span class="cn">TRUE</span>,
-  show.de.mediators <span class="op">=</span> <span class="cn">TRUE</span>,
-  show.nonDE.mediators <span class="op">=</span> <span class="cn">TRUE</span>,
-  basis <span class="op">=</span> <span class="st">"Rank"</span>,
-  label.position <span class="op">=</span> <span class="st">"top"</span>,
-  nrow <span class="op">=</span> <span class="fl">1</span>,
-  dot.size.min <span class="op">=</span> <span class="fl">2</span>,
-  dot.size.max <span class="op">=</span> <span class="fl">5</span>,
-  type.color <span class="op">=</span> <span class="st">"viridis"</span>,
-  stroke.size <span class="op">=</span> <span class="fl">1.5</span>,
-  stroke.alpha <span class="op">=</span> <span class="fl">1</span>,
-  dot.color.low <span class="op">=</span> <span class="st">"blue"</span>,
-  dot.color.high <span class="op">=</span> <span class="st">"red"</span>,
-  legend.position <span class="op">=</span> <span class="st">"bottom"</span>,
-  legend.direction <span class="op">=</span> <span class="st">"vertical"</span>,
-  legends.layout <span class="op">=</span> <span class="st">"horizontal"</span>,
-  boxed.legend <span class="op">=</span> <span class="cn">TRUE</span>,
-  show.plot.title <span class="op">=</span> <span class="cn">TRUE</span>,
-  plot.title <span class="op">=</span> <span class="st">"auto"</span>,
-  title.position <span class="op">=</span> <span class="st">"left"</span>,
-  plot.title.size <span class="op">=</span> <span class="fl">12</span>,
-  show.plot.subtitle <span class="op">=</span> <span class="cn">TRUE</span>,
-  plot.subtitle <span class="op">=</span> <span class="st">"auto"</span>,
-  subtitle.position <span class="op">=</span> <span class="st">"left"</span>,
-  y.axis.title <span class="op">=</span> <span class="st">"Feature"</span>,
-  show.y.axis.grid <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">exir.vis</span><span class="op">(</span></span>
+<span>  <span class="va">exir.results</span>,</span>
+<span>  synonyms.table <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  n <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>  driver.type <span class="op">=</span> <span class="st">"combined"</span>,</span>
+<span>  biomarker.type <span class="op">=</span> <span class="st">"combined"</span>,</span>
+<span>  show.drivers <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  show.biomarkers <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  show.de.mediators <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  show.nonDE.mediators <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  basis <span class="op">=</span> <span class="st">"Rank"</span>,</span>
+<span>  label.position <span class="op">=</span> <span class="st">"top"</span>,</span>
+<span>  nrow <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  dot.size.min <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  dot.size.max <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>  type.color <span class="op">=</span> <span class="st">"viridis"</span>,</span>
+<span>  stroke.size <span class="op">=</span> <span class="fl">1.5</span>,</span>
+<span>  stroke.alpha <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  dot.color.low <span class="op">=</span> <span class="st">"blue"</span>,</span>
+<span>  dot.color.high <span class="op">=</span> <span class="st">"red"</span>,</span>
+<span>  legend.position <span class="op">=</span> <span class="st">"bottom"</span>,</span>
+<span>  legend.direction <span class="op">=</span> <span class="st">"vertical"</span>,</span>
+<span>  legends.layout <span class="op">=</span> <span class="st">"horizontal"</span>,</span>
+<span>  boxed.legend <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  show.plot.title <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  plot.title <span class="op">=</span> <span class="st">"auto"</span>,</span>
+<span>  title.position <span class="op">=</span> <span class="st">"left"</span>,</span>
+<span>  plot.title.size <span class="op">=</span> <span class="fl">12</span>,</span>
+<span>  show.plot.subtitle <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  plot.subtitle <span class="op">=</span> <span class="st">"auto"</span>,</span>
+<span>  subtitle.position <span class="op">=</span> <span class="st">"left"</span>,</span>
+<span>  y.axis.title <span class="op">=</span> <span class="st">"Feature"</span>,</span>
+<span>  show.y.axis.grid <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>exir.results</dt>
 <dd><p>An object of class <code>"ExIR_Result"</code> which is the output of the function <code>"exir"</code>.</p></dd>
+
+
 <dt>synonyms.table</dt>
 <dd><p>(Optional) A data frame or matrix with two columns including a column for the used feature
 names in the input data of the <code>"exir"</code> model and the other column their synonyms. Note, the original feature names should
 always come as the first column and the synonyms as the second one. For example, if
 the original feature names used for running the <code>"exir"</code> model are Ensembl gene
 symbols, you can use their HGNC synonyms in the second column to be used for the visualization of the ExIR results</p></dd>
+
+
 <dt>n</dt>
 <dd><p>An integer specifying the number of top candidates to be selected from each category of ExIR results (default is set to 10).</p></dd>
+
+
 <dt>driver.type</dt>
 <dd><p>A string specifying the type of drivers to be used for the selection of top N candidates. The possible types
 include <code>"combined"</code> (meaning both driver types), <code>"accelerator"</code> and <code>"decelerator"</code> (default is set to "combined").</p></dd>
+
+
 <dt>biomarker.type</dt>
 <dd><p>A string specifying the type of biomarkers to be used for the selection of top N candidates. Possible types
 include <code>"combined"</code> (meaning both biomarker types), <code>"up-regulated"</code> and <code>"down-regulated"</code> (default is set to "combined").</p></dd>
+
+
 <dt>show.drivers</dt>
 <dd><p>Logical scalar, whether to show Drivers or not (default is set to TRUE).</p></dd>
+
+
 <dt>show.biomarkers</dt>
 <dd><p>Logical scalar, whether to show Biomarkers or not (default is set to TRUE).</p></dd>
+
+
 <dt>show.de.mediators</dt>
 <dd><p>Logical scalar, whether to show DE-mediators or not (default is set to TRUE).</p></dd>
+
+
 <dt>show.nonDE.mediators</dt>
 <dd><p>Logical scalar, whether to show nonDE-mediators or not (default is set to TRUE).</p></dd>
+
+
 <dt>basis</dt>
 <dd><p>A string specifying the basis for the selection of top N candidates from each category of the results. Possible options include
 <code>"Rank"</code> and <code>"Adjusted p-value"</code> (default is set to "Rank").</p></dd>
+
+
 <dt>label.position</dt>
 <dd><p>By default, the labels are displayed on the top of the plot. Using label.position it is possible
 to place the labels on either of the four sides by setting label.position = c("top", "bottom", "left", "right").</p></dd>
+
+
 <dt>nrow</dt>
 <dd><p>Number of rows of the plot (default is set to 1).</p></dd>
+
+
 <dt>dot.size.min</dt>
 <dd><p>The size of dots with the lowest statistical significance (default is set to 2).</p></dd>
+
+
 <dt>dot.size.max</dt>
 <dd><p>The size of dots with the highest statistical significance (default is set to 5).</p></dd>
+
+
 <dt>type.color</dt>
 <dd><p>A character string or function indicating the color palette to be used for the visualization of
 different types of candidates. You may choose one of the Viridis palettes including "magma" (or "A"),
 "inferno" (or "B"), "plasma" (or "C"), "viridis" (or "D", the default option) and "cividis" (or "E"), use a function specifying
 your desired palette, or manually specify the vector of colors for different types.</p></dd>
+
+
 <dt>stroke.size</dt>
 <dd><p>The size of stroke (border) around the dots (default is set to 1.5).</p></dd>
+
+
 <dt>stroke.alpha</dt>
 <dd><p>The transparency of the stroke (border) around the dots which should
 be a number between 0 and 1 (default is set to 1).</p></dd>
+
+
 <dt>dot.color.low</dt>
 <dd><p>The color to be used for the visualization of dots (features) with the lowest Z-score values (default is set to "blue").</p></dd>
+
+
 <dt>dot.color.high</dt>
 <dd><p>The color to be used for the visualization of dots (features) with the highest Z-score values (default is set to "red").</p></dd>
+
+
 <dt>legend.position</dt>
 <dd><p>The position of legends ("none", "left", "right",
 "bottom", "top", or two-element numeric vector). The default is set to "bottom".</p></dd>
+
+
 <dt>legend.direction</dt>
 <dd><p>Layout of items in legends ("horizontal" or "vertical").
 The default is set to "vertical".</p></dd>
+
+
 <dt>legends.layout</dt>
 <dd><p>Layout of different legends of the plot ("horizontal" or "vertical").
 The default is set to "horizontal".</p></dd>
+
+
 <dt>boxed.legend</dt>
 <dd><p>Logical scalar, whether to draw a box around the legend or not (default is set to TRUE).</p></dd>
+
+
 <dt>show.plot.title</dt>
 <dd><p>Logical scalar, whether to show the plot title or not (default is set to TRUE).</p></dd>
+
+
 <dt>plot.title</dt>
 <dd><p>The plot title in the string format (default is set to "auto" which automatically generates a title for the plot).</p></dd>
+
+
 <dt>title.position</dt>
 <dd><p>The position of title ("left", "center", or "right"). The default is set to "left".</p></dd>
+
+
 <dt>plot.title.size</dt>
 <dd><p>The font size of the plot title (default is set to 12).</p></dd>
+
+
 <dt>show.plot.subtitle</dt>
 <dd><p>Logical scalar, whether to show the plot subtitle or not (default is set to TRUE).</p></dd>
+
+
 <dt>plot.subtitle</dt>
 <dd><p>The plot subtitle in the string format (default is set to "auto" which automatically generates a subtitle for the plot).</p></dd>
+
+
 <dt>subtitle.position</dt>
 <dd><p>The position of subtitle ("left", "center", or "right"). The default is set to "left".</p></dd>
+
+
 <dt>y.axis.title</dt>
 <dd><p>The title of the y axis (features title). Default is set to "Features".</p></dd>
+
+
 <dt>show.y.axis.grid</dt>
 <dd><p>Logical scalar, whether to draw y axis grid lines (default is set to TRUE).</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A plot with the class ggplot.</p>
+    
+
+<p>A plot with the class ggplot.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -204,10 +269,10 @@ The default is set to "horizontal".</p></dd>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="va">MyResults</span> <span class="op">&lt;-</span> <span class="va">exir.results</span></span>
-<span class="r-in"><span class="va">ExIR.plot</span> <span class="op">&lt;-</span> <span class="fu">exir.vis</span><span class="op">(</span>exir.results <span class="op">=</span> <span class="va">MyResults</span>, n <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="va">MyResults</span> <span class="op">&lt;-</span> <span class="va">exir.results</span></span></span>
+<span class="r-in"><span><span class="va">ExIR.plot</span> <span class="op">&lt;-</span> <span class="fu">exir.vis</span><span class="op">(</span>exir.results <span class="op">=</span> <span class="va">MyResults</span>, n <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -222,7 +287,7 @@ The default is set to "horizontal".</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

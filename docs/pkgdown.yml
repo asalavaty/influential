@@ -1,9 +1,9 @@
-pandoc: 2.11.4
-pkgdown: 2.0.2
+pandoc: 2.19.2
+pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
   Vignettes: Vignettes.html
-last_built: 2022-04-14T12:48Z
+last_built: 2023-02-01T01:17Z
 urls:
   reference: https://asalavaty.github.io/influential/reference
   article: https://asalavaty.github.io/influential/articles

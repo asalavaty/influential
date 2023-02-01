@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">influential</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.6.9000</span>
       </span>
     </div>
 
@@ -63,14 +63,14 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">graph_from_adjacency_matrix</span><span class="op">(</span>
-  <span class="va">adjmatrix</span>,
-  mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"directed"</span>, <span class="st">"undirected"</span>, <span class="st">"max"</span>, <span class="st">"min"</span>, <span class="st">"upper"</span>, <span class="st">"lower"</span>, <span class="st">"plus"</span><span class="op">)</span>,
-  weighted <span class="op">=</span> <span class="cn">NULL</span>,
-  diag <span class="op">=</span> <span class="cn">TRUE</span>,
-  add.colnames <span class="op">=</span> <span class="cn">NULL</span>,
-  add.rownames <span class="op">=</span> <span class="cn">NA</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">graph_from_adjacency_matrix</span><span class="op">(</span></span>
+<span>  <span class="va">adjmatrix</span>,</span>
+<span>  mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"directed"</span>, <span class="st">"undirected"</span>, <span class="st">"max"</span>, <span class="st">"min"</span>, <span class="st">"upper"</span>, <span class="st">"lower"</span>, <span class="st">"plus"</span><span class="op">)</span>,</span>
+<span>  weighted <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  diag <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  add.colnames <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  add.rownames <span class="op">=</span> <span class="cn">NA</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -78,31 +78,44 @@
     <dl><dt>adjmatrix</dt>
 <dd><p>A square adjacency matrix. From igraph version 0.5.1 this
 can be a sparse matrix created with the Matrix package.</p></dd>
+
+
 <dt>mode</dt>
 <dd><p>Character scalar, specifies how igraph should interpret the supplied matrix.
 See also the weighted argument, the interpretation depends on that too.
 Possible values are: directed, undirected, upper, lower, max, min, plus.</p></dd>
+
+
 <dt>weighted</dt>
 <dd><p>This argument specifies whether to create a weighted graph from an adjacency matrix.
 If it is NULL then an unweighted graph is created and the elements of the adjacency matrix gives the
 number of edges between the vertices. If it is a character constant then for every non-zero matrix
 entry an edge is created and the value of the entry is added as an edge attribute named by the weighted argument.
 If it is TRUE then a weighted graph is created and the name of the edge attribute will be weight.</p></dd>
+
+
 <dt>diag</dt>
 <dd><p>Logical scalar, whether to include the diagonal of the matrix in the calculation.
 If this is FALSE then the diagonal is zerod out first.</p></dd>
+
+
 <dt>add.colnames</dt>
 <dd><p>Character scalar, whether to add the column names as vertex attributes.
 If it is ‘NULL’ (the default) then, if present, column names are added as vertex attribute ‘name’.
 If ‘NA’ then they will not be added. If a character constant, then it gives the name of the vertex attribute to add.</p></dd>
+
+
 <dt>add.rownames</dt>
 <dd><p>Character scalar, whether to add the row names as vertex attributes.
 Possible values the same as the previous argument. By default row names are not added.
 If ‘add.rownames’ and ‘add.colnames’ specify the same vertex attribute, then the former is ignored.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An igraph graph object.</p>
+    
+
+<p>An igraph graph object.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -115,8 +128,8 @@ If ‘add.rownames’ and ‘add.colnames’ specify the same vertex attribute, 
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">coexpression.adjacency</span></span>
-<span class="r-in"><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu">graph_from_adjacency_matrix</span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">coexpression.adjacency</span></span></span>
+<span class="r-in"><span><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu">graph_from_adjacency_matrix</span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -131,7 +144,7 @@ If ‘add.rownames’ and ‘add.colnames’ specify the same vertex attribute, 
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

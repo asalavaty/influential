@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">influential</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.6.9000</span>
       </span>
     </div>
 
@@ -63,30 +63,38 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">graph_from_incidence_matrix</span><span class="op">(</span>
-  <span class="va">incidence</span>,
-  directed <span class="op">=</span> <span class="cn">FALSE</span>,
-  mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"all"</span>, <span class="st">"out"</span>, <span class="st">"in"</span>, <span class="st">"total"</span><span class="op">)</span>,
-  multiple <span class="op">=</span> <span class="cn">FALSE</span>,
-  weighted <span class="op">=</span> <span class="cn">NULL</span>,
-  add.names <span class="op">=</span> <span class="cn">NULL</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">graph_from_incidence_matrix</span><span class="op">(</span></span>
+<span>  <span class="va">incidence</span>,</span>
+<span>  directed <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  mode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"all"</span>, <span class="st">"out"</span>, <span class="st">"in"</span>, <span class="st">"total"</span><span class="op">)</span>,</span>
+<span>  multiple <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  weighted <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  add.names <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>incidence</dt>
 <dd><p>The input incidence matrix. It can also be a sparse matrix from the <code>Matrix</code> package.</p></dd>
+
+
 <dt>directed</dt>
 <dd><p>Logical scalar, whether to create a directed graph.</p></dd>
+
+
 <dt>mode</dt>
 <dd><p>A character constant, defines the direction of the edges in directed graphs,
 ignored for undirected graphs. If ‘out’, then edges go from vertices of the first
 kind (corresponding to rows in the incidence matrix) to vertices of the second
 kind (columns in the incidence matrix). If ‘in’, then the opposite direction is used.
 If ‘all’ or ‘total’, then mutual edges are created.</p></dd>
+
+
 <dt>multiple</dt>
 <dd><p>Logical scalar, specifies how to interpret the matrix elements. See details below.</p></dd>
+
+
 <dt>weighted</dt>
 <dd><p>This argument specifies whether to create a weighted graph from
 the incidence matrix. If it is NULL then an unweighted graph is created and the
@@ -94,15 +102,20 @@ multiple argument is used to determine the edges of the graph. If it is a charac
 constant then for every non-zero matrix entry an edge is created and the value of
 the entry is added as an edge attribute named by the weighted argument. If it is
 TRUE then a weighted graph is created and the name of the edge attribute will be ‘weight’.</p></dd>
+
+
 <dt>add.names</dt>
 <dd><p>A character constant, NA or NULL. <code>graph_from_incidence_matrix</code>
 can add the row and column names of the incidence matrix as vertex attributes.
 If this argument is NULL (the default) and the incidence matrix has both row
 and column names, then these are added as the ‘name’ vertex attribute. If you want a different vertex attribute for this, then give the name of the attributes as a character string. If this argument is NA, then no vertex attributes (other than type) will be added.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A bipartite igraph graph. In other words, an igraph graph that has a vertex attribute type.</p>
+    
+
+<p>A bipartite igraph graph. In other words, an igraph graph that has a vertex attribute type.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -125,12 +138,12 @@ create between a pair of vertices.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in"><span class="va">inc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">1</span>, <span class="fl">15</span>, repl<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>, <span class="fl">3</span>, <span class="fl">5</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">inc</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">letters</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">inc</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">LETTERS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span></span>
-<span class="r-in"><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu">graph_from_incidence_matrix</span><span class="op">(</span><span class="va">inc</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="va">inc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">1</span>, <span class="fl">15</span>, repl<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>, <span class="fl">3</span>, <span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">inc</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">letters</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">inc</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">LETTERS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span></span></span>
+<span class="r-in"><span><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu">graph_from_incidence_matrix</span><span class="op">(</span><span class="va">inc</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -145,7 +158,7 @@ create between a pair of vertices.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>
