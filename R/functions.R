@@ -1146,27 +1146,27 @@ ivi.from.indices <- function(DC, CR, LH_index, NC, BC, CI, scaled = TRUE) {
 
   #1-100 normalization of centrality measures
 
-  if(any(temp.DC > 0)) {
+  if(length(temp.DC) > 1 & any(temp.DC > 0)) {
     temp.DC <- 1+(((temp.DC-min(temp.DC))*(100-1))/(max(temp.DC)-min(temp.DC)))
   }
-
-  if(any(temp.CR > 0)) {
+  
+  if(length(temp.CR) > 1 & any(temp.CR > 0)) {
     temp.CR <- 1+(((temp.CR-min(temp.CR))*(100-1))/(max(temp.CR)-min(temp.CR)))
   }
-
-  if(any(temp.LH_index > 0)) {
+  
+  if(length(temp.LH_index) > 1 & any(temp.LH_index > 0)) {
     temp.LH_index <- 1+(((temp.LH_index-min(temp.LH_index))*(100-1))/(max(temp.LH_index)-min(temp.LH_index)))
   }
-
-  if(any(temp.NC > 0)) {
+  
+  if(length(temp.NC) > 1 & any(temp.NC > 0)) {
     temp.NC <- 1+(((temp.NC-min(temp.NC))*(100-1))/(max(temp.NC)-min(temp.NC)))
   }
-
-  if(any(temp.BC > 0)) {
+  
+  if(length(temp.BC) > 1 & any(temp.BC > 0)) {
     temp.BC <- 1+(((temp.BC-min(temp.BC))*(100-1))/(max(temp.BC)-min(temp.BC)))
   }
-
-  if(any(temp.CI > 0)) {
+  
+  if(length(temp.CI) > 1 & any(temp.CI > 0)) {
     temp.CI <- 1+(((temp.CI-min(temp.CI))*(100-1))/(max(temp.CI)-min(temp.CI)))
   }
 
@@ -1281,27 +1281,27 @@ ivi <- function(graph, vertices = V(graph), weights = NULL, directed = FALSE,
 
   #1-100 normalization of centrality measures
 
-  if(any(temp.DC > 0)) {
+  if(length(temp.DC) > 1 & any(temp.DC > 0)) {
     temp.DC <- 1+(((temp.DC-min(temp.DC))*(100-1))/(max(temp.DC)-min(temp.DC)))
   }
-
-  if(any(temp.CR > 0)) {
+  
+  if(length(temp.CR) > 1 & any(temp.CR > 0)) {
     temp.CR <- 1+(((temp.CR-min(temp.CR))*(100-1))/(max(temp.CR)-min(temp.CR)))
   }
-
-  if(any(temp.LH_index > 0)) {
+  
+  if(length(temp.LH_index) > 1 & any(temp.LH_index > 0)) {
     temp.LH_index <- 1+(((temp.LH_index-min(temp.LH_index))*(100-1))/(max(temp.LH_index)-min(temp.LH_index)))
   }
-
-  if(any(temp.NC > 0)) {
+  
+  if(length(temp.NC) > 1 & any(temp.NC > 0)) {
     temp.NC <- 1+(((temp.NC-min(temp.NC))*(100-1))/(max(temp.NC)-min(temp.NC)))
   }
-
-  if(any(temp.BC > 0)) {
+  
+  if(length(temp.BC) > 1 & any(temp.BC > 0)) {
     temp.BC <- 1+(((temp.BC-min(temp.BC))*(100-1))/(max(temp.BC)-min(temp.BC)))
   }
-
-  if(any(temp.CI > 0)) {
+  
+  if(length(temp.CI) > 1 & any(temp.CI > 0)) {
     temp.CI <- 1+(((temp.CI-min(temp.CI))*(100-1))/(max(temp.CI)-min(temp.CI)))
   }
 
