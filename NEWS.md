@@ -5,6 +5,16 @@ influential
 
 # influential 2.2.6.9000 (Developmental version)
 
+- DESCRIPTION of the package is updated.
+
+- Hubness score function, `hubness.score`, is debugged and optimized.
+
+- Spreading score function and its documentation, `spreading.score`, is debugged and optimized.
+
+- IVI function, `ivi`, is debugged and optimized.
+
+- IVI from indices function, `ivi.from.indices`, is debugged and optimized.
+
 - Collective Influence function, `collective.influence`, is optimized.
 
 - The documentation of the Collective Influence function,
