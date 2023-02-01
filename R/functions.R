@@ -1351,7 +1351,7 @@ ivi <- function(graph, vertices = V(graph), weights = NULL, directed = FALSE,
 #' @param graph A graph (network) of the igraph class.
 #' @param vertices A vector of desired vertices, which could be obtained by the V function.
 #' @param weights Optional positive weight vector for calculating weighted betweenness centrality
-#' of nodes as a requirement for calculation of IVI. If the graph has a weight edge attribute,
+#' of nodes as a requirement for calculation of spreading score. If the graph has a weight edge attribute,
 #' then this is used by default. Weights are used to calculate weighted shortest paths,
 #' so they are interpreted as distances.
 #' @param directed Logical scalar, whether to directed graph is analyzed. This argument
@@ -1409,19 +1409,19 @@ spreading.score <- function(graph, vertices = V(graph), weights = NULL, directed
 
   #1-100 normalization of centrality measures
 
-  if(any(temp.CR > 0)) {
+  if(length(temp.CR) > 1 & any(temp.CR > 0)) {
     temp.CR <- 1+(((temp.CR-min(temp.CR))*(100-1))/(max(temp.CR)-min(temp.CR)))
   }
-
-  if(any(temp.NC > 0)) {
+  
+  if(length(temp.NC) > 1 & any(temp.NC > 0)) {
     temp.NC <- 1+(((temp.NC-min(temp.NC))*(100-1))/(max(temp.NC)-min(temp.NC)))
   }
-
-  if(any(temp.BC > 0)) {
+  
+  if(length(temp.BC) > 1 & any(temp.BC > 0)) {
     temp.BC <- 1+(((temp.BC-min(temp.BC))*(100-1))/(max(temp.BC)-min(temp.BC)))
   }
-
-  if(any(temp.CI > 0)) {
+  
+  if(length(temp.CI) > 1 & any(temp.CI > 0)) {
     temp.CI <- 1+(((temp.CI-min(temp.CI))*(100-1))/(max(temp.CI)-min(temp.CI)))
   }
 
@@ -1433,8 +1433,9 @@ spreading.score <- function(graph, vertices = V(graph), weights = NULL, directed
 
   if(scaled == TRUE) {
 
+    if(length(unique(temp.spreading.score)) > 1) {
     temp.spreading.score <- 1+(((temp.spreading.score-min(temp.spreading.score))*(100-1))/(max(temp.spreading.score)-min(temp.spreading.score)))
-
+    }
   }
 
   return(temp.spreading.score)
@@ -1496,11 +1497,11 @@ hubness.score <- function(graph, vertices = V(graph), directed = FALSE,
 
   #1-100 normalization of centrality measures
 
-  if(any(temp.DC > 0)) {
+  if(length(temp.DC) > 1 & any(temp.DC > 0)) {
     temp.DC <- 1+(((temp.DC-min(temp.DC))*(100-1))/(max(temp.DC)-min(temp.DC)))
   }
-
-  if(any(temp.LH_index > 0)) {
+  
+  if(length(temp.LH_index) > 1 & any(temp.LH_index > 0)) {
     temp.LH_index <- 1+(((temp.LH_index-min(temp.LH_index))*(100-1))/(max(temp.LH_index)-min(temp.LH_index)))
   }
 
@@ -1512,8 +1513,10 @@ hubness.score <- function(graph, vertices = V(graph), directed = FALSE,
 
   if(scaled == TRUE) {
 
+    if(length(unique(temp.hubness.score)) > 1) {
     temp.hubness.score <- 1+(((temp.hubness.score-min(temp.hubness.score))*(100-1))/(max(temp.hubness.score)-min(temp.hubness.score)))
-
+    
+    }
   }
 
   return(temp.hubness.score)

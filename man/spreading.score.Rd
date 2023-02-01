@@ -21,7 +21,7 @@ spreading.score(
 \item{vertices}{A vector of desired vertices, which could be obtained by the V function.}
 
 \item{weights}{Optional positive weight vector for calculating weighted betweenness centrality
-of nodes as a requirement for calculation of IVI. If the graph has a weight edge attribute,
+of nodes as a requirement for calculation of spreading score. If the graph has a weight edge attribute,
 then this is used by default. Weights are used to calculate weighted shortest paths,
 so they are interpreted as distances.}
 
