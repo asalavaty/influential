@@ -7,13 +7,17 @@ influential
 
 - DESCRIPTION of the package is updated.
 
+- The documentation of the SIRIR function, `sirir`, is updated.
+
 - Hubness score function, `hubness.score`, is debugged and optimized.
 
-- Spreading score function and its documentation, `spreading.score`, is debugged and optimized.
+- Spreading score function and its documentation, `spreading.score`, is
+  debugged and optimized.
 
 - IVI function, `ivi`, is debugged and optimized.
 
-- IVI from indices function, `ivi.from.indices`, is debugged and optimized.
+- IVI from indices function, `ivi.from.indices`, is debugged and
+  optimized.
 
 - Collective Influence function, `collective.influence`, is optimized.
 
