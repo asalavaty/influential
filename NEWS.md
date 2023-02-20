@@ -7,6 +7,8 @@ influential
 
 - DESCRIPTION of the package is updated.
 
+- The documentation of the fcor function, `fcor`, is updated.
+
 - The documentation of the SIRIR function, `sirir`, is updated.
 
 - Hubness score function, `hubness.score`, is debugged and optimized.

@@ -26,7 +26,7 @@ fcor(
 \item{pvalue}{logical, whether to calculate p-values of correlations or not.}
 
 \item{adjust}{p-value correction method (when pvalue = TRUE), a character string including any of "BH" (default),
-"bonferroni", holm", "hochberg", "hommel", or "none".}
+"bonferroni", "holm", "hochberg", "hommel", or "none".}
 
 \item{flat}{logical, whether to combine and flatten the result matrices or not.}
 }

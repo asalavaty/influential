@@ -4127,7 +4127,7 @@ sirir <- function(graph, vertices = V(graph),
   #' @param mutualRank logical, whether to calculate mutual ranks of correlations or not.
   #' @param pvalue logical, whether to calculate p-values of correlations or not.
   #' @param adjust p-value correction method (when pvalue = TRUE), a character string including any of "BH" (default),
-  #' "bonferroni", holm", "hochberg", "hommel", or "none".
+  #' "bonferroni", "holm", "hochberg", "hommel", or "none".
   #' @param flat logical, whether to combine and flatten the result matrices or not.
   #' @return Depending on the input data, a dataframe or list including cor (correlation coefficients),
   #' mr (mutual ranks of correlation coefficients), p (p-values of correlation coefficients), and p.adj (adjusted p-values).
