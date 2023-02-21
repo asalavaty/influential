@@ -4121,10 +4121,13 @@ sirir <- function(graph, vertices = V(graph),
   #' Additionally, this function can automatically combine and flatten the result matrices. Selecting correlated features using an MR-based threshold
   #' rather than based on their correlation coefficients or an arbitrary p-value is more efficient and accurate in inferring
   #' functional associations in systems, for example in gene regulatory networks.
-  #' @param data A numeric dataframe/matrix (features on columns and samples on rows).
+  #' @param data a numeric dataframe/matrix (features on columns and samples on rows).
   #' @param use The NA handler, as in R's cov() and cor() functions. Options are "everything", "all.obs", and "complete.obs".
   #' @param method a character string indicating which correlation coefficient is to be computed. One of "pearson" or "spearman" (default).
   #' @param mutualRank logical, whether to calculate mutual ranks of correlations or not.
+  #' @param mutualRank_mode a character string indicating whether to rank based on "signed" or "unsigned" (default) correlation values. 
+  #' In the "unsigned" mode, only the level of a correlation value is important and not its sign (the function ranks the absolutes of correlations). 
+  #' Options are "unsigned", and "signed".
   #' @param pvalue logical, whether to calculate p-values of correlations or not.
   #' @param adjust p-value correction method (when pvalue = TRUE), a character string including any of "BH" (default),
   #' "bonferroni", "holm", "hochberg", "hommel", or "none".
@@ -4146,6 +4149,7 @@ sirir <- function(graph, vertices = V(graph),
                    use = "everything",
                    method = "spearman",
                    mutualRank = TRUE,
+                   mutualRank_mode = "unsigned",
                    pvalue = FALSE,
                    adjust = "BH",
                    flat = TRUE) {
@@ -4185,11 +4189,15 @@ sirir <- function(graph, vertices = V(graph),
       }
     }
 
-    # Calculate Mutual Rank based on absolute of correlations (absolute because in GRNs we consider both positive and negative correlations)
+    # Calculate Mutual Rank
     ## We set the order= -1 so that higher correlations get higher ranks (highest cor will be first rank)
 
     if(mutualRank) {
-      r_rank <- base::apply(base::abs(r), 1, data.table::frankv, order= -1) # Fast rank the correlation of each gene with all the other genes
+      if(mutualRank_mode == "unsigned") {
+        r_rank <- base::apply(base::abs(r), 1, data.table::frankv, order= -1) # Fast rank the correlation of each gene with all the other genes
+      } else {
+        r_rank <- base::apply(r, 1, data.table::frankv, order= -1)
+      }
       rownames(r_rank) <- rownames(r) # Add back row names since it is lost in the 'frankv' function
       mutR <- base::sqrt(r_rank*t(r_rank))
     }

@@ -7,7 +7,8 @@ influential
 
 - DESCRIPTION of the package is updated.
 
-- The documentation of the fcor function, `fcor`, is updated.
+- The fcor function, `fcor`, as well as its documentation are optimized
+  and updated.
 
 - The documentation of the SIRIR function, `sirir`, is updated.
 
