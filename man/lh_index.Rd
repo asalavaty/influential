@@ -5,7 +5,7 @@
 \alias{lh.index}
 \title{local H-index (LH-index)}
 \usage{
-lh_index(graph, vertices = V(graph), mode = "all")
+lh_index(graph, vertices = V(graph), mode = "all", verbose = FALSE)
 }
 \arguments{
 \item{graph}{A graph (network) of the igraph class.}
@@ -17,6 +17,8 @@ If the graph is undirected, the mode "all" should be specified.
 Otherwise, for the calculation of local H-index based on
 incoming connections select "in" and for the outgoing connections select "out".
 Also, if all of the connections are desired, specify the "all" mode. Default mode is set to "all".}
+
+\item{verbose}{Logical; whether the accomplishment of different stages of the algorithm should be printed (default is FALSE).}
 }
 \value{
 A vector including the local H-index of each vertex inputted.

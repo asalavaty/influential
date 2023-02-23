@@ -5,7 +5,7 @@
 \alias{IVI.FI}
 \title{Integrated Value of Influence (IVI)}
 \usage{
-ivi.from.indices(DC, CR, LH_index, NC, BC, CI, scaled = TRUE)
+ivi.from.indices(DC, CR, LH_index, NC, BC, CI, scaled = TRUE, verbose = FALSE)
 }
 \arguments{
 \item{DC}{A vector containing the values of degree centrality of the desired vertices.}
@@ -21,6 +21,8 @@ ivi.from.indices(DC, CR, LH_index, NC, BC, CI, scaled = TRUE)
 \item{CI}{A vector containing the values of Collective Influence of the desired vertices.}
 
 \item{scaled}{Logical; whether the end result should be 1-100 range normalized or not (default is TRUE).}
+
+\item{verbose}{Logical; whether the accomplishment of different stages of the algorithm should be printed (default is FALSE).}
 }
 \value{
 A numeric vector with the IVI values based on the provided centrality measures.

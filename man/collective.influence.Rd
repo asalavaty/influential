@@ -5,7 +5,13 @@
 \alias{CI}
 \title{Collective Influence (CI)}
 \usage{
-collective.influence(graph, vertices = V(graph), mode = "all", d = 3)
+collective.influence(
+  graph,
+  vertices = V(graph),
+  mode = "all",
+  d = 3,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{graph}{A graph (network) of the igraph class.}
@@ -23,6 +29,8 @@ must be > 0. According to Morone & Makse (https://doi.org/10.1038/nature14604), 
 results can be reached at d=3,4, but this depends on the size/"radius" of the network.
 NOTE: the distance d is not inclusive. This means that nodes at a distance of 3 from
 our node-of-interest do not include nodes at distances 1 and 2. Only 3.}
+
+\item{verbose}{Logical; whether the accomplishment of different stages of the algorithm should be printed (default is FALSE).}
 }
 \value{
 A vector of collective influence for each vertex of the graph corresponding to

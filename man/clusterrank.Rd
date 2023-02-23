@@ -5,7 +5,13 @@
 \alias{CR}
 \title{ClusterRank (CR)}
 \usage{
-clusterRank(graph, vids = V(graph), directed = FALSE, loops = TRUE)
+clusterRank(
+  graph,
+  vids = V(graph),
+  directed = FALSE,
+  loops = TRUE,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{graph}{The input graph as igraph object}
@@ -15,6 +21,8 @@ clusterRank(graph, vids = V(graph), directed = FALSE, loops = TRUE)
 \item{directed}{Logical scalar, whether to directed graph is analyzed. This argument is ignored for undirected graphs.}
 
 \item{loops}{Logical; whether the loop edges are also counted.}
+
+\item{verbose}{Logical; whether the accomplishment of different stages of the algorithm should be printed (default is FALSE).}
 }
 \value{
 A numeric vector contaning the ClusterRank centrality scores for the selected vertices.

@@ -5,7 +5,12 @@
 \alias{NC}
 \title{Neighborhood connectivity}
 \usage{
-neighborhood.connectivity(graph, vertices = V(graph), mode = "all")
+neighborhood.connectivity(
+  graph,
+  vertices = V(graph),
+  mode = "all",
+  verbose = FALSE
+)
 }
 \arguments{
 \item{graph}{A graph (network) of the igraph class.}
@@ -17,6 +22,8 @@ If the graph is undirected, the mode "all" should be specified.
 Otherwise, for the calculation of neighborhood connectivity based on
 incoming connections select "in" and for the outgoing connections select "out".
 Also, if all of the connections are desired, specify the "all" mode. Default mode is set to "all".}
+
+\item{verbose}{Logical; whether the accomplishment of different stages of the algorithm should be printed (default is FALSE).}
 }
 \value{
 A vector including the neighborhood connectivity score of each vertex inputted.

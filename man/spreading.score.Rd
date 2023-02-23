@@ -12,7 +12,8 @@ spreading.score(
   mode = "all",
   loops = TRUE,
   d = 3,
-  scaled = TRUE
+  scaled = TRUE,
+  verbose = FALSE
 )
 }
 \arguments{
@@ -43,6 +44,8 @@ NOTE: the distance d is not inclusive. This means that nodes at a distance of 3 
 our node-of-interest do not include nodes at distances 1 and 2. Only 3.}
 
 \item{scaled}{Logical; whether the end result should be 1-100 range normalized or not (default is TRUE).}
+
+\item{verbose}{Logical; whether the accomplishment of different stages of the algorithm should be printed (default is FALSE).}
 }
 \value{
 A numeric vector with Spreading scores.

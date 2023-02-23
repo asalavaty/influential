@@ -147,6 +147,7 @@ runShinyApp <- function(shinyApp) {
 #' Otherwise, for the calculation of neighborhood connectivity based on
 #' incoming connections select "in" and for the outgoing connections select "out".
 #' Also, if all of the connections are desired, specify the "all" mode. Default mode is set to "all".
+#' @param verbose Logical; whether the accomplishment of different stages of the algorithm should be printed (default is FALSE).
 #' @return A vector including the neighborhood connectivity score of each vertex inputted.
 #' @aliases NC
 #' @keywords neighborhood_connectivity
@@ -161,7 +162,7 @@ runShinyApp <- function(shinyApp) {
 #' neighrhood.co <- neighborhood.connectivity(graph = My_graph,
 #'                                            vertices = GraphVertices,
 #'                                            mode = "all")
-neighborhood.connectivity <- function(graph, vertices = V(graph), mode = "all") {
+neighborhood.connectivity <- function(graph, vertices = V(graph), mode = "all", verbose = FALSE) {
 
   # Getting the names of vertices
   if(inherits(vertices, "igraph.vs")) {
@@ -170,13 +171,17 @@ neighborhood.connectivity <- function(graph, vertices = V(graph), mode = "all") 
     node.names <- as.character(vertices)
   }
 
-
+  if(verbose) {
+    cat("Getting the first neighbors of each node\n")
+  }
   # Getting the first neighbors of each node
   node.neighbors <- sapply(as.list(node.names),
                            FUN = function(i) as.character(igraph::as_ids(igraph::neighbors(graph = graph,
                                                                                            v = i,
                                                                                            mode = mode))))
-
+  if(verbose) {
+    cat("Getting the neighborhood size of each node\n")
+  }
   # Getting the neighborhood size of each node
     first.neighbors.size <- sapply(node.neighbors,
                                    function(s) igraph::neighborhood.size(graph = graph,
@@ -184,6 +189,9 @@ neighborhood.connectivity <- function(graph, vertices = V(graph), mode = "all") 
                                                                          mode = mode,
                                                                          order = 1) - 1)
 
+    if(verbose) {
+      cat("Calculating the neighborhood connectivity of nodes\n")
+    }
   # Calculation of neighborhood connectivity
 
   if(length(vertices) == 1) {
@@ -224,6 +232,7 @@ neighborhood.connectivity <- function(graph, vertices = V(graph), mode = "all") 
 #' Otherwise, for the calculation of H-index based on
 #' incoming connections select "in" and for the outgoing connections select "out".
 #' Also, if all of the connections are desired, specify the "all" mode. Default mode is set to "all".
+#' @param verbose Logical; whether the accomplishment of different stages of the algorithm should be printed (default is FALSE).
 #' @return A vector including the H-index of each vertex inputted.
 #' @aliases h.index
 #' @keywords h_index
@@ -239,19 +248,30 @@ neighborhood.connectivity <- function(graph, vertices = V(graph), mode = "all") 
 #' h.index <- h_index(graph = My_graph, vertices = GraphVertices, mode = "all")
 #' }
 #' @importFrom utils tail
-  h_index <- function(graph, vertices = V(graph), mode = "all") {
+  h_index <- function(graph, vertices = V(graph), mode = "all", verbose = FALSE) {
 
+    if(verbose) {
+      cat("Getting the first neighbors of each node\n")
+    }
   # Getting the first neighbors of each node
   first.neighbors <- igraph::neighborhood(graph, nodes = vertices, mode = mode)
 
-  # Getting the neighbors of each vertex
+  if(verbose) {
+    cat("Getting the neighbors of each node\n")
+  }
+  # Getting the neighbors of each node
   node.neighbors <- sapply(first.neighbors, function(n) rownames(as.matrix(n[[]][-1])), simplify = F)
 
+  if(verbose) {
+    cat("Getting the neighborhood size of each node\n")
+  }
   # Getting the neighborhood size of each node
   first.neighbors.size <- lapply(node.neighbors, function(s) igraph::neighborhood.size(graph, s,
                                                                                mode = mode, order = 1) - 1)
-
-  # Calculation of H-index
+  if(verbose) {
+    cat("Calculating the H-index\n")
+  }
+  # Calculating the H-index
   hindex <- vector(mode = "integer", length = length(vertices))
 
   for (i in 1:length(vertices)) {
@@ -298,6 +318,7 @@ neighborhood.connectivity <- function(graph, vertices = V(graph), mode = "all") 
   #' Otherwise, for the calculation of local H-index based on
   #' incoming connections select "in" and for the outgoing connections select "out".
   #' Also, if all of the connections are desired, specify the "all" mode. Default mode is set to "all".
+  #' @param verbose Logical; whether the accomplishment of different stages of the algorithm should be printed (default is FALSE).
   #' @return A vector including the local H-index of each vertex inputted.
   #' @aliases lh.index
   #' @keywords lh_index
@@ -312,7 +333,7 @@ neighborhood.connectivity <- function(graph, vertices = V(graph), mode = "all") 
   #' GraphVertices <- V(My_graph)
   #' lh.index <- lh_index(graph = My_graph, vertices = GraphVertices, mode = "all")
   #' }
-  lh_index <- function(graph, vertices = V(graph), mode = "all") {
+  lh_index <- function(graph, vertices = V(graph), mode = "all", verbose = FALSE) {
 
     # Getting the first neighbors of each node
     first.neighbors <- igraph::neighborhood(graph, nodes = vertices, mode = mode)
@@ -324,8 +345,13 @@ neighborhood.connectivity <- function(graph, vertices = V(graph), mode = "all") 
 
       lhindex[i] <- sum(h_index(graph = graph,
                                 vertices = unlist(first.neighbors[i]),
-                                mode = mode))
+                                mode = mode, verbose = verbose))
     }
+    
+    if(verbose) {
+      cat("Preparing the LH-index\n")
+    }
+    
     # Getting the names of vertices
     if(inherits(vertices, "igraph.vs")) {
       node.names <- as.character(igraph::as_ids(vertices))
@@ -362,6 +388,7 @@ neighborhood.connectivity <- function(graph, vertices = V(graph), mode = "all") 
   #' results can be reached at d=3,4, but this depends on the size/"radius" of the network.
   #' NOTE: the distance d is not inclusive. This means that nodes at a distance of 3 from
   #' our node-of-interest do not include nodes at distances 1 and 2. Only 3.
+  #' @param verbose Logical; whether the accomplishment of different stages of the algorithm should be printed (default is FALSE).
   #' @return A vector of collective influence for each vertex of the graph corresponding to
   #' the order of vertices output by V(graph).
   #' @aliases CI
@@ -375,15 +402,23 @@ neighborhood.connectivity <- function(graph, vertices = V(graph), mode = "all") 
   #' My_graph <- graph_from_data_frame(MyData)
   #' GraphVertices <- V(My_graph)
   #' ci <- collective.influence(graph = My_graph, vertices = GraphVertices, mode = "all", d=3)
-  collective.influence <- function(graph, vertices = V(graph), mode = "all", d=3) {
+  collective.influence <- function(graph, vertices = V(graph), mode = "all", d=3, verbose = FALSE) {
 
     ci <- vector(mode="numeric", length=length(vertices))  # collective influence output
 
+    if(verbose) {
+      cat("Calculating the reduced degrees of nodes\n")
+    }
+    
     # Calculate the reduced degree of nodes
     reduced.degrees <- degree(graph = graph,
                               v = vertices,
                               mode = mode) - 1
 
+    if(verbose) {
+      cat("Identifing only neighbors at distance d\n")
+    }
+    
     # Identify only neighbors at distance d
     nodes.at.distance <- igraph::neighborhood(graph = graph, nodes = vertices,
                                               mode = mode, order=d, mindist=d)
@@ -391,10 +426,18 @@ neighborhood.connectivity <- function(graph, vertices = V(graph), mode = "all") 
     # Get the non-duplicated vector of node names of neighbors at distance d
     nodes.at.distance_names <- base::unique(base::unlist(base::sapply(nodes.at.distance, igraph::as_ids)))
     
+    if(verbose) {
+      cat("Calculating the reduced degrees of neighbors at distance d\n")
+    }
+    
     # Calculate the reduced degree of neighbors at distance d
     nodes.at.distance_reduced.degrees <- degree(graph = graph,
                                                 v = nodes.at.distance_names,
                                                 mode = mode) - 1
+    
+    if(verbose) {
+      cat("Calculating the the Collective Influence\n")
+    }
     
     # Calculate the collective influence
     for (i in 1:length(nodes.at.distance)) {
@@ -430,6 +473,7 @@ neighborhood.connectivity <- function(graph, vertices = V(graph), mode = "all") 
   #' @param vids Vertex sequence, the vertices for which the centrality values are returned. Default is all vertices.
   #' @param directed Logical scalar, whether to directed graph is analyzed. This argument is ignored for undirected graphs.
   #' @param loops Logical; whether the loop edges are also counted.
+  #' @param verbose Logical; whether the accomplishment of different stages of the algorithm should be printed (default is FALSE).
   #' @return A numeric vector contaning the ClusterRank centrality scores for the selected vertices.
   #' @aliases CR
   #' @keywords clusterRank
@@ -443,9 +487,13 @@ neighborhood.connectivity <- function(graph, vertices = V(graph), mode = "all") 
   #' GraphVertices <- V(My_graph)
   #' cr <- clusterRank(graph = My_graph, vids = GraphVertices, directed = FALSE, loops = TRUE)
   clusterRank <- function(graph, vids = V(graph),
-                        directed = FALSE, loops = TRUE) {
+                        directed = FALSE, loops = TRUE, verbose = FALSE) {
 
   vertex.transitivity <- vector(mode = "numeric")
+  
+  if(verbose) {
+    cat("Calculating the transitivity of nodes\n")
+  }
 
   if(directed) {
 
@@ -479,6 +527,10 @@ neighborhood.connectivity <- function(graph, vertices = V(graph), mode = "all") 
   }
 
   cl.Rank <- vector(mode = "numeric")
+  
+  if(verbose) {
+    cat("Getting the neighborhood of selected nodes and calculating the ClusterRank\n")
+  }
 
   for (i in V(graph)[vertices.index]) {
     if (is.nan(vertex.transitivity[i])) {
@@ -1110,6 +1162,7 @@ double.cent.assess.noRegression <- function(data, nodes.colname,
 #' @param BC A vector containing the values of betweenness centrality of the desired vertices.
 #' @param CI A vector containing the values of Collective Influence of the desired vertices.
 #' @param scaled Logical; whether the end result should be 1-100 range normalized or not (default is TRUE).
+#' @param verbose Logical; whether the accomplishment of different stages of the algorithm should be printed (default is FALSE).
 #' @return A numeric vector with the IVI values based on the provided centrality measures.
 #' @aliases IVI.FI
 #' @keywords ivi.from.indices
@@ -1124,7 +1177,7 @@ double.cent.assess.noRegression <- function(data, nodes.colname,
 #'                                     LH_index = centrality.measures$LH_index,
 #'                                     BC = centrality.measures$BC,
 #'                                     CI = centrality.measures$CI)
-ivi.from.indices <- function(DC, CR, LH_index, NC, BC, CI, scaled = TRUE) {
+ivi.from.indices <- function(DC, CR, LH_index, NC, BC, CI, scaled = TRUE, verbose = FALSE) {
 
   #Generating temporary measures
 
@@ -1143,6 +1196,10 @@ ivi.from.indices <- function(DC, CR, LH_index, NC, BC, CI, scaled = TRUE) {
   temp.NC[c(which(is.nan(temp.NC)), which(is.na(temp.NC)))] <- 0
   temp.BC[c(which(is.nan(temp.BC)), which(is.na(temp.BC)))] <- 0
   temp.CI[c(which(is.nan(temp.CI)), which(is.na(temp.CI)))] <- 0
+  
+  if(verbose) {
+    cat("1-100 normalization of centrality measures\n")
+  }
 
   #1-100 normalization of centrality measures
 
@@ -1169,8 +1226,12 @@ ivi.from.indices <- function(DC, CR, LH_index, NC, BC, CI, scaled = TRUE) {
   if(length(temp.CI) > 1 & any(temp.CI > 0)) {
     temp.CI <- 1+(((temp.CI-min(temp.CI))*(100-1))/(max(temp.CI)-min(temp.CI)))
   }
-
+  
   #Calculation of IVI
+  
+  if(verbose) {
+    cat("Calculating the Spreading Rank\n")
+  }
 
   spreading.rank <- ((temp.NC+temp.CR)*(temp.BC+temp.CI))
   
@@ -1179,6 +1240,10 @@ ivi.from.indices <- function(DC, CR, LH_index, NC, BC, CI, scaled = TRUE) {
       spreading.rank[which(spreading.rank == 0 | is.na(spreading.rank))] <- 1
     }
   )
+  
+  if(verbose) {
+    cat("Calculating the Hubness Rank\n")
+  }
 
   hubness.rank <- (temp.DC+temp.LH_index)
   
@@ -1188,11 +1253,20 @@ ivi.from.indices <- function(DC, CR, LH_index, NC, BC, CI, scaled = TRUE) {
     }
   )
   
+  
+  if(verbose) {
+    cat("Calculating the IVI\n")
+  }
+  
   temp.ivi <- (hubness.rank)*(spreading.rank)
 
   #1-100 normalization of IVI
 
   if(scaled == TRUE) {
+    
+    if(verbose) {
+      cat("1-100 normalization of IVI\n")
+    }
 
     if(length(unique(temp.ivi)) > 1) {
       temp.ivi <- 1+(((temp.ivi-min(temp.ivi))*(100-1))/(max(temp.ivi)-min(temp.ivi)))
@@ -1234,6 +1308,7 @@ ivi.from.indices <- function(DC, CR, LH_index, NC, BC, CI, scaled = TRUE) {
 #' NOTE: the distance d is not inclusive. This means that nodes at a distance of 3 from
 #' our node-of-interest do not include nodes at distances 1 and 2. Only 3.
 #' @param scaled Logical; whether the end result should be 1-100 range normalized or not (default is TRUE).
+#' @param verbose Logical; whether the accomplishment of different stages of the algorithm should be printed (default is FALSE).
 #' @return A numeric vector with the IVI values based on the provided centrality measures.
 #' @aliases IVI
 #' @keywords IVI integrated_value_of_influence
@@ -1250,16 +1325,45 @@ ivi.from.indices <- function(DC, CR, LH_index, NC, BC, CI, scaled = TRUE) {
 #'                        loops = TRUE, d = 3, scaled = TRUE)
 #' }
 ivi <- function(graph, vertices = V(graph), weights = NULL, directed = FALSE,
-                mode = "all", loops = TRUE, d = 3, scaled = TRUE) {
+                mode = "all", loops = TRUE, d = 3, scaled = TRUE, verbose = FALSE) {
 
   #Calculation of required centrality measures
+  
+  if(verbose) {
+    message("Calculating the Degree Centrality of Nodes\n")
+  }
 
   DC <- igraph::degree(graph = graph, v = vertices, mode = mode, loops = loops)
-  CR <- clusterRank(graph = graph, vids = vertices, directed = directed, loops = loops)
-  LH_index <- lh_index(graph = graph, vertices = vertices, mode = mode)
-  NC <- neighborhood.connectivity(graph = graph, vertices = vertices, mode = mode)
+  
+  if(verbose) {
+    message("Calculating the ClusterRank of Nodes\n")
+  }
+  
+  CR <- clusterRank(graph = graph, vids = vertices, directed = directed, loops = loops, verbose = verbose)
+  
+  if(verbose) {
+    message("Calculating the Local H-index of Nodes\n")
+  }
+  
+  LH_index <- lh_index(graph = graph, vertices = vertices, mode = mode, verbose = verbose)
+  
+  if(verbose) {
+    message("Calculating the Neighborhood Connectivity of Nodes\n")
+  }
+  
+  NC <- neighborhood.connectivity(graph = graph, vertices = vertices, mode = mode, verbose = verbose)
+  
+  if(verbose) {
+    message("Calculating the Betweenness Centrality of Nodes\n")
+  }
+  
   BC <- betweenness(graph = graph, v = vertices, directed = directed, weights = weights)
-  CI <- collective.influence(graph = graph, vertices = vertices, mode = mode, d = d)
+  
+  if(verbose) {
+    message("Calculating the Collective Influence of Nodes\n")
+  }
+  
+  CI <- collective.influence(graph = graph, vertices = vertices, mode = mode, d = d, verbose = verbose)
 
   #Generating temporary measures
 
@@ -1278,6 +1382,10 @@ ivi <- function(graph, vertices = V(graph), weights = NULL, directed = FALSE,
   temp.NC[c(which(is.nan(temp.NC)), which(is.na(temp.NC)))] <- 0
   temp.BC[c(which(is.nan(temp.BC)), which(is.na(temp.BC)))] <- 0
   temp.CI[c(which(is.nan(temp.CI)), which(is.na(temp.CI)))] <- 0
+  
+  if(verbose) {
+    cat("1-100 normalization of centrality measures\n")
+  }
 
   #1-100 normalization of centrality measures
 
@@ -1306,6 +1414,14 @@ ivi <- function(graph, vertices = V(graph), weights = NULL, directed = FALSE,
   }
 
   #Calculation of IVI
+  
+  if(verbose) {
+    message("Calculation of IVI\n")
+  }
+  
+  if(verbose) {
+    cat("Calculating the Spreading Rank\n")
+  }
 
   spreading.rank <- ((temp.NC+temp.CR)*(temp.BC+temp.CI))
 
@@ -1314,6 +1430,10 @@ ivi <- function(graph, vertices = V(graph), weights = NULL, directed = FALSE,
       spreading.rank[which(spreading.rank == 0 | is.na(spreading.rank))] <- 1
     }
   )
+  
+  if(verbose) {
+    cat("Calculating the Hubness Rank\n")
+  }
 
   hubness.rank <- (temp.DC+temp.LH_index)
 
@@ -1323,11 +1443,16 @@ ivi <- function(graph, vertices = V(graph), weights = NULL, directed = FALSE,
     }
   )
   
+
   temp.ivi <- (hubness.rank)*(spreading.rank)
 
   #1-100 normalization of IVI
 
   if(scaled == TRUE) {
+    
+    if(verbose) {
+      cat("1-100 normalization of IVI\n")
+    }
 
     if(length(unique(temp.ivi)) > 1) {
       temp.ivi <- 1+(((temp.ivi-min(temp.ivi))*(100-1))/(max(temp.ivi)-min(temp.ivi)))
@@ -1368,6 +1493,7 @@ ivi <- function(graph, vertices = V(graph), weights = NULL, directed = FALSE,
 #' NOTE: the distance d is not inclusive. This means that nodes at a distance of 3 from
 #' our node-of-interest do not include nodes at distances 1 and 2. Only 3.
 #' @param scaled Logical; whether the end result should be 1-100 range normalized or not (default is TRUE).
+#' @param verbose Logical; whether the accomplishment of different stages of the algorithm should be printed (default is FALSE).
 #' @return A numeric vector with Spreading scores.
 #' @keywords spreading.score
 #' @family integrative ranking functions
@@ -1383,15 +1509,34 @@ ivi <- function(graph, vertices = V(graph), weights = NULL, directed = FALSE,
 #'                                    loops = TRUE, d = 3, scaled = TRUE)
 #' }
 spreading.score <- function(graph, vertices = V(graph), weights = NULL, directed = FALSE,
-                            mode = "all", loops = TRUE, d = 3, scaled = TRUE) {
+                            mode = "all", loops = TRUE, d = 3, scaled = TRUE, verbose = FALSE) {
 
   #Calculation of required centrality measures
+  
+  if(verbose) {
+    message("Calculating the ClusterRank of Nodes\n")
+  }
 
-  CR <- clusterRank(graph = graph, vids = vertices, directed = directed, loops = loops)
+  CR <- clusterRank(graph = graph, vids = vertices, directed = directed, loops = loops, verbose = verbose)
   CR[which(is.nan(CR))] <- 0
-  NC <- neighborhood.connectivity(graph = graph, vertices = vertices, mode = mode)
+  
+  if(verbose) {
+    message("Calculating the Neighborhood Connectivity of Nodes\n")
+  }
+  
+  NC <- neighborhood.connectivity(graph = graph, vertices = vertices, mode = mode, verbose = verbose)
+  
+  if(verbose) {
+    message("Calculating the Betweenness Centrality of Nodes\n")
+  }
+  
   BC <- betweenness(graph = graph, v = vertices, directed = directed, weights = weights)
-  CI <- collective.influence(graph = graph, vertices = vertices, mode = mode, d = d)
+  
+  if(verbose) {
+    message("Calculating the Collective Influence of Nodes\n")
+  }
+  
+  CI <- collective.influence(graph = graph, vertices = vertices, mode = mode, d = d, verbose = verbose)
 
   #Generating temporary measures
 
@@ -1406,6 +1551,10 @@ spreading.score <- function(graph, vertices = V(graph), weights = NULL, directed
   temp.NC[c(which(is.nan(temp.NC)), which(is.na(temp.NC)))] <- 0
   temp.BC[c(which(is.nan(temp.BC)), which(is.na(temp.BC)))] <- 0
   temp.CI[c(which(is.nan(temp.CI)), which(is.na(temp.CI)))] <- 0
+  
+  if(verbose) {
+    cat("1-100 normalization of centrality measures\n")
+  }
 
   #1-100 normalization of centrality measures
 
@@ -1432,6 +1581,10 @@ spreading.score <- function(graph, vertices = V(graph), weights = NULL, directed
   #1-100 normalization of spreading score
 
   if(scaled == TRUE) {
+    
+    if(verbose) {
+      cat("1-100 normalization of Spreading Score\n")
+    }
 
     if(length(unique(temp.spreading.score)) > 1) {
     temp.spreading.score <- 1+(((temp.spreading.score-min(temp.spreading.score))*(100-1))/(max(temp.spreading.score)-min(temp.spreading.score)))
@@ -1463,6 +1616,7 @@ spreading.score <- function(graph, vertices = V(graph), weights = NULL, directed
 #' Also, if all of the connections are desired, specify the "all" mode. Default mode is set to "all".
 #' @param loops Logical; whether the loop edges are also counted.
 #' @param scaled Logical; whether the end result should be 1-100 range normalized or not (default is TRUE).
+#' @param verbose Logical; whether the accomplishment of different stages of the algorithm should be printed (default is FALSE).
 #' @return A numeric vector with the Hubness scores.
 #' @keywords hubness.score
 #' @family integrative ranking functions
@@ -1478,12 +1632,21 @@ spreading.score <- function(graph, vertices = V(graph), weights = NULL, directed
 #'                                loops = TRUE, scaled = TRUE)
 #' }
 hubness.score <- function(graph, vertices = V(graph), directed = FALSE,
-                          mode = "all", loops = TRUE, scaled = TRUE) {
+                          mode = "all", loops = TRUE, scaled = TRUE, verbose = FALSE) {
 
   #Calculation of required centrality measures
+  
+  if(verbose) {
+    message("Calculating the Degree Centrality of Nodes\n")
+  }
 
   DC <- igraph::degree(graph = graph, v = vertices, mode = mode, loops = loops)
-  LH_index <- lh_index(graph = graph, vertices = vertices, mode = mode)
+  
+  if(verbose) {
+    message("Calculating the Local H-index of Nodes\n")
+  }
+  
+  LH_index <- lh_index(graph = graph, vertices = vertices, mode = mode, verbose = verbose)
 
   #Generating temporary measures
 
@@ -1494,6 +1657,10 @@ hubness.score <- function(graph, vertices = V(graph), directed = FALSE,
 
   temp.DC[c(which(is.nan(temp.DC)), which(is.na(temp.DC)))] <- 0
   temp.LH_index[c(which(is.nan(temp.LH_index)), which(is.na(temp.LH_index)))] <- 0
+  
+  if(verbose) {
+    cat("1-100 normalization of centrality measures\n")
+  }
 
   #1-100 normalization of centrality measures
 
@@ -1512,6 +1679,10 @@ hubness.score <- function(graph, vertices = V(graph), directed = FALSE,
   #1-100 normalization of Hubness score
 
   if(scaled == TRUE) {
+    
+    if(verbose) {
+      cat("1-100 normalization of Hubness Score\n")
+    }
 
     if(length(unique(temp.hubness.score)) > 1) {
     temp.hubness.score <- 1+(((temp.hubness.score-min(temp.hubness.score))*(100-1))/(max(temp.hubness.score)-min(temp.hubness.score)))

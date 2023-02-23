@@ -10,7 +10,8 @@ hubness.score(
   directed = FALSE,
   mode = "all",
   loops = TRUE,
-  scaled = TRUE
+  scaled = TRUE,
+  verbose = FALSE
 )
 }
 \arguments{
@@ -30,6 +31,8 @@ Also, if all of the connections are desired, specify the "all" mode. Default mod
 \item{loops}{Logical; whether the loop edges are also counted.}
 
 \item{scaled}{Logical; whether the end result should be 1-100 range normalized or not (default is TRUE).}
+
+\item{verbose}{Logical; whether the accomplishment of different stages of the algorithm should be printed (default is FALSE).}
 }
 \value{
 A numeric vector with the Hubness scores.

@@ -7,6 +7,9 @@ influential
 
 - DESCRIPTION of the package is updated.
 
+- A `verbose` argument is added all centrality measure functions and
+  their corresponding documentations are updated as well.
+
 - The fcor function, `fcor`, as well as its documentation are optimized
   and updated.
 
