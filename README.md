@@ -11,7 +11,7 @@ status](https://ci.appveyor.com/api/projects/status/github/asalavaty/influential
 [![](http://cranlogs.r-pkg.org/badges/grand-total/influential?color=green)](https://cran.r-project.org/package=influential)
 [![](https://img.shields.io/badge/Integrated%20Value%20of%20Influence-IVI-blue.svg)](https://doi.org/10.1016/j.patter.2020.100052)
 [![](https://img.shields.io/badge/SIR--based%20Influence%20Ranking-SIRIR-green.svg)](https://doi.org/10.1016/j.patter.2020.100052)
-[![](https://img.shields.io/badge/Experimental%20data--based%20Integrative%20Ranking-ExIR-blue.svg)](https://github.com/asalavaty/influential)
+[![](https://img.shields.io/badge/Experimental%20data--based%20Integrative%20Ranking-ExIR-blue.svg)](https://www.biorxiv.org/content/10.1101/2022.10.03.510585v1.abstract)
 <!-- badges: end -->
 
 ## Overview
@@ -43,6 +43,10 @@ opposite directions.
 Check out [**our paper**](https://doi.org/10.1016/j.patter.2020.100052)
 for a more complete description of the IVI formula and all of its
 underpinning methods and analyses.
+
+Also, read our
+[**preprint**](https://www.biorxiv.org/content/10.1101/2022.10.03.510585v1.abstract)
+on the ExIR model and its validations.
 
 ## Author
 
@@ -85,12 +89,12 @@ browseVignettes("influential")
 
 ## Shiny apps
 
--   [Influential Software Package web
-    portal](https://influential.erc.monash.edu/)
+- [Influential Software Package web
+  portal](https://influential.erc.monash.edu/)
 
--   [IVI Shiny App](https://influential.erc.monash.edu/IVI/): A shiny
-    app for the calculation of the Integrated Value of Influence (IVI)
-    of network nodes as well as IVI-based visualization of the network.
+- [IVI Shiny App](https://influential.erc.monash.edu/IVI/): A shiny app
+  for the calculation of the Integrated Value of Influence (IVI) of
+  network nodes as well as IVI-based visualization of the network.
 
 You can also access the IVI shiny app offline from within R and run it
 on your local machine using the following command.
@@ -99,9 +103,9 @@ on your local machine using the following command.
 influential::runShinyApp("IVI")
 ```
 
--   [ExIR Shiny App](https://influential.erc.monash.edu/ExIR/): A shiny
-    app for running the Experimental-data-based Integrative Ranking
-    (ExIR) model as well as visualization of its results.
+- [ExIR Shiny App](https://influential.erc.monash.edu/ExIR/): A shiny
+  app for running the Experimental-data-based Integrative Ranking (ExIR)
+  model as well as visualization of its results.
 
 You can also access the ExIR shiny app offline from within R and run it
 on your local machine using the following command.
@@ -114,10 +118,10 @@ influential::runShinyApp("ExIR")
 
 To cite `influential`, please cite its associated paper:
 
--   Integrated Value of Influence: An Integrative Method for the
-    Identification of the Most Influential Nodes within Networks. Abbas
-    Salavaty, Mirana Ramialison, Peter D Currie. *Patterns*. 2020.08.14
-    ([Read online](https://doi.org/10.1016/j.patter.2020.100052)).
+- Integrated Value of Influence: An Integrative Method for the
+  Identification of the Most Influential Nodes within Networks. Abbas
+  Salavaty, Mirana Ramialison, Peter D Currie. *Patterns*. 2020.08.14
+  ([Read online](https://doi.org/10.1016/j.patter.2020.100052)).
 
 You can also refer to the package’s citation information using the
 `citation()` function.

@@ -5,6 +5,8 @@ influential
 
 # influential 2.2.6.9000 (Developmental version)
 
+- The README file is updated.
+
 - DESCRIPTION of the package is updated.
 
 - A `verbose` argument is added all centrality measure functions and

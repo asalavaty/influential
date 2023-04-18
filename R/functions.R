@@ -3572,7 +3572,7 @@ sirir <- function(graph, vertices = V(graph),
 
     # select top N features
 
-    # for driver tabel
+    # for driver table
     if(any(base::names(exir.results) == "Driver table")) {
       top.N.driver.table <- exir.results[[which(names(exir.results) %in% "Driver table")]]
       top.N.driver.table$Feature <- base::rownames(top.N.driver.table)
@@ -3609,6 +3609,8 @@ sirir <- function(graph, vertices = V(graph),
           top.N.driver.table <- top.N.driver.table[top.drivers.index,]
           top.N.driver.table$Rank <- base::rank(top.N.driver.table$Rank,
                                                 ties.method = "min")
+          
+          # top N decelerator
       } else if(driver.type == "decelerator") {
         top.N.driver.table <- base::subset(top.N.driver.table,
                                            Type == "Decelerator")
@@ -3633,7 +3635,7 @@ sirir <- function(graph, vertices = V(graph),
 
     ####********************####
 
-    # for biomarker tabel
+    # for biomarker table
     if(any(base::names(exir.results) == "Biomarker table")) {
       top.N.biomarker.table <- exir.results[[which(names(exir.results) %in% "Biomarker table")]]
       top.N.biomarker.table$Feature <- base::rownames(top.N.biomarker.table)
