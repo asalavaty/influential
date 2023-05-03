@@ -345,7 +345,7 @@ neighborhood.connectivity <- function(graph, vertices = V(graph), mode = "all", 
 
       lhindex[i] <- sum(h_index(graph = graph,
                                 vertices = unlist(first.neighbors[i]),
-                                mode = mode, verbose = verbose))
+                                mode = mode, verbose = FALSE))
     }
     
     if(verbose) {
