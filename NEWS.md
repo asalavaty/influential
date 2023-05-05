@@ -9,6 +9,12 @@ influential
 
 - DESCRIPTION of the package is updated.
 
+- New packages including *foreach*, and *doParallel* are added to the
+  Imports section of the DESCRIPTION.
+
+- LH-index function, `lh_index`, is optimized by providing access to
+  several cores. This also significantly speeds up the `ivi` function.
+
 - A `verbose` argument is added all centrality measure functions and
   their corresponding documentations are updated as well.
 
