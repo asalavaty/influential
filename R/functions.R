@@ -318,6 +318,8 @@ neighborhood.connectivity <- function(graph, vertices = V(graph), mode = "all", 
   #' Otherwise, for the calculation of local H-index based on
   #' incoming connections select "in" and for the outgoing connections select "out".
   #' Also, if all of the connections are desired, specify the "all" mode. Default mode is set to "all".
+  #' @param ncores Integer; the number of cores to be used for parallel processing. If ncores == "default" (default), the number of 
+  #' cores to be used will be the max(number of available cores) - 1. We recommend leaving ncores argument as is (ncores = "default").
   #' @param verbose Logical; whether the accomplishment of different stages of the algorithm should be printed (default is FALSE).
   #' @return A vector including the local H-index of each vertex inputted.
   #' @aliases lh.index
@@ -333,20 +335,28 @@ neighborhood.connectivity <- function(graph, vertices = V(graph), mode = "all", 
   #' GraphVertices <- V(My_graph)
   #' lh.index <- lh_index(graph = My_graph, vertices = GraphVertices, mode = "all")
   #' }
-  lh_index <- function(graph, vertices = V(graph), mode = "all", verbose = FALSE) {
+  lh_index <- function(graph, vertices = V(graph), mode = "all", ncores = "default", verbose = FALSE) {
+    
+    # Make clusters for parallel processing
+    library(foreach)
+    library(doParallel)
+    cl <- parallel::makeCluster(ifelse(ncores == "default", parallel::detectCores() - 1, ncores))
+    doParallel::registerDoParallel(cl)
 
+    if(verbose) {
+      cat("Getting the first neighbors of each node\n")
+    }
     # Getting the first neighbors of each node
     first.neighbors <- igraph::neighborhood(graph, nodes = vertices, mode = mode)
 
-    # Calculation of local H-index (LH-index)
-    lhindex <- vector(mode = "integer", length = length(vertices))
-
-    for (i in 1:length(vertices)) {
-
-      lhindex[i] <- sum(h_index(graph = graph,
-                                vertices = unlist(first.neighbors[i]),
-                                mode = mode, verbose = FALSE))
+    if(verbose) {
+      cat("Calculating H-index\n")
     }
+    # Calculation of local H-index (LH-index)
+    lhindex <- foreach::foreach(i = 1:length(vertices), .combine = "c") %dopar% {
+      sum(influential::h_index(graph = graph, vertices = unlist(first.neighbors[i]), mode = mode, verbose = FALSE))
+    }
+    parallel::stopCluster(cl)
     
     if(verbose) {
       cat("Preparing the LH-index\n")

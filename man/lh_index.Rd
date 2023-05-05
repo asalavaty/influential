@@ -5,7 +5,13 @@
 \alias{lh.index}
 \title{local H-index (LH-index)}
 \usage{
-lh_index(graph, vertices = V(graph), mode = "all", verbose = FALSE)
+lh_index(
+  graph,
+  vertices = V(graph),
+  mode = "all",
+  ncores = "default",
+  verbose = FALSE
+)
 }
 \arguments{
 \item{graph}{A graph (network) of the igraph class.}
@@ -17,6 +23,9 @@ If the graph is undirected, the mode "all" should be specified.
 Otherwise, for the calculation of local H-index based on
 incoming connections select "in" and for the outgoing connections select "out".
 Also, if all of the connections are desired, specify the "all" mode. Default mode is set to "all".}
+
+\item{ncores}{Integer; the number of cores to be used for parallel processing. If ncores == "default" (default), the number of 
+cores to be used will be the max(number of available cores) - 1. We recommend leaving ncores argument as is (ncores = "default").}
 
 \item{verbose}{Logical; whether the accomplishment of different stages of the algorithm should be printed (default is FALSE).}
 }
