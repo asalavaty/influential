@@ -6,10 +6,10 @@ Adrian (Abbas) Salavaty
 ## 2.2.6.9000 New version submission (Developmental version)
 
 - This is a new submission of the new version of the package
-  `influential`. The `collective_influence` and `lh_index` functions are
-  optimized. Also, documentation of several functions were updated along
-  with a several other minor improvements. Please see News for complete
-  details.
+  `influential`. The `collective_influence`, `clusterRank`, and
+  `lh_index` functions are optimized. Also, documentation of several
+  functions were updated along with a several other minor improvements.
+  Please see News for complete details.
 
 ## Test environments
 

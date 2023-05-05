@@ -12,6 +12,9 @@ influential
 - New packages including *foreach*, and *doParallel* are added to the
   Imports section of the DESCRIPTION.
 
+- LH-index function, `clusterRank`, is optimized by providing access to
+  several cores. This also significantly speeds up the `ivi` function.
+
 - LH-index function, `lh_index`, is optimized by providing access to
   several cores. This also significantly speeds up the `ivi` function.
 

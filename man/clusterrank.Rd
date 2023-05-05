@@ -10,6 +10,7 @@ clusterRank(
   vids = V(graph),
   directed = FALSE,
   loops = TRUE,
+  ncores = "default",
   verbose = FALSE
 )
 }
@@ -21,6 +22,9 @@ clusterRank(
 \item{directed}{Logical scalar, whether to directed graph is analyzed. This argument is ignored for undirected graphs.}
 
 \item{loops}{Logical; whether the loop edges are also counted.}
+
+\item{ncores}{Integer; the number of cores to be used for parallel processing. If ncores == "default" (default), the number of cores 
+to be used will be the max(number of available cores) - 1. We recommend leaving ncores argument as is (ncores = "default").}
 
 \item{verbose}{Logical; whether the accomplishment of different stages of the algorithm should be printed (default is FALSE).}
 }

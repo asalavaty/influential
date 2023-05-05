@@ -353,9 +353,10 @@ neighborhood.connectivity <- function(graph, vertices = V(graph), mode = "all", 
       cat("Calculating H-index\n")
     }
     # Calculation of local H-index (LH-index)
-    lhindex <- foreach::foreach(i = 1:length(vertices), .combine = "c") %dopar% {
-      sum(influential::h_index(graph = graph, vertices = unlist(first.neighbors[i]), mode = mode, verbose = FALSE))
-    }
+    lhindex <- foreach::foreach(i = 1:length(vertices), .combine = "c", .multicombine = TRUE, 
+                                .packages = c("igraph", "influential")) %dopar% {
+                                  sum(h_index(graph = graph, vertices = unlist(first.neighbors[i]), mode = mode, verbose = FALSE))
+                                }
     parallel::stopCluster(cl)
     
     if(verbose) {
@@ -483,6 +484,8 @@ neighborhood.connectivity <- function(graph, vertices = V(graph), mode = "all", 
   #' @param vids Vertex sequence, the vertices for which the centrality values are returned. Default is all vertices.
   #' @param directed Logical scalar, whether to directed graph is analyzed. This argument is ignored for undirected graphs.
   #' @param loops Logical; whether the loop edges are also counted.
+  #' @param ncores Integer; the number of cores to be used for parallel processing. If ncores == "default" (default), the number of cores 
+  #' to be used will be the max(number of available cores) - 1. We recommend leaving ncores argument as is (ncores = "default").
   #' @param verbose Logical; whether the accomplishment of different stages of the algorithm should be printed (default is FALSE).
   #' @return A numeric vector contaning the ClusterRank centrality scores for the selected vertices.
   #' @aliases CR
@@ -497,7 +500,13 @@ neighborhood.connectivity <- function(graph, vertices = V(graph), mode = "all", 
   #' GraphVertices <- V(My_graph)
   #' cr <- clusterRank(graph = My_graph, vids = GraphVertices, directed = FALSE, loops = TRUE)
   clusterRank <- function(graph, vids = V(graph),
-                        directed = FALSE, loops = TRUE, verbose = FALSE) {
+                        directed = FALSE, loops = TRUE, ncores = "default", verbose = FALSE) {
+    
+    # Make clusters for parallel processing
+    library(foreach)
+    library(doParallel)
+    cl <- parallel::makeCluster(ifelse(ncores == "default", parallel::detectCores() - 1, ncores))
+    doParallel::registerDoParallel(cl)
 
   vertex.transitivity <- vector(mode = "numeric")
   
@@ -505,61 +514,57 @@ neighborhood.connectivity <- function(graph, vertices = V(graph), mode = "all", 
     cat("Calculating the transitivity of nodes\n")
   }
 
-  if(directed) {
-
+  if (directed) {
     cl.Rank.mode <- "out"
-
-    for(i in V(graph)) {
+    foreach::foreach(i = V(graph), .combine = c) %dopar% {
       vertex.neighborhood <- igraph::neighborhood(graph = graph,
-                                          order = 1, nodes=i,
-                                          mode = cl.Rank.mode)[[1]][-1]
-      if(length(vertex.neighborhood) < 2){
-        vertex.transitivity <- base::append(vertex.transitivity, NaN)
+                                                  order = 1, nodes = i,
+                                                  mode = cl.Rank.mode)[[1]][-1]
+      if (length(vertex.neighborhood) < 2) {
+        NaN
       } else {
         indc.subgraph <- igraph::induced.subgraph(graph = graph, vertex.neighborhood)
-        vertex.transitivity <- base::append(vertex.transitivity,
-                                            igraph::ecount(indc.subgraph)/(igraph::vcount(indc.subgraph)*(igraph::vcount(indc.subgraph)-1)))
+        igraph::ecount(indc.subgraph)/(igraph::vcount(indc.subgraph)*(igraph::vcount(indc.subgraph)-1))
       }
-    }
-
+    } -> vertex.transitivity
   } else {
-
     cl.Rank.mode <- "all"
-
     vertex.transitivity <- igraph::transitivity(graph = graph, type = "local")
-
   }
+  parallel::stopCluster(cl)
 
   if(inherits(vids, "igraph.vs")) {
     vertices.index <- stats::na.omit(match(vids, V(graph)))
   } else {
     vertices.index <- stats::na.omit(match(vids, igraph::as_ids(V(graph))))
   }
-
-  cl.Rank <- vector(mode = "numeric")
   
+  cl <- parallel::makeCluster(ifelse(ncores == "default", parallel::detectCores() - 1, ncores))
+  doParallel::registerDoParallel(cl)
+
   if(verbose) {
     cat("Getting the neighborhood of selected nodes and calculating the ClusterRank\n")
   }
 
-  for (i in V(graph)[vertices.index]) {
-    if (is.nan(vertex.transitivity[i])) {
-      cl.Rank <- append(cl.Rank, NaN)
-    }
-    else {
-
-      selected.v.neighborhood <- igraph::neighborhood(graph = graph,
-                                                      order = 1, nodes = i,
-                                                      mode = cl.Rank.mode)[[1]][-1]
-      temp.cl.Rank <- 0
-      for (j in selected.v.neighborhood) {
-        temp.cl.Rank <- temp.cl.Rank + igraph::degree(graph = graph,
-                                                      v = j, mode = cl.Rank.mode,
-                                                      loops = loops) + 1
-      }
-      cl.Rank <- append(cl.Rank, temp.cl.Rank * vertex.transitivity[i])
-    }
-  }
+  cl.Rank <- foreach::foreach(i = V(graph)[vertices.index], .combine = c, .multicombine = TRUE,
+                              .packages = "igraph") %dopar% {
+                                if (is.nan(vertex.transitivity[i])) {
+                                  NaN
+                                } else {
+                                  selected.v.neighborhood <- igraph::neighborhood(graph = graph,
+                                                                                  order = 1, nodes = i,
+                                                                                  mode = cl.Rank.mode)[[1]][-1]
+                                  temp.cl.Rank <- 0
+                                  for (j in selected.v.neighborhood) {
+                                    temp.cl.Rank <- temp.cl.Rank + igraph::degree(graph = graph,
+                                                                                  v = j, mode = cl.Rank.mode,
+                                                                                  loops = loops) + 1
+                                  }
+                                  temp.cl.Rank * vertex.transitivity[i]
+                                }
+                              }
+  
+  parallel::stopCluster(cl)
 
   if (igraph::is.named(graph)) {
     names(cl.Rank) <- igraph::V(graph)$name[vertices.index]
