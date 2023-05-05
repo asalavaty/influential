@@ -20,6 +20,8 @@ Imports:
     janitor,
     ranger,
     coop,
+    foreach,
+    doParallel,
     data.table,
     ggplot2
 Suggests:
