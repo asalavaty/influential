@@ -42,7 +42,8 @@ the number of neighbors and the neighbors’ influences, but also the clustering
 MyData <- coexpression.data
 My_graph <- graph_from_data_frame(MyData)
 GraphVertices <- V(My_graph)
-cr <- clusterRank(graph = My_graph, vids = GraphVertices, directed = FALSE, loops = TRUE)
+cr <- clusterRank(graph = My_graph, vids = GraphVertices, 
+directed = FALSE, loops = TRUE, ncores = 1)
 }
 \seealso{
 \code{\link[influential]{ivi}},

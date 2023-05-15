@@ -41,7 +41,7 @@ works with both directed and undirected networks.
 MyData <- coexpression.data
 My_graph <- graph_from_data_frame(MyData)
 GraphVertices <- V(My_graph)
-lh.index <- lh_index(graph = My_graph, vertices = GraphVertices, mode = "all")
+lh.index <- lh_index(graph = My_graph, vertices = GraphVertices, mode = "all", ncores = 1)
 }
 }
 \seealso{
