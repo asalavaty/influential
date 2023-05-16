@@ -1,6 +1,7 @@
 citHeader("To cite influential in publications use:")
 
-citEntry(
+bibentry(
+  bibtype = "Manual",
   entry    = "Article",
   title    = "Integrated Value of Influence: An Integrative Method for the Identification of the Most Influential Nodes within Networks",
   author   = "Abbas Salavaty, Mirana Ramialison, Peter D Currie",
