@@ -3,7 +3,7 @@ influential
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-# influential 2.2.6.9000 (Developmental version)
+# influential 2.2.7 (CRAN version)
 
 - The README file is updated.
 
@@ -12,11 +12,19 @@ influential
 - New packages including *foreach*, and *doParallel* are added to the
   Imports section of the DESCRIPTION.
 
+- ExIR function, `exir`, is optimized by providing access to several
+  cores. Also, its documentation is updated.
+
+- IVI function, `IVI`, is optimized by providing access to several
+  cores. Also, its documentation is updated.
+
 - LH-index function, `clusterRank`, is optimized by providing access to
   several cores. This also significantly speeds up the `ivi` function.
+  Also, its documentation is updated.
 
 - LH-index function, `lh_index`, is optimized by providing access to
   several cores. This also significantly speeds up the `ivi` function.
+  Also, its documentation is updated.
 
 - A `verbose` argument is added all centrality measure functions and
   their corresponding documentations are updated as well.
