@@ -38,8 +38,8 @@
 #' \itemize{
 #'   \item Package: influential
 #'   \item Type: Package
-#'   \item Version: 2.2.6
-#'   \item Date: 20-12-2021
+#'   \item Version: 2.2.7
+#'   \item Date: 15-05-2023
 #'   \item License: GPL-3
 #' }
 #'
@@ -333,13 +333,12 @@ neighborhood.connectivity <- function(graph, vertices = V(graph), mode = "all", 
   #' MyData <- coexpression.data
   #' My_graph <- graph_from_data_frame(MyData)
   #' GraphVertices <- V(My_graph)
-  #' lh.index <- lh_index(graph = My_graph, vertices = GraphVertices, mode = "all")
+  #' lh.index <- lh_index(graph = My_graph, vertices = GraphVertices, mode = "all", ncores = 1)
   #' }
+  #' @importFrom foreach %dopar%
   lh_index <- function(graph, vertices = V(graph), mode = "all", ncores = "default", verbose = FALSE) {
     
     # Make clusters for parallel processing
-    library(foreach)
-    library(doParallel)
     cl <- parallel::makeCluster(ifelse(ncores == "default", parallel::detectCores() - 1, ncores))
     doParallel::registerDoParallel(cl)
 
@@ -498,13 +497,13 @@ neighborhood.connectivity <- function(graph, vertices = V(graph), mode = "all", 
   #' MyData <- coexpression.data
   #' My_graph <- graph_from_data_frame(MyData)
   #' GraphVertices <- V(My_graph)
-  #' cr <- clusterRank(graph = My_graph, vids = GraphVertices, directed = FALSE, loops = TRUE)
+  #' cr <- clusterRank(graph = My_graph, vids = GraphVertices, 
+  #' directed = FALSE, loops = TRUE, ncores = 1)
+  #' @importFrom foreach %dopar%
   clusterRank <- function(graph, vids = V(graph),
                         directed = FALSE, loops = TRUE, ncores = "default", verbose = FALSE) {
     
     # Make clusters for parallel processing
-    library(foreach)
-    library(doParallel)
     cl <- parallel::makeCluster(ifelse(ncores == "default", parallel::detectCores() - 1, ncores))
     doParallel::registerDoParallel(cl)
 
@@ -1251,7 +1250,7 @@ ivi.from.indices <- function(DC, CR, LH_index, NC, BC, CI, scaled = TRUE, verbos
   spreading.rank <- ((temp.NC+temp.CR)*(temp.BC+temp.CI))
   
   suppressWarnings(
-    if(any(na.omit(spreading.rank) == 0 | is.na(spreading.rank))) {
+    if(any(stats::na.omit(spreading.rank) == 0 | is.na(spreading.rank))) {
       spreading.rank[which(spreading.rank == 0 | is.na(spreading.rank))] <- 1
     }
   )
@@ -1263,7 +1262,7 @@ ivi.from.indices <- function(DC, CR, LH_index, NC, BC, CI, scaled = TRUE, verbos
   hubness.rank <- (temp.DC+temp.LH_index)
   
   suppressWarnings(
-    if(any(na.omit(hubness.rank) == 0 | is.na(hubness.rank))) {
+    if(any(stats::na.omit(hubness.rank) == 0 | is.na(hubness.rank))) {
       hubness.rank[which(hubness.rank == 0 | is.na(hubness.rank))] <- 1
     }
   )
@@ -1323,6 +1322,8 @@ ivi.from.indices <- function(DC, CR, LH_index, NC, BC, CI, scaled = TRUE, verbos
 #' NOTE: the distance d is not inclusive. This means that nodes at a distance of 3 from
 #' our node-of-interest do not include nodes at distances 1 and 2. Only 3.
 #' @param scaled Logical; whether the end result should be 1-100 range normalized or not (default is TRUE).
+#' @param ncores Integer; the number of cores to be used for parallel processing. If ncores == "default" (default), the number of 
+#' cores to be used will be the max(number of available cores) - 1. We recommend leaving ncores argument as is (ncores = "default").
 #' @param verbose Logical; whether the accomplishment of different stages of the algorithm should be printed (default is FALSE).
 #' @return A numeric vector with the IVI values based on the provided centrality measures.
 #' @aliases IVI
@@ -1340,7 +1341,7 @@ ivi.from.indices <- function(DC, CR, LH_index, NC, BC, CI, scaled = TRUE, verbos
 #'                        loops = TRUE, d = 3, scaled = TRUE)
 #' }
 ivi <- function(graph, vertices = V(graph), weights = NULL, directed = FALSE,
-                mode = "all", loops = TRUE, d = 3, scaled = TRUE, verbose = FALSE) {
+                mode = "all", loops = TRUE, d = 3, scaled = TRUE, ncores = "default", verbose = FALSE) {
 
   #Calculation of required centrality measures
   
@@ -1354,13 +1355,13 @@ ivi <- function(graph, vertices = V(graph), weights = NULL, directed = FALSE,
     message("Calculating the ClusterRank of Nodes\n")
   }
   
-  CR <- clusterRank(graph = graph, vids = vertices, directed = directed, loops = loops, verbose = verbose)
+  CR <- clusterRank(graph = graph, vids = vertices, directed = directed, loops = loops, ncores = ncores, verbose = verbose)
   
   if(verbose) {
     message("Calculating the Local H-index of Nodes\n")
   }
   
-  LH_index <- lh_index(graph = graph, vertices = vertices, mode = mode, verbose = verbose)
+  LH_index <- lh_index(graph = graph, vertices = vertices, mode = mode, ncores = ncores, verbose = verbose)
   
   if(verbose) {
     message("Calculating the Neighborhood Connectivity of Nodes\n")
@@ -1441,7 +1442,7 @@ ivi <- function(graph, vertices = V(graph), weights = NULL, directed = FALSE,
   spreading.rank <- ((temp.NC+temp.CR)*(temp.BC+temp.CI))
 
   suppressWarnings(
-    if(any(na.omit(spreading.rank) == 0 | is.na(spreading.rank))) {
+    if(any(stats::na.omit(spreading.rank) == 0 | is.na(spreading.rank))) {
       spreading.rank[which(spreading.rank == 0 | is.na(spreading.rank))] <- 1
     }
   )
@@ -1453,7 +1454,7 @@ ivi <- function(graph, vertices = V(graph), weights = NULL, directed = FALSE,
   hubness.rank <- (temp.DC+temp.LH_index)
 
   suppressWarnings(
-    if(any(na.omit(hubness.rank) == 0 | is.na(hubness.rank))) {
+    if(any(stats::na.omit(hubness.rank) == 0 | is.na(hubness.rank))) {
       hubness.rank[which(hubness.rank == 0 | is.na(hubness.rank))] <- 1
     }
   )
@@ -2086,6 +2087,8 @@ sirir <- function(graph, vertices = V(graph),
   #' is present within Diff_data. However, this is used in the case of sc-seq experiments where some genes are uniquely
   #' expressed in a specific cell-type and consequently get infinite differential values. Note that the sign of differential
   #' value is preserved (default is 10^10).
+  #' @param ncores Integer; the number of cores to be used for parallel processing. If ncores == "default" (default), the number of 
+  #' cores to be used will be the max(number of available cores) - 1. We recommend leaving ncores argument as is (ncores = "default").
   #' @param seed The seed to be used for all of the random processes throughout the model (default is 1234).
   #' @param verbose Logical; whether the accomplishment of different stages of the model should be printed (default is TRUE).
   #' @return A list of one graph and one to four tables including:
@@ -2129,7 +2132,7 @@ sirir <- function(graph, vertices = V(graph),
                    cor_thresh_method = "mr", r = 0.5, mr = 20,
                    max.connections = 50000, alpha = 0.05,
                    num_trees = 10000, mtry = NULL, num_permutations = 100,
-                   inf_const = 10^10, seed = 1234, verbose = TRUE) {
+                   inf_const = 10^10, ncores = "default", seed = 1234, verbose = TRUE) {
 
     # Setup progress bar
     if(verbose) {
@@ -2518,7 +2521,7 @@ sirir <- function(graph, vertices = V(graph),
     }
 
     #e Calculation of IVI
-    temp.corr.ivi <- ivi(temp.corr.graph)
+    temp.corr.ivi <- ivi(temp.corr.graph, ncores = ncores)
 
     #ProgressBar: Calculation of the integrated value of influence (IVI)
     if(verbose) {
@@ -4438,6 +4441,7 @@ sirir <- function(graph, vertices = V(graph),
                            "P.adj",
                            "Rank",
                            "Type",
+                           "i",
                            "X",
                            "X1",
                            "X2",
