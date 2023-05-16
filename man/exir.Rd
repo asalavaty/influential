@@ -23,6 +23,7 @@ exir(
   mtry = NULL,
   num_permutations = 100,
   inf_const = 10^10,
+  ncores = "default",
   seed = 1234,
   verbose = TRUE
 )
@@ -92,6 +93,9 @@ biomarker rank to compare all of the features. This parameter is ignored if no i
 is present within Diff_data. However, this is used in the case of sc-seq experiments where some genes are uniquely
 expressed in a specific cell-type and consequently get infinite differential values. Note that the sign of differential
 value is preserved (default is 10^10).}
+
+\item{ncores}{Integer; the number of cores to be used for parallel processing. If ncores == "default" (default), the number of 
+cores to be used will be the max(number of available cores) - 1. We recommend leaving ncores argument as is (ncores = "default").}
 
 \item{seed}{The seed to be used for all of the random processes throughout the model (default is 1234).}
 

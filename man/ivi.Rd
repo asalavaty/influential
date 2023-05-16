@@ -14,6 +14,7 @@ ivi(
   loops = TRUE,
   d = 3,
   scaled = TRUE,
+  ncores = "default",
   verbose = FALSE
 )
 }
@@ -45,6 +46,9 @@ NOTE: the distance d is not inclusive. This means that nodes at a distance of 3 
 our node-of-interest do not include nodes at distances 1 and 2. Only 3.}
 
 \item{scaled}{Logical; whether the end result should be 1-100 range normalized or not (default is TRUE).}
+
+\item{ncores}{Integer; the number of cores to be used for parallel processing. If ncores == "default" (default), the number of 
+cores to be used will be the max(number of available cores) - 1. We recommend leaving ncores argument as is (ncores = "default").}
 
 \item{verbose}{Logical; whether the accomplishment of different stages of the algorithm should be printed (default is FALSE).}
 }
