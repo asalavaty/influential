@@ -18,6 +18,7 @@ data-raw/coexpression.data.csv
 data-raw/DATASET.R
 .git/
 .gitignore
+.DS_Store
 ^\.travis\.yml$
 ^appveyor\.yml$
 logo.png
