@@ -97,7 +97,7 @@ runShinyApp <- function(shinyApp) {
                          "shinycssloaders", "colourpicker", "DT", "magrittr", "janitor",
                          "ranger", "coop", "influential", "ggplot2", "igraph"), quietly = TRUE)) {
     stop("The packages \"shiny\", \"shinythemes\", \"shinyWidgets\", \"shinyjs\", \"shinycssloaders\", \"colourpicker\",
-    \"DT\", \"magrittr\", \"ranger\", \"coop\", and \"ggplot2\"
+    \"DT\", \"magrittr\", \"ranger\", \"coop\", \"readr\", and \"ggplot2\"
     are required for the shiny apps to work. Please install the required packages before using this function.
 
   You can install the packages via the following command:

@@ -2,7 +2,7 @@ Package: influential
 Type: Package
 Title: Identification and Classification of the Most Influential Nodes
 Language: en-US
-Version: 2.2.7
+Version: 2.2.7.0009
 Author: Abbas (Adrian) Salavaty [aut, cre], Mirana Ramialison [ths], Peter D. Currie [ths]
 Maintainer: Adrian Salavaty <abbas.salavaty@gmail.com>
 Description: Contains functions for the classification and ranking of top candidate features, reconstruction of networks from
@@ -29,6 +29,7 @@ Suggests:
     mgcv (>= 1.8-31),
     nortest (>= 1.0-4),
     NNS (>= 0.4.7.1),
+    readr,
     parallel,
     shiny,
     shinythemes,

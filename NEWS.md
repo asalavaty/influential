@@ -3,6 +3,18 @@ influential
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
+# influential 2.2.7.0009 (Developmental version)
+
+- The package `readr` is added to the ‘Suggests’ section of the
+  Description file.
+
+- The function `runShinyApp` is updated to require the `readr` package.
+
+- The IVI local shiny app is updated to use the `readr` package for
+  loading the datasets.
+
+- The IVI local shiny app is debugged.
+
 # influential 2.2.7 (CRAN version)
 
 - The README file is updated.

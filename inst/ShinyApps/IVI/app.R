@@ -8,6 +8,7 @@ library(colourpicker)
 library(influential)
 library(ggplot2)
 library(igraph)
+library(readr)
 
 options(shiny.maxRequestSize = Inf)
 options(warn=-1)
@@ -435,9 +436,9 @@ server <- function(input, output, session) {
             return(NULL)
         ext <- tools::file_ext(input$file$name)
         switch(ext,
-               csv = read.csv(input$file$datapath, sep = ","),
-               tsv = read.delim(input$file$datapath, sep = "\t"),
-               txt = read.delim(input$file$datapath, sep = "\t"),
+               csv = readr::read_delim(input$file$datapath),
+               tsv = readr::read_delim(input$file$datapath),
+               txt = readr::read_delim(input$file$datapath),
                sif = read.delim(input$file$datapath, header = FALSE, sep = "\t")[,c(1,3)],
                validate("Invalid file; Please upload a .csv, .tsv, .txt, or .sif file")
         )
@@ -457,12 +458,15 @@ server <- function(input, output, session) {
                    adjacency = igraph::graph_from_adjacency_matrix(adjmatrix = data(), mode = input$mode, weighted = input$weighted),
                    incidence = igraph::graph_from_incidence_matrix(incidence = data(), mode = input$mode, directed = input$directed, weighted = input$weighted),
                    sif = igraph::graph_from_data_frame(d = data(), directed = input$directed))
-
+        
+        if(input$weighted == TRUE && input$weightColumn != 0) {
         temp.graph <-
             set.edge.attribute(graph = temp.graph,
                                name = "weight",
                                index= E(temp.graph),
                                value = data()[,input$weightColumn])
+        }
+        
         return(temp.graph)
     })
 
