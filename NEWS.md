@@ -5,6 +5,9 @@ influential
 
 # influential 2.2.7.0009 (Developmental version)
 
+- The function `collective.influence` is updated to match the current
+  updates of the `igraph` package.
+
 - The package `readr` is added to the ‘Suggests’ section of the
   Description file.
 

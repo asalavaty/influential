@@ -421,7 +421,7 @@ neighborhood.connectivity <- function(graph, vertices = V(graph), mode = "all", 
     }
     
     # Calculate the reduced degree of nodes
-    reduced.degrees <- degree(graph = graph,
+    reduced.degrees <- igraph::degree(graph = graph,
                               v = vertices,
                               mode = mode) - 1
 
@@ -441,7 +441,7 @@ neighborhood.connectivity <- function(graph, vertices = V(graph), mode = "all", 
     }
     
     # Calculate the reduced degree of neighbors at distance d
-    nodes.at.distance_reduced.degrees <- degree(graph = graph,
+    nodes.at.distance_reduced.degrees <- igraph::degree(graph = graph,
                                                 v = nodes.at.distance_names,
                                                 mode = mode) - 1
     
