@@ -5,6 +5,9 @@ influential
 
 # influential 2.2.7.0009 (Developmental version)
 
+- SIRIR function, `sirir`, is optimized by providing access to several
+  cores. Also, its documentation is updated.
+
 - The function `collective.influence` is updated to match the current
   updates of the `igraph` package.
 
