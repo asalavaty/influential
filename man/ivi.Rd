@@ -13,7 +13,7 @@ ivi(
   mode = "all",
   loops = TRUE,
   d = 3,
-  scaled = TRUE,
+  scale = "range",
   ncores = "default",
   verbose = FALSE
 )
@@ -45,7 +45,12 @@ results can be reached at d=3,4, but this depends on the size/"radius" of the ne
 NOTE: the distance d is not inclusive. This means that nodes at a distance of 3 from
 our node-of-interest do not include nodes at distances 1 and 2. Only 3.}
 
-\item{scaled}{Logical; whether the end result should be 1-100 range normalized or not (default is TRUE).}
+\item{scale}{Character string; the method used for scaling/normalizing the results. Options include 'range' (normalization within a 1-100 range), 
+'z-scale' (standardization using the z-score), and 'none' (no data scaling). The default selection is 'range'. Opting for the 'range' method is 
+suitable when exploring a single network, allowing you to observe the complete spectrum and distribution of node influences. In this case, there is 
+no intention to establish a specific threshold for the outcomes. However, it is possible to identify and present the top influential nodes 
+based on their rankings. Conversely, the 'z-scale' option proves advantageous if the aim is to compare node influences across multiple networks or 
+if there is a desire to establish a threshold (usually z-score > 1.645) for generating a list of the most influential nodes without manual intervention.}
 
 \item{ncores}{Integer; the number of cores to be used for parallel processing. If ncores == "default" (default), the number of 
 cores to be used will be the max(number of available cores) - 1. We recommend leaving ncores argument as is (ncores = "default").}

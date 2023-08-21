@@ -122,9 +122,14 @@ ui <- navbarPageWithText(id = "inTabset",
         numericInput("d", "Distance value corresponding to the calculation of collective influence (optimal: 3,4):",
                      value = 3, step = 1, min = 1),
                ### Scale
-        materialSwitch(inputId = "scaled", label = "Scale the IVI values",
-                      value = TRUE,
-                      status = "info")
+        prettyRadioButtons("scale", "Scaling method:",
+                           choices = list("Range Normalization" = "range",
+                                          "Z-score Standardization" = "z-scale",
+                                          "No Scaling" = "none"),
+                           icon = icon("check"),
+                           bigger = TRUE,
+                           status = "info",
+                           animation = "jelly")
                )),
 
         ## Output IVI calculation
@@ -528,7 +533,7 @@ server <- function(input, output, session) {
                          value = 65, min = 1, max = 100, {
 
                 ivi(graph = final.graph(), weights = NULL, directed = input$directed,
-                    mode = input$mode, loops = input$loops, d = input$d, scaled = input$scaled)
+                    mode = input$mode, loops = input$loops, d = input$d, scale = input$scale)
             })
         })
 

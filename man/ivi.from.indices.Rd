@@ -5,7 +5,16 @@
 \alias{IVI.FI}
 \title{Integrated Value of Influence (IVI)}
 \usage{
-ivi.from.indices(DC, CR, LH_index, NC, BC, CI, scaled = TRUE, verbose = FALSE)
+ivi.from.indices(
+  DC,
+  CR,
+  LH_index,
+  NC,
+  BC,
+  CI,
+  scale = "range",
+  verbose = FALSE
+)
 }
 \arguments{
 \item{DC}{A vector containing the values of degree centrality of the desired vertices.}
@@ -20,7 +29,12 @@ ivi.from.indices(DC, CR, LH_index, NC, BC, CI, scaled = TRUE, verbose = FALSE)
 
 \item{CI}{A vector containing the values of Collective Influence of the desired vertices.}
 
-\item{scaled}{Logical; whether the end result should be 1-100 range normalized or not (default is TRUE).}
+\item{scale}{Character string; the method used for scaling/normalizing the results. Options include 'range' (normalization within a 1-100 range), 
+'z-scale' (standardization using the z-score), and 'none' (no data scaling). The default selection is 'range'. Opting for the 'range' method is 
+suitable when exploring a single network, allowing you to observe the complete spectrum and distribution of node influences. In this case, there is 
+no intention to establish a specific threshold for the outcomes. However, it is possible to identify and present the top influential nodes 
+based on their rankings. Conversely, the 'z-scale' option proves advantageous if the aim is to compare node influences across multiple networks or 
+if there is a desire to establish a threshold (usually z-score > 1.645) for generating a list of the most influential nodes without manual intervention.}
 
 \item{verbose}{Logical; whether the accomplishment of different stages of the algorithm should be printed (default is FALSE).}
 }

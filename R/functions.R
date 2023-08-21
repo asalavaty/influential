@@ -1175,7 +1175,12 @@ double.cent.assess.noRegression <- function(data, nodes.colname,
 #' @param NC A vector containing the values of neighborhood connectivity of the desired vertices.
 #' @param BC A vector containing the values of betweenness centrality of the desired vertices.
 #' @param CI A vector containing the values of Collective Influence of the desired vertices.
-#' @param scaled Logical; whether the end result should be 1-100 range normalized or not (default is TRUE).
+#' @param scale Character string; the method used for scaling/normalizing the results. Options include 'range' (normalization within a 1-100 range), 
+#' 'z-scale' (standardization using the z-score), and 'none' (no data scaling). The default selection is 'range'. Opting for the 'range' method is 
+#' suitable when exploring a single network, allowing you to observe the complete spectrum and distribution of node influences. In this case, there is 
+#' no intention to establish a specific threshold for the outcomes. However, it is possible to identify and present the top influential nodes 
+#' based on their rankings. Conversely, the 'z-scale' option proves advantageous if the aim is to compare node influences across multiple networks or 
+#' if there is a desire to establish a threshold (usually z-score > 1.645) for generating a list of the most influential nodes without manual intervention.
 #' @param verbose Logical; whether the accomplishment of different stages of the algorithm should be printed (default is FALSE).
 #' @return A numeric vector with the IVI values based on the provided centrality measures.
 #' @aliases IVI.FI
@@ -1191,7 +1196,7 @@ double.cent.assess.noRegression <- function(data, nodes.colname,
 #'                                     LH_index = centrality.measures$LH_index,
 #'                                     BC = centrality.measures$BC,
 #'                                     CI = centrality.measures$CI)
-ivi.from.indices <- function(DC, CR, LH_index, NC, BC, CI, scaled = TRUE, verbose = FALSE) {
+ivi.from.indices <- function(DC, CR, LH_index, NC, BC, CI, scale = "range", verbose = FALSE) {
 
   #Generating temporary measures
 
@@ -1285,6 +1290,12 @@ ivi.from.indices <- function(DC, CR, LH_index, NC, BC, CI, scaled = TRUE, verbos
     if(length(unique(temp.ivi)) > 1) {
       temp.ivi <- 1+(((temp.ivi-min(temp.ivi))*(100-1))/(max(temp.ivi)-min(temp.ivi)))
     }
+  } else if(scale == 'z-scale') {
+    if(verbose) {
+      cat("Z-score standardization of IVI\n")
+    }
+    
+    temp.ivi <- base::scale(temp.ivi)
   }
 
   return(temp.ivi)
@@ -1321,7 +1332,12 @@ ivi.from.indices <- function(DC, CR, LH_index, NC, BC, CI, scaled = TRUE, verbos
 #' results can be reached at d=3,4, but this depends on the size/"radius" of the network.
 #' NOTE: the distance d is not inclusive. This means that nodes at a distance of 3 from
 #' our node-of-interest do not include nodes at distances 1 and 2. Only 3.
-#' @param scaled Logical; whether the end result should be 1-100 range normalized or not (default is TRUE).
+#' @param scale Character string; the method used for scaling/normalizing the results. Options include 'range' (normalization within a 1-100 range), 
+#' 'z-scale' (standardization using the z-score), and 'none' (no data scaling). The default selection is 'range'. Opting for the 'range' method is 
+#' suitable when exploring a single network, allowing you to observe the complete spectrum and distribution of node influences. In this case, there is 
+#' no intention to establish a specific threshold for the outcomes. However, it is possible to identify and present the top influential nodes 
+#' based on their rankings. Conversely, the 'z-scale' option proves advantageous if the aim is to compare node influences across multiple networks or 
+#' if there is a desire to establish a threshold (usually z-score > 1.645) for generating a list of the most influential nodes without manual intervention.
 #' @param ncores Integer; the number of cores to be used for parallel processing. If ncores == "default" (default), the number of 
 #' cores to be used will be the max(number of available cores) - 1. We recommend leaving ncores argument as is (ncores = "default").
 #' @param verbose Logical; whether the accomplishment of different stages of the algorithm should be printed (default is FALSE).
@@ -1341,7 +1357,7 @@ ivi.from.indices <- function(DC, CR, LH_index, NC, BC, CI, scaled = TRUE, verbos
 #'                        loops = TRUE, d = 3, scaled = TRUE)
 #' }
 ivi <- function(graph, vertices = V(graph), weights = NULL, directed = FALSE,
-                mode = "all", loops = TRUE, d = 3, scaled = TRUE, ncores = "default", verbose = FALSE) {
+                mode = "all", loops = TRUE, d = 3, scale = "range", ncores = "default", verbose = FALSE) {
 
   #Calculation of required centrality measures
   
@@ -1473,6 +1489,12 @@ ivi <- function(graph, vertices = V(graph), weights = NULL, directed = FALSE,
     if(length(unique(temp.ivi)) > 1) {
       temp.ivi <- 1+(((temp.ivi-min(temp.ivi))*(100-1))/(max(temp.ivi)-min(temp.ivi)))
     }
+  } else if(scale == 'z-scale') {
+    if(verbose) {
+      cat("Z-score standardization of IVI\n")
+    }
+    
+    temp.ivi <- base::scale(temp.ivi)
   }
 
   return(temp.ivi)
@@ -1508,7 +1530,12 @@ ivi <- function(graph, vertices = V(graph), weights = NULL, directed = FALSE,
 #' results can be reached at d=3,4, but this depends on the size/"radius" of the network.
 #' NOTE: the distance d is not inclusive. This means that nodes at a distance of 3 from
 #' our node-of-interest do not include nodes at distances 1 and 2. Only 3.
-#' @param scaled Logical; whether the end result should be 1-100 range normalized or not (default is TRUE).
+#' @param scale Character string; the method used for scaling/normalizing the results. Options include 'range' (normalization within a 1-100 range), 
+#' 'z-scale' (standardization using the z-score), and 'none' (no data scaling). The default selection is 'range'. Opting for the 'range' method is 
+#' suitable when exploring a single network, allowing you to observe the complete spectrum and distribution of node influences. In this case, there is 
+#' no intention to establish a specific threshold for the outcomes. However, it is possible to identify and present the top spreading nodes 
+#' based on their rankings. Conversely, the 'z-scale' option proves advantageous if the aim is to compare node influences across multiple networks or 
+#' if there is a desire to establish a threshold (usually z-score > 1.645) for generating a list of the most spreading nodes without manual intervention.
 #' @param verbose Logical; whether the accomplishment of different stages of the algorithm should be printed (default is FALSE).
 #' @return A numeric vector with Spreading scores.
 #' @keywords spreading.score
@@ -1525,7 +1552,7 @@ ivi <- function(graph, vertices = V(graph), weights = NULL, directed = FALSE,
 #'                                    loops = TRUE, d = 3, scaled = TRUE)
 #' }
 spreading.score <- function(graph, vertices = V(graph), weights = NULL, directed = FALSE,
-                            mode = "all", loops = TRUE, d = 3, scaled = TRUE, verbose = FALSE) {
+                            mode = "all", loops = TRUE, d = 3, scale = "range", verbose = FALSE) {
 
   #Calculation of required centrality measures
   
@@ -1596,7 +1623,7 @@ spreading.score <- function(graph, vertices = V(graph), weights = NULL, directed
 
   #1-100 normalization of spreading score
 
-  if(scaled == TRUE) {
+  if(scale == 'range') {
     
     if(verbose) {
       cat("1-100 normalization of Spreading Score\n")
@@ -1605,6 +1632,12 @@ spreading.score <- function(graph, vertices = V(graph), weights = NULL, directed
     if(length(unique(temp.spreading.score)) > 1) {
     temp.spreading.score <- 1+(((temp.spreading.score-min(temp.spreading.score))*(100-1))/(max(temp.spreading.score)-min(temp.spreading.score)))
     }
+  } else if(scale == 'z-scale') {
+    if(verbose) {
+      cat("Z-score standardization of Spreading Score\n")
+    }
+    
+    temp.spreading.score <- base::scale(temp.spreading.score)
   }
 
   return(temp.spreading.score)
@@ -1631,7 +1664,12 @@ spreading.score <- function(graph, vertices = V(graph), weights = NULL, directed
 #' incoming connections select "in" and for the outgoing connections select "out".
 #' Also, if all of the connections are desired, specify the "all" mode. Default mode is set to "all".
 #' @param loops Logical; whether the loop edges are also counted.
-#' @param scaled Logical; whether the end result should be 1-100 range normalized or not (default is TRUE).
+#' @param scale Character string; the method used for scaling/normalizing the results. Options include 'range' (normalization within a 1-100 range), 
+#' 'z-scale' (standardization using the z-score), and 'none' (no data scaling). The default selection is 'range'. Opting for the 'range' method is 
+#' suitable when exploring a single network, allowing you to observe the complete spectrum and distribution of node influences. In this case, there is 
+#' no intention to establish a specific threshold for the outcomes. However, it is possible to identify and present the top hub nodes 
+#' based on their rankings. Conversely, the 'z-scale' option proves advantageous if the aim is to compare node influences across multiple networks or 
+#' if there is a desire to establish a threshold (usually z-score > 1.645) for generating a list of the most hub nodes without manual intervention.
 #' @param verbose Logical; whether the accomplishment of different stages of the algorithm should be printed (default is FALSE).
 #' @return A numeric vector with the Hubness scores.
 #' @keywords hubness.score
@@ -1648,7 +1686,7 @@ spreading.score <- function(graph, vertices = V(graph), weights = NULL, directed
 #'                                loops = TRUE, scaled = TRUE)
 #' }
 hubness.score <- function(graph, vertices = V(graph), directed = FALSE,
-                          mode = "all", loops = TRUE, scaled = TRUE, verbose = FALSE) {
+                          mode = "all", loops = TRUE, scale = "range", verbose = FALSE) {
 
   #Calculation of required centrality measures
   
@@ -1704,6 +1742,12 @@ hubness.score <- function(graph, vertices = V(graph), directed = FALSE,
     temp.hubness.score <- 1+(((temp.hubness.score-min(temp.hubness.score))*(100-1))/(max(temp.hubness.score)-min(temp.hubness.score)))
     
     }
+  } else if(scale == 'z-scale') {
+    if(verbose) {
+      cat("Z-score standardization of Hubness Score\n")
+    }
+    
+    temp.hubness.score <- base::scale(temp.hubness.score)
   }
 
   return(temp.hubness.score)
@@ -2665,15 +2709,15 @@ sirir <- function(graph, vertices = V(graph),
     }
 
     if(nrow(as.data.frame(Driver.table))==0) {Driver.table <- NULL} else {
+      
+      #add Z.score
+      Driver.table$Z.score <- base::scale(Driver.table$final.Driver.score)
 
       #range normalize final driver score
       ifelse(length(unique(Driver.table$final.Driver.score)) > 1,
              Driver.table$final.Driver.score <- 1+(((Driver.table$final.Driver.score-min(Driver.table$final.Driver.score))*(100-1))/
                                                      (max(Driver.table$final.Driver.score)-min(Driver.table$final.Driver.score))),
              Driver.table$final.Driver.score <- 1)
-
-      #add Z.score
-      Driver.table$Z.score <- base::scale(Driver.table$final.Driver.score)
 
       #add driver rank
       Driver.table$rank <- rank(-Driver.table$final.Driver.score,
@@ -2798,16 +2842,15 @@ sirir <- function(graph, vertices = V(graph),
           (Biomarker.table$rf.pvalue)*(Biomarker.table$rf.importance)*
           (Biomarker.table$rotation)
       }
+      
+      #add biomarker Z.score
+      Biomarker.table$Z.score <- base::scale(Biomarker.table$final.biomarker.score)
 
       #range normalize biomarker score
       ifelse(length(unique(Biomarker.table$final.biomarker.score)) > 1,
              Biomarker.table$final.biomarker.score <- 1+(((Biomarker.table$final.biomarker.score-min(Biomarker.table$final.biomarker.score))*(100-1))/
                                                            (max(Biomarker.table$final.biomarker.score)-min(Biomarker.table$final.biomarker.score))),
              Biomarker.table$final.biomarker.score <- 1)
-
-
-      #add biomarker Z.score
-      Biomarker.table$Z.score <- base::scale(Biomarker.table$final.biomarker.score)
 
       #add biomarker rank
       Biomarker.table$rank <- rank(-Biomarker.table$final.biomarker.score, ties.method = "min")
@@ -2888,15 +2931,15 @@ sirir <- function(graph, vertices = V(graph),
 
     DE.mediator.table <- DE.mediator.table[DE.mediator.row.index,]
     if(nrow(as.data.frame(DE.mediator.table))==0) {DE.mediator.table <- NULL} else {
+      
+      #add DE mediators Z score
+      DE.mediator.table$Z.score <- base::scale(DE.mediator.table$DE.mediator.score)
 
       #range normalize DE mediators score
       ifelse(length(unique(DE.mediator.table$DE.mediator.score)) > 1,
              DE.mediator.table$DE.mediator.score <- 1+(((DE.mediator.table$DE.mediator.score-min(DE.mediator.table$DE.mediator.score))*(100-1))/
                                                          (max(DE.mediator.table$DE.mediator.score)-min(DE.mediator.table$DE.mediator.score))),
              DE.mediator.table$DE.mediator.score <- 1)
-
-      #add DE mediators Z score
-      DE.mediator.table$Z.score <- base::scale(DE.mediator.table$DE.mediator.score)
 
       #add DE mediators rank
       DE.mediator.table$rank <- rank(-DE.mediator.table$DE.mediator.score, ties.method = "min")
@@ -2960,15 +3003,15 @@ sirir <- function(graph, vertices = V(graph),
       non.DE.mediators.table$ivi <- temp.corr.ivi[non.DE.mediators.ivi.index]
 
       non.DE.mediators.table$non.DE.mediator.score <- non.DE.mediators.table$N.score*non.DE.mediators.table$ivi
+      
+      #add non-DE mediators Z.score
+      non.DE.mediators.table$Z.score <- base::scale(non.DE.mediators.table$non.DE.mediator.score)
 
       #range normalize nonDE mediators score
       ifelse(length(unique(non.DE.mediators.table$non.DE.mediator.score)) > 1,
              non.DE.mediators.table$non.DE.mediator.score <- 1+(((non.DE.mediators.table$non.DE.mediator.score-min(non.DE.mediators.table$non.DE.mediator.score))*(100-1))/
                                                                   (max(non.DE.mediators.table$non.DE.mediator.score)-min(non.DE.mediators.table$non.DE.mediator.score))),
              non.DE.mediators.table$non.DE.mediator.score <- 1)
-
-      #add non-DE mediators Z.score
-      non.DE.mediators.table$Z.score <- base::scale(non.DE.mediators.table$non.DE.mediator.score)
 
       #add non-DE mediators P-value
       non.DE.mediators.table$P.value <- stats::pnorm(non.DE.mediators.table$Z.score,
