@@ -5,6 +5,17 @@ influential
 
 # influential 2.2.7.0009 (Developmental version)
 
+- The function `exir` is optimized. Also, the local and online version
+  of the ExIR shiny apps are updated according to this optimization
+  (calculation of zscores from the raw data rather than range normalized
+  data).
+
+- The argument ‘scaled’ of the functions `ivi`, `spreading.score`, and
+  `hubness_score` is changed to ‘scale’ and its functionality is
+  optimized. Also, the performance and documentations of these functions
+  are updated accordingly. Additionally, the local and online version of
+  the IVI shiny apps are updated according to these changes.
+
 - SIRIR function, `sirir`, is optimized by providing access to several
   cores. Also, its documentation is updated.
 
