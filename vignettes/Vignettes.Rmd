@@ -640,7 +640,7 @@ GraphVertices <- V(My_graph)
 # Calculation of IVI
 My.vertices.IVI <- ivi(graph = My_graph, vertices = GraphVertices, 
                        weights = NULL, directed = FALSE, mode = "all",
-                       loops = TRUE, d = 3, scaled = TRUE)
+                       loops = TRUE, d = 3, scale = "range")
 
 head(My.vertices.IVI)
 #> ADAMTS9-AS2 C8orf34-AS1   CADM3-AS1  FAM83A-AS1      FENDRR  LANCL1-AS1 
@@ -719,7 +719,7 @@ GraphVertices <- V(My_graph)
 Spreading.score <- spreading.score(graph = My_graph,     
                                    vertices = GraphVertices, 
                                    weights = NULL, directed = FALSE, mode = "all",
-                                   loops = TRUE, d = 3, scaled = TRUE)
+                                   loops = TRUE, d = 3, scale = "range")
 
 head(Spreading.score)
 #> ADAMTS9-AS2 C8orf34-AS1   CADM3-AS1  FAM83A-AS1      FENDRR  LANCL1-AS1 
@@ -753,7 +753,7 @@ GraphVertices <- V(My_graph)
 Hubness.score <- hubness.score(graph = My_graph,     
                                    vertices = GraphVertices, 
                                    directed = FALSE, mode = "all",
-                                   loops = TRUE, scaled = TRUE)
+                                   loops = TRUE, scale = "range")
 
 head(Hubness.score)
 #> ADAMTS9-AS2 C8orf34-AS1   CADM3-AS1  FAM83A-AS1      FENDRR  LANCL1-AS1 
