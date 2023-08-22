@@ -54,7 +54,7 @@ My_graph <- graph_from_data_frame(MyData)
 GraphVertices <- V(My_graph)
 Hubness.score <- hubness.score(graph = My_graph, vertices = GraphVertices,
                                directed = FALSE, mode = "all",
-                               loops = TRUE, scaled = TRUE)
+                               loops = TRUE, scale = "range")
 }
 }
 \seealso{

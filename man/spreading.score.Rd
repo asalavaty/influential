@@ -67,7 +67,7 @@ My_graph <- graph_from_data_frame(MyData)
 GraphVertices <- V(My_graph)
 Spreading.score <- spreading.score(graph = My_graph, vertices = GraphVertices,
                                    weights = NULL, directed = FALSE, mode = "all",
-                                   loops = TRUE, d = 3, scaled = TRUE)
+                                   loops = TRUE, d = 3, scale = "range")
 }
 }
 \seealso{
