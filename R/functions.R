@@ -1281,7 +1281,7 @@ ivi.from.indices <- function(DC, CR, LH_index, NC, BC, CI, scale = "range", verb
 
   #1-100 normalization of IVI
 
-  if(scaled == TRUE) {
+  if(scale == "range") {
     
     if(verbose) {
       cat("1-100 normalization of IVI\n")
@@ -1354,7 +1354,7 @@ ivi.from.indices <- function(DC, CR, LH_index, NC, BC, CI, scale = "range", verb
 #' GraphVertices <- V(My_graph)
 #' My.vertices.IVI <- ivi(graph = My_graph, vertices = GraphVertices,
 #'                        weights = NULL, directed = FALSE, mode = "all",
-#'                        loops = TRUE, d = 3, scaled = TRUE)
+#'                        loops = TRUE, d = 3, scale = "range")
 #' }
 ivi <- function(graph, vertices = V(graph), weights = NULL, directed = FALSE,
                 mode = "all", loops = TRUE, d = 3, scale = "range", ncores = "default", verbose = FALSE) {
@@ -1480,7 +1480,7 @@ ivi <- function(graph, vertices = V(graph), weights = NULL, directed = FALSE,
 
   #1-100 normalization of IVI
 
-  if(scaled == TRUE) {
+  if(scale == "range") {
     
     if(verbose) {
       cat("1-100 normalization of IVI\n")
@@ -1549,7 +1549,7 @@ ivi <- function(graph, vertices = V(graph), weights = NULL, directed = FALSE,
 #' GraphVertices <- V(My_graph)
 #' Spreading.score <- spreading.score(graph = My_graph, vertices = GraphVertices,
 #'                                    weights = NULL, directed = FALSE, mode = "all",
-#'                                    loops = TRUE, d = 3, scaled = TRUE)
+#'                                    loops = TRUE, d = 3, scale = "range")
 #' }
 spreading.score <- function(graph, vertices = V(graph), weights = NULL, directed = FALSE,
                             mode = "all", loops = TRUE, d = 3, scale = "range", verbose = FALSE) {
@@ -1683,7 +1683,7 @@ spreading.score <- function(graph, vertices = V(graph), weights = NULL, directed
 #' GraphVertices <- V(My_graph)
 #' Hubness.score <- hubness.score(graph = My_graph, vertices = GraphVertices,
 #'                                directed = FALSE, mode = "all",
-#'                                loops = TRUE, scaled = TRUE)
+#'                                loops = TRUE, scale = "range")
 #' }
 hubness.score <- function(graph, vertices = V(graph), directed = FALSE,
                           mode = "all", loops = TRUE, scale = "range", verbose = FALSE) {
@@ -1732,7 +1732,7 @@ hubness.score <- function(graph, vertices = V(graph), directed = FALSE,
 
   #1-100 normalization of Hubness score
 
-  if(scaled == TRUE) {
+  if(scale == "range") {
     
     if(verbose) {
       cat("1-100 normalization of Hubness Score\n")
