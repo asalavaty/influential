@@ -1296,6 +1296,9 @@ ivi.from.indices <- function(DC, CR, LH_index, NC, BC, CI, scale = "range", verb
     }
     
     temp.ivi <- base::scale(temp.ivi)
+    temp.ivi.names <- rownames(temp.ivi)
+    temp.ivi <- c(temp.ivi)
+    names(temp.ivi) <- temp.ivi.names
   }
 
   return(temp.ivi)
@@ -1495,6 +1498,9 @@ ivi <- function(graph, vertices = V(graph), weights = NULL, directed = FALSE,
     }
     
     temp.ivi <- base::scale(temp.ivi)
+    temp.ivi.names <- rownames(temp.ivi)
+    temp.ivi <- c(temp.ivi)
+    names(temp.ivi) <- temp.ivi.names
   }
 
   return(temp.ivi)
@@ -1638,6 +1644,10 @@ spreading.score <- function(graph, vertices = V(graph), weights = NULL, directed
     }
     
     temp.spreading.score <- base::scale(temp.spreading.score)
+    temp.spreading.score.names <- rownames(temp.spreading.score)
+    temp.spreading.score <- c(temp.spreading.score)
+    names(temp.spreading.score) <- temp.spreading.score.names
+    
   }
 
   return(temp.spreading.score)
@@ -1748,6 +1758,10 @@ hubness.score <- function(graph, vertices = V(graph), directed = FALSE,
     }
     
     temp.hubness.score <- base::scale(temp.hubness.score)
+    temp.hubness.score.names <- rownames(temp.hubness.score)
+    temp.hubness.score <- c(temp.hubness.score)
+    names(temp.hubness.score) <- temp.hubness.score.names
+    
   }
 
   return(temp.hubness.score)
