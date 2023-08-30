@@ -109,9 +109,11 @@ ui <- navbarPageWithText(id = "inTabset",
                                                        icon = NULL,
                                                        box_height = "100px",
                                   fluidRow(
+                                    style = "overflow-x: hidden; overflow-y:scroll; max-height: 90vh; max-width: 82vw; position:relative;",
 
                                       # Experimental data
                                       column(12, style = "background-color:#F6FFFE;",
+                                             style = "overflow-x: hidden; overflow-y:scroll;padding: 20px;  max-height: 90vh; max-width: 82vw; position:relative;",
                                              tags$h3(tags$b(icon("vial"), "Normalized Experimental Data")),
                                              p(style="text-align: justify",
                                              "In case you don't have access to the experimental data, you may either ask the bioinformatician/data manager
@@ -184,6 +186,7 @@ ui <- navbarPageWithText(id = "inTabset",
                                                    icon = NULL,
                                                    box_height = "100px",
                                       column(12, style = "background-color:#FAF6FF;",
+                                             style = "overflow-x: hidden; overflow-y:scroll;padding: 20px;  max-height: 90vh; max-width: 82vw; position:relative;",
                                              tags$h3(tags$b(icon("chart-line"), "Differential Data")),
                                              p(style="text-align: justify",
                                                "In case you don't have access to the differential data, you may either ask the bioinformatician/data manager
@@ -244,6 +247,7 @@ ui <- navbarPageWithText(id = "inTabset",
                                                    icon = NULL,
                                                    box_height = "100px",
                                                    column(12, style = "background-color:#FFFAF6;",
+                                                          style = "overflow-x: hidden; overflow-y:scroll;padding: 20px;  max-height: 90vh; max-width: 82vw; position:relative;",
                                                    tags$h3(tags$b(icon("chart-line"), "Regression Data (Optional)")),
                                                    p(style="text-align: justify",
                                                      "In case your study includes more than two conditions or time-points (TPs), you may
@@ -300,6 +304,7 @@ ui <- navbarPageWithText(id = "inTabset",
                                                    icon = NULL,
                                                    box_height = "100px",
                                       column(12, style = "background-color:#FFF6F7;",
+                                             style = "overflow-x: hidden; overflow-y:scroll;padding: 20px;  max-height: 90vh; max-width: 82vw; position:relative;",
                                              tags$h3(tags$b(icon("list-alt"), "Desired List of Features (Optional)")),
                                              p(style="text-align: justify",
                                                "The desired list of features (e.g. genes, proteins, metabolites, etc.) is optional and you could just
@@ -365,6 +370,7 @@ ui <- navbarPageWithText(id = "inTabset",
                                                    icon = NULL,
                                                    box_height = "100px",                                      # Desired list
                                                    column(12, style = "background-color:#FCFFF6;",
+                                                          style = "overflow-x: hidden; overflow-y:scroll;padding: 20px;  max-height: 90vh; max-width: 82vw; position:relative;",
                                                           tags$h3(tags$b(icon("table"), "Synonyms Table (Optionally required
                                                                          for the visualization of ExIR results)")),
                                                           p(style="text-align: justify",
@@ -808,7 +814,7 @@ ui <- navbarPageWithText(id = "inTabset",
                                       column(4,
                                              tags$h5("Visualization options"),
                                              sidebarPanel(width = 12,
-                                                          style = "overflow-y:scroll; max-height: 800px; position:relative;",
+                                                          style = "overflow-y:scroll; max-height: 90vh; position:relative;",
                                                           panel(
                                                                      fileInput("synonymsTable", label = p(icon("upload"), "Upload the Synonyms Table (optional)",
                                                                                                           style = "padding:0px; margin:0;"),
@@ -1023,7 +1029,7 @@ ui <- navbarPageWithText(id = "inTabset",
                                       column(4,
                                              tags$h5("Options"),
                                              sidebarPanel(width = 12,
-                                                          style = "overflow-y:scroll; max-height: 800px; position:relative;",
+                                                          style = "overflow-y:scroll; max-height: 90vh; position:relative;",
                                                           ## Input for running compManipulate model
 
                                                           ### Specify the ko_vertices
