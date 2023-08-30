@@ -621,9 +621,22 @@ ui <- navbarPageWithText(id = "inTabset",
                                                                     buttonLabel = "Browse"),
 
                                                           ### Specify the condition row
-                                                          textInput(inputId = "conditionRowname",
-                                                                    label = "Condition row name:",
-                                                                    value = NULL, placeholder = "Condition row name"),
+                                                          tags$style(".conditionchannel .btn {height: 40.5px; min-height: 26.5px; font-weight: bold; background: #d9534f;}
+                                                                   .bs-placeholder {color: #F2F2F2 !important;}"),
+                                                          div(class = "conditionchannel",
+                                                              pickerInput(
+                                                                inputId = "conditionRowname",
+                                                                width = "100%",
+                                                                label = "Select the condition row name", 
+                                                                choices = NULL,
+                                                                selected = NULL,
+                                                                multiple = TRUE,
+                                                                options = pickerOptions(maxOptions = 1, height = 10,
+                                                                                        noneSelectedText = "Select",
+                                                                                        size = 10,
+                                                                                        `live-search` = TRUE)
+                                                              )
+                                                          ),
 
                                                           ### specify corr coeff method
                                                           radioGroupButtons(
@@ -1580,6 +1593,11 @@ server <- function(input, output, session,
         } else {
             properExpData$value <- 1
         }
+        
+        ## Update the condition choices
+        shinyWidgets::updatePickerInput(session = session,
+                                        inputId = "conditionRowname", 
+                                        choices = df4CheckingDuplicates[,1])
 
     })
 
@@ -2141,6 +2159,11 @@ server <- function(input, output, session,
 
         # Get the column number of condition column
         condition.index <- match(Condition_colname, colnames(Exptl_data))
+        
+        # transform the data to numeric
+        if(any(sapply(Exptl_data[,-condition.index], mode)  == "character")) {
+          Exptl_data[,-condition.index] <- data.frame(sapply(Exptl_data[,-condition.index], as.numeric))
+        }
 
         # Transform the condition column to a factor
         Exptl_data[,condition.index] <- base::as.factor(Exptl_data[,condition.index])
@@ -2364,7 +2387,7 @@ server <- function(input, output, session,
         #range normalize the rotation values
         temp.PCA.r <- 1+(((temp.PCA.r-min(temp.PCA.r))*(100-1))/
                              (max(temp.PCA.r)-min(temp.PCA.r)))
-
+        
         updateProgressBar(
             session = session,
             title = "Performing PCA (unsupervised machine learning) ...",
@@ -2386,7 +2409,7 @@ server <- function(input, output, session,
         #c Performing correlation analysis
 
         temp.corr <- fcor(data = Exptl_data[,-condition.index],
-                          method = "spearman", mutualRank = ifelse(mr == "Mutual Rank", TRUE, FALSE))
+                          method = "spearman", mutualRank = ifelse(cor_thresh_method == "Mutual Rank", TRUE, FALSE))
 
         #save a second copy of all cor data
         temp.corr.for.sec.round <- temp.corr
@@ -2394,13 +2417,14 @@ server <- function(input, output, session,
         #filter corr data for only those corr between diff features and themselves/others
         filter.corr.index <- stats::na.omit(base::unique(c(base::which(temp.corr$row %in% rownames(rf.diff.exptl.pvalue)),
                                                            base::which(temp.corr$column %in% rownames(rf.diff.exptl.pvalue)))))
+        
         temp.corr <- temp.corr[filter.corr.index,]
 
         #filtering low level correlations
         cor.thresh <- r
         mr.thresh <- mr
         if(cor_thresh_method == "Mutual Rank") {
-
+          
           temp.corr <- base::subset(temp.corr, temp.corr[,4] < mr.thresh)
 
           if(nrow(temp.corr)> (max.connections*0.95)) {

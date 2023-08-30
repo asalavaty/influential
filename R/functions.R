@@ -2250,6 +2250,11 @@ sirir <- function(graph, vertices = V(graph),
 
     # Get the column number of condition column
     condition.index <- match(Condition_colname, colnames(Exptl_data))
+    
+    # transform the data to numeric
+    if(any(sapply(Exptl_data[,-condition.index], mode)  == "character")) {
+      Exptl_data[,-condition.index] <- data.frame(sapply(Exptl_data[,-condition.index], as.numeric))
+    }
 
     # Transform the condition column to a factor
     Exptl_data[,condition.index] <- base::as.factor(Exptl_data[,condition.index])
