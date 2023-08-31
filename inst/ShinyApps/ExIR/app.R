@@ -2298,14 +2298,16 @@ server <- function(input, output, session,
                                         num.trees = num_trees,
                                         mtry = mtry,
                                         importance = "impurity_corrected",
-                                        write.forest = FALSE)
+                                        write.forest = FALSE, 
+                                        seed = seed)
 
         base::set.seed(seed = seed)
         rf.diff.exptl.pvalue <- as.data.frame(ranger::importance_pvalues(x = rf.diff.exptl,
                                                                          formula = condition ~ .,
                                                                          num.permutations = num_permutations,
                                                                          data = exptl.for.super.learn,
-                                                                         method = "altmann"))
+                                                                         method = "altmann",
+                                                                         seed = seed))
 
         #replace feature names (rownames) with their original names
         rownames(rf.diff.exptl.pvalue) <- features.exptl.for.super.learn
@@ -2381,6 +2383,7 @@ server <- function(input, output, session,
                                                                base::colnames(Exptl_data)))
         temp.Exptl_data.for.PCA <- Exptl_data[,Exptl_data.for.PCA.index]
 
+        set.seed(seed)
         temp.PCA <- stats::prcomp(temp.Exptl_data.for.PCA)
         temp.PCA.r <- base::abs(temp.PCA$rotation[,1])
 

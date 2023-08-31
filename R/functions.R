@@ -92,20 +92,26 @@ NULL
 #' runShinyApp(shinyApp = "IVI")
 #' }
 runShinyApp <- function(shinyApp) {
-
-  if(!requireNamespace(c("shiny", "shinythemes", "shinyWidgets", "shinyjs",
-                         "shinycssloaders", "colourpicker", "DT", "magrittr", "janitor",
-                         "ranger", "coop", "influential", "ggplot2", "igraph"), quietly = TRUE)) {
-    stop("The packages \"shiny\", \"shinythemes\", \"shinyWidgets\", \"shinyjs\", \"shinycssloaders\", \"colourpicker\",
-    \"DT\", \"magrittr\", \"ranger\", \"coop\", \"readr\", and \"ggplot2\"
-    are required for the shiny apps to work. Please install the required packages before using this function.
-
-  You can install the packages via the following command:
-
-         install.packages(\"Package Name\")",
-         call. = FALSE)
-
-  } else {
+  
+  cat("Checking the requirements for running the shiny app.\n")
+  
+  # Check if the BiocManager is installed
+  if (!requireNamespace("BiocManager", quietly = TRUE)) {
+    install.packages("BiocManager", dependencies = TRUE)
+  }
+  
+  # Loop through each package
+  for (pkg in c("shiny", "shinythemes", "shinyWidgets", "shinyjs",
+                "shinycssloaders", "colourpicker", "DT", "magrittr", "janitor",
+                "ranger", "coop", "influential", "ggplot2", "igraph")) {
+    # Check if the package namespace is available
+    if (!requireNamespace(pkg, quietly = TRUE)) {
+      # Install the package if it's not available
+      BiocManager::install(pkg, update = TRUE, ask = FALSE, quiet = TRUE)
+        cat(paste0("The package '", pkg, "' required for running the shiny app is installed.\n"))
+    }
+  }
+  
     # locate all the shiny app examples that exist
     validExamples <- list.files(system.file("ShinyApps", package = "influential"))
 
@@ -123,11 +129,12 @@ runShinyApp <- function(shinyApp) {
         validExamplesMsg,
         call. = FALSE)
     }
+    
+    cat("Loading the shiny app ...")
 
     # find and launch the app
     appDir <- system.file("ShinyApps", shinyApp, package = "influential")
     shiny::runApp(appDir, display.mode = "normal")
-  }
 }
 
 #=============================================================================
@@ -2368,14 +2375,16 @@ sirir <- function(graph, vertices = V(graph),
                                     num.trees = num_trees,
                                     mtry = mtry,
                                     importance = "impurity_corrected",
-                                    write.forest = FALSE)
+                                    write.forest = FALSE, 
+                                    seed = seed)
 
     base::set.seed(seed = seed)
     rf.diff.exptl.pvalue <- as.data.frame(ranger::importance_pvalues(x = rf.diff.exptl,
                                                                      formula = condition ~ .,
                                                                      num.permutations = num_permutations,
                                                                      data = exptl.for.super.learn,
-                                                                     method = "altmann"))
+                                                                     method = "altmann",
+                                                                     seed = seed))
 
     #replace feature names (rownames) with their original names
     rownames(rf.diff.exptl.pvalue) <- features.exptl.for.super.learn
@@ -2446,6 +2455,7 @@ sirir <- function(graph, vertices = V(graph),
                                                            base::colnames(Exptl_data)))
     temp.Exptl_data.for.PCA <- Exptl_data[,Exptl_data.for.PCA.index]
 
+    set.seed(seed)
     temp.PCA <- stats::prcomp(temp.Exptl_data.for.PCA)
     temp.PCA.r <- base::abs(temp.PCA$rotation[,1])
 
