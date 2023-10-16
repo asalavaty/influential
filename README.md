@@ -50,7 +50,7 @@ on the ExIR model and its validations.
 
 ## Author
 
-The `influential` package was written by [Abbas (Adrian)
+The `influential` package was written by [Adrian
 Salavaty](https://asalavaty.com/)
 
 ## Advisors
@@ -118,7 +118,7 @@ influential::runShinyApp("ExIR")
 To cite `influential`, please cite its associated paper:
 
 - Integrated Value of Influence: An Integrative Method for the
-  Identification of the Most Influential Nodes within Networks. Abbas
+  Identification of the Most Influential Nodes within Networks. Adrian
   Salavaty, Mirana Ramialison, Peter D Currie. *Patterns*. 2020.08.14
   ([Read online](https://doi.org/10.1016/j.patter.2020.100052)).
 
