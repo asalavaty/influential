@@ -32,7 +32,7 @@ You can also access the shiny app online at https://influential.erc.monash.edu/.
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">influential</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.6.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.7.0009</span>
       </span>
     </div>
 
@@ -100,7 +100,7 @@ You can also access the shiny app online at https://influential.erc.monash.edu/.
 <span>  upregulate_vertices <span class="op">=</span> <span class="fu"><a href="V.html">V</a></span><span class="op">(</span><span class="va">graph</span><span class="op">)</span>,</span>
 <span>  beta <span class="op">=</span> <span class="fl">0.5</span>,</span>
 <span>  gamma <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  no.sim <span class="op">=</span> <span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/igraph/man/gorder.html" class="external-link">vcount</a></span><span class="op">(</span><span class="va">graph</span><span class="op">)</span> <span class="op">*</span> <span class="fl">100</span>,</span>
+<span>  no.sim <span class="op">=</span> <span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://r.igraph.org/reference/gorder.html" class="external-link">vcount</a></span><span class="op">(</span><span class="va">graph</span><span class="op">)</span> <span class="op">*</span> <span class="fl">100</span>,</span>
 <span>  seed <span class="op">=</span> <span class="fl">1234</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -156,7 +156,7 @@ You may choose a different no.sim based on the available memory on your system.<
     <div id="see-also">
     <h2>See also</h2>
     <div class="dont-index"><p><code><a href="exir.html">exir</a></code>, <code><a href="sirir.html">sirir</a></code>,
-and <code><a href="https://rdrr.io/pkg/igraph/man/sir.html" class="external-link">sir</a></code> for a complete description on SIR model</p>
+and <code><a href="https://r.igraph.org/reference/sir.html" class="external-link">sir</a></code> for a complete description on SIR model</p>
 <p>Other integrative ranking functions: 
 <code><a href="exir.html">exir</a>()</code>,
 <code><a href="hubness.score.html">hubness.score</a>()</code>,
@@ -169,7 +169,7 @@ and <code><a href="https://rdrr.io/pkg/igraph/man/sir.html" class="external-link
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1234</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/igraph/man/sample_gnp.html" class="external-link">sample_gnp</a></span><span class="op">(</span>n<span class="op">=</span><span class="fl">50</span>, p<span class="op">=</span><span class="fl">0.05</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://r.igraph.org/reference/sample_gnp.html" class="external-link">sample_gnp</a></span><span class="op">(</span>n<span class="op">=</span><span class="fl">50</span>, p<span class="op">=</span><span class="fl">0.05</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="V.html">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">Computational_manipulation</span> <span class="op">&lt;-</span> <span class="fu">comp_manipulate</span><span class="op">(</span>graph <span class="op">=</span> <span class="va">My_graph</span>, beta <span class="op">=</span> <span class="fl">0.5</span>,</span></span>
 <span class="r-in"><span>                                              gamma <span class="op">=</span> <span class="fl">1</span>, no.sim <span class="op">=</span> <span class="fl">10</span>, seed <span class="op">=</span> <span class="fl">1234</span><span class="op">)</span></span></span>

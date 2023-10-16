@@ -23,7 +23,7 @@ You can also access the shiny app online at https://influential.erc.monash.edu/.
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">influential</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.6.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.7.0009</span>
       </span>
     </div>
 
@@ -75,7 +75,16 @@ You can also access the shiny app online at https://influential.erc.monash.edu/.
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ivi.from.indices</span><span class="op">(</span><span class="va">DC</span>, <span class="va">CR</span>, <span class="va">LH_index</span>, <span class="va">NC</span>, <span class="va">BC</span>, <span class="va">CI</span>, scaled <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ivi.from.indices</span><span class="op">(</span></span>
+<span>  <span class="va">DC</span>,</span>
+<span>  <span class="va">CR</span>,</span>
+<span>  <span class="va">LH_index</span>,</span>
+<span>  <span class="va">NC</span>,</span>
+<span>  <span class="va">BC</span>,</span>
+<span>  <span class="va">CI</span>,</span>
+<span>  scale <span class="op">=</span> <span class="st">"range"</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -104,8 +113,17 @@ You can also access the shiny app online at https://influential.erc.monash.edu/.
 <dd><p>A vector containing the values of Collective Influence of the desired vertices.</p></dd>
 
 
-<dt>scaled</dt>
-<dd><p>Logical; whether the end result should be 1-100 range normalized or not (default is TRUE).</p></dd>
+<dt>scale</dt>
+<dd><p>Character string; the method used for scaling/normalizing the results. Options include 'range' (normalization within a 1-100 range), 
+'z-scale' (standardization using the z-score), and 'none' (no data scaling). The default selection is 'range'. Opting for the 'range' method is 
+suitable when exploring a single network, allowing you to observe the complete spectrum and distribution of node influences. In this case, there is 
+no intention to establish a specific threshold for the outcomes. However, it is possible to identify and present the top influential nodes 
+based on their rankings. Conversely, the 'z-scale' option proves advantageous if the aim is to compare node influences across multiple networks or 
+if there is a desire to establish a threshold (usually z-score &gt; 1.645) for generating a list of the most influential nodes without manual intervention.</p></dd>
+
+
+<dt>verbose</dt>
+<dd><p>Logical; whether the accomplishment of different stages of the algorithm should be printed (default is FALSE).</p></dd>
 
 </dl></div>
     <div id="value">

@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">influential</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.6.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.7.0009</span>
       </span>
     </div>
 
@@ -82,7 +82,7 @@
             <h3 data-toc-skip class="subtitle"><em>Identification and
 classification of the most influential nodes</em></h3>
                         <h4 data-toc-skip class="author">Abbas (Adrian)
-Salavaty 01-Feb-2023</h4>
+Salavaty 16-Oct-2023</h4>
             
       
       <small class="dont-index">Source: <a href="https://github.com/asalavaty/influential/blob/HEAD/vignettes/Vignettes.Rmd" class="external-link"><code>vignettes/Vignettes.Rmd</code></a></small>
@@ -1113,7 +1113,7 @@ effects and removes their biases.</p>
 <span><span class="co"># Calculation of IVI</span></span>
 <span><span class="va">My.vertices.IVI</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ivi.html">ivi</a></span><span class="op">(</span>graph <span class="op">=</span> <span class="va">My_graph</span>, vertices <span class="op">=</span> <span class="va">GraphVertices</span>, </span>
 <span>                       weights <span class="op">=</span> <span class="cn">NULL</span>, directed <span class="op">=</span> <span class="cn">FALSE</span>, mode <span class="op">=</span> <span class="st">"all"</span>,</span>
-<span>                       loops <span class="op">=</span> <span class="cn">TRUE</span>, d <span class="op">=</span> <span class="fl">3</span>, scaled <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>                       loops <span class="op">=</span> <span class="cn">TRUE</span>, d <span class="op">=</span> <span class="fl">3</span>, scale <span class="op">=</span> <span class="st">"range"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">My.vertices.IVI</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ADAMTS9-AS2 C8orf34-AS1   CADM3-AS1  FAM83A-AS1      FENDRR  LANCL1-AS1 </span></span>
@@ -1140,7 +1140,7 @@ demonstrate the visualization of a network according to <a href="#IVI">IVI</a> v
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Reconstructing the graph</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">70</span><span class="op">)</span></span>
-<span><span class="va">My_graph</span> <span class="op">&lt;-</span>  <span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/igraph/man/sample_gnm.html" class="external-link">sample_gnm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">50</span>, m <span class="op">=</span> <span class="fl">120</span>, directed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">My_graph</span> <span class="op">&lt;-</span>  <span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://r.igraph.org/reference/sample_gnm.html" class="external-link">sample_gnm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">50</span>, m <span class="op">=</span> <span class="fl">120</span>, directed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Calculating the IVI values</span></span>
 <span><span class="va">My_graph_IVI</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ivi.html">ivi</a></span><span class="op">(</span><span class="va">My_graph</span>, directed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -1208,7 +1208,7 @@ major components of the <a href="#IVI"><code>IVI</code></a>.</p>
 <span><span class="va">Spreading.score</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spreading.score.html">spreading.score</a></span><span class="op">(</span>graph <span class="op">=</span> <span class="va">My_graph</span>,     </span>
 <span>                                   vertices <span class="op">=</span> <span class="va">GraphVertices</span>, </span>
 <span>                                   weights <span class="op">=</span> <span class="cn">NULL</span>, directed <span class="op">=</span> <span class="cn">FALSE</span>, mode <span class="op">=</span> <span class="st">"all"</span>,</span>
-<span>                                   loops <span class="op">=</span> <span class="cn">TRUE</span>, d <span class="op">=</span> <span class="fl">3</span>, scaled <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>                                   loops <span class="op">=</span> <span class="cn">TRUE</span>, d <span class="op">=</span> <span class="fl">3</span>, scale <span class="op">=</span> <span class="st">"range"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">Spreading.score</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ADAMTS9-AS2 C8orf34-AS1   CADM3-AS1  FAM83A-AS1      FENDRR  LANCL1-AS1 </span></span>
@@ -1243,7 +1243,7 @@ major components of the <a href="#IVI"><code>IVI</code></a>.</p>
 <span><span class="va">Hubness.score</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hubness.score.html">hubness.score</a></span><span class="op">(</span>graph <span class="op">=</span> <span class="va">My_graph</span>,     </span>
 <span>                                   vertices <span class="op">=</span> <span class="va">GraphVertices</span>, </span>
 <span>                                   directed <span class="op">=</span> <span class="cn">FALSE</span>, mode <span class="op">=</span> <span class="st">"all"</span>,</span>
-<span>                                   loops <span class="op">=</span> <span class="cn">TRUE</span>, scaled <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>                                   loops <span class="op">=</span> <span class="cn">TRUE</span>, scale <span class="op">=</span> <span class="st">"range"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">Hubness.score</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ADAMTS9-AS2 C8orf34-AS1   CADM3-AS1  FAM83A-AS1      FENDRR  LANCL1-AS1 </span></span>
@@ -1981,11 +1981,11 @@ networks). Below is an example of running this function on the same <a href="#Ex
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Select which genes to knockout</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">60</span><span class="op">)</span></span>
-<span><span class="va">ko_vertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/igraph/man/as_ids.html" class="external-link">as_ids</a></span><span class="op">(</span><span class="fu"><a href="../reference/V.html">V</a></span><span class="op">(</span><span class="va">My.exir</span><span class="op">$</span><span class="va">Graph</span><span class="op">)</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="va">ko_vertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://r.igraph.org/reference/as_ids.html" class="external-link">as_ids</a></span><span class="op">(</span><span class="fu"><a href="../reference/V.html">V</a></span><span class="op">(</span><span class="va">My.exir</span><span class="op">$</span><span class="va">Graph</span><span class="op">)</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Select which genes to up-regulate</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1234</span><span class="op">)</span></span>
-<span><span class="va">upregulate_vertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/igraph/man/as_ids.html" class="external-link">as_ids</a></span><span class="op">(</span><span class="fu"><a href="../reference/V.html">V</a></span><span class="op">(</span><span class="va">My.exir</span><span class="op">$</span><span class="va">Graph</span><span class="op">)</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="va">upregulate_vertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://r.igraph.org/reference/as_ids.html" class="external-link">as_ids</a></span><span class="op">(</span><span class="fu"><a href="../reference/V.html">V</a></span><span class="op">(</span><span class="va">My.exir</span><span class="op">$</span><span class="va">Graph</span><span class="op">)</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">Computational_manipulation</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/comp_manipulate.html">comp_manipulate</a></span><span class="op">(</span>exir_output <span class="op">=</span> <span class="va">My.exir</span>, </span>
 <span>                                              ko_vertices <span class="op">=</span> <span class="va">ko_vertices</span>, </span>

@@ -18,7 +18,7 @@ works with both directed and undirected networks."><!-- mathjax --><script src="
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">influential</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.6.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.7.0009</span>
       </span>
     </div>
 
@@ -65,7 +65,13 @@ works with both directed and undirected networks.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">lh_index</span><span class="op">(</span><span class="va">graph</span>, vertices <span class="op">=</span> <span class="fu"><a href="V.html">V</a></span><span class="op">(</span><span class="va">graph</span><span class="op">)</span>, mode <span class="op">=</span> <span class="st">"all"</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">lh_index</span><span class="op">(</span></span>
+<span>  <span class="va">graph</span>,</span>
+<span>  vertices <span class="op">=</span> <span class="fu"><a href="V.html">V</a></span><span class="op">(</span><span class="va">graph</span><span class="op">)</span>,</span>
+<span>  mode <span class="op">=</span> <span class="st">"all"</span>,</span>
+<span>  ncores <span class="op">=</span> <span class="st">"default"</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -84,6 +90,15 @@ If the graph is undirected, the mode "all" should be specified.
 Otherwise, for the calculation of local H-index based on
 incoming connections select "in" and for the outgoing connections select "out".
 Also, if all of the connections are desired, specify the "all" mode. Default mode is set to "all".</p></dd>
+
+
+<dt>ncores</dt>
+<dd><p>Integer; the number of cores to be used for parallel processing. If ncores == "default" (default), the number of 
+cores to be used will be the max(number of available cores) - 1. We recommend leaving ncores argument as is (ncores = "default").</p></dd>
+
+
+<dt>verbose</dt>
+<dd><p>Logical; whether the accomplishment of different stages of the algorithm should be printed (default is FALSE).</p></dd>
 
 </dl></div>
     <div id="value">
@@ -112,7 +127,7 @@ Also, if all of the connections are desired, specify the "all" mode. Default mod
 <span class="r-in"><span><span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">coexpression.data</span></span></span>
 <span class="r-in"><span><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="graph_from_data_frame.html">graph_from_data_frame</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="V.html">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">lh.index</span> <span class="op">&lt;-</span> <span class="fu">lh_index</span><span class="op">(</span>graph <span class="op">=</span> <span class="va">My_graph</span>, vertices <span class="op">=</span> <span class="va">GraphVertices</span>, mode <span class="op">=</span> <span class="st">"all"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">lh.index</span> <span class="op">&lt;-</span> <span class="fu">lh_index</span><span class="op">(</span>graph <span class="op">=</span> <span class="va">My_graph</span>, vertices <span class="op">=</span> <span class="va">GraphVertices</span>, mode <span class="op">=</span> <span class="st">"all"</span>, ncores <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>

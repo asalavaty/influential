@@ -22,7 +22,7 @@ degrees of all nodes at a distance d from the node."><!-- mathjax --><script src
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">influential</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.6.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.7.0009</span>
       </span>
     </div>
 
@@ -73,7 +73,13 @@ degrees of all nodes at a distance d from the node.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">collective.influence</span><span class="op">(</span><span class="va">graph</span>, vertices <span class="op">=</span> <span class="fu"><a href="V.html">V</a></span><span class="op">(</span><span class="va">graph</span><span class="op">)</span>, mode <span class="op">=</span> <span class="st">"all"</span>, d <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">collective.influence</span><span class="op">(</span></span>
+<span>  <span class="va">graph</span>,</span>
+<span>  vertices <span class="op">=</span> <span class="fu"><a href="V.html">V</a></span><span class="op">(</span><span class="va">graph</span><span class="op">)</span>,</span>
+<span>  mode <span class="op">=</span> <span class="st">"all"</span>,</span>
+<span>  d <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -100,6 +106,10 @@ must be &gt; 0. According to Morone &amp; Makse (https://doi.org/10.1038/nature1
 results can be reached at d=3,4, but this depends on the size/"radius" of the network.
 NOTE: the distance d is not inclusive. This means that nodes at a distance of 3 from
 our node-of-interest do not include nodes at distances 1 and 2. Only 3.</p></dd>
+
+
+<dt>verbose</dt>
+<dd><p>Logical; whether the accomplishment of different stages of the algorithm should be printed (default is FALSE).</p></dd>
 
 </dl></div>
     <div id="value">

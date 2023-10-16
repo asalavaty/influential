@@ -20,7 +20,7 @@ You can also access the shiny app online at https://influential.erc.monash.edu/.
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">influential</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.6.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.7.0009</span>
       </span>
     </div>
 
@@ -77,7 +77,9 @@ You can also access the shiny app online at https://influential.erc.monash.edu/.
 <span>  mode <span class="op">=</span> <span class="st">"all"</span>,</span>
 <span>  loops <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  d <span class="op">=</span> <span class="fl">3</span>,</span>
-<span>  scaled <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  scale <span class="op">=</span> <span class="st">"range"</span>,</span>
+<span>  ncores <span class="op">=</span> <span class="st">"default"</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -123,8 +125,22 @@ NOTE: the distance d is not inclusive. This means that nodes at a distance of 3 
 our node-of-interest do not include nodes at distances 1 and 2. Only 3.</p></dd>
 
 
-<dt>scaled</dt>
-<dd><p>Logical; whether the end result should be 1-100 range normalized or not (default is TRUE).</p></dd>
+<dt>scale</dt>
+<dd><p>Character string; the method used for scaling/normalizing the results. Options include 'range' (normalization within a 1-100 range), 
+'z-scale' (standardization using the z-score), and 'none' (no data scaling). The default selection is 'range'. Opting for the 'range' method is 
+suitable when exploring a single network, allowing you to observe the complete spectrum and distribution of node influences. In this case, there is 
+no intention to establish a specific threshold for the outcomes. However, it is possible to identify and present the top influential nodes 
+based on their rankings. Conversely, the 'z-scale' option proves advantageous if the aim is to compare node influences across multiple networks or 
+if there is a desire to establish a threshold (usually z-score &gt; 1.645) for generating a list of the most influential nodes without manual intervention.</p></dd>
+
+
+<dt>ncores</dt>
+<dd><p>Integer; the number of cores to be used for parallel processing. If ncores == "default" (default), the number of 
+cores to be used will be the max(number of available cores) - 1. We recommend leaving ncores argument as is (ncores = "default").</p></dd>
+
+
+<dt>verbose</dt>
+<dd><p>Logical; whether the accomplishment of different stages of the algorithm should be printed (default is FALSE).</p></dd>
 
 </dl></div>
     <div id="value">
@@ -152,7 +168,7 @@ our node-of-interest do not include nodes at distances 1 and 2. Only 3.</p></dd>
 <span class="r-in"><span><span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="V.html">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">My.vertices.IVI</span> <span class="op">&lt;-</span> <span class="fu">ivi</span><span class="op">(</span>graph <span class="op">=</span> <span class="va">My_graph</span>, vertices <span class="op">=</span> <span class="va">GraphVertices</span>,</span></span>
 <span class="r-in"><span>                       weights <span class="op">=</span> <span class="cn">NULL</span>, directed <span class="op">=</span> <span class="cn">FALSE</span>, mode <span class="op">=</span> <span class="st">"all"</span>,</span></span>
-<span class="r-in"><span>                       loops <span class="op">=</span> <span class="cn">TRUE</span>, d <span class="op">=</span> <span class="fl">3</span>, scaled <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                       loops <span class="op">=</span> <span class="cn">TRUE</span>, d <span class="op">=</span> <span class="fl">3</span>, scale <span class="op">=</span> <span class="st">"range"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>

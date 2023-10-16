@@ -23,7 +23,7 @@ You can also access the shiny app online at https://influential.erc.monash.edu/.
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">influential</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.6.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.7.0009</span>
       </span>
     </div>
 
@@ -93,6 +93,7 @@ You can also access the shiny app online at https://influential.erc.monash.edu/.
 <span>  mtry <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  num_permutations <span class="op">=</span> <span class="fl">100</span>,</span>
 <span>  inf_const <span class="op">=</span> <span class="fl">10</span><span class="op">^</span><span class="fl">10</span>,</span>
+<span>  ncores <span class="op">=</span> <span class="st">"default"</span>,</span>
 <span>  seed <span class="op">=</span> <span class="fl">1234</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -197,6 +198,11 @@ biomarker rank to compare all of the features. This parameter is ignored if no i
 is present within Diff_data. However, this is used in the case of sc-seq experiments where some genes are uniquely
 expressed in a specific cell-type and consequently get infinite differential values. Note that the sign of differential
 value is preserved (default is 10^10).</p></dd>
+
+
+<dt>ncores</dt>
+<dd><p>Integer; the number of cores to be used for parallel processing. If ncores == "default" (default), the number of 
+cores to be used will be the max(number of available cores) - 1. We recommend leaving ncores argument as is (ncores = "default").</p></dd>
 
 
 <dt>seed</dt>

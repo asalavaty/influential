@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">influential</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.6.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.7.0009</span>
       </span>
     </div>
 
@@ -58,8 +58,28 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="2.2.6.9000" id="influential-2269000-developmental-version">influential 2.2.6.9000 (Developmental version)<a class="anchor" aria-label="anchor" href="#influential-2269000-developmental-version"></a></h2>
-<ul><li><p>DESCRIPTION of the package is updated.</p></li>
+<h2 class="page-header" data-toc-text="2.2.7.0009" id="influential-2270009-developmental-version">influential 2.2.7.0009 (Developmental version)<a class="anchor" aria-label="anchor" href="#influential-2270009-developmental-version"></a></h2>
+<ul><li><p>The function <code>exir</code> is optimized. Also, the local and online version of the ExIR shiny apps are updated according to this optimization (calculation of zscores from the raw data rather than range normalized data).</p></li>
+<li><p>The argument ‘scaled’ of the functions <code>ivi</code>, <code>spreading.score</code>, and <code>hubness_score</code> is changed to ‘scale’ and its functionality is optimized. Also, the performance and documentations of these functions are updated accordingly. Additionally, the local and online version of the IVI shiny apps are updated according to these changes.</p></li>
+<li><p>SIRIR function, <code>sirir</code>, is optimized by providing access to several cores. Also, its documentation is updated.</p></li>
+<li><p>The function <code>collective.influence</code> is updated to match the current updates of the <code>igraph</code> package.</p></li>
+<li><p>The package <code>readr</code> is added to the ‘Suggests’ section of the Description file.</p></li>
+<li><p>The function <code>runShinyApp</code> is updated to require the <code>readr</code> package.</p></li>
+<li><p>The IVI local shiny app is updated to use the <code>readr</code> package for loading the datasets.</p></li>
+<li><p>The IVI local shiny app is debugged.</p></li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2.2.7" id="influential-227-cran-version">influential 2.2.7 (CRAN version)<small>2023-05-16</small><a class="anchor" aria-label="anchor" href="#influential-227-cran-version"></a></h2>
+<ul><li><p>The README file is updated.</p></li>
+<li><p>DESCRIPTION of the package is updated.</p></li>
+<li><p>New packages including <em>foreach</em>, and <em>doParallel</em> are added to the Imports section of the DESCRIPTION.</p></li>
+<li><p>ExIR function, <code>exir</code>, is optimized by providing access to several cores. Also, its documentation is updated.</p></li>
+<li><p>IVI function, <code>IVI</code>, is optimized by providing access to several cores. Also, its documentation is updated.</p></li>
+<li><p>LH-index function, <code>clusterRank</code>, is optimized by providing access to several cores. This also significantly speeds up the <code>ivi</code> function. Also, its documentation is updated.</p></li>
+<li><p>LH-index function, <code>lh_index</code>, is optimized by providing access to several cores. This also significantly speeds up the <code>ivi</code> function. Also, its documentation is updated.</p></li>
+<li><p>A <code>verbose</code> argument is added all centrality measure functions and their corresponding documentations are updated as well.</p></li>
+<li><p>The fcor function, <code>fcor</code>, as well as its documentation are optimized and updated.</p></li>
+<li><p>The documentation of the SIRIR function, <code>sirir</code>, is updated.</p></li>
 <li><p>Hubness score function, <code>hubness.score</code>, is debugged and optimized.</p></li>
 <li><p>Spreading score function and its documentation, <code>spreading.score</code>, is debugged and optimized.</p></li>
 <li><p>IVI function, <code>ivi</code>, is debugged and optimized.</p></li>

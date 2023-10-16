@@ -1,0 +1,524 @@
+starting worker pid=44982 on localhost:11408 at 11:51:08.866
+starting worker pid=44985 on localhost:11408 at 11:51:08.866
+starting worker pid=44987 on localhost:11408 at 11:51:08.884
+starting worker pid=44986 on localhost:11408 at 11:51:08.893
+starting worker pid=44980 on localhost:11408 at 11:51:08.894
+starting worker pid=44983 on localhost:11408 at 11:51:08.894
+starting worker pid=44984 on localhost:11408 at 11:51:08.895
+starting worker pid=44981 on localhost:11408 at 11:51:08.895
+starting worker pid=44988 on localhost:11408 at 11:51:08.906
+Loading required package: influential
+Loading required package: influential
+Loading required package: influential
+Loading required package: influential
+Loading required package: influential
+Loading required package: influential
+Loading required package: influential
+Loading required package: influential
+Loading required package: influential
+loaded influential and set parent environment
+loaded influential and set parent environment
+loaded influential and set parent environment
+loaded influential and set parent environment
+loaded influential and set parent environment
+
+Attaching package: ‘igraph’
+
+
+Attaching package: ‘igraph’
+
+The following object is masked from ‘package:influential’:
+
+    betweenness
+
+The following objects are masked from ‘package:stats’:
+
+    decompose, spectrum
+
+The following object is masked from ‘package:base’:
+
+    union
+
+The following object is masked from ‘package:influential’:
+
+    betweenness
+
+The following objects are masked from ‘package:stats’:
+
+    decompose, spectrum
+
+The following object is masked from ‘package:base’:
+
+    union
+
+
+Attaching package: ‘igraph’
+
+The following object is masked from ‘package:influential’:
+
+    betweenness
+
+The following objects are masked from ‘package:stats’:
+
+    decompose, spectrum
+
+The following object is masked from ‘package:base’:
+
+    union
+
+
+Attaching package: ‘igraph’
+
+The following object is masked from ‘package:influential’:
+
+    betweenness
+
+
+Attaching package: ‘igraph’
+
+The following objects are masked from ‘package:stats’:
+
+    decompose, spectrum
+
+The following object is masked from ‘package:base’:
+
+    union
+
+loaded influential and set parent environment
+The following object is masked from ‘package:influential’:
+
+    betweenness
+
+The following objects are masked from ‘package:stats’:
+
+    decompose, spectrum
+
+The following object is masked from ‘package:base’:
+
+    union
+
+loaded influential and set parent environment
+loaded influential and set parent environment
+loaded influential and set parent environment
+
+Attaching package: ‘igraph’
+
+The following object is masked from ‘package:influential’:
+
+    betweenness
+
+The following objects are masked from ‘package:stats’:
+
+    decompose, spectrum
+
+The following object is masked from ‘package:base’:
+
+    union
+
+
+Attaching package: ‘igraph’
+
+
+Attaching package: ‘igraph’
+
+
+Attaching package: ‘igraph’
+
+The following object is masked from ‘package:influential’:
+
+    betweenness
+
+The following objects are masked from ‘package:stats’:
+
+    decompose, spectrum
+
+The following object is masked from ‘package:influential’:
+
+    betweenness
+
+The following object is masked from ‘package:base’:
+
+    union
+
+The following objects are masked from ‘package:stats’:
+
+    decompose, spectrum
+
+The following object is masked from ‘package:influential’:
+
+    betweenness
+
+The following object is masked from ‘package:base’:
+
+    union
+
+The following objects are masked from ‘package:stats’:
+
+    decompose, spectrum
+
+The following object is masked from ‘package:base’:
+
+    union
+
+
+Processing vertex 1 is done!
+
+Processing vertex 3 is done!
+
+Processing vertex 5 is done!
+
+Processing vertex 4 is done!
+
+Processing vertex 7 is done!
+
+Processing vertex 6 is done!
+
+Processing vertex 9 is done!
+
+Processing vertex 8 is done!
+
+Processing vertex 10 is done!
+
+Processing vertex 2 is done!
+
+Processing vertex 11 is done!
+
+Processing vertex 12 is done!
+
+Processing vertex 14 is done!
+
+Processing vertex 13 is done!
+
+Processing vertex 15 is done!
+
+Processing vertex 16 is done!
+
+Processing vertex 17 is done!
+
+Processing vertex 18 is done!
+
+Processing vertex 19 is done!
+
+Processing vertex 20 is done!
+
+Processing vertex 21 is done!
+
+Processing vertex 22 is done!
+
+Processing vertex 23 is done!
+
+Processing vertex 24 is done!
+
+Processing vertex 25 is done!
+
+Processing vertex 26 is done!
+
+Processing vertex 27 is done!
+
+Processing vertex 28 is done!
+
+Processing vertex 29 is done!
+
+Processing vertex 30 is done!
+
+Processing vertex 31 is done!
+
+Processing vertex 33 is done!
+
+Processing vertex 32 is done!
+
+Processing vertex 34 is done!
+
+Processing vertex 35 is done!
+
+Processing vertex 37 is done!
+
+Processing vertex 36 is done!
+
+Processing vertex 38 is done!
+
+Processing vertex 39 is done!
+
+Processing vertex 40 is done!
+
+Processing vertex 41 is done!
+
+Processing vertex 42 is done!
+
+Processing vertex 43 is done!
+
+Processing vertex 44 is done!
+
+Processing vertex 45 is done!
+
+Processing vertex 46 is done!
+
+Processing vertex 47 is done!
+
+Processing vertex 48 is done!
+
+Processing vertex 49 is done!
+
+Processing vertex 50 is done!
+starting worker pid=45425 on localhost:11335 at 11:55:52.505
+starting worker pid=45424 on localhost:11335 at 11:55:52.505
+starting worker pid=45426 on localhost:11335 at 11:55:52.506
+starting worker pid=45427 on localhost:11335 at 11:55:52.508
+starting worker pid=45428 on localhost:11335 at 11:55:52.509
+starting worker pid=45421 on localhost:11335 at 11:55:52.512
+starting worker pid=45423 on localhost:11335 at 11:55:52.513
+starting worker pid=45422 on localhost:11335 at 11:55:52.513
+starting worker pid=45429 on localhost:11335 at 11:55:52.516
+Loading required package: influential
+Loading required package: influential
+Loading required package: influential
+Loading required package: influential
+Loading required package: influential
+Loading required package: influential
+Loading required package: influential
+Loading required package: influential
+Loading required package: influential
+loaded influential and set parent environment
+loaded influential and set parent environment
+loaded influential and set parent environment
+loaded influential and set parent environment
+
+Attaching package: ‘igraph’
+
+The following object is masked from ‘package:influential’:
+
+    betweenness
+
+The following objects are masked from ‘package:stats’:
+
+    decompose, spectrum
+
+The following object is masked from ‘package:base’:
+
+    union
+
+
+Attaching package: ‘igraph’
+
+The following object is masked from ‘package:influential’:
+
+    betweenness
+
+The following objects are masked from ‘package:stats’:
+
+    decompose, spectrum
+
+The following object is masked from ‘package:base’:
+
+    union
+
+
+Attaching package: ‘igraph’
+
+The following object is masked from ‘package:influential’:
+
+    betweenness
+
+
+Attaching package: ‘igraph’
+
+The following objects are masked from ‘package:stats’:
+
+    decompose, spectrum
+
+loaded influential and set parent environment
+The following object is masked from ‘package:base’:
+
+    union
+
+The following object is masked from ‘package:influential’:
+
+    betweenness
+
+The following objects are masked from ‘package:stats’:
+
+    decompose, spectrum
+
+The following object is masked from ‘package:base’:
+
+    union
+
+loaded influential and set parent environment
+
+Attaching package: ‘igraph’
+
+The following object is masked from ‘package:influential’:
+
+    betweenness
+
+The following objects are masked from ‘package:stats’:
+
+    decompose, spectrum
+
+The following object is masked from ‘package:base’:
+
+    union
+
+loaded influential and set parent environment
+
+Attaching package: ‘igraph’
+
+The following object is masked from ‘package:influential’:
+
+    betweenness
+
+The following objects are masked from ‘package:stats’:
+
+    decompose, spectrum
+
+The following object is masked from ‘package:base’:
+
+    union
+
+
+Attaching package: ‘igraph’
+
+The following object is masked from ‘package:influential’:
+
+    betweenness
+
+The following objects are masked from ‘package:stats’:
+
+    decompose, spectrum
+
+The following object is masked from ‘package:base’:
+
+    union
+
+loaded influential and set parent environment
+loaded influential and set parent environment
+
+Attaching package: ‘igraph’
+
+
+Attaching package: ‘igraph’
+
+The following object is masked from ‘package:influential’:
+
+    betweenness
+
+The following object is masked from ‘package:influential’:
+
+    betweenness
+
+The following objects are masked from ‘package:stats’:
+
+    decompose, spectrum
+
+The following objects are masked from ‘package:stats’:
+
+    decompose, spectrum
+
+The following object is masked from ‘package:base’:
+
+    union
+
+The following object is masked from ‘package:base’:
+
+    union
+
+
+Processing vertex 5 is done!
+
+Processing vertex 6 is done!
+
+Processing vertex 4 is done!
+
+Processing vertex 3 is done!
+
+Processing vertex 7 is done!
+
+Processing vertex 2 is done!
+
+Processing vertex 8 is done!
+
+Processing vertex 9 is done!
+
+Processing vertex 10 is done!
+
+Processing vertex 1 is done!
+
+Processing vertex 12 is done!
+
+Processing vertex 11 is done!
+
+Processing vertex 13 is done!
+
+Processing vertex 14 is done!
+
+Processing vertex 15 is done!
+
+Processing vertex 16 is done!
+
+Processing vertex 17 is done!
+
+Processing vertex 18 is done!
+
+Processing vertex 19 is done!
+
+Processing vertex 20 is done!
+
+Processing vertex 21 is done!
+
+Processing vertex 22 is done!
+
+Processing vertex 23 is done!
+
+Processing vertex 24 is done!
+
+Processing vertex 25 is done!
+
+Processing vertex 26 is done!
+
+Processing vertex 27 is done!
+
+Processing vertex 28 is done!
+
+Processing vertex 29 is done!
+
+Processing vertex 30 is done!
+
+Processing vertex 31 is done!
+
+Processing vertex 32 is done!
+
+Processing vertex 33 is done!
+
+Processing vertex 34 is done!
+
+Processing vertex 35 is done!
+
+Processing vertex 36 is done!
+
+Processing vertex 37 is done!
+
+Processing vertex 38 is done!
+
+Processing vertex 39 is done!
+
+Processing vertex 40 is done!
+
+Processing vertex 41 is done!
+
+Processing vertex 42 is done!
+
+Processing vertex 43 is done!
+
+Processing vertex 44 is done!
+
+Processing vertex 45 is done!
+
+Processing vertex 46 is done!
+
+Processing vertex 47 is done!
+
+Processing vertex 48 is done!
+
+Processing vertex 49 is done!
+
+Processing vertex 50 is done!
