@@ -3123,7 +3123,7 @@ sirir <- function(graph, vertices = V(graph),
   #' \dontrun{
   #' my.Diff_data <- diff_data.assembly(Differential_data1,
   #'                                    Differential_data2,
-  #'                                    Regression_data1))
+  #'                                    Regression_data1)
   #' }
   diff_data.assembly <- function(...) {
 
