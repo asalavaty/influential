@@ -4235,6 +4235,7 @@ sirir <- function(graph, vertices = V(graph),
 
     overexpr <- function(graph, vertices = upregulate_vertices, beta = beta, gamma = gamma,
                           no.sim = no.sim, loop_verbose = loop_verbose, 
+                         ncores = ncores,
                          node_verbose = node_verbose, seed = seed) {
       
       suppressWarnings({
