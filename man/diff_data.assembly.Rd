@@ -28,7 +28,7 @@ column is mandatory for differential datasets.
 \dontrun{
 my.Diff_data <- diff_data.assembly(Differential_data1,
                                    Differential_data2,
-                                   Regression_data1))
+                                   Regression_data1)
 }
 }
 \seealso{

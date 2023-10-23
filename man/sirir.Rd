@@ -10,10 +10,11 @@ sirir(
   vertices = V(graph),
   beta = 0.5,
   gamma = 1,
-  no.sim = igraph::vcount(graph) * 100,
+  no.sim = 100,
   ncores = "default",
   seed = 1234,
-  verbose = FALSE
+  loop_verbose = TRUE,
+  node_verbose = FALSE
 )
 }
 \arguments{
@@ -38,7 +39,9 @@ cores to be used will be the max(number of available cores) - 1. We recommend le
 
 \item{seed}{A single value, interpreted as an integer to be used for random number generation.}
 
-\item{verbose}{Logical; whether the accomplishment of the evaluation of each network node should be printed (default is FALSE).}
+\item{loop_verbose}{Logical; whether the accomplishment of the evaluation of network nodes in each loop should be printed (default is TRUE).}
+
+\item{node_verbose}{Logical; whether the process of Parallel Socket Cluster creation should be printed (default is FALSE).}
 }
 \value{
 A two-column dataframe; a column containing the difference values of the original and
