@@ -2328,7 +2328,11 @@ server <- function(input, output, session,
             rf.diff.exptl.pvalue <- base::subset(rf.diff.exptl.pvalue, rf.diff.exptl.pvalue$pvalue < alpha)
 
         } else {
-            rf.pval.select <- which(rf.diff.exptl.pvalue[,"pvalue"] <alpha)
+          if(length(which(rf.diff.exptl.pvalue[, "pvalue"] < alpha)) >= 10) {
+            rf.pval.select <- which(rf.diff.exptl.pvalue[, "pvalue"] < alpha)
+          } else {
+            rf.pval.select <- which(order(rf.diff.exptl.pvalue[, "pvalue"]) <= 10)
+          }
             rf.nonSig <- seq(nrow(rf.diff.exptl.pvalue))[-rf.pval.select]
             required.pos.importance <- select.number - length(rf.pval.select)
 
