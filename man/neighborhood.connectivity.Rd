@@ -33,12 +33,14 @@ This function calculates the neighborhood connectivity of input vertices and
 works with both directed and undirected networks.
 }
 \examples{
+\dontrun{
 MyData <- coexpression.data
 My_graph <- graph_from_data_frame(MyData)
 GraphVertices <- V(My_graph)
 neighrhood.co <- neighborhood.connectivity(graph = My_graph,
                                            vertices = GraphVertices,
                                            mode = "all")
+                                           }
 }
 \seealso{
 \code{\link[influential]{ivi}},

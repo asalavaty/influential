@@ -51,6 +51,7 @@ visualization, which is accessible using the `influential::runShinyApp("IVI")` c
 You can also access the shiny app online at https://influential.erc.monash.edu/.
 }
 \examples{
+\dontrun{
 MyData <- centrality.measures
 My.vertices.IVI <- ivi.from.indices(DC = centrality.measures$DC,
                                     CR = centrality.measures$CR,
@@ -58,6 +59,7 @@ My.vertices.IVI <- ivi.from.indices(DC = centrality.measures$DC,
                                     LH_index = centrality.measures$LH_index,
                                     BC = centrality.measures$BC,
                                     CI = centrality.measures$CI)
+                                    }
 }
 \seealso{
 \code{\link[influential]{cent_network.vis}}

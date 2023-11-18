@@ -45,10 +45,12 @@ it is the product of the reduced degree (degree - 1) of a node and the total (su
 degrees of all nodes at a distance d from the node.
 }
 \examples{
+\dontrun{
 MyData <- coexpression.data
 My_graph <- graph_from_data_frame(MyData)
 GraphVertices <- V(My_graph)
 ci <- collective.influence(graph = My_graph, vertices = GraphVertices, mode = "all", d=3)
+}
 }
 \seealso{
 \code{\link[influential]{ivi}},

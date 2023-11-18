@@ -32,11 +32,13 @@ centrality measures (or any two other continuous variables) from their correspon
 means in opposite directions.
 }
 \examples{
+\dontrun{
 MyData <- centrality.measures
 My.conditional.prob <- cond.prob.analysis(data = MyData,
                                           nodes.colname = rownames(MyData),
                                           Desired.colname = "BC",
                                           Condition.colname = "NC")
+                                          }
 }
 \seealso{
 Other centrality association assessment functions: 

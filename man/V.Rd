@@ -17,9 +17,11 @@ A vertex sequence containing all vertices, in the order of their numeric vertex 
 This function and all of its descriptions have been obtained from the igraph package.
 }
 \examples{
+\dontrun{
 MyData <- coexpression.data
 My_graph <- graph_from_data_frame(MyData)
 My_graph_vertices <- V(My_graph)
+}
 }
 \seealso{
 \code{\link[igraph]{V}} for a complete description on this function

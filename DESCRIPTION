@@ -23,7 +23,8 @@ Imports:
     foreach,
     doParallel,
     data.table,
-    ggplot2
+    ggplot2,
+    BiocManager
 Suggests:
     Hmisc (>= 4.3-0),
     mgcv (>= 1.8-31),

@@ -39,11 +39,13 @@ some minor modifications. ClusterRank is a local ranking algorithm which takes i
 the number of neighbors and the neighbors’ influences, but also the clustering coefficient.
 }
 \examples{
+\dontrun{
 MyData <- coexpression.data
 My_graph <- graph_from_data_frame(MyData)
 GraphVertices <- V(My_graph)
 cr <- clusterRank(graph = My_graph, vids = GraphVertices, 
 directed = FALSE, loops = TRUE, ncores = 1)
+}
 }
 \seealso{
 \code{\link[influential]{ivi}},

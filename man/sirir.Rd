@@ -55,11 +55,13 @@ performance of a novel algorithm in identification of network influential nodes 
 the SIRIR ranks as the ground truth (gold standard).
 }
 \examples{
+\dontrun{
 set.seed(1234)
 My_graph <- igraph::sample_gnp(n=50, p=0.05)
 GraphVertices <- V(My_graph)
-Influence.Ranks <- sirir(graph = My_graph, vertices = GraphVertices,
-                         beta = 0.5, gamma = 1, no.sim = 10, seed = 1234)
+Influence.Ranks <- sirir(graph = My_graph, vertices = GraphVertices, 
+                         beta = 0.5, gamma = 1, ncores = "default", no.sim = 10, seed = 1234)
+}
 }
 \seealso{
 \code{\link[influential]{cent_network.vis}},

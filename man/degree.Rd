@@ -34,10 +34,12 @@ A numeric vector of the same length as argument v.
 This function and all of its descriptions have been obtained from the igraph package.
 }
 \examples{
+\dontrun{
 MyData <- coexpression.data
 My_graph <- graph_from_data_frame(MyData)
 GraphVertices <- V(My_graph)
 My_graph_degree <- degree(My_graph, v = GraphVertices, normalized = FALSE)
+}
 }
 \seealso{
 \code{\link[influential]{ivi}},

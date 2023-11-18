@@ -24,8 +24,10 @@ An igraph graph object.
 This function and all of its descriptions have been obtained from the igraph package.
 }
 \examples{
+\dontrun{
 MyData <- coexpression.data
 My_graph <- graph_from_data_frame(d=MyData)
+}
 }
 \seealso{
 \code{\link[igraph]{graph_from_adjacency_matrix}} for a complete description on this function

@@ -97,7 +97,7 @@ runShinyApp <- function(shinyApp) {
   
   # Check if the BiocManager is installed
   if (!requireNamespace("BiocManager", quietly = TRUE)) {
-    install.packages("BiocManager", dependencies = TRUE)
+    utils::install.packages("BiocManager", dependencies = TRUE)
   }
   
   # Loop through each package
@@ -163,12 +163,14 @@ runShinyApp <- function(shinyApp) {
 #' \code{\link[influential]{cent_network.vis}}
 #' @export neighborhood.connectivity
 #' @examples
+#' \dontrun{
 #' MyData <- coexpression.data
 #' My_graph <- graph_from_data_frame(MyData)
 #' GraphVertices <- V(My_graph)
 #' neighrhood.co <- neighborhood.connectivity(graph = My_graph,
 #'                                            vertices = GraphVertices,
 #'                                            mode = "all")
+#'                                            }
 neighborhood.connectivity <- function(graph, vertices = V(graph), mode = "all", verbose = FALSE) {
 
   # Getting the names of vertices
@@ -415,10 +417,12 @@ neighborhood.connectivity <- function(graph, vertices = V(graph), mode = "all", 
   #' \code{\link[influential]{cent_network.vis}}
   #' @export collective.influence
   #' @examples
+  #' \dontrun{
   #' MyData <- coexpression.data
   #' My_graph <- graph_from_data_frame(MyData)
   #' GraphVertices <- V(My_graph)
   #' ci <- collective.influence(graph = My_graph, vertices = GraphVertices, mode = "all", d=3)
+  #' }
   collective.influence <- function(graph, vertices = V(graph), mode = "all", d=3, verbose = FALSE) {
 
     ci <- vector(mode="numeric", length=length(vertices))  # collective influence output
@@ -501,11 +505,13 @@ neighborhood.connectivity <- function(graph, vertices = V(graph), mode = "all", 
   #' \code{\link[influential]{cent_network.vis}}
   #' @export clusterRank
   #' @examples
+  #' \dontrun{
   #' MyData <- coexpression.data
   #' My_graph <- graph_from_data_frame(MyData)
   #' GraphVertices <- V(My_graph)
   #' cr <- clusterRank(graph = My_graph, vids = GraphVertices, 
   #' directed = FALSE, loops = TRUE, ncores = 1)
+  #' }
   #' @importFrom foreach %dopar%
   clusterRank <- function(graph, vids = V(graph),
                         directed = FALSE, loops = TRUE, ncores = "default", verbose = FALSE) {
@@ -608,11 +614,13 @@ neighborhood.connectivity <- function(graph, vertices = V(graph), mode = "all", 
 #' @family centrality association assessment functions
 #' @export cond.prob.analysis
 #' @examples
+#' \dontrun{
 #' MyData <- centrality.measures
 #' My.conditional.prob <- cond.prob.analysis(data = MyData,
 #'                                           nodes.colname = rownames(MyData),
 #'                                           Desired.colname = "BC",
 #'                                           Condition.colname = "NC")
+#'                                           }
 cond.prob.analysis <- function(data, nodes.colname, Desired.colname, Condition.colname) {
 
   #filtering the data to find those nodes meeting the conditions
@@ -1196,6 +1204,7 @@ double.cent.assess.noRegression <- function(data, nodes.colname,
 #' @seealso \code{\link[influential]{cent_network.vis}}
 #' @export ivi.from.indices
 #' @examples
+#' \dontrun{
 #' MyData <- centrality.measures
 #' My.vertices.IVI <- ivi.from.indices(DC = centrality.measures$DC,
 #'                                     CR = centrality.measures$CR,
@@ -1203,6 +1212,7 @@ double.cent.assess.noRegression <- function(data, nodes.colname,
 #'                                     LH_index = centrality.measures$LH_index,
 #'                                     BC = centrality.measures$BC,
 #'                                     CI = centrality.measures$CI)
+#'                                     }
 ivi.from.indices <- function(DC, CR, LH_index, NC, BC, CI, scale = "range", verbose = FALSE) {
 
   #Generating temporary measures
@@ -1812,11 +1822,13 @@ hubness.score <- function(graph, vertices = V(graph), directed = FALSE,
 #' and \code{\link[igraph]{sir}} for a complete description on SIR model
 #' @export sirir
 #' @examples
+#' \dontrun{
 #' set.seed(1234)
 #' My_graph <- igraph::sample_gnp(n=50, p=0.05)
 #' GraphVertices <- V(My_graph)
-#' Influence.Ranks <- sirir(graph = My_graph, vertices = GraphVertices,
-#'                          beta = 0.5, gamma = 1, no.sim = 10, seed = 1234)
+#' Influence.Ranks <- sirir(graph = My_graph, vertices = GraphVertices, 
+#'                          beta = 0.5, gamma = 1, ncores = "default", no.sim = 10, seed = 1234)
+#' }
 #' @importFrom igraph vcount as_ids sir
 #' @importFrom foreach %dopar%
 sirir <- function(graph, vertices = V(graph),
@@ -1910,8 +1922,10 @@ sirir <- function(graph, vertices = V(graph),
 #' @seealso \code{\link[igraph]{graph_from_adjacency_matrix}} for a complete description on this function
 #' @export graph_from_data_frame
 #' @examples
+#' \dontrun{
 #' MyData <- coexpression.data
 #' My_graph <- graph_from_data_frame(d=MyData)
+#' }
 #' @importFrom igraph graph_from_data_frame
   graph_from_data_frame <- igraph::graph_from_data_frame
 
@@ -1946,8 +1960,10 @@ sirir <- function(graph, vertices = V(graph),
   #' @seealso \code{\link[igraph]{graph_from_adjacency_matrix}} for a complete description on this function
   #' @export graph_from_adjacency_matrix
   #' @examples
+  #' \dontrun{
   #' MyData <- coexpression.adjacency
   #' My_graph <- graph_from_adjacency_matrix(MyData)
+  #' }
   #' @importFrom igraph graph_from_adjacency_matrix
   graph_from_adjacency_matrix <- igraph::graph_from_adjacency_matrix
 
@@ -2010,9 +2026,11 @@ sirir <- function(graph, vertices = V(graph),
   #' @seealso \code{\link[igraph]{V}} for a complete description on this function
   #' @export V
   #' @examples
+  #' \dontrun{
   #' MyData <- coexpression.data
   #' My_graph <- graph_from_data_frame(MyData)
   #' My_graph_vertices <- V(My_graph)
+  #' }
   #' @importFrom igraph V
   V <- igraph::V
 
@@ -2037,11 +2055,13 @@ sirir <- function(graph, vertices = V(graph),
   #' and \code{\link[igraph]{betweenness}} for a complete description on this function
   #' @export betweenness
   #' @examples
+  #' \dontrun{
   #' MyData <- coexpression.data
   #' My_graph <- graph_from_data_frame(MyData)
   #' GraphVertices <- V(My_graph)
   #' My_graph_betweenness <- betweenness(My_graph, v = GraphVertices,
   #'                         directed = FALSE, normalized = FALSE)
+  #'                         }
   betweenness <- function(graph,
                           v = V(graph),
                           directed = TRUE,
@@ -2076,10 +2096,12 @@ sirir <- function(graph, vertices = V(graph),
   #' and \code{\link[igraph]{degree}} for a complete description on this function
   #' @export degree
   #' @examples
+  #' \dontrun{
   #' MyData <- coexpression.data
   #' My_graph <- graph_from_data_frame(MyData)
   #' GraphVertices <- V(My_graph)
   #' My_graph_degree <- degree(My_graph, v = GraphVertices, normalized = FALSE)
+  #' }
   #' @importFrom igraph degree
   degree <- igraph::degree
 
@@ -4574,5 +4596,7 @@ sirir <- function(graph, vertices = V(graph),
                            "Y",
                            "Y1",
                            "Y2",
-                           "Z.score"
+                           "Z.score",
+                           "s",
+                           "h"
                            ))

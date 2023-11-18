@@ -35,11 +35,13 @@ A numeric vector with the betweenness score for each vertex in v.
 This function and all of its descriptions have been obtained from the igraph package.
 }
 \examples{
+\dontrun{
 MyData <- coexpression.data
 My_graph <- graph_from_data_frame(MyData)
 GraphVertices <- V(My_graph)
 My_graph_betweenness <- betweenness(My_graph, v = GraphVertices,
                         directed = FALSE, normalized = FALSE)
+                        }
 }
 \seealso{
 \code{\link[influential]{ivi}},
