@@ -1,15 +1,15 @@
 CRAN Comments
 ================
 Adrian (Abbas) Salavaty
-15/01/2020 (updated on 15 May, 2023)
+15/01/2020 (updated on 19 November, 2023)
 
-## 2.2.7 New version submission
+## 2.2.8 New version submission
 
 - This is a new submission of the new version of the package
-  `influential`. The `collective_influence`, `clusterRank`, and
-  `lh_index` functions are optimized. Also, documentation of several
-  functions were updated along with several other minor improvements.
-  Please see News for complete details.
+  `influential`. The `collective_influence`, `exir`, and `ivi` functions
+  are optimized. Also, documentation of several functions were updated
+  along with several other minor improvements. Please see News for
+  complete details.
 
 ## Test environments
 

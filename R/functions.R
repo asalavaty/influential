@@ -38,7 +38,7 @@
 #' \itemize{
 #'   \item Package: influential
 #'   \item Type: Package
-#'   \item Version: 2.2.7
+#'   \item Version: 2.2.8
 #'   \item Date: 15-05-2023
 #'   \item License: GPL-3
 #' }
