@@ -3,7 +3,9 @@ influential
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-# influential 2.2.7.0009 (Developmental version)
+# influential 2.2.8 (CRAN version)
+
+- The function `comp_manipulate` is optimized.
 
 - The function `exir` is optimized. Also, the local and online version
   of the ExIR shiny apps are updated according to this optimization
