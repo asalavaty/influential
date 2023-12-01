@@ -87,7 +87,7 @@ NULL
 #' @return A shiny app.
 #' @keywords runShinyApp
 #' @export runShinyApp
-#' @example
+#' @examples
 #' \dontrun{
 #' runShinyApp(shinyApp = "IVI")
 #' }
@@ -2090,7 +2090,7 @@ sirir <- function(graph, vertices = V(graph),
   #' \code{\link[ranger]{ranger}},
   #' \code{\link[ranger]{importance_pvalues}}
   #' @export exir
-  #' @example
+  #' @examples
   #' \dontrun{
   #' MyDesired_list <- Desiredlist
   #' MyDiff_data <- Diffdata
