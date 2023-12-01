@@ -15,6 +15,6 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{igraph}{\code{\link[igraph]{V}}, \code{\link[igraph]{degree}}, \code{\link[igraph]{graph_from_adjacency_matrix}}, \code{\link[igraph]{graph_from_data_frame}}, \code{\link[igraph]{graph_from_incidence_matrix}}}
+  \item{igraph}{\code{\link[igraph]{degree}}, \code{\link[igraph]{graph_from_adjacency_matrix}}, \code{\link[igraph]{graph_from_data_frame}}, \code{\link[igraph]{graph_from_incidence_matrix}}, \code{\link[igraph]{V}}}
 }}
 

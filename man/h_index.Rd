@@ -43,7 +43,6 @@ Other centrality functions:
 \code{\link{betweenness}()},
 \code{\link{clusterRank}()},
 \code{\link{collective.influence}()},
-\code{\link{degree}()},
 \code{\link{lh_index}()},
 \code{\link{neighborhood.connectivity}()},
 \code{\link{sirir}()}

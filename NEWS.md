@@ -3,6 +3,17 @@ influential
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
+# influential 2.2.8.999 (Developmental version)
+
+- Add the reexports function.
+
+- Update the documentation of the modified functions.
+
+- The syntax of the functions reexported from the igraph package are
+  corrected.
+
+- The package version is updated.
+
 # influential 2.2.8 (CRAN version)
 
 - The function `comp_manipulate` is optimized.

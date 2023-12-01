@@ -51,7 +51,6 @@ and \code{\link[igraph]{betweenness}} for a complete description on this functio
 Other centrality functions: 
 \code{\link{clusterRank}()},
 \code{\link{collective.influence}()},
-\code{\link{degree}()},
 \code{\link{h_index}()},
 \code{\link{lh_index}()},
 \code{\link{neighborhood.connectivity}()},

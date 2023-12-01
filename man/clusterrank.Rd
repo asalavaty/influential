@@ -54,7 +54,6 @@ directed = FALSE, loops = TRUE, ncores = 1)
 Other centrality functions: 
 \code{\link{betweenness}()},
 \code{\link{collective.influence}()},
-\code{\link{degree}()},
 \code{\link{h_index}()},
 \code{\link{lh_index}()},
 \code{\link{neighborhood.connectivity}()},

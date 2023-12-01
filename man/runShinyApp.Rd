@@ -20,4 +20,9 @@ Run shiny apps included in the influential R package.
 Also, a web-based \href{https://influential.erc.monash.edu/}{Influential Software Package} with a convenient
 user-interface (UI) has been developed for the comfort of all users including those without a coding background.
 }
+\examples{
+\dontrun{
+runShinyApp(shinyApp = "IVI")
+}
+}
 \keyword{runShinyApp}

@@ -25,11 +25,5 @@ of most influential nodes via the ivi function, for instance.
 MyGraph <- sif2igraph(Path = "/Users/User1/Desktop/mygraph.sif", directed=FALSE)
 }
 }
-\seealso{
-Other network_reconstruction functions: 
-\code{\link{graph_from_adjacency_matrix}()},
-\code{\link{graph_from_data_frame}()},
-\code{\link{graph_from_incidence_matrix}()}
-}
 \concept{network_reconstruction functions}
 \keyword{SIF.to.igraph}

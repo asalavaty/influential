@@ -123,6 +123,21 @@ simulation of knockout and/or up-regulation of its top candidate outputs, which 
 the `influential::runShinyApp("ExIR")` command.
 You can also access the shiny app online at https://influential.erc.monash.edu/.
 }
+\examples{
+\dontrun{
+MyDesired_list <- Desiredlist
+MyDiff_data <- Diffdata
+Diff_value <- c(1,3,5)
+Regr_value <- 7
+Sig_value <- c(2,4,6,8)
+MyExptl_data <- Exptldata
+Condition_colname <- "condition"
+My.exir <- exir(Desired_list = MyDesired_list,
+               Diff_data = MyDiff_data, Diff_value = Diff_value,
+               Regr_value = Regr_value, Sig_value = Sig_value,
+               Exptl_data = MyExptl_data, Condition_colname = Condition_colname)
+}
+}
 \seealso{
 \code{\link[influential]{exir.vis}},
 \code{\link[influential]{diff_data.assembly}},
