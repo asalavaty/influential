@@ -1906,133 +1906,28 @@ sirir <- function(graph, vertices = V(graph),
 #
 #=============================================================================
 
-#' Creating igraph graphs from data frames
-#'
-#' This function and all of its descriptions have been obtained from the igraph package.
-#' @param d A data frame containing a symbolic edge list in the first two columns.
-#' Additional columns are considered as edge attributes.
-#' Since version 0.7 this argument is coerced to a data frame with as.data.frame.
-#' @param directed Logical scalar, whether or not to create a directed graph.
-#' @param vertices A data frame with vertex metadata, or NULL.
-#' Since version 0.7 of igraph this argument is coerced to a data frame with as.data.frame, if not NULL.
-#' @return An igraph graph object.
-#' @aliases dataframe2graph
-#' @keywords graph_from_dataframe
-#' @family network_reconstruction functions
-#' @seealso \code{\link[igraph]{graph_from_adjacency_matrix}} for a complete description on this function
-#' @export graph_from_data_frame
-#' @examples
-#' \dontrun{
-#' MyData <- coexpression.data
-#' My_graph <- graph_from_data_frame(d=MyData)
-#' }
-#' @importFrom igraph graph_from_data_frame
-  graph_from_data_frame <- igraph::graph_from_data_frame
+  #' @importFrom igraph graph_from_data_frame
+  #' @export
+  igraph::graph_from_data_frame
 
 
   #*****************************************************************#
 
-  #' Creating igraph graphs from adjacency matrices
-  #'
-  #' This function and all of its descriptions have been obtained from the igraph package.
-  #' @param adjmatrix A square adjacency matrix. From igraph version 0.5.1 this
-  #' can be a sparse matrix created with the Matrix package.
-  #' @param mode Character scalar, specifies how igraph should interpret the supplied matrix.
-  #' See also the weighted argument, the interpretation depends on that too.
-  #' Possible values are: directed, undirected, upper, lower, max, min, plus.
-  #' @param weighted This argument specifies whether to create a weighted graph from an adjacency matrix.
-  #' If it is NULL then an unweighted graph is created and the elements of the adjacency matrix gives the
-  #' number of edges between the vertices. If it is a character constant then for every non-zero matrix
-  #' entry an edge is created and the value of the entry is added as an edge attribute named by the weighted argument.
-  #' If it is TRUE then a weighted graph is created and the name of the edge attribute will be weight.
-  #' @param diag Logical scalar, whether to include the diagonal of the matrix in the calculation.
-  #' If this is FALSE then the diagonal is zerod out first.
-  #' @param add.colnames Character scalar, whether to add the column names as vertex attributes.
-  #' If it is ‘NULL’ (the default) then, if present, column names are added as vertex attribute ‘name’.
-  #' If ‘NA’ then they will not be added. If a character constant, then it gives the name of the vertex attribute to add.
-  #' @param add.rownames Character scalar, whether to add the row names as vertex attributes.
-  #' Possible values the same as the previous argument. By default row names are not added.
-  #' If ‘add.rownames’ and ‘add.colnames’ specify the same vertex attribute, then the former is ignored.
-  #' @return An igraph graph object.
-  #' @aliases adjmatrix2graph
-  #' @keywords graph_from_adjacencymatrices
-  #' @family network_reconstruction functions
-  #' @seealso \code{\link[igraph]{graph_from_adjacency_matrix}} for a complete description on this function
-  #' @export graph_from_adjacency_matrix
-  #' @examples
-  #' \dontrun{
-  #' MyData <- coexpression.adjacency
-  #' My_graph <- graph_from_adjacency_matrix(MyData)
-  #' }
   #' @importFrom igraph graph_from_adjacency_matrix
-  graph_from_adjacency_matrix <- igraph::graph_from_adjacency_matrix
+  #' @export
+  igraph::graph_from_adjacency_matrix
 
   #*****************************************************************#
 
-  #' Creating igraph graphs from incidence matrices
-  #'
-  #' This function and all of its descriptions have been obtained from the igraph package.
-  #' @param incidence The input incidence matrix. It can also be a sparse matrix from the \code{Matrix} package.
-  #' @param directed Logical scalar, whether to create a directed graph.
-  #' @param mode A character constant, defines the direction of the edges in directed graphs,
-  #' ignored for undirected graphs. If ‘out’, then edges go from vertices of the first
-  #' kind (corresponding to rows in the incidence matrix) to vertices of the second
-  #' kind (columns in the incidence matrix). If ‘in’, then the opposite direction is used.
-  #' If ‘all’ or ‘total’, then mutual edges are created.
-  #' @param multiple Logical scalar, specifies how to interpret the matrix elements. See details below.
-  #' @param weighted This argument specifies whether to create a weighted graph from
-  #' the incidence matrix. If it is NULL then an unweighted graph is created and the
-  #' multiple argument is used to determine the edges of the graph. If it is a character
-  #' constant then for every non-zero matrix entry an edge is created and the value of
-  #' the entry is added as an edge attribute named by the weighted argument. If it is
-  #' TRUE then a weighted graph is created and the name of the edge attribute will be ‘weight’.
-  #' @param add.names A character constant, NA or NULL. \code{graph_from_incidence_matrix}
-  #' can add the row and column names of the incidence matrix as vertex attributes.
-  #' If this argument is NULL (the default) and the incidence matrix has both row
-  #' and column names, then these are added as the ‘name’ vertex attribute. If you want a different vertex attribute for this, then give the name of the attributes as a character string. If this argument is NA, then no vertex attributes (other than type) will be added.
-  #' @details Bipartite graphs have a ‘type’ vertex attribute in igraph, this is boolean
-  #' and FALSE for the vertices of the first kind and TRUE for vertices of the second kind.
-  #'
-  #' graph_from_incidence_matrix can operate in two modes, depending on the multiple
-  #' argument. If it is FALSE then a single edge is created for every non-zero element
-  #' in the incidence matrix. If multiple is TRUE, then the matrix elements are
-  #' rounded up to the closest non-negative integer to get the number of edges to
-  #' create between a pair of vertices.
-  #' @return A bipartite igraph graph. In other words, an igraph graph that has a vertex attribute type.
-  #' @aliases incidencematrix2graph
-  #' @keywords graph_from_incidencematrices
-  #' @family network_reconstruction functions
-  #' @seealso \code{\link[igraph]{graph_from_incidence_matrix}} for a complete description on this function
-  #' @export graph_from_incidence_matrix
-  #' @examples
-  #' \dontrun{
-  #' inc <- matrix(sample(0:1, 15, repl=TRUE), 3, 5)
-  #' colnames(inc) <- letters[1:5]
-  #' rownames(inc) <- LETTERS[1:3]
-  #' My_graph <- graph_from_incidence_matrix(inc)
-  #' }
   #' @importFrom igraph graph_from_incidence_matrix
-  graph_from_incidence_matrix <- igraph::graph_from_incidence_matrix
+  #' @export
+  igraph::graph_from_incidence_matrix
 
   #*****************************************************************#
 
-  #' Vertices of an igraph graph
-  #'
-  #' This function and all of its descriptions have been obtained from the igraph package.
-  #' @param graph The graph (an igraph graph)
-  #' @return A vertex sequence containing all vertices, in the order of their numeric vertex ids.
-  #' @aliases vertices
-  #' @keywords graph_vertices
-  #' @seealso \code{\link[igraph]{V}} for a complete description on this function
-  #' @export V
-  #' @examples
-  #' \dontrun{
-  #' MyData <- coexpression.data
-  #' My_graph <- graph_from_data_frame(MyData)
-  #' My_graph_vertices <- V(My_graph)
-  #' }
   #' @importFrom igraph V
-  V <- igraph::V
+  #' @export
+  igraph::V
 
   #*****************************************************************#
 
@@ -2076,34 +1971,9 @@ sirir <- function(graph, vertices = V(graph),
 
   #*****************************************************************#
 
-  #' Degree of the vertices
-  #'
-  #' This function and all of its descriptions have been obtained from the igraph package.
-  #' @param graph The graph to analyze (an igraph graph).
-  #' @param v The ids of vertices of which the degree will be calculated.
-  #' @param mode Character string, “out” for out-degree, “in” for in-degree or “total” for the sum of the two.
-  #' For undirected graphs this argument is ignored. “all” is a synonym of “total”.
-  #' @param loops Logical; whether the loop edges are also counted.
-  #' If the graph has a weight edge attribute, then this is used by default. Weights are used to calculate weighted shortest paths, so they are interpreted as distances.
-  #' @param normalized Logical scalar, whether to normalize the degree.
-  #' If TRUE then the result is divided by n-1, where n is the number of vertices in the graph.
-  #' @return A numeric vector of the same length as argument v.
-  #' @aliases DC
-  #' @keywords degree_centrality
-  #' @family centrality functions
-  #' @seealso \code{\link[influential]{ivi}},
-  #' \code{\link[influential]{cent_network.vis}},
-  #' and \code{\link[igraph]{degree}} for a complete description on this function
-  #' @export degree
-  #' @examples
-  #' \dontrun{
-  #' MyData <- coexpression.data
-  #' My_graph <- graph_from_data_frame(MyData)
-  #' GraphVertices <- V(My_graph)
-  #' My_graph_degree <- degree(My_graph, v = GraphVertices, normalized = FALSE)
-  #' }
   #' @importFrom igraph degree
-  degree <- igraph::degree
+  #' @export
+  igraph::degree
 
 #=============================================================================
 #
