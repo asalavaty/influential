@@ -1,15 +1,16 @@
 CRAN Comments
 ================
 Adrian (Abbas) Salavaty
-15/01/2020 (updated on 19 November, 2023)
+15/01/2020 (updated on 09 December, 2023)
 
-## 2.2.8 New version submission
+## 2.2.9 New version submission
 
 - This is a new submission of the new version of the package
-  `influential`. The `collective_influence`, `exir`, and `ivi` functions
-  are optimized. Also, documentation of several functions were updated
-  along with several other minor improvements. Please see News for
-  complete details.
+  `influential`. All syntax of all of the functions imported from the
+  igraph package were updated to make the package compatible with new
+  version of the igraph package. Also, documentation of these functions
+  were updated along with several other minor improvements. Please see
+  News for complete details.
 
 ## Test environments
 

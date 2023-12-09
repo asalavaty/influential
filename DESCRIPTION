@@ -2,7 +2,7 @@ Package: influential
 Type: Package
 Title: Identification and Classification of the Most Influential Nodes
 Language: en-US
-Version: 2.2.8
+Version: 2.2.9
 Author: Abbas (Adrian) Salavaty [aut, cre], Mirana Ramialison [ths], Peter D. Currie [ths]
 Maintainer: Adrian Salavaty <abbas.salavaty@gmail.com>
 Description: Contains functions for the classification and ranking of top candidate features, reconstruction of networks from

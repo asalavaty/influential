@@ -37,7 +37,7 @@ user-interface (UI) has been developed for the comfort of all users including th
 \itemize{
   \item Package: influential
   \item Type: Package
-  \item Version: 2.2.8.999
+  \item Version: 2.2.9
   \item Date: 01-12-2023
   \item License: GPL-3
 }

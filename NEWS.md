@@ -3,7 +3,7 @@ influential
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-# influential 2.2.8.999 (Developmental version)
+# influential 2.2.9 (CRAN version)
 
 - Add the reexports function.
 
