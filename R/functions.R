@@ -3349,7 +3349,7 @@ sirir <- function(graph, vertices = V(graph),
 
   # add stroke color
   base::suppressWarnings(
-  if(stroke.color == "identical") {
+  if(length(stroke.color) == 1 & stroke.color == "identical") {
     temp.plot <- temp.plot +
       ggplot2::geom_point(data = plotcord, ggplot2::aes(x = X, y = Y, colour = cent.metric),
                           shape = node.shape,
