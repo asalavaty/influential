@@ -3367,7 +3367,7 @@ sirir <- function(graph, vertices = V(graph),
                           size = plotcord$Node.size,
                           stroke = stroke.size,
                           alpha = stroke.alpha,
-                          show.legend = FALSE)
+                          show.legend = ifelse(length(stroke.color) == 1, FALSE, TRUE))
   }
   )
 
