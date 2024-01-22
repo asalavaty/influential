@@ -3,6 +3,10 @@ influential
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
+# influential 2.2.9.9000 (Developmental version)
+
+- Debug the function `cent_network.vis`.
+
 # influential 2.2.9 (CRAN version)
 
 - Add the reexports function.
