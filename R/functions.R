@@ -3086,6 +3086,7 @@ sirir <- function(graph, vertices = V(graph),
   #' "sphere", "random", "dh", "drl", "fr", "gem", "graphopt", "lgl", "mds", and "sugiyama"}
   #' (default is set to "kk"). For a complete description of different layouts and their
   #' underlying algorithms please refer to the function \code{\link[igraph]{layout_}}.
+  #' @param node.group A vector of the same length as the number of network nodes defining the group each node of the network belongs to.
   #' @param node.color A character string indicating the colormap option to use.
   #' Five options are available: "magma" (or "A"), "inferno" (or "B"), "plasma"
   #' (or "C"), "viridis" (or "D", the default option) and "cividis" (or "E").
@@ -3153,6 +3154,7 @@ sirir <- function(graph, vertices = V(graph),
   cent_network.vis <- function(graph,
                                cent.metric,
                                layout = "kk",
+                               node.group = NULL,
                                node.color = "viridis",
                                node.size.min = 3,
                                node.size.max = 15,
@@ -3253,6 +3255,13 @@ sirir <- function(graph, vertices = V(graph),
 
   # add the Node name
   plotcord$Node.name <- base::as.character(igraph::as_ids(V(graph)))
+  
+  # add node.group
+  if(!is.null(node.group)) {
+    plotcord$Group <- node.group
+  } else {
+    plotcord$Group <- plotcord$Node.name
+  }
 
   ####*******************************####
 
@@ -3361,13 +3370,13 @@ sirir <- function(graph, vertices = V(graph),
                                      begin = 0.15)
   } else {
     temp.plot <- temp.plot +
-      ggplot2::geom_point(data = plotcord, ggplot2::aes(x = X, y = Y),
+      ggplot2::geom_point(data = plotcord, ggplot2::aes(x = X, y = Y, color = Group),
                           shape = node.shape,
-                          colour = stroke.color,
                           size = plotcord$Node.size,
                           stroke = stroke.size,
                           alpha = stroke.alpha,
-                          show.legend = ifelse(length(stroke.color) == 1, FALSE, TRUE))
+                          show.legend = ifelse(length(stroke.color) == 1, FALSE, TRUE)) +
+      ggplot2::scale_color_manual(values = stroke.color)
   }
   )
 
