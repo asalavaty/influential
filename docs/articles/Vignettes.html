@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">influential</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.7.0009</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.9.9000</span>
       </span>
     </div>
 
@@ -81,8 +81,8 @@
       <h1 data-toc-skip>Introduction to influential</h1>
             <h3 data-toc-skip class="subtitle"><em>Identification and
 classification of the most influential nodes</em></h3>
-                        <h4 data-toc-skip class="author">Abbas (Adrian)
-Salavaty 16-Oct-2023</h4>
+                        <h4 data-toc-skip class="author">Adrian Salavaty
+22-Jan-2024</h4>
             
       
       <small class="dont-index">Source: <a href="https://github.com/asalavaty/influential/blob/HEAD/vignettes/Vignettes.Rmd" class="external-link"><code>vignettes/Vignettes.Rmd</code></a></small>
@@ -368,7 +368,7 @@ A sample appropriate data frame is brought below:</p>
 <span><span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">coexpression.data</span></span>
 <span></span>
 <span><span class="co"># Reconstructing the graph</span></span>
-<span><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_from_data_frame.html">graph_from_data_frame</a></span><span class="op">(</span>d<span class="op">=</span><span class="va">MyData</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r.igraph.org/reference/graph_from_data_frame.html" class="external-link">graph_from_data_frame</a></span><span class="op">(</span>d<span class="op">=</span><span class="va">MyData</span><span class="op">)</span></span></code></pre></div>
 <p>If you look at the class of <code>My_graph</code> you should see that
 it has an <code>igraph</code> class:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -463,7 +463,7 @@ it has an <code>igraph</code> class:</p>
 <span><span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">coexpression.adjacency</span>        </span>
 <span></span>
 <span><span class="co"># Reconstructing the graph</span></span>
-<span><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_from_adjacency_matrix.html">graph_from_adjacency_matrix</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        </span></code></pre></div>
+<span><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r.igraph.org/reference/graph_from_adjacency_matrix.html" class="external-link">graph_from_adjacency_matrix</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        </span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="from-an-incidence-matrix">From an incidence matrix<a class="anchor" aria-label="anchor" href="#from-an-incidence-matrix"></a>
@@ -515,7 +515,7 @@ it has an <code>igraph</code> class:</p>
 </table>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Reconstructing the graph</span></span>
-<span><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_from_adjacency_matrix.html">graph_from_adjacency_matrix</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        </span></code></pre></div>
+<span><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r.igraph.org/reference/graph_from_adjacency_matrix.html" class="external-link">graph_from_adjacency_matrix</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        </span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="from-a-sif-file">From a SIF file<a class="anchor" aria-label="anchor" href="#from-a-sif-file"></a>
@@ -561,10 +561,10 @@ nodes are assessed if no vector of desired vertices is provided.</li>
 <span><span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">coexpression.data</span>        </span>
 <span></span>
 <span><span class="co"># Reconstructing the graph</span></span>
-<span><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_from_data_frame.html">graph_from_data_frame</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        </span>
+<span><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r.igraph.org/reference/graph_from_data_frame.html" class="external-link">graph_from_data_frame</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        </span>
 <span></span>
 <span><span class="co"># Extracting the vertices</span></span>
-<span><span class="va">My_graph_vertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/V.html">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span>        </span>
+<span><span class="va">My_graph_vertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r.igraph.org/reference/V.html" class="external-link">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span>        </span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">My_graph_vertices</span><span class="op">)</span></span>
 <span><span class="co">#&gt; + 6/794 vertices, named, from 775cff6:</span></span>
@@ -581,13 +581,13 @@ from the <code>igraph</code> package.</p>
 <span><span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">coexpression.data</span>        </span>
 <span></span>
 <span><span class="co"># Reconstructing the graph</span></span>
-<span><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_from_data_frame.html">graph_from_data_frame</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        </span>
+<span><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r.igraph.org/reference/graph_from_data_frame.html" class="external-link">graph_from_data_frame</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        </span>
 <span></span>
 <span><span class="co"># Extracting the vertices</span></span>
-<span><span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/V.html">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span>        </span>
+<span><span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r.igraph.org/reference/V.html" class="external-link">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span>        </span>
 <span></span>
 <span><span class="co"># Calculating degree centrality</span></span>
-<span><span class="va">My_graph_degree</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/degree.html">degree</a></span><span class="op">(</span><span class="va">My_graph</span>, v <span class="op">=</span> <span class="va">GraphVertices</span>, normalized <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> </span>
+<span><span class="va">My_graph_degree</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r.igraph.org/reference/degree.html" class="external-link">degree</a></span><span class="op">(</span><span class="va">My_graph</span>, v <span class="op">=</span> <span class="va">GraphVertices</span>, normalized <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> </span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">My_graph_degree</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ADAMTS9-AS2 C8orf34-AS1   CADM3-AS1  FAM83A-AS1      FENDRR  LANCL1-AS1 </span></span>
@@ -607,10 +607,10 @@ using a function obtained from the <code>igraph</code> package.</p>
 <span><span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">coexpression.data</span>        </span>
 <span></span>
 <span><span class="co"># Reconstructing the graph</span></span>
-<span><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_from_data_frame.html">graph_from_data_frame</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        </span>
+<span><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r.igraph.org/reference/graph_from_data_frame.html" class="external-link">graph_from_data_frame</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        </span>
 <span></span>
 <span><span class="co"># Extracting the vertices</span></span>
-<span><span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/V.html">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span>        </span>
+<span><span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r.igraph.org/reference/V.html" class="external-link">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span>        </span>
 <span></span>
 <span><span class="co"># Calculating betweenness centrality</span></span>
 <span><span class="va">My_graph_betweenness</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/betweenness.html">betweenness</a></span><span class="op">(</span><span class="va">My_graph</span>, v <span class="op">=</span> <span class="va">GraphVertices</span>,    </span>
@@ -636,10 +636,10 @@ and is for the first time calculable in R environment via the
 <span><span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">coexpression.data</span>        </span>
 <span></span>
 <span><span class="co"># Reconstructing the graph</span></span>
-<span><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_from_data_frame.html">graph_from_data_frame</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        </span>
+<span><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r.igraph.org/reference/graph_from_data_frame.html" class="external-link">graph_from_data_frame</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        </span>
 <span></span>
 <span><span class="co"># Extracting the vertices</span></span>
-<span><span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/V.html">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span>        </span>
+<span><span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r.igraph.org/reference/V.html" class="external-link">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span>        </span>
 <span></span>
 <span><span class="co"># Calculating neighborhood connectivity</span></span>
 <span><span class="va">neighrhood.co</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/neighborhood.connectivity.html">neighborhood.connectivity</a></span><span class="op">(</span>graph <span class="op">=</span> <span class="va">My_graph</span>,    </span>
@@ -665,10 +665,10 @@ is for the first time calculable in R environment via the
 <span><span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">coexpression.data</span>        </span>
 <span></span>
 <span><span class="co"># Reconstructing the graph</span></span>
-<span><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_from_data_frame.html">graph_from_data_frame</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        </span>
+<span><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r.igraph.org/reference/graph_from_data_frame.html" class="external-link">graph_from_data_frame</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        </span>
 <span></span>
 <span><span class="co"># Extracting the vertices</span></span>
-<span><span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/V.html">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span>        </span>
+<span><span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r.igraph.org/reference/V.html" class="external-link">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span>        </span>
 <span></span>
 <span><span class="co"># Calculating H-index</span></span>
 <span><span class="va">h.index</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/h_index.html">h_index</a></span><span class="op">(</span>graph <span class="op">=</span> <span class="va">My_graph</span>,    </span>
@@ -693,10 +693,10 @@ R environment via the <code>influential</code> package.</p>
 <span><span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">coexpression.data</span>        </span>
 <span></span>
 <span><span class="co"># Reconstructing the graph</span></span>
-<span><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_from_data_frame.html">graph_from_data_frame</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        </span>
+<span><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r.igraph.org/reference/graph_from_data_frame.html" class="external-link">graph_from_data_frame</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        </span>
 <span></span>
 <span><span class="co"># Extracting the vertices</span></span>
-<span><span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/V.html">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span>        </span>
+<span><span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r.igraph.org/reference/V.html" class="external-link">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span>        </span>
 <span></span>
 <span><span class="co"># Calculating Local H-index</span></span>
 <span><span class="va">lh.index</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/lh_index.html">lh_index</a></span><span class="op">(</span>graph <span class="op">=</span> <span class="va">My_graph</span>,    </span>
@@ -722,10 +722,10 @@ package.</p>
 <span><span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">coexpression.data</span>        </span>
 <span></span>
 <span><span class="co"># Reconstructing the graph</span></span>
-<span><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_from_data_frame.html">graph_from_data_frame</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        </span>
+<span><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r.igraph.org/reference/graph_from_data_frame.html" class="external-link">graph_from_data_frame</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        </span>
 <span></span>
 <span><span class="co"># Extracting the vertices</span></span>
-<span><span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/V.html">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span>        </span>
+<span><span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r.igraph.org/reference/V.html" class="external-link">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span>        </span>
 <span></span>
 <span><span class="co"># Calculating Collective Influence</span></span>
 <span><span class="va">ci</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/collective.influence.html">collective.influence</a></span><span class="op">(</span>graph <span class="op">=</span> <span class="va">My_graph</span>,    </span>
@@ -749,10 +749,10 @@ time removes the negative effects of local clustering.</p>
 <span><span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">coexpression.data</span>        </span>
 <span></span>
 <span><span class="co"># Reconstructing the graph</span></span>
-<span><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_from_data_frame.html">graph_from_data_frame</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        </span>
+<span><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r.igraph.org/reference/graph_from_data_frame.html" class="external-link">graph_from_data_frame</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        </span>
 <span></span>
 <span><span class="co"># Extracting the vertices</span></span>
-<span><span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/V.html">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span>        </span>
+<span><span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r.igraph.org/reference/V.html" class="external-link">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span>        </span>
 <span></span>
 <span><span class="co"># Calculating ClusterRank</span></span>
 <span><span class="va">cr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/clusterRank.html">clusterRank</a></span><span class="op">(</span>graph <span class="op">=</span> <span class="va">My_graph</span>,    </span>
@@ -1105,10 +1105,10 @@ effects and removes their biases.</p>
 <span><span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">coexpression.data</span>        </span>
 <span></span>
 <span><span class="co"># Reconstructing the graph</span></span>
-<span><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_from_data_frame.html">graph_from_data_frame</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        </span>
+<span><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r.igraph.org/reference/graph_from_data_frame.html" class="external-link">graph_from_data_frame</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        </span>
 <span></span>
 <span><span class="co"># Extracting the vertices</span></span>
-<span><span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/V.html">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span>        </span>
+<span><span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r.igraph.org/reference/V.html" class="external-link">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span>        </span>
 <span></span>
 <span><span class="co"># Calculation of IVI</span></span>
 <span><span class="va">My.vertices.IVI</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ivi.html">ivi</a></span><span class="op">(</span>graph <span class="op">=</span> <span class="va">My_graph</span>, vertices <span class="op">=</span> <span class="va">GraphVertices</span>, </span>
@@ -1199,10 +1199,10 @@ major components of the <a href="#IVI"><code>IVI</code></a>.</p>
 <span><span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">coexpression.data</span>        </span>
 <span></span>
 <span><span class="co"># Reconstructing the graph</span></span>
-<span><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_from_data_frame.html">graph_from_data_frame</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        </span>
+<span><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r.igraph.org/reference/graph_from_data_frame.html" class="external-link">graph_from_data_frame</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        </span>
 <span></span>
 <span><span class="co"># Extracting the vertices</span></span>
-<span><span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/V.html">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span>        </span>
+<span><span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r.igraph.org/reference/V.html" class="external-link">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span>        </span>
 <span></span>
 <span><span class="co"># Calculation of Spreading score</span></span>
 <span><span class="va">Spreading.score</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/spreading.score.html">spreading.score</a></span><span class="op">(</span>graph <span class="op">=</span> <span class="va">My_graph</span>,     </span>
@@ -1234,10 +1234,10 @@ major components of the <a href="#IVI"><code>IVI</code></a>.</p>
 <span><span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">coexpression.data</span>        </span>
 <span></span>
 <span><span class="co"># Reconstructing the graph</span></span>
-<span><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/graph_from_data_frame.html">graph_from_data_frame</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        </span>
+<span><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r.igraph.org/reference/graph_from_data_frame.html" class="external-link">graph_from_data_frame</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span>        </span>
 <span></span>
 <span><span class="co"># Extracting the vertices</span></span>
-<span><span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/V.html">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span>        </span>
+<span><span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r.igraph.org/reference/V.html" class="external-link">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span>        </span>
 <span></span>
 <span><span class="co"># Calculation of Hubness score</span></span>
 <span><span class="va">Hubness.score</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/hubness.score.html">hubness.score</a></span><span class="op">(</span>graph <span class="op">=</span> <span class="va">My_graph</span>,     </span>
@@ -1269,7 +1269,7 @@ influential nodes.</p>
 <span><span class="va">My_graph</span> <span class="op">&lt;-</span>  <span class="fu"><a href="../reference/sif2igraph.html">sif2igraph</a></span><span class="op">(</span>Path <span class="op">=</span> <span class="st">"Sample_SIF.sif"</span><span class="op">)</span>       </span>
 <span></span>
 <span><span class="co"># Extracting the vertices</span></span>
-<span><span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/V.html">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span>        </span>
+<span><span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r.igraph.org/reference/V.html" class="external-link">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span>        </span>
 <span></span>
 <span><span class="co"># Calculation of influence rank</span></span>
 <span><span class="va">Influence.Ranks</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sirir.html">sirir</a></span><span class="op">(</span>graph <span class="op">=</span> <span class="va">My_graph</span>,     </span>
@@ -1981,11 +1981,11 @@ networks). Below is an example of running this function on the same <a href="#Ex
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Select which genes to knockout</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">60</span><span class="op">)</span></span>
-<span><span class="va">ko_vertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://r.igraph.org/reference/as_ids.html" class="external-link">as_ids</a></span><span class="op">(</span><span class="fu"><a href="../reference/V.html">V</a></span><span class="op">(</span><span class="va">My.exir</span><span class="op">$</span><span class="va">Graph</span><span class="op">)</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="va">ko_vertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://r.igraph.org/reference/as_ids.html" class="external-link">as_ids</a></span><span class="op">(</span><span class="fu"><a href="https://r.igraph.org/reference/V.html" class="external-link">V</a></span><span class="op">(</span><span class="va">My.exir</span><span class="op">$</span><span class="va">Graph</span><span class="op">)</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Select which genes to up-regulate</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1234</span><span class="op">)</span></span>
-<span><span class="va">upregulate_vertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://r.igraph.org/reference/as_ids.html" class="external-link">as_ids</a></span><span class="op">(</span><span class="fu"><a href="../reference/V.html">V</a></span><span class="op">(</span><span class="va">My.exir</span><span class="op">$</span><span class="va">Graph</span><span class="op">)</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="va">upregulate_vertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://r.igraph.org/reference/as_ids.html" class="external-link">as_ids</a></span><span class="op">(</span><span class="fu"><a href="https://r.igraph.org/reference/V.html" class="external-link">V</a></span><span class="op">(</span><span class="va">My.exir</span><span class="op">$</span><span class="va">Graph</span><span class="op">)</span><span class="op">)</span>, size <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">Computational_manipulation</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/comp_manipulate.html">comp_manipulate</a></span><span class="op">(</span>exir_output <span class="op">=</span> <span class="va">My.exir</span>, </span>
 <span>                                              ko_vertices <span class="op">=</span> <span class="va">ko_vertices</span>, </span>

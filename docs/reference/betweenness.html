@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">influential</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.7.0009</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.9.9000</span>
       </span>
     </div>
 
@@ -65,7 +65,7 @@
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">betweenness</span><span class="op">(</span></span>
 <span>  <span class="va">graph</span>,</span>
-<span>  v <span class="op">=</span> <span class="fu"><a href="V.html">V</a></span><span class="op">(</span><span class="va">graph</span><span class="op">)</span>,</span>
+<span>  v <span class="op">=</span> <span class="fu"><a href="https://r.igraph.org/reference/V.html" class="external-link">V</a></span><span class="op">(</span><span class="va">graph</span><span class="op">)</span>,</span>
 <span>  directed <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  weights <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  normalized <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -114,7 +114,6 @@ and <code><a href="https://r.igraph.org/reference/betweenness.html" class="exter
 <p>Other centrality functions: 
 <code><a href="clusterRank.html">clusterRank</a>()</code>,
 <code><a href="collective.influence.html">collective.influence</a>()</code>,
-<code><a href="degree.html">degree</a>()</code>,
 <code><a href="h_index.html">h_index</a>()</code>,
 <code><a href="lh_index.html">lh_index</a>()</code>,
 <code><a href="neighborhood.connectivity.html">neighborhood.connectivity</a>()</code>,
@@ -123,11 +122,13 @@ and <code><a href="https://r.igraph.org/reference/betweenness.html" class="exter
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">coexpression.data</span></span></span>
-<span class="r-in"><span><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="graph_from_data_frame.html">graph_from_data_frame</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="V.html">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">coexpression.data</span></span></span>
+<span class="r-in"><span><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r.igraph.org/reference/graph_from_data_frame.html" class="external-link">graph_from_data_frame</a></span><span class="op">(</span><span class="va">MyData</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r.igraph.org/reference/V.html" class="external-link">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">My_graph_betweenness</span> <span class="op">&lt;-</span> <span class="fu">betweenness</span><span class="op">(</span><span class="va">My_graph</span>, v <span class="op">=</span> <span class="va">GraphVertices</span>,</span></span>
 <span class="r-in"><span>                        directed <span class="op">=</span> <span class="cn">FALSE</span>, normalized <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                        <span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>

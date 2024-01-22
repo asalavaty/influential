@@ -21,7 +21,7 @@ the SIRIR ranks as the ground truth (gold standard)."><!-- mathjax --><script sr
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">influential</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.7.0009</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.9.9000</span>
       </span>
     </div>
 
@@ -73,13 +73,14 @@ the SIRIR ranks as the ground truth (gold standard).</p>
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">sirir</span><span class="op">(</span></span>
 <span>  <span class="va">graph</span>,</span>
-<span>  vertices <span class="op">=</span> <span class="fu"><a href="V.html">V</a></span><span class="op">(</span><span class="va">graph</span><span class="op">)</span>,</span>
+<span>  vertices <span class="op">=</span> <span class="fu"><a href="https://r.igraph.org/reference/V.html" class="external-link">V</a></span><span class="op">(</span><span class="va">graph</span><span class="op">)</span>,</span>
 <span>  beta <span class="op">=</span> <span class="fl">0.5</span>,</span>
 <span>  gamma <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  no.sim <span class="op">=</span> <span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://r.igraph.org/reference/gorder.html" class="external-link">vcount</a></span><span class="op">(</span><span class="va">graph</span><span class="op">)</span> <span class="op">*</span> <span class="fl">100</span>,</span>
+<span>  no.sim <span class="op">=</span> <span class="fl">100</span>,</span>
 <span>  ncores <span class="op">=</span> <span class="st">"default"</span>,</span>
 <span>  seed <span class="op">=</span> <span class="fl">1234</span>,</span>
-<span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  loop_verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  node_verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -120,8 +121,12 @@ cores to be used will be the max(number of available cores) - 1. We recommend le
 <dd><p>A single value, interpreted as an integer to be used for random number generation.</p></dd>
 
 
-<dt>verbose</dt>
-<dd><p>Logical; whether the accomplishment of the evaluation of each network node should be printed (default is FALSE).</p></dd>
+<dt>loop_verbose</dt>
+<dd><p>Logical; whether the accomplishment of the evaluation of network nodes in each loop should be printed (default is TRUE).</p></dd>
+
+
+<dt>node_verbose</dt>
+<dd><p>Logical; whether the process of Parallel Socket Cluster creation should be printed (default is FALSE).</p></dd>
 
 </dl></div>
     <div id="value">
@@ -139,7 +144,6 @@ and <code><a href="https://r.igraph.org/reference/sir.html" class="external-link
 <code><a href="betweenness.html">betweenness</a>()</code>,
 <code><a href="clusterRank.html">clusterRank</a>()</code>,
 <code><a href="collective.influence.html">collective.influence</a>()</code>,
-<code><a href="degree.html">degree</a>()</code>,
 <code><a href="h_index.html">h_index</a>()</code>,
 <code><a href="lh_index.html">lh_index</a>()</code>,
 <code><a href="neighborhood.connectivity.html">neighborhood.connectivity</a>()</code></p></div>
@@ -147,11 +151,13 @@ and <code><a href="https://r.igraph.org/reference/sir.html" class="external-link
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1234</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1234</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">My_graph</span> <span class="op">&lt;-</span> <span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://r.igraph.org/reference/sample_gnp.html" class="external-link">sample_gnp</a></span><span class="op">(</span>n<span class="op">=</span><span class="fl">50</span>, p<span class="op">=</span><span class="fl">0.05</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="V.html">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">Influence.Ranks</span> <span class="op">&lt;-</span> <span class="fu">sirir</span><span class="op">(</span>graph <span class="op">=</span> <span class="va">My_graph</span>, vertices <span class="op">=</span> <span class="va">GraphVertices</span>,</span></span>
-<span class="r-in"><span>                         beta <span class="op">=</span> <span class="fl">0.5</span>, gamma <span class="op">=</span> <span class="fl">1</span>, no.sim <span class="op">=</span> <span class="fl">10</span>, seed <span class="op">=</span> <span class="fl">1234</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">GraphVertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r.igraph.org/reference/V.html" class="external-link">V</a></span><span class="op">(</span><span class="va">My_graph</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">Influence.Ranks</span> <span class="op">&lt;-</span> <span class="fu">sirir</span><span class="op">(</span>graph <span class="op">=</span> <span class="va">My_graph</span>, vertices <span class="op">=</span> <span class="va">GraphVertices</span>, </span></span>
+<span class="r-in"><span>                         beta <span class="op">=</span> <span class="fl">0.5</span>, gamma <span class="op">=</span> <span class="fl">1</span>, ncores <span class="op">=</span> <span class="st">"default"</span>, no.sim <span class="op">=</span> <span class="fl">10</span>, seed <span class="op">=</span> <span class="fl">1234</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>

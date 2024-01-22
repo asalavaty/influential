@@ -23,7 +23,7 @@ You can also access the shiny app online at https://influential.erc.monash.edu/.
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">influential</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.7.0009</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.9.9000</span>
       </span>
     </div>
 
@@ -145,13 +145,15 @@ if there is a desire to establish a threshold (usually z-score &gt; 1.645) for g
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">centrality.measures</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="va">MyData</span> <span class="op">&lt;-</span> <span class="va">centrality.measures</span></span></span>
 <span class="r-in"><span><span class="va">My.vertices.IVI</span> <span class="op">&lt;-</span> <span class="fu">ivi.from.indices</span><span class="op">(</span>DC <span class="op">=</span> <span class="va">centrality.measures</span><span class="op">$</span><span class="va">DC</span>,</span></span>
 <span class="r-in"><span>                                    CR <span class="op">=</span> <span class="va">centrality.measures</span><span class="op">$</span><span class="va">CR</span>,</span></span>
 <span class="r-in"><span>                                    NC <span class="op">=</span> <span class="va">centrality.measures</span><span class="op">$</span><span class="va">NC</span>,</span></span>
 <span class="r-in"><span>                                    LH_index <span class="op">=</span> <span class="va">centrality.measures</span><span class="op">$</span><span class="va">LH_index</span>,</span></span>
 <span class="r-in"><span>                                    BC <span class="op">=</span> <span class="va">centrality.measures</span><span class="op">$</span><span class="va">BC</span>,</span></span>
 <span class="r-in"><span>                                    CI <span class="op">=</span> <span class="va">centrality.measures</span><span class="op">$</span><span class="va">CI</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                                    <span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>

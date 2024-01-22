@@ -23,7 +23,7 @@ You can also access the shiny app online at https://influential.erc.monash.edu/.
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">influential</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.7.0009</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.9.9000</span>
       </span>
     </div>
 
@@ -240,8 +240,8 @@ cores to be used will be the max(number of available cores) - 1. We recommend le
 <code><a href="diff_data.assembly.html">diff_data.assembly</a></code>,
 <code><a href="https://rdrr.io/pkg/coop/man/pcor.html" class="external-link">pcor</a></code>,
 <code><a href="https://rdrr.io/r/stats/prcomp.html" class="external-link">prcomp</a></code>,
-<code><a href="https://rdrr.io/pkg/ranger/man/ranger.html" class="external-link">ranger</a></code>,
-<code><a href="https://rdrr.io/pkg/ranger/man/importance_pvalues.html" class="external-link">importance_pvalues</a></code></p>
+<code><a href="http://imbs-hl.github.io/ranger/reference/ranger.html" class="external-link">ranger</a></code>,
+<code><a href="http://imbs-hl.github.io/ranger/reference/importance_pvalues.html" class="external-link">importance_pvalues</a></code></p>
 <p>Other integrative ranking functions: 
 <code><a href="comp_manipulate.html">comp_manipulate</a>()</code>,
 <code><a href="hubness.score.html">hubness.score</a>()</code>,
@@ -250,6 +250,23 @@ cores to be used will be the max(number of available cores) - 1. We recommend le
 <code><a href="spreading.score.html">spreading.score</a>()</code></p></div>
     </div>
 
+    <div id="ref-examples">
+    <h2>Examples</h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="va">MyDesired_list</span> <span class="op">&lt;-</span> <span class="va">Desiredlist</span></span></span>
+<span class="r-in"><span><span class="va">MyDiff_data</span> <span class="op">&lt;-</span> <span class="va">Diffdata</span></span></span>
+<span class="r-in"><span><span class="va">Diff_value</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span>,<span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">Regr_value</span> <span class="op">&lt;-</span> <span class="fl">7</span></span></span>
+<span class="r-in"><span><span class="va">Sig_value</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">4</span>,<span class="fl">6</span>,<span class="fl">8</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">MyExptl_data</span> <span class="op">&lt;-</span> <span class="va">Exptldata</span></span></span>
+<span class="r-in"><span><span class="va">Condition_colname</span> <span class="op">&lt;-</span> <span class="st">"condition"</span></span></span>
+<span class="r-in"><span><span class="va">My.exir</span> <span class="op">&lt;-</span> <span class="fu">exir</span><span class="op">(</span>Desired_list <span class="op">=</span> <span class="va">MyDesired_list</span>,</span></span>
+<span class="r-in"><span>               Diff_data <span class="op">=</span> <span class="va">MyDiff_data</span>, Diff_value <span class="op">=</span> <span class="va">Diff_value</span>,</span></span>
+<span class="r-in"><span>               Regr_value <span class="op">=</span> <span class="va">Regr_value</span>, Sig_value <span class="op">=</span> <span class="va">Sig_value</span>,</span></span>
+<span class="r-in"><span>               Exptl_data <span class="op">=</span> <span class="va">MyExptl_data</span>, Condition_colname <span class="op">=</span> <span class="va">Condition_colname</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+</code></pre></div>
+    </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>
