@@ -1,5 +1,5 @@
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
+<!-- README.md is generated from README.Rmd file. Please edit that file -->
 
 # influential <a href='https://github.com/asalavaty/influential'><img src='man/figures/Symbol.png' align="right" height="221" /></a>
 
