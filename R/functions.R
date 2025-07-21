@@ -2126,6 +2126,7 @@ sirir <- function(graph, vertices = V(graph),
     #make sure the input data is of data frame class
     Diff_data <- as.data.frame(Diff_data)
     Exptl_data <- as.data.frame(Exptl_data)
+    Exptl_data[is.na(Exptl_data)] <- 0
 
     #change the colnames of Diff_data
     base::colnames(Diff_data) <- base::paste("source",

@@ -1549,6 +1549,8 @@ server <- function(input, output, session,
 
         df[,-ncol(df)] <- as.data.frame(apply(df[,-ncol(df)],
                                               2, as.numeric))
+        
+        df[is.na(df)] <- 0
 
         updateProgressBar(
             session = session,
