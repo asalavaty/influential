@@ -2262,6 +2262,13 @@ sirir <- function(graph, vertices = V(graph),
       features.exptl.for.super.learn <- colnames(exptl.for.super.learn)[-ncol(exptl.for.super.learn)]
 
     colnames(exptl.for.super.learn) <- janitor::make_clean_names(colnames(exptl.for.super.learn))
+    
+    # Defining the num.threads
+    if(ncores == "default") {
+      num.threads <- parallel::detectCores() - 1
+    } else {
+      num.threads <- ncores
+    }
 
     #b Perform random forests classification
     base::set.seed(seed = seed)
@@ -2271,6 +2278,7 @@ sirir <- function(graph, vertices = V(graph),
                                     mtry = mtry,
                                     importance = "impurity_corrected",
                                     write.forest = FALSE, 
+                                    num.threads = num.threads,
                                     seed = seed)
 
     base::set.seed(seed = seed)
@@ -2279,6 +2287,7 @@ sirir <- function(graph, vertices = V(graph),
                                                                      num.permutations = num_permutations,
                                                                      data = exptl.for.super.learn,
                                                                      method = "altmann",
+                                                                     num.threads = num.threads,
                                                                      seed = seed))
 
     #replace feature names (rownames) with their original names
@@ -4372,92 +4381,169 @@ sirir <- function(graph, vertices = V(graph),
                    pvalue = FALSE,
                    adjust = "BH",
                    flat = TRUE) {
-
-    if(method == "spearman") {
-      data <- base::apply(X = data, MARGIN = 2, data.table::frankv)
+    
+    # Define and compile the rank_matrix function inline
+    Rcpp::cppFunction('
+  NumericMatrix rank_matrix(NumericMatrix mat, bool descending = true, bool use_abs = false) {
+    int nrows = mat.nrow();
+    int ncols = mat.ncol();
+    NumericMatrix ranks(nrows, ncols);
+    auto get_val = [use_abs](double x) { return use_abs ? fabs(x) : x; };
+    auto comp = [descending](double va, double vb) { 
+      if (descending) return va > vb;
+      return va < vb;
+    };
+    for(int i = 0; i < nrows; i++) {
+      std::vector<double> row_vec(ncols);
+      for(int j=0; j<ncols; j++) row_vec[j] = mat(i,j);
+      std::vector<size_t> idx(ncols);
+      std::iota(idx.begin(), idx.end(), 0);
+      std::sort(idx.begin(), idx.end(), 
+        [&get_val, &comp, &row_vec](size_t a, size_t b){
+          double va = get_val(row_vec[a]);
+          double vb = get_val(row_vec[b]);
+          if(va == vb) return a < b;
+          return comp(va, vb);
+        });
+      size_t k = 0;
+      while(k < ncols) {
+        size_t start = k;
+        double val = get_val(row_vec[idx[k]]);
+        while(k < ncols && get_val(row_vec[idx[k]]) == val) ++k;
+        size_t end = k - 1;
+        double avg_rank = (static_cast<double>(start + 1) + static_cast<double>(end + 1)) / 2.0;
+        for(size_t j = start; j <= end; ++j) {
+          size_t id = idx[j];
+          ranks(i, id) = avg_rank;
+        }
+      }
     }
-
+    return ranks;
+  }')
+    
+    # Define and compile the flatten_cor_matrix function inline
+    Rcpp::cppFunction('
+  List flatten_cor_matrix(NumericMatrix cormat, Nullable<NumericMatrix> mrmat = R_NilValue, 
+                          Nullable<NumericMatrix> pmat = R_NilValue, Nullable<NumericMatrix> padjmat = R_NilValue,
+                          CharacterVector row_names = CharacterVector::create()) {
+    int m = cormat.nrow();
+    bool has_mr = mrmat.isNotNull();
+    bool has_p = pmat.isNotNull();
+    bool has_pa = padjmat.isNotNull();
+    bool has_names = row_names.size() == m;
+    size_t num = (size_t)(m) * (m - 1LL) / 2;
+    CharacterVector rows, cols;
+    if(has_names) {
+      rows = CharacterVector(num);
+      cols = CharacterVector(num);
+    }
+    NumericVector cors(num);
+    NumericVector mrs, ps, pas;
+    if(has_mr) mrs = NumericVector(num);
+    if(has_p) ps = NumericVector(num);
+    if(has_pa) pas = NumericVector(num);
+    NumericMatrix mr = has_mr ? NumericMatrix(mrmat) : NumericMatrix();
+    NumericMatrix p = has_p ? NumericMatrix(pmat) : NumericMatrix();
+    NumericMatrix pa = has_pa ? NumericMatrix(padjmat) : NumericMatrix();
+    size_t cnt = 0;
+    for(int i = 0; i < m-1; i++) {
+      for(int j = i+1; j < m; j++) {
+        if(has_names) {
+          rows[cnt] = row_names[i];
+          cols[cnt] = row_names[j];
+        }
+        cors[cnt] = cormat(i, j);
+        if(has_mr) mrs[cnt] = mr(i, j);
+        if(has_p) ps[cnt] = p(i, j);
+        if(has_pa) pas[cnt] = pa(i, j);
+        cnt++;
+      }
+    }
+    List res;
+    if(has_names) {
+      res["row"] = rows;
+      res["column"] = cols;
+    }
+    res["cor"] = cors;
+    if(has_mr) res["mr"] = mrs;
+    if(has_p) res["p"] = ps;
+    if(has_pa) res["p.adj"] = pas;
+    return res;
+  }')
+    
     #######################
-
+    
+    # Preserve dimnames
+    var_names <- colnames(data)
+    obs_names <- rownames(data)
+    
+    if(method == "spearman") {
+      # Rank columns using C++ (ascending, no abs)
+      data_t <- t(data)
+      ranked_t <- rank_matrix(data_t, descending = FALSE, use_abs = FALSE)
+      data <- t(ranked_t)
+      colnames(data) <- var_names
+      rownames(data) <- obs_names
+    }
+    
+    #######################
+    
     # Set initial NULL values
     r = NULL
     mutR = NULL
     p = NULL
     pa = NULL
-
+    
     #######################
-
-    # Perform correlation analysis using coop::pcor
-    r <- coop::pcor(x = data, use = use)
-
+    
+    # Perform correlation analysis using base::cor (faster and equivalent for pearson)
+    r <- cor(x = data, use = use, method = "pearson")
+    
     if(pvalue) {
-
+      
       # Calculate n required for p-value measurement
       n <- nrow(data)
-
+      
       # Calculate t required for p-value measurement
-      t <- (r * sqrt(n - 2))/sqrt(1 - r^2)
-
+      t <- (r * sqrt(n - 2)) / sqrt(1 - r^2)
+      
       # Calculate p-value
       p <- -2 * expm1(stats::pt(abs(t), (n - 2), log.p = TRUE))
       p[p > 1 | is.nan(p)] <- 1
-
+      
       # Calculate adjusted p-value
       if (adjust != "none") {
         pa <- stats::p.adjust(p, adjust)
       }
     }
-
+    
     # Calculate Mutual Rank
-    ## We set the order= -1 so that higher correlations get higher ranks (highest cor will be first rank)
-
     if(mutualRank) {
-      if(mutualRank_mode == "unsigned") {
-        r_rank <- base::apply(base::abs(r), 1, data.table::frankv, order= -1) # Fast rank the correlation of each gene with all the other genes
-      } else {
-        r_rank <- base::apply(r, 1, data.table::frankv, order= -1)
-      }
-      rownames(r_rank) <- rownames(r) # Add back row names since it is lost in the 'frankv' function
-      mutR <- base::sqrt(r_rank*t(r_rank))
+      use_abs <- (mutualRank_mode == "unsigned")
+      r_rank <- rank_matrix(r, descending = TRUE, use_abs = use_abs)
+      dimnames(r_rank) <- dimnames(r)  # Add back dimnames
+      mutR <- sqrt(r_rank * t(r_rank))
     }
-
+    
     #######################
-
-    # Flatten the results
-
-    ## Define a function for flattening the corr matrix
-    #reshape the cor matrix
-    flt.Corr.Matrix <- function(cormat, mrmat = NULL,
-                                pmat = NULL, p.adjmat = NULL) {
-      ut <- base::upper.tri(cormat)
-      flt_data <-
-        data.frame(
-          row = base::rownames(cormat)[base::row(cormat)[ut]],
-          column = base::rownames(cormat)[base::col(cormat)[ut]],
-          cor  = cormat[ut]
-        )
-
-      if(!is.null(mrmat)) flt_data$mr <- mrmat[ut]
-      if(!is.null(pmat)) flt_data$p <- pmat[ut]
-      if(!is.null(p.adjmat)) flt_data$p.adj <- p.adjmat[ut]
-
-      return(flt_data)
-    }
-
+    
+    # Flatten the results if requested
     if(flat) {
-      result <- flt.Corr.Matrix(cormat = r, mrmat = mutR,
-                                pmat = p, p.adjmat = pa)
+      flt_list <- flatten_cor_matrix(r, if(mutualRank) mutR else NULL,
+                                     if(pvalue) p else NULL, if(pvalue && adjust != "none") pa else NULL,
+                                     rownames(r))
+      result <- data.frame(flt_list, stringsAsFactors = FALSE, row.names = NULL)
     } else {
       result <- list(r = r,
                      mr = mutR,
                      p = p,
                      p.adj = pa)
     }
-
+    
     class(result) <- c(class(result), "fcor", "influential")
     return(result)
   }
-
+  
 #=============================================================================
 #
 #    Code chunk ∞: Required global variables
