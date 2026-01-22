@@ -2901,8 +2901,60 @@ sirir <- function(graph, vertices = V(graph),
       #filtering redundant (NaN) results
       DE.mediator.table <- DE.mediator.table[stats::complete.cases(DE.mediator.table),]
 
-      if(nrow(as.data.frame(DE.mediator.table))==0) {DE.mediator.table <- NULL}
-
+      if(nrow(as.data.frame(DE.mediator.table))==0) {
+        DE.mediator.table <- NULL
+        } else {
+          # Adding the associated drivers to the table
+          
+          ## First order drivers
+          first_order_drivers <- 
+            lapply(1:nrow(DE.mediator.table), function(i) {
+              
+              first_order_assoc_drivers <-
+                Driver.table[grep(paste0(paste("^",
+                                               igraph::as_ids(igraph::neighborhood(temp.corr.graph, 
+                                                                                   nodes = rownames(DE.mediator.table)[i], 
+                                                                                   order = 1)[[1]]),
+                                               "$", sep = ""), 
+                                         collapse = "|"), 
+                                  rownames(Driver.table), value = TRUE),]
+              
+              first_order_assoc_drivers <- rownames(first_order_assoc_drivers[order(first_order_assoc_drivers$Rank),])
+              first_order_assoc_drivers
+            })
+          
+          ## Second order drivers
+          second_order_drivers <- 
+            lapply(1:nrow(DE.mediator.table), function(i) {
+              
+              second_order_assoc_drivers <-
+                Driver.table[grep(paste0(paste("^",
+                                               igraph::as_ids(igraph::neighborhood(temp.corr.graph, 
+                                                                                   nodes = rownames(DE.mediator.table)[i], 
+                                                                                   order = 2)[[1]]),
+                                               "$", sep = ""), 
+                                         collapse = "|"), 
+                                  rownames(Driver.table), value = TRUE),]
+              
+              second_order_assoc_drivers <- second_order_assoc_drivers[!(rownames(second_order_assoc_drivers) %in% first_order_drivers[[i]]),]
+              
+              second_order_assoc_drivers <- rownames(second_order_assoc_drivers[order(second_order_assoc_drivers$Rank),])
+              second_order_assoc_drivers
+            })
+          
+          ## Collapsing the associated drivers
+          first_order_drivers <- lapply(first_order_drivers, function(i) {
+            paste0(i, collapse = ", ")
+          })
+          
+          second_order_drivers <- lapply(second_order_drivers, function(i) {
+            paste0(i, collapse = ", ")
+          })
+          
+          ## Adding to the table
+          DE.mediator.table$First.order.Drivers <- unlist(first_order_drivers)
+          DE.mediator.table$Second.order.Drivers <- unlist(second_order_drivers)
+        }
     }
 
     #ProgressBar: Preparation of the DE-mediator table
@@ -2974,8 +3026,60 @@ sirir <- function(graph, vertices = V(graph),
       #filtering redundant (NaN) results
       non.DE.mediators.table <- non.DE.mediators.table[stats::complete.cases(non.DE.mediators.table),]
 
-      if(nrow(as.data.frame(non.DE.mediators.table))==0) {non.DE.mediators.table <- NULL}
-
+      if(nrow(as.data.frame(non.DE.mediators.table))==0) {
+        non.DE.mediators.table <- NULL
+      } else {
+        # Adding the associated drivers to the table
+        
+        ## First order drivers
+        first_order_drivers <- 
+          lapply(1:nrow(non.DE.mediators.table), function(i) {
+            
+            first_order_assoc_drivers <-
+              Driver.table[grep(paste0(paste("^",
+                                             igraph::as_ids(igraph::neighborhood(temp.corr.graph, 
+                                                                                 nodes = rownames(non.DE.mediators.table)[i], 
+                                                                                 order = 1)[[1]]),
+                                             "$", sep = ""), 
+                                       collapse = "|"), 
+                                rownames(Driver.table), value = TRUE),]
+            
+            first_order_assoc_drivers <- rownames(first_order_assoc_drivers[order(first_order_assoc_drivers$Rank),])
+            first_order_assoc_drivers
+          })
+        
+        ## Second order drivers
+        second_order_drivers <- 
+          lapply(1:nrow(non.DE.mediators.table), function(i) {
+            
+            second_order_assoc_drivers <-
+              Driver.table[grep(paste0(paste("^",
+                                             igraph::as_ids(igraph::neighborhood(temp.corr.graph, 
+                                                                                 nodes = rownames(non.DE.mediators.table)[i], 
+                                                                                 order = 2)[[1]]),
+                                             "$", sep = ""), 
+                                       collapse = "|"), 
+                                rownames(Driver.table), value = TRUE),]
+            
+            second_order_assoc_drivers <- second_order_assoc_drivers[!(rownames(second_order_assoc_drivers) %in% first_order_drivers[[i]]),]
+            
+            second_order_assoc_drivers <- rownames(second_order_assoc_drivers[order(second_order_assoc_drivers$Rank),])
+            second_order_assoc_drivers
+          })
+        
+        ## Collapsing the associated drivers
+        first_order_drivers <- lapply(first_order_drivers, function(i) {
+          paste0(i, collapse = ", ")
+        })
+        
+        second_order_drivers <- lapply(second_order_drivers, function(i) {
+          paste0(i, collapse = ", ")
+        })
+        
+        ## Adding to the table
+        non.DE.mediators.table$First.order.Drivers <- unlist(first_order_drivers)
+        non.DE.mediators.table$Second.order.Drivers <- unlist(second_order_drivers)
+        }
     }
 
     #ProgressBar: Preparation of the nonDE-mediator table
