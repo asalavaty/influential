@@ -22,8 +22,8 @@ Imports:
     coop,
     foreach,
     doParallel,
-    data.table,
     ggplot2,
+    Rcpp,
     BiocManager
 Suggests:
     Hmisc (>= 4.3-0),
