@@ -8,9 +8,10 @@ influential
 - Added first-order and second-order associated drivers of mediators to
   the final mediator result tables.
 
-- Implemented C++ code in the `fcor` function and consequently the
-  association analysis module of the function `exir`, resulting in a
-  highly optimized and significantly faster association analysis.
+- Implemented matrix-based linear algebra formulation and C++ code in
+  the `fcor` function and consequently the association analysis module
+  of the function `exir`, resulting in a highly optimized and
+  significantly faster association analysis.
 
 - Removed the data.table dependency, as it is no longer required.
 
