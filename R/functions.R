@@ -103,7 +103,7 @@ runShinyApp <- function(shinyApp) {
   # Loop through each package
   for (pkg in c("shiny", "shinythemes", "shinyWidgets", "shinyjs",
                 "shinycssloaders", "colourpicker", "DT", "magrittr", "janitor",
-                "ranger", "coop", "influential", "ggplot2", "igraph")) {
+                "ranger", "influential", "ggplot2", "igraph")) {
     # Check if the package namespace is available
     if (!requireNamespace(pkg, quietly = TRUE)) {
       # Install the package if it's not available
@@ -2085,7 +2085,6 @@ sirir <- function(graph, vertices = V(graph),
   #' @family integrative ranking functions
   #' @seealso \code{\link[influential]{exir.vis}},
   #' \code{\link[influential]{diff_data.assembly}},
-  #' \code{\link[coop]{pcor}},
   #' \code{\link[stats]{prcomp}},
   #' \code{\link[ranger]{ranger}},
   #' \code{\link[ranger]{importance_pvalues}}
@@ -4454,7 +4453,7 @@ sirir <- function(graph, vertices = V(graph),
   #' rather than based on their correlation coefficients or an arbitrary p-value is more efficient and accurate in inferring
   #' functional associations in systems, for example in gene regulatory networks.
   #' @param data a numeric dataframe/matrix (features on columns and samples on rows).
-  #' @param use The NA handler, as in R's cov() and cor() functions. Options are "everything", "all.obs", and "complete.obs".
+  #' @param na_to_zero logical, whether to convert NAs to 0 in the output (default) or not.
   #' @param method a character string indicating which correlation coefficient is to be computed. One of "pearson" or "spearman" (default).
   #' @param mutualRank logical, whether to calculate mutual ranks of correlations or not.
   #' @param mutualRank_mode a character string indicating whether to rank based on "signed" or "unsigned" (default) correlation values. 
@@ -4467,8 +4466,7 @@ sirir <- function(graph, vertices = V(graph),
   #' @return Depending on the input data, a dataframe or list including cor (correlation coefficients),
   #' mr (mutual ranks of correlation coefficients), p (p-values of correlation coefficients), and p.adj (adjusted p-values).
   #' @keywords fcor
-  #' @seealso \code{\link[coop]{pcor}}, \code{\link[stats]{p.adjust}},
-  #' and \code{\link[influential]{graph_from_data_frame}}
+  #' @seealso \code{\link[stats]{p.adjust}} and \code{\link[influential]{graph_from_data_frame}}
   #' @export fcor
   #' @examples
   #' \dontrun{
@@ -4478,13 +4476,23 @@ sirir <- function(graph, vertices = V(graph),
   #' }
 
   fcor <- function(data,
-                   use = "everything",
+                   na_to_zero = TRUE,
                    method = "spearman",
                    mutualRank = TRUE,
                    mutualRank_mode = "unsigned",
                    pvalue = FALSE,
                    adjust = "BH",
                    flat = TRUE) {
+    
+    #________________________________________
+    # Dealing with warnings
+    ## Save current warning setting and disable warnings
+    old_warn <- getOption("warn")
+    options(warn = -1)   # -1 = suppress all warnings
+    
+    on.exit(options(warn = old_warn), add = TRUE)  # restore when function exits
+    
+    #________________________________________
     
     # Define and compile the rank_matrix function inline
     Rcpp::cppFunction('
@@ -4600,8 +4608,60 @@ sirir <- function(graph, vertices = V(graph),
     
     #######################
     
-    # Perform correlation analysis using base::cor (faster and equivalent for pearson)
-    r <- cor(x = data, use = use, method = "pearson")
+    # Perform correlation analysis
+    
+    # Preserve original variable names and dimensions
+    variableNames <- colnames(data)
+    totalVariables <- ncol(data)
+    
+    # Identify variables with non-zero variance
+    validVariablesIdx <- which(apply(data, 2, var) > 0)
+    filteredData <- data[, validVariablesIdx, drop = FALSE]
+    
+    if (length(validVariablesIdx) == 0L) {
+      r <- matrix(
+        NA_real_,
+        nrow = totalVariables,
+        ncol = totalVariables,
+        dimnames = list(variableNames, variableNames)
+      )
+      return(r)
+    }
+    
+    # Center data (variables as rows)
+    centeredMatrix <- t(filteredData)
+    centeredMatrix <- centeredMatrix - rowMeans(centeredMatrix)
+    
+    # Compute L2 norms (sqrt of sum of squares)
+    l2Norms <- sqrt(rowSums(centeredMatrix^2))
+    
+    # Guard against numerical zero (should not happen after var filtering,
+    # but protects against floating-point edge cases)
+    l2Norms[l2Norms == 0] <- NA_real_
+    
+    # Normalize rows to unit length
+    normalizedMatrix <- centeredMatrix / l2Norms
+    
+    # Pearson correlation via cosine similarity
+    # This is BLAS-backed tcrossprod()
+    correlationMatrix <- tcrossprod(normalizedMatrix)
+    
+    # Reinsert into full matrix
+    r <- matrix(
+      NA_real_,
+      nrow = totalVariables,
+      ncol = totalVariables
+    )
+    
+    r[validVariablesIdx, validVariablesIdx] <- correlationMatrix
+    rownames(r) <- variableNames
+    colnames(r) <- variableNames
+    
+    if(na_to_zero) {
+      r[!is.finite(r)] <- 0
+    }
+
+    #######################
     
     if(pvalue) {
       
@@ -4620,6 +4680,8 @@ sirir <- function(graph, vertices = V(graph),
         pa <- stats::p.adjust(p, adjust)
       }
     }
+    
+    #######################
     
     # Calculate Mutual Rank
     if(mutualRank) {
