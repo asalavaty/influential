@@ -19,7 +19,6 @@ Imports:
     igraph,
     janitor,
     ranger,
-    coop,
     foreach,
     doParallel,
     ggplot2,
