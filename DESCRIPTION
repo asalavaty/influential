@@ -3,7 +3,7 @@ Type: Package
 Title: Identification and Classification of the Most Influential Nodes
 Language: en-US
 Version: 2.2.9.9000
-Author: Abbas (Adrian) Salavaty [aut, cre], Mirana Ramialison [ths], Peter D. Currie [ths]
+Author: Adrian Salavaty [aut, cre], Mirana Ramialison [ths], Peter D. Currie [ths]
 Maintainer: Adrian Salavaty <abbas.salavaty@gmail.com>
 Description: Contains functions for the classification and ranking of top candidate features, reconstruction of networks from
     adjacency matrices and data frames, analysis of the topology of the network 
