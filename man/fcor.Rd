@@ -6,7 +6,7 @@
 \usage{
 fcor(
   data,
-  use = "everything",
+  na_to_zero = TRUE,
   method = "spearman",
   mutualRank = TRUE,
   mutualRank_mode = "unsigned",
@@ -18,7 +18,7 @@ fcor(
 \arguments{
 \item{data}{a numeric dataframe/matrix (features on columns and samples on rows).}
 
-\item{use}{The NA handler, as in R's cov() and cor() functions. Options are "everything", "all.obs", and "complete.obs".}
+\item{na_to_zero}{logical, whether to convert NAs to 0 in the output (default) or not.}
 
 \item{method}{a character string indicating which correlation coefficient is to be computed. One of "pearson" or "spearman" (default).}
 
@@ -54,7 +54,6 @@ cor <- fcor(data = data)
 }
 }
 \seealso{
-\code{\link[coop]{pcor}}, \code{\link[stats]{p.adjust}},
-and \code{\link[influential]{graph_from_data_frame}}
+\code{\link[stats]{p.adjust}} and \code{\link[influential]{graph_from_data_frame}}
 }
 \keyword{fcor}

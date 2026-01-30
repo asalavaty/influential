@@ -63,8 +63,8 @@ Hubness.score <- hubness.score(graph = My_graph, vertices = GraphVertices,
 Other integrative ranking functions: 
 \code{\link{comp_manipulate}()},
 \code{\link{exir}()},
-\code{\link{ivi.from.indices}()},
 \code{\link{ivi}()},
+\code{\link{ivi.from.indices}()},
 \code{\link{spreading.score}()}
 }
 \concept{integrative ranking functions}

@@ -87,8 +87,8 @@ and \code{\link[igraph]{sir}} for a complete description on SIR model
 Other integrative ranking functions: 
 \code{\link{exir}()},
 \code{\link{hubness.score}()},
-\code{\link{ivi.from.indices}()},
 \code{\link{ivi}()},
+\code{\link{ivi.from.indices}()},
 \code{\link{spreading.score}()}
 }
 \concept{integrative ranking functions}

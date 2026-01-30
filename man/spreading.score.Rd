@@ -77,8 +77,8 @@ Other integrative ranking functions:
 \code{\link{comp_manipulate}()},
 \code{\link{exir}()},
 \code{\link{hubness.score}()},
-\code{\link{ivi.from.indices}()},
-\code{\link{ivi}()}
+\code{\link{ivi}()},
+\code{\link{ivi.from.indices}()}
 }
 \concept{integrative ranking functions}
 \keyword{spreading.score}

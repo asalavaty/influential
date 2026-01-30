@@ -38,8 +38,6 @@
 #' \itemize{
 #'   \item Package: influential
 #'   \item Type: Package
-#'   \item Version: 2.2.9.9000
-#'   \item Date: 01-12-2023
 #'   \item License: GPL-3
 #' }
 #'
@@ -4730,5 +4728,9 @@ sirir <- function(graph, vertices = V(graph),
                            "Y2",
                            "Z.score",
                            "s",
-                           "h"
+                           "h",
+                           "var",
+                           "Group",
+                           "flatten_cor_matrix",
+                           "rank_matrix"
                            ))

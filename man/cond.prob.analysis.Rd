@@ -42,8 +42,8 @@ My.conditional.prob <- cond.prob.analysis(data = MyData,
 }
 \seealso{
 Other centrality association assessment functions: 
-\code{\link{double.cent.assess.noRegression}()},
-\code{\link{double.cent.assess}()}
+\code{\link{double.cent.assess}()},
+\code{\link{double.cent.assess.noRegression}()}
 }
 \concept{centrality association assessment functions}
 \keyword{association_assessment}

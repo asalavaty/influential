@@ -8,6 +8,7 @@ cent_network.vis(
   graph,
   cent.metric,
   layout = "kk",
+  node.group = NULL,
   node.color = "viridis",
   node.size.min = 3,
   node.size.max = 15,
@@ -55,6 +56,8 @@ in the network \code{(V(graph))}.}
 "sphere", "random", "dh", "drl", "fr", "gem", "graphopt", "lgl", "mds", and "sugiyama"}
 (default is set to "kk"). For a complete description of different layouts and their
 underlying algorithms please refer to the function \code{\link[igraph]{layout_}}.}
+
+\item{node.group}{A vector of the same length as the number of network nodes defining the group each node of the network belongs to.}
 
 \item{node.color}{A character string indicating the colormap option to use.
 Five options are available: "magma" (or "A"), "inferno" (or "B"), "plasma"

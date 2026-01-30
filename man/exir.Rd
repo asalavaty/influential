@@ -141,7 +141,6 @@ My.exir <- exir(Desired_list = MyDesired_list,
 \seealso{
 \code{\link[influential]{exir.vis}},
 \code{\link[influential]{diff_data.assembly}},
-\code{\link[coop]{pcor}},
 \code{\link[stats]{prcomp}},
 \code{\link[ranger]{ranger}},
 \code{\link[ranger]{importance_pvalues}}
@@ -149,8 +148,8 @@ My.exir <- exir(Desired_list = MyDesired_list,
 Other integrative ranking functions: 
 \code{\link{comp_manipulate}()},
 \code{\link{hubness.score}()},
-\code{\link{ivi.from.indices}()},
 \code{\link{ivi}()},
+\code{\link{ivi.from.indices}()},
 \code{\link{spreading.score}()}
 }
 \concept{integrative ranking functions}
