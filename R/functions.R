@@ -2269,14 +2269,45 @@ sirir <- function(graph, vertices = V(graph),
 
     #b Perform random forests classification
     base::set.seed(seed = seed)
-    rf.diff.exptl <- ranger::ranger(formula = condition ~ .,
-                                    data = exptl.for.super.learn,
-                                    num.trees = num_trees,
-                                    mtry = mtry,
-                                    importance = "impurity_corrected",
-                                    write.forest = FALSE, 
-                                    num.threads = num.threads,
-                                    seed = seed)
+    rf.diff.exptl <- tryCatch(
+      
+      {
+        ranger::ranger(
+          formula = condition ~ .,
+          data = exptl.for.super.learn,
+          num.trees = num_trees,
+          mtry = mtry,
+          importance = "impurity_corrected",
+          write.forest = FALSE,
+          num.threads = num.threads,
+          seed = seed
+        )
+      },
+      
+      error = function(e) {
+        
+        if (grepl("protection stack overflow", conditionMessage(e))) {
+          
+          n_features <- ncol(exptl.for.super.learn) - 1
+          
+          stop(
+            paste0(
+              "Supervised machine learning failed due to extremely high feature dimensionality.\n\n",
+              "The input data contains ", n_features, " features (e.g. genes/proteins), which exceeds ",
+              "what the formula interface in R can safely handle on this system.\n\n",
+              "Please reduce the number of features prior to model fitting, for example by:\n",
+              "  - Applying more stringent filtering (e.g. edgeR::filterByExpr)\n",
+              "  - Selecting only highly variable features\n",
+              "  - Removing low-expression or low-variance features"
+            ),
+            call. = FALSE
+          )
+          
+        } else {
+          stop(e)  # rethrow unrelated errors
+        }
+      }
+    )
 
     base::set.seed(seed = seed)
     rf.diff.exptl.pvalue <- as.data.frame(ranger::importance_pvalues(x = rf.diff.exptl,
@@ -2697,6 +2728,10 @@ sirir <- function(graph, vertices = V(graph),
 
       #filtering redundant (NaN) results
       Driver.table <- Driver.table[stats::complete.cases(Driver.table),]
+      
+      Driver.table <- cbind("Driver" = rownames(Driver.table), Driver.table)
+      Driver.table$Z.score <- as.numeric(Driver.table$Z.score)
+      Driver.table$P.value <- as.numeric(Driver.table$P.value)
 
       if(nrow(as.data.frame(Driver.table))==0) {Driver.table <- NULL}
 
@@ -2824,6 +2859,10 @@ sirir <- function(graph, vertices = V(graph),
 
       #filtering redundant (NaN) results
       Biomarker.table <- Biomarker.table[stats::complete.cases(Biomarker.table),]
+      
+      Biomarker.table <- cbind("Biomarker" = rownames(Biomarker.table), Biomarker.table)
+      Biomarker.table$Z.score <- as.numeric(Biomarker.table$Z.score)
+      Biomarker.table$P.value <- as.numeric(Biomarker.table$P.value)
 
       if(nrow(as.data.frame(Biomarker.table))==0) {Biomarker.table <- NULL}
 
@@ -2951,6 +2990,10 @@ sirir <- function(graph, vertices = V(graph),
           ## Adding to the table
           DE.mediator.table$First.order.Drivers <- unlist(first_order_drivers)
           DE.mediator.table$Second.order.Drivers <- unlist(second_order_drivers)
+          
+          DE.mediator.table <- cbind("DE.mediator" = rownames(DE.mediator.table), DE.mediator.table)
+          DE.mediator.table$Z.score <- as.numeric(DE.mediator.table$Z.score)
+          DE.mediator.table$P.value <- as.numeric(DE.mediator.table$P.value)
         }
     }
 
@@ -3076,6 +3119,11 @@ sirir <- function(graph, vertices = V(graph),
         ## Adding to the table
         non.DE.mediators.table$First.order.Drivers <- unlist(first_order_drivers)
         non.DE.mediators.table$Second.order.Drivers <- unlist(second_order_drivers)
+        
+        non.DE.mediators.table <- cbind("non.DE.mediator" = rownames(non.DE.mediators.table), non.DE.mediators.table)
+        non.DE.mediators.table$Z.score <- as.numeric(non.DE.mediators.table$Z.score)
+        non.DE.mediators.table$P.value <- as.numeric(non.DE.mediators.table$P.value)
+        
         }
     }
 
