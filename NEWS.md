@@ -3,7 +3,7 @@ influential
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
-# influential 2.2.9.9000 (Developmental version)
+# influential 2.3.0 (CRAN version)
 
 - Added first-order and second-order associated drivers of mediators to
   the final mediator result tables.
