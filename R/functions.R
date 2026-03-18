@@ -2119,6 +2119,11 @@ sirir <- function(graph, vertices = V(graph),
     if(verbose) {
       print(unname(as.data.frame("Preparing the input data")),quote = FALSE, row.names = FALSE)
     }
+    
+    # Checking NAs in Diff_data
+    if(any(is.na(Diff_data))) {
+      stop("NA values found in the Diff_data! Please remove unnecessary columns, make sure there is no NA in any column of the Diff_data, and double check Diff_value and Sig_value arguments if you changed the columns of the Diff_data!")
+    }
 
     #make sure the input data is of data frame class
     Diff_data <- as.data.frame(Diff_data)
