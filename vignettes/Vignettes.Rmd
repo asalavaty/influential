@@ -66,7 +66,7 @@ The sections below introduce these five categories. However, if you wish not goi
 library(influential)
 ```
 
-# Fase correlation analysis
+# Fast correlation analysis
 
 Correlation (association/similarity/dissimilarity) analysis is the first required step before network reconstructions. Although R base `cor` function makes it possible to perform correlation analysis of a table, this function is notably slow in the correlation analysis of large datasets. Also, calculation of probability values is not possible for all correlations between all pairs of features simultaneously. The `fcor` function calculates Pearson/Spearman correlations between all pairs of features in a matrix/dataframe much faster than the base R cor function. It is also possible to simultaneously calculate mutual rank (MR) of correlations as well as their p-values and adjusted p-values. Additionally, this function can automatically combine and flatten the result matrices. Selecting correlated features using an MR-based threshold rather than based on their correlation coefficients or an arbitrary p-value is more efficient and accurate in inferring functional associations in systems, for example in gene regulatory networks. 
 
