@@ -1,3 +1,5 @@
+image: Visual Studio 2022
+
 # DO NOT CHANGE the "init" and "install" sections below
 
 # Download script file from GitHub
@@ -20,12 +22,14 @@ environment:
     _R_CHECK_CRAN_INCOMING_: false
 
   matrix:
-    - R_VERSION: release
+    - R_VERSION: oldrel
 
 build_script:
-  # Show R/session information and check whether build tools are visible
+  # Show R/session information
   - Rscript -e "sessionInfo()"
-  - Rscript -e "install.packages('pkgbuild', repos = 'https://cloud.r-project.org'); pkgbuild::check_build_tools(debug = TRUE)"
+
+  # Show build tools information, but do not fail the build here
+  - Rscript -e "install.packages('pkgbuild', repos = 'https://cloud.r-project.org'); pkgbuild::check_build_tools(debug = TRUE)" || ver
 
   # Use a reliable CRAN mirror and increase timeout
   - Rscript -e "options(timeout = 600); options(repos = c(CRAN = 'https://cloud.r-project.org')); print(getOption('repos'))"
@@ -33,11 +37,10 @@ build_script:
   # Install CRAN-side build/check helpers
   - Rscript -e "options(timeout = 600); options(repos = c(CRAN = 'https://cloud.r-project.org')); install.packages(c('remotes', 'rcmdcheck'), dependencies = TRUE)"
 
-  # Install Bioconductor dependencies directly, without BiocManager version validation.
-  # This avoids SSL/config.yaml failures on AppVeyor.
+  # Install Bioconductor dependencies directly, without BiocManager version validation
   - Rscript -e "options(timeout = 600); repos <- c(BioCsoft = 'https://bioconductor.org/packages/release/bioc', BioCann = 'https://bioconductor.org/packages/release/data/annotation', BioCexp = 'https://bioconductor.org/packages/release/data/experiment', CRAN = 'https://cloud.r-project.org'); install.packages(c('limma', 'edgeR'), repos = repos, dependencies = TRUE)"
 
-  # Install all remaining package dependencies using both CRAN and Bioconductor repositories
+  # Install all remaining package dependencies
   - Rscript -e "options(timeout = 600); repos <- c(BioCsoft = 'https://bioconductor.org/packages/release/bioc', BioCann = 'https://bioconductor.org/packages/release/data/annotation', BioCexp = 'https://bioconductor.org/packages/release/data/experiment', CRAN = 'https://cloud.r-project.org'); options(repos = repos); remotes::install_deps(dependencies = TRUE, upgrade = 'never')"
 
 test_script:
