@@ -28,22 +28,37 @@ build_script:
   # Show R/session information
   - Rscript -e "sessionInfo()"
 
-  # Show build tools information, but do not fail the build here
-  - Rscript -e "install.packages('pkgbuild', repos = 'https://cloud.r-project.org'); pkgbuild::check_build_tools(debug = TRUE)" || ver
+  # Install Rtools45 because R 4.5.x requires the Rtools45 toolchain.
+  # The old r-appveyor bootstrap installs Rtools40, which is not compatible with R 4.5.
+  - ps: choco install rtools -y --no-progress
 
-  # Use a reliable CRAN mirror and increase timeout
+  # Put Rtools45 first in PATH so it overrides Rtools40 added by r-appveyor.
+  - set PATH=C:\rtools45\x86_64-w64-mingw32.static.posix\bin;C:\rtools45\usr\bin;%PATH%
+
+  # Confirm compiler/toolchain
+  - where gcc
+  - gcc --version
+
+  # Check build tools, but do not stop the build here if pkgbuild is noisy
+  - Rscript -e "options(timeout = 600); install.packages('pkgbuild', repos = 'https://cloud.r-project.org'); pkgbuild::check_build_tools(debug = TRUE)" || ver
+
+  # Use reliable CRAN and Bioconductor repositories
   - Rscript -e "options(timeout = 600); options(repos = c(CRAN = 'https://cloud.r-project.org')); print(getOption('repos'))"
 
-  # Install CRAN-side build/check helpers
-  - Rscript -e "options(timeout = 600); options(repos = c(CRAN = 'https://cloud.r-project.org')); install.packages(c('remotes', 'rcmdcheck'), dependencies = TRUE)"
+  # Install build/check helpers and vignette builders
+  - Rscript -e "options(timeout = 600); install.packages(c('remotes', 'rcmdcheck', 'knitr', 'rmarkdown'), repos = 'https://cloud.r-project.org', dependencies = c('Depends', 'Imports', 'LinkingTo'))"
 
-  # Install Bioconductor dependencies directly, without BiocManager version validation
-  - Rscript -e "options(timeout = 600); repos <- c(BioCsoft = 'https://bioconductor.org/packages/release/bioc', BioCann = 'https://bioconductor.org/packages/release/data/annotation', BioCexp = 'https://bioconductor.org/packages/release/data/experiment', CRAN = 'https://cloud.r-project.org'); install.packages(c('limma', 'edgeR'), repos = repos, dependencies = TRUE)"
+  # Install Bioconductor dependency directly, without BiocManager version validation.
+  # Use required dependencies only; dependencies=TRUE would install many optional Bioconductor packages.
+  - Rscript -e "options(timeout = 600); repos <- c(BioCsoft = 'https://bioconductor.org/packages/release/bioc', BioCann = 'https://bioconductor.org/packages/release/data/annotation', BioCexp = 'https://bioconductor.org/packages/release/data/experiment', CRAN = 'https://cloud.r-project.org'); install.packages(c('limma', 'edgeR'), repos = repos, dependencies = c('Depends', 'Imports', 'LinkingTo'))"
 
-  # Install all remaining package dependencies
-  - Rscript -e "options(timeout = 600); repos <- c(BioCsoft = 'https://bioconductor.org/packages/release/bioc', BioCann = 'https://bioconductor.org/packages/release/data/annotation', BioCexp = 'https://bioconductor.org/packages/release/data/experiment', CRAN = 'https://cloud.r-project.org'); options(repos = repos); remotes::install_deps(dependencies = TRUE, upgrade = 'never')"
+  # Install remaining required package dependencies only
+  - Rscript -e "options(timeout = 600); repos <- c(BioCsoft = 'https://bioconductor.org/packages/release/bioc', BioCann = 'https://bioconductor.org/packages/release/data/annotation', BioCexp = 'https://bioconductor.org/packages/release/data/experiment', CRAN = 'https://cloud.r-project.org'); options(repos = repos); remotes::install_deps(dependencies = c('Depends', 'Imports', 'LinkingTo'), upgrade = 'never')"
 
 test_script:
+  # Ensure Rtools45 is still first in PATH during check
+  - set PATH=C:\rtools45\x86_64-w64-mingw32.static.posix\bin;C:\rtools45\usr\bin;%PATH%
+
   # Run CRAN-like check
   - Rscript -e "options(timeout = 600); repos <- c(BioCsoft = 'https://bioconductor.org/packages/release/bioc', BioCann = 'https://bioconductor.org/packages/release/data/annotation', BioCexp = 'https://bioconductor.org/packages/release/data/experiment', CRAN = 'https://cloud.r-project.org'); options(repos = repos); rcmdcheck::rcmdcheck(args = c('--no-manual', '--as-cran'), error_on = 'warning')"
 
