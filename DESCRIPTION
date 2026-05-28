@@ -2,7 +2,7 @@ Package: influential
 Type: Package
 Title: Identification and Classification of the Most Influential Nodes
 Language: en-US
-Version: 2.3.0
+Version: 2.3.1
 Authors@R:
     c(
       person("Adrian", "Salavaty",
@@ -12,22 +12,33 @@ Authors@R:
       person("Mirana", "Ramialison", role = "ths"),
       person(c("Peter", "D."), "Currie", role = "ths")
     )
-Description: Provides functions for classification and ranking of candidate
-    features, reconstruction of networks from adjacency matrices and data
-    frames, topological analysis, and calculation of centrality measures. The
-    package includes the SIRIR model, which combines leave-one-out
-    cross-validation with the conventional SIR model to rank vertex influence
-    in an unsupervised manner. Additional functions support assessment of
-    dependence and correlation between network centrality measures, as well as
-    estimation of conditional probabilities of deviation from their
-    corresponding means in opposite directions.
+Description: Provides functions for the identification, classification, and
+    ranking of influential nodes and candidate features from network and omics
+    data. The package implements the Integrated Value of Influence (IVI) for
+    integrative network centrality analysis, the SIR-based Influence Ranking
+    (SIRIR) model for unsupervised influence ranking, and the Experimental
+    data-based Integrative Ranking (ExIR) model for prioritizing candidate
+    driver, biomarker, and mediator features from experimental omics data.
+    Functions are provided for network reconstruction from adjacency matrices
+    and data frames, topological analysis, centrality calculation, assessment
+    of associations between centrality measures, and conditional probability
+    analysis. ExIR supports bulk and single-cell omics data, including matrices,
+    sparse matrices, data frames, tibbles, and Seurat objects.
 Imports:
     igraph,
+    irlba,
+    edgeR,
+    cli,
+    Matrix,
+    SeuratObject,
+    tibble,
     janitor,
     ranger,
     foreach,
     doParallel,
     ggplot2,
+    Rcpp
+LinkingTo:
     Rcpp
 Suggests:
     Hmisc (>= 4.3-0),
@@ -36,7 +47,6 @@ Suggests:
     NNS (>= 0.4.7.1),
     BiocManager,
     readr,
-    parallel,
     shiny,
     shinythemes,
     shinyWidgets,
@@ -48,6 +58,7 @@ Suggests:
     knitr,
     rmarkdown
 Depends: R (>= 4.0.0)
+Additional_repositories: https://bioconductor.org/packages/release/bioc
 URL: https://github.com/asalavaty/influential, https://asalavaty.github.io/influential/
 BugReports: https://github.com/asalavaty/influential/issues
 License: GPL-3

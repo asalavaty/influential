@@ -1,16 +1,40 @@
-citHeader("To cite influential in publications use:")
+citHeader("To cite the influential package in publications, please cite:")
 
 bibentry(
-  bibtype = "Manual",
-  entry    = "Article",
-  title    = "Integrated Value of Influence: An Integrative Method for the Identification of the Most Influential Nodes within Networks",
-  author   = "Abbas Salavaty, Mirana Ramialison, Peter D Currie",
-  journal  = "Patterns",
-  year     = "2020",
-  url      = "https://doi.org/10.1016/j.patter.2020.100052",
-  textVersion = paste("Integrated Value of Influence: An Integrative Method for the Identification of the Most Influential Nodes within Networks.
-Abbas Salavaty, Mirana Ramialison, Peter D Currie.
-Patterns 2020.08.14; doi: https://doi.org/10.1016/j.patter.2020.100052"
+  bibtype = "Article",
+  title = "Integrated Value of Influence: An Integrative Method for the Identification of the Most Influential Nodes within Networks",
+  author = c(
+    person("Adrian", "Salavaty"),
+    person("Mirana", "Ramialison"),
+    person(c("Peter", "D."), "Currie")
+  ),
+  journal = "Patterns",
+  year = "2020",
+  doi = "10.1016/j.patter.2020.100052",
+  url = "https://doi.org/10.1016/j.patter.2020.100052",
+  textVersion = paste(
+    "Salavaty A, Ramialison M, Currie PD.",
+    "Integrated Value of Influence: An Integrative Method for the Identification of the Most Influential Nodes within Networks.",
+    "Patterns. 2020; doi:10.1016/j.patter.2020.100052."
+  )
+)
 
+bibentry(
+  bibtype = "Article",
+  title = "ExIR enables prioritizing driver and biomarker genes from omics data in a reference free manner",
+  author = c(
+    person("Adrian", "Salavaty"),
+    person(c("Alon", "M."), "Douek"),
+    person("Jan", "Kaslin"),
+    person("Mirana", "Ramialison"),
+    person(c("Peter", "D."), "Currie")
+  ),
+  journal = "iScience",
+  year = "in press",
+  note = "In press",
+  textVersion = paste(
+    "Salavaty A, Douek AM, Kaslin J, Ramialison M, Currie PD.",
+    "ExIR enables prioritizing driver and biomarker genes from omics data in a reference free manner.",
+    "iScience. In press."
   )
 )

@@ -6,51 +6,92 @@
 \usage{
 fcor(
   data,
+  data2 = NULL,
   na_to_zero = TRUE,
   method = "spearman",
   mutualRank = TRUE,
   mutualRank_mode = "unsigned",
   pvalue = FALSE,
   adjust = "BH",
-  flat = TRUE
+  flat = TRUE,
+  remove_self = TRUE,
+  remove_duplicate_pairs = TRUE
 )
 }
 \arguments{
-\item{data}{a numeric dataframe/matrix (features on columns and samples on rows).}
+\item{data}{a numeric dataframe/matrix with features on columns and samples/observations on rows. If `data2` is not provided,
+correlations are calculated between all pairs of features in `data`.}
+
+\item{data2}{an optional numeric dataframe/matrix with features on columns and samples/observations on rows. If provided,
+correlations are calculated between all features in `data` and all features in `data2`. `data` and `data2` must have the same
+number of rows, and the rows must correspond to the same samples/observations in the same order. Default is `NULL`.}
 
 \item{na_to_zero}{logical, whether to convert NAs to 0 in the output (default) or not.}
 
-\item{method}{a character string indicating which correlation coefficient is to be computed. One of "pearson" or "spearman" (default).}
+\item{method}{a character string indicating which correlation coefficient is to be computed. One of `"pearson"` or `"spearman"` (default).}
 
 \item{mutualRank}{logical, whether to calculate mutual ranks of correlations or not.}
 
-\item{mutualRank_mode}{a character string indicating whether to rank based on "signed" or "unsigned" (default) correlation values. 
-In the "unsigned" mode, only the level of a correlation value is important and not its sign (the function ranks the absolutes of correlations). 
-Options are "unsigned", and "signed".}
+\item{mutualRank_mode}{a character string indicating whether to rank based on `"signed"` or `"unsigned"` (default) correlation values.
+In the `"unsigned"` mode, only the level of a correlation value is important and not its sign; therefore, the function ranks the absolute
+values of correlations. Options are `"unsigned"` and `"signed"`.}
 
 \item{pvalue}{logical, whether to calculate p-values of correlations or not.}
 
-\item{adjust}{p-value correction method (when pvalue = TRUE), a character string including any of "BH" (default),
-"bonferroni", "holm", "hochberg", "hommel", or "none".}
+\item{adjust}{p-value correction method when `pvalue = TRUE`, a character string including any of `"BH"` (default),
+`"bonferroni"`, `"holm"`, `"hochberg"`, `"hommel"`, or `"none"`.}
 
 \item{flat}{logical, whether to combine and flatten the result matrices or not.}
+
+\item{remove_self}{logical, whether to remove self-correlations from the flattened output when `data2` is provided. This is useful when
+`data2` contains some or all of the same features as `data`. Default is `TRUE`.}
+
+\item{remove_duplicate_pairs}{logical, whether to remove duplicate undirected feature pairs from the flattened output when `data2` is provided.
+This is useful when `data2` contains the same features as `data`, because pairs such as `geneA-geneB` and `geneB-geneA` may otherwise both
+be returned. Default is `TRUE`.}
 }
 \value{
-Depending on the input data, a dataframe or list including cor (correlation coefficients),
-mr (mutual ranks of correlation coefficients), p (p-values of correlation coefficients), and p.adj (adjusted p-values).
+Depending on the input data and the value of `flat`, a dataframe or list including `cor` correlation coefficients,
+`mr` mutual ranks of correlation coefficients, `p` p-values of correlation coefficients, and `p.adj` adjusted p-values.
+If `data2` is not provided and `flat = TRUE`, the flattened output contains the upper triangle of the all-pairs correlation matrix.
+If `data2` is provided and `flat = TRUE`, the flattened output contains feature pairs between `data` and `data2`.
 }
 \description{
 This function calculates Pearson/Spearman correlations between all pairs of features in a matrix/dataframe much faster than the base R cor function.
+It can also calculate correlations between all pairs of features from two input matrices/dataframes when `data2` is provided.
 It is also possible to simultaneously calculate mutual rank (MR) of correlations as well as their p-values and adjusted p-values.
 Additionally, this function can automatically combine and flatten the result matrices. Selecting correlated features using an MR-based threshold
 rather than based on their correlation coefficients or an arbitrary p-value is more efficient and accurate in inferring
 functional associations in systems, for example in gene regulatory networks.
 }
+\details{
+When `data2 = NULL`, the function performs the standard all-pairs correlation analysis among the features of `data`.
+When `data2` is provided, the function performs a rectangular correlation analysis between the features of `data` and the features of `data2`.
+
+For Spearman correlation with `data2`, the two input matrices are internally combined before rank transformation so that feature-wise ranks
+are calculated consistently across the same samples/observations.
+
+When `mutualRank = TRUE` and `data2` is provided, the calculated MR values are based on the rectangular correlation space between `data`
+and `data2`. Therefore, these MR values are not necessarily identical to MR values obtained from a full all-pairs correlation matrix followed
+by post hoc filtering.
+}
 \examples{
 \dontrun{
 set.seed(1234)
+
+# All-pairs correlation among features
 data <- datasets::attitude
 cor <- fcor(data = data)
+
+# Correlation between two sets of features
+data1 <- mtcars[, 1:4]
+data2 <- mtcars[, 5:11]
+cor_rect <- fcor(data = data1, data2 = data2)
+
+# Correlation between selected features and all features
+selected_data <- mtcars[, 1:4]
+all_data <- mtcars
+cor_selected_all <- fcor(data = selected_data, data2 = all_data)
 }
 }
 \seealso{

@@ -45,9 +45,8 @@ Check out [**our paper**](https://doi.org/10.1016/j.patter.2020.100052)
 for a more complete description of the IVI formula and all of its
 underpinning methods and analyses.
 
-Also, read our
-[**preprint**](https://www.biorxiv.org/content/10.1101/2022.10.03.510585v1.abstract)
-on the ExIR model and its validations.
+The **Experimental data-based Integrative Ranking (ExIR)** model is
+described in our [**iScience article**](https://asalavaty.com/).
 
 ## Author
 
@@ -116,15 +115,25 @@ influential::runShinyApp("ExIR")
 
 ## How to cite `influential`
 
-To cite `influential`, please cite its associated paper:
+If you use `influential`, please cite the relevant associated
+publication(s).
 
-- Integrated Value of Influence: An Integrative Method for the
-  Identification of the Most Influential Nodes within Networks. Adrian
-  Salavaty, Mirana Ramialison, Peter D Currie. *Patterns*. 2020.08.14
-  ([Read online](https://doi.org/10.1016/j.patter.2020.100052)).
+For the **Integrated Value of Influence (IVI)** and network influence
+analysis, please cite:
 
-You can also refer to the package’s citation information using the
-`citation()` function.
+- Salavaty A, Ramialison M, Currie PD. Integrated Value of Influence: An
+  Integrative Method for the Identification of the Most Influential
+  Nodes within Networks. *Patterns*. 2020.08.14. [Read
+  online](https://doi.org/10.1016/j.patter.2020.100052).
+
+For the **Experimental data-based Integrative Ranking (ExIR)** model,
+please cite:
+
+- Salavaty A, Douek AM, Kaslin J, Ramialison M, Currie PD. ExIR enables
+  prioritizing driver and biomarker genes from omics data in a reference
+  free manner. *iScience*. In press.
+
+You can also access the package citation information from within R:
 
 ``` r
 citation("influential")

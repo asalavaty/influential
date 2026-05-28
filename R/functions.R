@@ -60,6 +60,9 @@
 #' }
 #'
 #' \strong{Note:} Adopted algorithms and sources are referenced in function document.
+#'
+#' @useDynLib influential, .registration = TRUE
+#' @importFrom Rcpp sourceCpp
 "_PACKAGE"
 
 # The following block is used by usethis to automatically manage
@@ -67,6 +70,60 @@
 ## usethis namespace: start
 ## usethis namespace: end
 NULL
+
+#=============================================================================
+#
+#    Code chunk 0.25: shared helper functions
+#
+#=============================================================================
+
+  .get_vertex_indices <- function(graph, vertices) {
+    
+    graph_names <- igraph::as_ids(igraph::V(graph))
+    
+    if(inherits(vertices, "igraph.vs")) {
+      vertex_names <- igraph::as_ids(vertices)
+    } else {
+      vertex_names <- as.character(vertices)
+    }
+    
+    stats::na.omit(match(vertex_names, graph_names))
+  }
+  
+  
+  .get_vertex_names <- function(graph, vertices) {
+    
+    if(inherits(vertices, "igraph.vs")) {
+      as.character(igraph::as_ids(vertices))
+    } else {
+      as.character(vertices)
+    }
+  }
+  
+  
+  .make_binary_neighbor_graph <- function(graph) {
+    
+    # Neighbourhood membership in igraph is based on reachable adjacent vertices,
+    # not edge multiplicity. Therefore, this simplified graph is used only for
+    # neighbour membership / adjacency operations.
+    igraph::simplify(
+      graph,
+      remove.multiple = TRUE,
+      remove.loops = TRUE
+    )
+  }
+  
+  
+  .range_normalize_1_100 <- function(x) {
+    
+    x[!is.finite(x)] <- 0
+    
+    if(length(x) > 1 && any(x > 0) && length(unique(x)) > 1) {
+      x <- 1 + (((x - min(x)) * (100 - 1)) / (max(x) - min(x)))
+    }
+    
+    x
+  }
 
 #=============================================================================
 #
@@ -169,59 +226,76 @@ runShinyApp <- function(shinyApp) {
 #'                                            vertices = GraphVertices,
 #'                                            mode = "all")
 #'                                            }
-neighborhood.connectivity <- function(graph, vertices = V(graph), mode = "all", verbose = FALSE) {
-
-  # Getting the names of vertices
-  if(inherits(vertices, "igraph.vs")) {
-    node.names <- as.character(igraph::as_ids(vertices))
-  } else {
-    node.names <- as.character(vertices)
-  }
-
-  if(verbose) {
-    cat("Getting the first neighbors of each node\n")
-  }
-  # Getting the first neighbors of each node
-  node.neighbors <- sapply(as.list(node.names),
-                           FUN = function(i) as.character(igraph::as_ids(igraph::neighbors(graph = graph,
-                                                                                           v = i,
-                                                                                           mode = mode))))
-  if(verbose) {
-    cat("Getting the neighborhood size of each node\n")
-  }
-  # Getting the neighborhood size of each node
-    first.neighbors.size <- sapply(node.neighbors,
-                                   function(s) igraph::neighborhood.size(graph = graph,
-                                                                         nodes = s,
-                                                                         mode = mode,
-                                                                         order = 1) - 1)
-
+  neighborhood.connectivity <- function(graph, vertices = V(graph),
+                                        mode = "all", verbose = FALSE) {
+    
+    # Getting the names of vertices
+    if(inherits(vertices, "igraph.vs")) {
+      node.names <- as.character(igraph::as_ids(vertices))
+    } else {
+      node.names <- as.character(vertices)
+    }
+    
+    graph_vertex_names <- igraph::as_ids(igraph::V(graph))
+    
     if(verbose) {
-      cat("Calculating the neighborhood connectivity of nodes\n")
+      message("Precomputing neighborhood sizes for all nodes")
     }
-  # Calculation of neighborhood connectivity
-
-  if(length(vertices) == 1) {
-    first.neighbors.size.sum <- sum(first.neighbors.size)
-    temp.nc <- first.neighbors.size.sum/nrow(node.neighbors)
-  } else {
-
-    first.neighbors.size.sum <- sapply(first.neighbors.size, sum)
-    temp.nc <- vector(mode = "numeric", length = length(vertices))
-
-    for (i in 1:length(vertices)) {
-      temp.nc[i] <- first.neighbors.size.sum[i]/length(node.neighbors[[i]])
+    
+    all_neighborhood_size <- igraph::ego_size(
+      graph = graph,
+      nodes = igraph::V(graph),
+      mode = mode,
+      order = 1
+    ) - 1
+    
+    names(all_neighborhood_size) <- graph_vertex_names
+    
+    if(verbose) {
+      message("Getting the first neighbors of selected nodes")
     }
+    
+    # Faster igraph::neighbors() semantics.
+    node.neighbors <- lapply(
+      node.names,
+      function(i) {
+        as.character(
+          igraph::as_ids(
+            igraph::neighbors(
+              graph = graph,
+              v = i,
+              mode = mode
+            )
+          )
+        )
+      }
+    )
+    
+    names(node.neighbors) <- node.names
+    
+    if(verbose) {
+      message("Calculating the neighborhood connectivity of nodes")
+    }
+    
+    temp.nc <- vapply(
+      node.neighbors,
+      function(nbrs) {
+        
+        if(length(nbrs) == 0) {
+          return(0)
+        }
+        
+        mean(all_neighborhood_size[nbrs], na.rm = TRUE)
+      },
+      numeric(1)
+    )
+    
+    temp.nc[!is.finite(temp.nc)] <- 0
+    names(temp.nc) <- node.names
+    
+    return(temp.nc)
   }
-
-  temp.nc[c(which(is.nan(temp.nc)), which(is.na(temp.nc)))] <- 0
-
-  names(temp.nc) <- node.names
-
-  return(temp.nc)
-
-}
-
+  
 #=============================================================================
 #
 #    Code chunk 2: Calculation of H-index
@@ -256,58 +330,86 @@ neighborhood.connectivity <- function(graph, vertices = V(graph), mode = "all", 
 #' }
 #' @importFrom utils tail
   h_index <- function(graph, vertices = V(graph), mode = "all", verbose = FALSE) {
-
+    
     if(verbose) {
-      cat("Getting the first neighbors of each node\n")
+      message("Precomputing neighborhood sizes of all nodes")
     }
-  # Getting the first neighbors of each node
-  first.neighbors <- igraph::neighborhood(graph, nodes = vertices, mode = mode)
-
-  if(verbose) {
-    cat("Getting the neighbors of each node\n")
-  }
-  # Getting the neighbors of each node
-  node.neighbors <- sapply(first.neighbors, function(n) rownames(as.matrix(n[[]][-1])), simplify = F)
-
-  if(verbose) {
-    cat("Getting the neighborhood size of each node\n")
-  }
-  # Getting the neighborhood size of each node
-  first.neighbors.size <- lapply(node.neighbors, function(s) igraph::neighborhood.size(graph, s,
-                                                                               mode = mode, order = 1) - 1)
-  if(verbose) {
-    cat("Calculating the H-index\n")
-  }
-  # Calculating the H-index
-  hindex <- vector(mode = "integer", length = length(vertices))
-
-  for (i in 1:length(vertices)) {
-
-    temp.neighbors.size <- unlist(first.neighbors.size[i])
-
-    temp.neighbors.size <- temp.neighbors.size[order(temp.neighbors.size,
-                                                     decreasing = TRUE)]
-    if(length(temp.neighbors.size) == 0) { hindex[i] <- 0
-
-    } else if(max(temp.neighbors.size) == 0) {
-      hindex[i] <- 0
-    } else {hindex[i] <- utils::tail(which(temp.neighbors.size >=
-                                      seq_along(temp.neighbors.size)), 1)
+    
+    # Names of all graph vertices
+    graph_node_names <- as.character(igraph::as_ids(igraph::V(graph)))
+    
+    # Precompute the ego_size(order = 1) - 1
+    all_neighbor_sizes <- igraph::ego_size(
+      graph = graph,
+      nodes = igraph::V(graph),
+      mode = mode,
+      order = 1
+    ) - 1
+    
+    names(all_neighbor_sizes) <- graph_node_names
+    
+    if(verbose) {
+      message("Getting the first neighbors of selected nodes")
     }
-
-    rm(temp.neighbors.size)
+    
+    first.neighbors <- igraph::neighborhood(
+      graph = graph,
+      nodes = vertices,
+      mode = mode
+    )
+    
+    if(verbose) {
+      message("Calculating the H-index")
+    }
+    
+    # internal helper
+    .calc_h_index <- function(x) {
+      
+      x <- as.numeric(x)
+      x <- x[is.finite(x)]
+      
+      if(length(x) == 0) {
+        return(0L)
+      }
+      
+      if(max(x) == 0) {
+        return(0L)
+      }
+      
+      x <- sort(x, decreasing = TRUE)
+      
+      as.integer(utils::tail(which(x >= seq_along(x)), 1))
+    }
+    
+    hindex <- vapply(
+      first.neighbors,
+      function(nbrs) {
+        
+        nbr_names <- as.character(igraph::as_ids(nbrs[-1]))
+        
+        if(length(nbr_names) == 0) {
+          return(0L)
+        }
+        
+        temp.neighbors.size <- all_neighbor_sizes[nbr_names]
+        
+        .calc_h_index(temp.neighbors.size)
+      },
+      integer(1)
+    )
+    
+    # Getting the names of vertices
+    if(inherits(vertices, "igraph.vs")) {
+      node.names <- as.character(igraph::as_ids(vertices))
+    } else {
+      node.names <- as.character(vertices)
+    }
+    
+    names(hindex) <- node.names
+    
+    return(hindex)
   }
-
-  # Getting the names of vertices
-  if(inherits(vertices, "igraph.vs")) {
-    node.names <- as.character(igraph::as_ids(vertices))
-  } else {
-    node.names <- as.character(vertices)
-  }
-  names(hindex) <- node.names
-  return(hindex)
-  }
-
+  
   #=============================================================================
   #
   #    Code chunk 3: Calculation of local H-index (LH-index)
@@ -343,31 +445,50 @@ neighborhood.connectivity <- function(graph, vertices = V(graph), mode = "all", 
   #' lh.index <- lh_index(graph = My_graph, vertices = GraphVertices, mode = "all", ncores = 1)
   #' }
   #' @importFrom foreach %dopar%
-  lh_index <- function(graph, vertices = V(graph), mode = "all", ncores = "default", verbose = FALSE) {
-    
-    # Make clusters for parallel processing
-    cl <- parallel::makeCluster(ifelse(ncores == "default", parallel::detectCores() - 1, ncores))
-    doParallel::registerDoParallel(cl)
-
-    if(verbose) {
-      cat("Getting the first neighbors of each node\n")
-    }
-    # Getting the first neighbors of each node
-    first.neighbors <- igraph::neighborhood(graph, nodes = vertices, mode = mode)
-
-    if(verbose) {
-      cat("Calculating H-index\n")
-    }
-    # Calculation of local H-index (LH-index)
-    lhindex <- foreach::foreach(i = 1:length(vertices), .combine = "c", .multicombine = TRUE, 
-                                .packages = c("igraph", "influential")) %dopar% {
-                                  sum(h_index(graph = graph, vertices = unlist(first.neighbors[i]), mode = mode, verbose = FALSE))
-                                }
-    parallel::stopCluster(cl)
+  lh_index <- function(graph, vertices = V(graph), mode = "all",
+                       ncores = "default", verbose = FALSE) {
     
     if(verbose) {
-      cat("Preparing the LH-index\n")
+      message("Getting the first neighbors of each node")
     }
+    
+    # Getting the first neighbors of each node.
+    # This preserves the original igraph::neighborhood() semantics.
+    first.neighbors <- igraph::neighborhood(
+      graph = graph,
+      nodes = vertices,
+      mode = mode
+    )
+    
+    if(verbose) {
+      message("Calculating H-index for all graph nodes once")
+    }
+    
+    # Original function repeatedly called h_index() on neighbourhoods.
+    # To preserve results while avoiding repeated recomputation, calculate h_index
+    # once for all graph vertices, then sum within each neighbourhood.
+    all_h_index <- h_index(
+      graph = graph,
+      vertices = igraph::V(graph),
+      mode = mode,
+      verbose = FALSE
+    )
+    
+    graph_vertex_names <- igraph::as_ids(igraph::V(graph))
+    names(all_h_index) <- graph_vertex_names
+    
+    if(verbose) {
+      message("Calculating local H-index")
+    }
+    
+    lhindex <- vapply(
+      first.neighbors,
+      function(vs) {
+        ids <- igraph::as_ids(vs)
+        sum(all_h_index[ids], na.rm = TRUE)
+      },
+      numeric(1)
+    )
     
     # Getting the names of vertices
     if(inherits(vertices, "igraph.vs")) {
@@ -375,10 +496,12 @@ neighborhood.connectivity <- function(graph, vertices = V(graph), mode = "all", 
     } else {
       node.names <- as.character(vertices)
     }
+    
     names(lhindex) <- node.names
+    
     return(lhindex)
   }
-
+  
   #=============================================================================
   #
   #    Code chunk 4: Calculation of Collective Influence (CI)
@@ -421,60 +544,54 @@ neighborhood.connectivity <- function(graph, vertices = V(graph), mode = "all", 
   #' GraphVertices <- V(My_graph)
   #' ci <- collective.influence(graph = My_graph, vertices = GraphVertices, mode = "all", d=3)
   #' }
-  collective.influence <- function(graph, vertices = V(graph), mode = "all", d=3, verbose = FALSE) {
-
-    ci <- vector(mode="numeric", length=length(vertices))  # collective influence output
-
-    if(verbose) {
-      cat("Calculating the reduced degrees of nodes\n")
+  collective.influence <- function(graph, vertices = V(graph),
+                                   mode = "all", d = 3, verbose = FALSE) {
+    
+    vertices.index <- .get_vertex_indices(graph, vertices)
+    graph_names <- igraph::as_ids(igraph::V(graph))
+    
+    if(length(vertices.index) == 0) {
+      return(numeric(0))
     }
-    
-    # Calculate the reduced degree of nodes
-    reduced.degrees <- igraph::degree(graph = graph,
-                              v = vertices,
-                              mode = mode) - 1
-
-    if(verbose) {
-      cat("Identifing only neighbors at distance d\n")
-    }
-    
-    # Identify only neighbors at distance d
-    nodes.at.distance <- igraph::neighborhood(graph = graph, nodes = vertices,
-                                              mode = mode, order=d, mindist=d)
-    
-    # Get the non-duplicated vector of node names of neighbors at distance d
-    nodes.at.distance_names <- base::unique(base::unlist(base::sapply(nodes.at.distance, igraph::as_ids)))
     
     if(verbose) {
-      cat("Calculating the reduced degrees of neighbors at distance d\n")
+      message("Calculating collective influence")
     }
     
-    # Calculate the reduced degree of neighbors at distance d
-    nodes.at.distance_reduced.degrees <- igraph::degree(graph = graph,
-                                                v = nodes.at.distance_names,
-                                                mode = mode) - 1
+    # Reduced degrees for all nodes
+    reduced_degrees_all <- igraph::degree(
+      graph = graph,
+      v = igraph::V(graph),
+      mode = mode
+    ) - 1
     
-    if(verbose) {
-      cat("Calculating the the Collective Influence\n")
-    }
+    names(reduced_degrees_all) <- graph_names
     
-    # Calculate the collective influence
-    for (i in 1:length(nodes.at.distance)) {
-      rd <- reduced.degrees[i]  # i is the index of the node
-      rd.neighbours <- sum(nodes.at.distance_reduced.degrees[igraph::as_ids(nodes.at.distance[[i]])]) # calculate the cumulative reduced degree of neighbors
-      ci[i] <- rd * rd.neighbours
-    }
-
-    # Getting the names of vertices
-    if(inherits(vertices, "igraph.vs")) {
-      node.names <- as.character(igraph::as_ids(vertices))
-    } else {
-      node.names <- as.character(vertices)
-    }
-    names(ci) <- node.names
-    return(ci)
+    # Nodes exactly at distance d
+    nodes.at.distance <- igraph::neighborhood(
+      graph = graph,
+      nodes = graph_names[vertices.index],
+      mode = mode,
+      order = d,
+      mindist = d
+    )
+    
+    distance_reduced_degree_sum <- vapply(
+      nodes.at.distance,
+      function(vs) {
+        ids <- igraph::as_ids(vs)
+        sum(reduced_degrees_all[ids], na.rm = TRUE)
+      },
+      numeric(1)
+    )
+    
+    ci <- reduced_degrees_all[graph_names[vertices.index]] *
+      distance_reduced_degree_sum
+    
+    names(ci) <- graph_names[vertices.index]
+    ci
   }
-
+  
   #=============================================================================
   #
   #    Code chunk 5: Calculation of ClusterRank
@@ -512,77 +629,174 @@ neighborhood.connectivity <- function(graph, vertices = V(graph), mode = "all", 
   #' }
   #' @importFrom foreach %dopar%
   clusterRank <- function(graph, vids = V(graph),
-                        directed = FALSE, loops = TRUE, ncores = "default", verbose = FALSE) {
+                          directed = FALSE, loops = TRUE,
+                          ncores = "default", verbose = FALSE) {
     
-    # Make clusters for parallel processing
-    cl <- parallel::makeCluster(ifelse(ncores == "default", parallel::detectCores() - 1, ncores))
-    doParallel::registerDoParallel(cl)
-
-  vertex.transitivity <- vector(mode = "numeric")
-  
-  if(verbose) {
-    cat("Calculating the transitivity of nodes\n")
-  }
-
-  if (directed) {
-    cl.Rank.mode <- "out"
-    foreach::foreach(i = V(graph), .combine = c) %dopar% {
-      vertex.neighborhood <- igraph::neighborhood(graph = graph,
-                                                  order = 1, nodes = i,
-                                                  mode = cl.Rank.mode)[[1]][-1]
-      if (length(vertex.neighborhood) < 2) {
-        NaN
-      } else {
-        indc.subgraph <- igraph::induced.subgraph(graph = graph, vertex.neighborhood)
-        igraph::ecount(indc.subgraph)/(igraph::vcount(indc.subgraph)*(igraph::vcount(indc.subgraph)-1))
+    # Get selected vertex indices
+    if(inherits(vids, "igraph.vs")) {
+      vertices.index <- stats::na.omit(match(vids, igraph::V(graph)))
+    } else {
+      vertices.index <- stats::na.omit(match(vids, igraph::as_ids(igraph::V(graph))))
+    }
+    
+    if(length(vertices.index) == 0) {
+      return(numeric(0))
+    }
+    
+    graph_names <- igraph::as_ids(igraph::V(graph))
+    
+    # -------------------------------------------------------------------------
+    # Directed graph
+    # -------------------------------------------------------------------------
+    if(directed) {
+      
+      n_cores <- ifelse(ncores == "default", parallel::detectCores() - 1, ncores)
+      n_cores <- max(1L, as.integer(n_cores))
+      
+      cl <- parallel::makeCluster(n_cores)
+      doParallel::registerDoParallel(cl)
+      on.exit(parallel::stopCluster(cl), add = TRUE)
+      
+      vertex.transitivity <- vector(mode = "numeric")
+      
+      if(verbose) {
+        message("Calculating the transitivity of nodes")
       }
-    } -> vertex.transitivity
-  } else {
+      
+      cl.Rank.mode <- "out"
+      
+      vertex.transitivity <- foreach::foreach(
+        i = igraph::V(graph),
+        .combine = c,
+        .packages = "igraph"
+      ) %dopar% {
+        vertex.neighborhood <- igraph::neighborhood(
+          graph = graph,
+          order = 1,
+          nodes = i,
+          mode = cl.Rank.mode
+        )[[1]][-1]
+        
+        if(length(vertex.neighborhood) < 2) {
+          NaN
+        } else {
+          indc.subgraph <- igraph::induced.subgraph(graph, vertex.neighborhood)
+          igraph::ecount(indc.subgraph) /
+            (igraph::vcount(indc.subgraph) * (igraph::vcount(indc.subgraph) - 1))
+        }
+      }
+      
+      if(verbose) {
+        message("Getting the neighborhood of selected nodes and calculating the ClusterRank")
+      }
+      
+      cl.Rank <- foreach::foreach(
+        i = igraph::V(graph)[vertices.index],
+        .combine = c,
+        .multicombine = TRUE,
+        .packages = "igraph"
+      ) %dopar% {
+        if(is.nan(vertex.transitivity[i])) {
+          NaN
+        } else {
+          selected.v.neighborhood <- igraph::neighborhood(
+            graph = graph,
+            order = 1,
+            nodes = i,
+            mode = cl.Rank.mode
+          )[[1]][-1]
+          
+          temp.cl.Rank <- 0
+          
+          for(j in selected.v.neighborhood) {
+            temp.cl.Rank <- temp.cl.Rank +
+              igraph::degree(
+                graph = graph,
+                v = j,
+                mode = cl.Rank.mode,
+                loops = loops
+              ) + 1
+          }
+          
+          temp.cl.Rank * vertex.transitivity[i]
+        }
+      }
+      
+      if(igraph::is_named(graph)) {
+        names(cl.Rank) <- graph_names[vertices.index]
+      }
+      
+      return(cl.Rank)
+    }
+    
+    # -------------------------------------------------------------------------
+    # Undirected graph
+    # -------------------------------------------------------------------------
+    
     cl.Rank.mode <- "all"
-    vertex.transitivity <- igraph::transitivity(graph = graph, type = "local")
-  }
-  parallel::stopCluster(cl)
-
-  if(inherits(vids, "igraph.vs")) {
-    vertices.index <- stats::na.omit(match(vids, V(graph)))
-  } else {
-    vertices.index <- stats::na.omit(match(vids, igraph::as_ids(V(graph))))
+    
+    if(verbose) {
+      message("Calculating the transitivity of nodes")
+    }
+    
+    vertex.transitivity <- igraph::transitivity(
+      graph = graph,
+      type = "local"
+    )
+    
+    if(verbose) {
+      message("Precomputing node degrees")
+    }
+    
+    degree_all <- igraph::degree(
+      graph = graph,
+      v = igraph::V(graph),
+      mode = cl.Rank.mode,
+      loops = loops
+    )
+    
+    if(verbose) {
+      message("Getting the neighborhood of selected nodes and calculating the ClusterRank")
+    }
+    
+    selected_neighborhoods <- igraph::neighborhood(
+      graph = graph,
+      order = 1,
+      nodes = igraph::V(graph)[vertices.index],
+      mode = cl.Rank.mode
+    )
+    
+    cl.Rank <- vapply(
+      seq_along(selected_neighborhoods),
+      function(k) {
+        
+        v_index <- vertices.index[k]
+        
+        if(is.nan(vertex.transitivity[v_index])) {
+          return(NaN)
+        }
+        
+        selected.v.neighborhood <- selected_neighborhoods[[k]][-1]
+        
+        if(length(selected.v.neighborhood) == 0) {
+          temp.cl.Rank <- 0
+        } else {
+          neigh_idx <- as.integer(selected.v.neighborhood)
+          temp.cl.Rank <- sum(degree_all[neigh_idx] + 1)
+        }
+        
+        temp.cl.Rank * vertex.transitivity[v_index]
+      },
+      numeric(1)
+    )
+    
+    if(igraph::is_named(graph)) {
+      names(cl.Rank) <- graph_names[vertices.index]
+    }
+    
+    return(cl.Rank)
   }
   
-  cl <- parallel::makeCluster(ifelse(ncores == "default", parallel::detectCores() - 1, ncores))
-  doParallel::registerDoParallel(cl)
-
-  if(verbose) {
-    cat("Getting the neighborhood of selected nodes and calculating the ClusterRank\n")
-  }
-
-  cl.Rank <- foreach::foreach(i = V(graph)[vertices.index], .combine = c, .multicombine = TRUE,
-                              .packages = "igraph") %dopar% {
-                                if (is.nan(vertex.transitivity[i])) {
-                                  NaN
-                                } else {
-                                  selected.v.neighborhood <- igraph::neighborhood(graph = graph,
-                                                                                  order = 1, nodes = i,
-                                                                                  mode = cl.Rank.mode)[[1]][-1]
-                                  temp.cl.Rank <- 0
-                                  for (j in selected.v.neighborhood) {
-                                    temp.cl.Rank <- temp.cl.Rank + igraph::degree(graph = graph,
-                                                                                  v = j, mode = cl.Rank.mode,
-                                                                                  loops = loops) + 1
-                                  }
-                                  temp.cl.Rank * vertex.transitivity[i]
-                                }
-                              }
-  
-  parallel::stopCluster(cl)
-
-  if (igraph::is.named(graph)) {
-    names(cl.Rank) <- igraph::V(graph)$name[vertices.index]
-  }
-
-  return(cl.Rank)
-  }
-
 #=============================================================================
 #
 #    Code chunk 6: Calculation of the conditional probability of deviation from
@@ -1374,153 +1588,163 @@ ivi.from.indices <- function(DC, CR, LH_index, NC, BC, CI, scale = "range", verb
 #'                        weights = NULL, directed = FALSE, mode = "all",
 #'                        loops = TRUE, d = 3, scale = "range")
 #' }
-ivi <- function(graph, vertices = V(graph), weights = NULL, directed = FALSE,
-                mode = "all", loops = TRUE, d = 3, scale = "range", ncores = "default", verbose = FALSE) {
-
-  #Calculation of required centrality measures
-  
-  if(verbose) {
-    message("Calculating the Degree Centrality of Nodes\n")
-  }
-
-  DC <- igraph::degree(graph = graph, v = vertices, mode = mode, loops = loops)
-  
-  if(verbose) {
-    message("Calculating the ClusterRank of Nodes\n")
-  }
-  
-  CR <- clusterRank(graph = graph, vids = vertices, directed = directed, loops = loops, ncores = ncores, verbose = verbose)
-  
-  if(verbose) {
-    message("Calculating the Local H-index of Nodes\n")
-  }
-  
-  LH_index <- lh_index(graph = graph, vertices = vertices, mode = mode, ncores = ncores, verbose = verbose)
-  
-  if(verbose) {
-    message("Calculating the Neighborhood Connectivity of Nodes\n")
-  }
-  
-  NC <- neighborhood.connectivity(graph = graph, vertices = vertices, mode = mode, verbose = verbose)
-  
-  if(verbose) {
-    message("Calculating the Betweenness Centrality of Nodes\n")
-  }
-  
-  BC <- betweenness(graph = graph, v = vertices, directed = directed, weights = weights)
-  
-  if(verbose) {
-    message("Calculating the Collective Influence of Nodes\n")
-  }
-  
-  CI <- collective.influence(graph = graph, vertices = vertices, mode = mode, d = d, verbose = verbose)
-
-  #Generating temporary measures
-
-  temp.DC <- DC
-  temp.CR <- CR
-  temp.LH_index <- LH_index
-  temp.NC <- unlist(NC)
-  temp.BC <- BC
-  temp.CI <- CI
-
-  #Removing the NAN and NA values
-
-  temp.DC[c(which(is.nan(temp.DC)), which(is.na(temp.DC)))] <- 0
-  temp.CR[c(which(is.nan(temp.CR)), which(is.na(temp.CR)))] <- 0
-  temp.LH_index[c(which(is.nan(temp.LH_index)), which(is.na(temp.LH_index)))] <- 0
-  temp.NC[c(which(is.nan(temp.NC)), which(is.na(temp.NC)))] <- 0
-  temp.BC[c(which(is.nan(temp.BC)), which(is.na(temp.BC)))] <- 0
-  temp.CI[c(which(is.nan(temp.CI)), which(is.na(temp.CI)))] <- 0
-  
-  if(verbose) {
-    cat("1-100 normalization of centrality measures\n")
-  }
-
-  #1-100 normalization of centrality measures
-
-  if(length(temp.DC) > 1 & any(temp.DC > 0)) {
-    temp.DC <- 1+(((temp.DC-min(temp.DC))*(100-1))/(max(temp.DC)-min(temp.DC)))
-  }
-  
-  if(length(temp.CR) > 1 & any(temp.CR > 0)) {
-    temp.CR <- 1+(((temp.CR-min(temp.CR))*(100-1))/(max(temp.CR)-min(temp.CR)))
-  }
-  
-  if(length(temp.LH_index) > 1 & any(temp.LH_index > 0)) {
-    temp.LH_index <- 1+(((temp.LH_index-min(temp.LH_index))*(100-1))/(max(temp.LH_index)-min(temp.LH_index)))
-  }
-  
-  if(length(temp.NC) > 1 & any(temp.NC > 0)) {
-    temp.NC <- 1+(((temp.NC-min(temp.NC))*(100-1))/(max(temp.NC)-min(temp.NC)))
-  }
-  
-  if(length(temp.BC) > 1 & any(temp.BC > 0)) {
-    temp.BC <- 1+(((temp.BC-min(temp.BC))*(100-1))/(max(temp.BC)-min(temp.BC)))
-  }
-  
-  if(length(temp.CI) > 1 & any(temp.CI > 0)) {
-    temp.CI <- 1+(((temp.CI-min(temp.CI))*(100-1))/(max(temp.CI)-min(temp.CI)))
-  }
-
-  #Calculation of IVI
-  
-  if(verbose) {
-    message("Calculation of IVI\n")
-  }
-  
-  if(verbose) {
-    cat("Calculating the Spreading Rank\n")
-  }
-
-  spreading.rank <- ((temp.NC+temp.CR)*(temp.BC+temp.CI))
-
-  suppressWarnings(
-    if(any(stats::na.omit(spreading.rank) == 0 | is.na(spreading.rank))) {
-      spreading.rank[which(spreading.rank == 0 | is.na(spreading.rank))] <- 1
-    }
-  )
-  
-  if(verbose) {
-    cat("Calculating the Hubness Rank\n")
-  }
-
-  hubness.rank <- (temp.DC+temp.LH_index)
-
-  suppressWarnings(
-    if(any(stats::na.omit(hubness.rank) == 0 | is.na(hubness.rank))) {
-      hubness.rank[which(hubness.rank == 0 | is.na(hubness.rank))] <- 1
-    }
-  )
-  
-
-  temp.ivi <- (hubness.rank)*(spreading.rank)
-
-  #1-100 normalization of IVI
-
-  if(scale == "range") {
+  ivi <- function(graph, vertices = V(graph), weights = NULL, directed = FALSE,
+                  mode = "all", loops = TRUE, d = 3, scale = "range",
+                  ncores = "default", verbose = FALSE) {
     
     if(verbose) {
-      cat("1-100 normalization of IVI\n")
-    }
-
-    if(length(unique(temp.ivi)) > 1) {
-      temp.ivi <- 1+(((temp.ivi-min(temp.ivi))*(100-1))/(max(temp.ivi)-min(temp.ivi)))
-    }
-  } else if(scale == 'z-scale') {
-    if(verbose) {
-      cat("Z-score standardization of IVI\n")
+      message("Calculating IVI centrality components")
     }
     
-    temp.ivi <- base::scale(temp.ivi)
-    temp.ivi.names <- rownames(temp.ivi)
-    temp.ivi <- c(temp.ivi)
-    names(temp.ivi) <- temp.ivi.names
+    # If the graph has an edge weight and weights is NULL, igraph::betweenness()
+    # will use the edge weight by default. Preserve that behaviour unless the user
+    # explicitly provides weights.
+    
+    if(verbose) {
+      message("Calculating degree centrality")
+    }
+    
+    DC <- igraph::degree(
+      graph = graph,
+      v = vertices,
+      mode = mode,
+      loops = loops
+    )
+    
+    if(verbose) {
+      message("Calculating ClusterRank")
+    }
+    
+    CR <- clusterRank(
+      graph = graph,
+      vids = vertices,
+      directed = directed,
+      loops = loops,
+      ncores = ncores,
+      verbose = verbose
+    )
+    
+    if(verbose) {
+      message("Calculating local H-index")
+    }
+    
+    LH_index <- lh_index(
+      graph = graph,
+      vertices = vertices,
+      mode = mode,
+      ncores = ncores,
+      verbose = verbose
+    )
+    
+    if(verbose) {
+      message("Calculating neighborhood connectivity")
+    }
+    
+    NC <- neighborhood.connectivity(
+      graph = graph,
+      vertices = vertices,
+      mode = mode,
+      verbose = verbose
+    )
+    
+    if(verbose) {
+      message("Calculating betweenness centrality")
+    }
+    
+    BC <- igraph::betweenness(
+      graph = graph,
+      v = vertices,
+      directed = directed,
+      weights = weights
+    )
+    
+    if(verbose) {
+      message("Calculating collective influence")
+    }
+    
+    CI <- collective.influence(
+      graph = graph,
+      vertices = vertices,
+      mode = mode,
+      d = d,
+      verbose = verbose
+    )
+    
+    # -----------------------------------------------------------------------
+    # Centrality vectors
+    # -----------------------------------------------------------------------
+    
+    temp.DC <- DC
+    temp.CR <- CR
+    temp.LH_index <- LH_index
+    temp.NC <- unlist(NC)
+    temp.BC <- BC
+    temp.CI <- CI
+    
+    temp.DC[!is.finite(temp.DC)] <- 0
+    temp.CR[!is.finite(temp.CR)] <- 0
+    temp.LH_index[!is.finite(temp.LH_index)] <- 0
+    temp.NC[!is.finite(temp.NC)] <- 0
+    temp.BC[!is.finite(temp.BC)] <- 0
+    temp.CI[!is.finite(temp.CI)] <- 0
+    
+    # -----------------------------------------------------------------------
+    # 1-100 normalization of centrality measures
+    # -----------------------------------------------------------------------
+    
+    if(verbose) {
+      message("Normalizing centrality measures")
+    }
+    
+    temp.DC <- .range_normalize_1_100(temp.DC)
+    temp.CR <- .range_normalize_1_100(temp.CR)
+    temp.LH_index <- .range_normalize_1_100(temp.LH_index)
+    temp.NC <- .range_normalize_1_100(temp.NC)
+    temp.BC <- .range_normalize_1_100(temp.BC)
+    temp.CI <- .range_normalize_1_100(temp.CI)
+    
+    # -----------------------------------------------------------------------
+    # IVI calculation
+    # -----------------------------------------------------------------------
+    
+    if(verbose) {
+      message("Calculating IVI")
+    }
+    
+    spreading.rank <- ((temp.NC + temp.CR) * (temp.BC + temp.CI))
+    spreading.rank[!is.finite(spreading.rank) | spreading.rank == 0] <- 1
+    
+    hubness.rank <- (temp.DC + temp.LH_index)
+    hubness.rank[!is.finite(hubness.rank) | hubness.rank == 0] <- 1
+    
+    temp.ivi <- hubness.rank * spreading.rank
+    
+    if(scale == "range") {
+      
+      if(verbose) {
+        message("Normalizing IVI to 1-100 range")
+      }
+      
+      if(length(unique(temp.ivi)) > 1) {
+        temp.ivi <- 1 + (((temp.ivi - min(temp.ivi)) * (100 - 1)) /
+                           (max(temp.ivi) - min(temp.ivi)))
+      }
+      
+    } else if(scale == "z-scale") {
+      
+      if(verbose) {
+        message("Z-score standardization of IVI")
+      }
+      
+      temp.ivi <- base::scale(temp.ivi)
+      temp.ivi.names <- rownames(temp.ivi)
+      temp.ivi <- c(temp.ivi)
+      names(temp.ivi) <- temp.ivi.names
+    }
+    
+    temp.ivi
   }
-
-  return(temp.ivi)
-}
-
+  
 #=============================================================================
 #
 #    Code chunk 11: Calculation of Spreading score
@@ -2033,16 +2257,79 @@ sirir <- function(graph, vertices = V(graph),
   #' data analysis or other analyses such as time-course data analyses that are based on regression models.
   #' @param Sig_value An integer vector containing the column number(s) of the significance values (p-value/adjusted p-value) of
   #' both differential and regression data (if provided). Providing significance values for the regression data is optional.
-  #' @param Exptl_data A dataframe containing all of the experimental data including a column for specifying the conditions.
-  #' The features/variables of the dataframe should be as the columns and the samples should come in the rows.
-  #' The condition column should be of the character class. For example, if the study includes several replicates of
-  #' cancer and normal samples, the condition column should include "cancer" and "normal" as the conditions of different samples.
-  #' Also, the prior normalization of the experimental data is highly recommended. Otherwise,
-  #' the user may set the Normalize argument to TRUE for a simple log2 transformation of the data.
-  #' The experimental data could come from a variety sources such as transcriptomics and proteomics assays.
-  #' @param Condition_colname A string or character vector specifying the name of the column "condition" of the Exptl_data dataframe.
-  #' @param Normalize Logical; whether the experimental data should be normalized or not (default is FALSE). If TRUE, the
-  #' experimental data will be log2 transformed.
+  #' @param Exptl_data Experimental data used by the ExIR model. This can be a data frame, tibble,
+  #' matrix, sparse matrix such as a \code{dgCMatrix}, or a Seurat object. For non-Seurat inputs,
+  #' the expected orientation is controlled by \code{Exptl_data_orientation}. By default,
+  #' features/genes are expected to be in rows and samples/cells in columns, which is the usual
+  #' omics layout. Internally, ExIR converts the data to its required analysis format, with
+  #' samples/cells in rows and features in columns.
+  #' @param Exptl_data_type Character string specifying the experimental data type. One of
+  #' \code{"bulk"} or \code{"sc"}. This is used for data-type checks, optional normalization,
+  #' and pseudo-sampling. For \code{"bulk"}, the input expression data may be either already
+  #' normalized/log-transformed or raw count-like data when \code{normalize = TRUE}. For
+  #' \code{"sc"}, raw counts are recommended and raw counts are required when
+  #' \code{pseudo_sample = TRUE}.
+  #' @param condition A character string or character/factor vector specifying the sample/cell
+  #' conditions. If a single character string is supplied, it is interpreted as the name of the
+  #' condition column/row in \code{Exptl_data}, or as the name of a metadata column when
+  #' \code{Exptl_data} is a Seurat object. If a vector is supplied, it must have the same length
+  #' and order as the samples/cells in \code{Exptl_data}. Default is \code{"condition"}.
+  #' @param Exptl_data_orientation Character string specifying the orientation of non-Seurat
+  #' \code{Exptl_data}. One of \code{"features_rows"} or \code{"samples_rows"}. If
+  #' \code{"features_rows"}, features are rows and samples/cells are columns. If
+  #' \code{"samples_rows"}, samples/cells are rows and features are columns. Default is
+  #' \code{"features_rows"}.
+  #' @param assay Character string specifying the assay to use when \code{Exptl_data} is a Seurat
+  #' object. Default is \code{"RNA"}.
+  #' @param layer Character string specifying the assay layer to use when \code{Exptl_data} is a
+  #' Seurat object. For pseudo-sampling of single-cell data, this should usually be a raw-count
+  #' layer such as \code{"counts"}. Default is \code{"counts"}.
+  #' @param normalize Logical; whether to normalize count-like input data using TMM normalization
+  #' followed by logCPM transformation with \pkg{edgeR}. Default is \code{FALSE}. For
+  #' \code{Exptl_data_type = "bulk"}, this can be used when raw bulk RNA-seq count-like data are
+  #' supplied. This normalization strategy is appropriate for many bulk omics count datasets,
+  #' especially bulk RNA-seq, but users should confirm that TMM/logCPM normalization is suitable
+  #' for their specific data modality. If the data modality requires a different normalization
+  #' strategy, users should pre-normalize their data and set \code{normalize = FALSE}. For
+  #' \code{Exptl_data_type = "sc"}, normalization is automatically applied after pseudo-bulking
+  #' when \code{pseudo_sample = TRUE}. If \code{Exptl_data_type = "sc"} and
+  #' \code{pseudo_sample = FALSE}, users should provide pre-normalized single-cell data and keep
+  #' \code{normalize = FALSE}.
+  #' @param pseudo_sample Logical; whether to perform pseudo-sampling before running ExIR.
+  #' Pseudo-sampling is recommended when the number of cells/samples is greater than 500 or when
+  #' computational resources are limited. For bulk data, pseudo-sampling averages normalized
+  #' log-expression values within non-overlapping condition-specific groups. For single-cell data,
+  #' pseudo-sampling sums raw counts within non-overlapping condition-specific groups, followed by
+  #' TMM normalization and logCPM transformation using \pkg{edgeR}. Default is \code{FALSE}.
+  #' @param pseudo_samples_per_group Integer specifying the target number of pseudo-samples to
+  #' generate per condition group when \code{pseudo_sample = TRUE}. For example, if one condition
+  #' contains 500 cells/samples and \code{pseudo_samples_per_group = 100}, each pseudo-sample will
+  #' contain 5 cells/samples. If another condition contains 536 cells/samples, 64 pseudo-samples
+  #' will contain 5 cells/samples and 36 pseudo-samples will contain 6 cells/samples. Default is
+  #' \code{100}.
+  #' @param Exptl_data_size_check Logical; whether to check the number of input samples/cells and,
+  #' in interactive sessions, prompt the user to consider pseudo-sampling when more than 500
+  #' samples/cells are provided and \code{pseudo_sample = FALSE}. In non-interactive sessions,
+  #' a message is shown and the function continues. Default is \code{TRUE}.  
+  #' @param feature_filter Logical; whether to apply conservative feature filtering before
+  #' running RF, PCA and correlation analysis. This filter is not a highly variable gene
+  #' filter. It removes only features with insufficient expression/prevalence or essentially
+  #' zero variance, which are unlikely to produce reliable correlations. Default is \code{TRUE}.
+  #' @param min_feature_prevalence Integer or \code{NULL}; minimum number of samples/cells/
+  #' pseudo-samples in which a feature must be non-zero to be retained. If \code{NULL}, an
+  #' adaptive conservative threshold is used based on \code{Exptl_data_type}, pseudo-sampling,
+  #' and sample size.
+  #' @param min_feature_total Numeric or \code{NULL}; minimum total abundance/count/expression
+  #' support required for a feature to be retained. If \code{NULL}, this criterion is not used.
+  #' For raw count-like data, values such as 10 or 20 may be useful. For normalized/log-scale
+  #' data, users should usually leave this as \code{NULL}.
+  #' @param min_feature_variance Numeric; minimum variance required for a feature to be retained.
+  #' This is intended only to remove zero-variance or near-zero-variance features, not to perform
+  #' HVG selection. Default is \code{1e-12}.
+  #' @param always_keep_diff_features Logical; whether to always retain features present in
+  #' \code{Diff_data} and \code{Desired_list}, even if they fail the conservative expression/
+  #' prevalence filters. This helps preserve candidate differential features while still reducing
+  #' uninformative non-DE background features. Default is \code{TRUE}.
   #' @param cor_thresh_method A character string indicating the method for filtering the correlation results, either
   #' "mr" (default; Mutual Rank) or "cor.coefficient".
   #' @param mr An integer determining the threshold of mutual rank for the selection of correlated features (default is 20). Note that
@@ -2051,11 +2338,11 @@ sirir <- function(graph, vertices = V(graph),
   #' @param max.connections The maximum number of connections to be included in the association network.
   #' Higher max.connections might increase the computation time, cost, and accuracy of the results (default is 50,000).
   #' @param alpha The threshold of the statistical significance (p-value) used throughout the entire model (default is 0.05)
-  #' @param num_trees Number of trees to be used for the random forests classification (supervised machine learning). Default is set to 10000.
+  #' @param num_trees Number of trees to be used for the random forests classification (supervised machine learning). Default is set to 500.
   #' @param mtry Number of features to possibly split at in each node. Default is the (rounded down) square root of the
   #' number of variables. Alternatively, a single argument function returning an integer, given the number of independent variables.
   #' @param num_permutations Number of permutations to be used for computation of the statistical significance (p-values) of
-  #' the importance scores resulted from random forests classification (default is 100).
+  #' the importance scores resulted from random forests classification (default is 50).
   #' @param inf_const The constant value to be multiplied by the maximum absolute value of differential (logFC)
   #' values for the substitution with infinite differential values. This results in noticeably high biomarker values for features
   #' with infinite differential values compared with other features. Having said that, the user can still use the
@@ -2066,7 +2353,9 @@ sirir <- function(graph, vertices = V(graph),
   #' @param ncores Integer; the number of cores to be used for parallel processing. If ncores == "default" (default), the number of 
   #' cores to be used will be the max(number of available cores) - 1. We recommend leaving ncores argument as is (ncores = "default").
   #' @param seed The seed to be used for all of the random processes throughout the model (default is 1234).
-  #' @param verbose Logical; whether the accomplishment of different stages of the model should be printed (default is TRUE).
+  #' @param verbose Logical; whether to display formatted progress messages and a progress bar
+  #' using \pkg{cli}. If \code{TRUE}, ExIR reports the major analysis stages, selected
+  #' warnings, and a final output summary. Default is \code{TRUE}.
   #' @return A list of one graph and one to four tables including:
   #'
   #' - Driver table: Top candidate drivers
@@ -2095,105 +2384,1021 @@ sirir <- function(graph, vertices = V(graph),
   #' Regr_value <- 7
   #' Sig_value <- c(2,4,6,8)
   #' MyExptl_data <- Exptldata
-  #' Condition_colname <- "condition"
+  #' condition <- "condition"
   #' My.exir <- exir(Desired_list = MyDesired_list,
   #'                Diff_data = MyDiff_data, Diff_value = Diff_value,
   #'                Regr_value = Regr_value, Sig_value = Sig_value,
-  #'                Exptl_data = MyExptl_data, Condition_colname = Condition_colname)
+  #'                Exptl_data = MyExptl_data, condition = condition)
   #' }
   exir <- function(Desired_list = NULL,
                    Diff_data, Diff_value, Regr_value = NULL, Sig_value,
-                   Exptl_data, Condition_colname, Normalize = FALSE,
+                   Exptl_data,
+                   Exptl_data_type = c("bulk", "sc"),
+                   condition = "condition",
+                   Exptl_data_orientation = c("features_rows", "samples_rows"),
+                   assay = "RNA",
+                   layer = "counts",
+                   normalize = FALSE,
+                   pseudo_sample = FALSE,
+                   pseudo_samples_per_group = 100,
+                   Exptl_data_size_check = TRUE,
+                   feature_filter = TRUE,
+                   min_feature_prevalence = NULL,
+                   min_feature_total = NULL,
+                   min_feature_variance = 1e-12,
+                   always_keep_diff_features = TRUE,
                    cor_thresh_method = "mr", r = 0.5, mr = 20,
                    max.connections = 50000, alpha = 0.05,
-                   num_trees = 10000, mtry = NULL, num_permutations = 100,
+                   num_trees = 500, mtry = NULL, num_permutations = 50,
                    inf_const = 10^10, ncores = "default", seed = 1234, verbose = TRUE) {
-
-    # Setup progress bar
-    if(verbose) {
-      pb <- utils::txtProgressBar(min = 0, max = 100, initial = 0, char = "=",
-                           width = NA, style = 3, file = "")
+    
+    # -------------------------------------------------------------------------
+    # cli-based verbose helpers
+    # -------------------------------------------------------------------------
+    
+    .exir_stage_id <- 0L
+    .exir_n_stages <- 15L
+    .exir_current_stage <- NULL
+    
+    .exir_start <- function() {
+      if(isTRUE(verbose)) {
+        cli::cli_h1("Running ExIR")
+      }
     }
-
-    #ProgressBar: Preparing the input data
-    if(verbose) {
-      print(unname(as.data.frame("Preparing the input data")),quote = FALSE, row.names = FALSE)
+    
+    .exir_step <- function(stage, value = NULL) {
+      if(isTRUE(verbose)) {
+        
+        .exir_stage_id <<- .exir_stage_id + 1L
+        .exir_current_stage <<- stage
+        
+        cli::cli_h2(
+          paste0(
+            "[", .exir_stage_id, "/", .exir_n_stages, "] ",
+            stage
+          )
+        )
+      }
     }
+    
+    .exir_progress <- function(value = NULL, status = .exir_current_stage) {
+      if(isTRUE(verbose) && !is.null(status)) {
+        cli::cli_alert_success(status)
+      }
+    }
+    
+    .exir_info <- function(...) {
+      if(isTRUE(verbose)) {
+        cli::cli_alert_info(paste0(...))
+      }
+    }
+    
+    .exir_success <- function(...) {
+      if(isTRUE(verbose)) {
+        cli::cli_alert_success(paste0(...))
+      }
+    }
+    
+    .exir_warn <- function(...) {
+      cli::cli_alert_warning(paste0(...))
+    }
+    
+    .exir_done <- function() {
+      if(isTRUE(verbose)) {
+        cli::cli_h2("ExIR completed")
+        cli::cli_alert_success("ExIR completed successfully.")
+      }
+    }
+    
+    .exir_start()
+    .exir_step("Preparing the input data")
     
     # Checking NAs in Diff_data
     if(any(is.na(Diff_data))) {
-      stop("NA values found in the Diff_data! Please remove unnecessary columns, make sure there is no NA in any column of the Diff_data, and double check Diff_value and Sig_value arguments if you changed the columns of the Diff_data!")
-    }
+      cli::cli_abort(
+        c(
+          "NA values found in {.arg Diff_data}.",
+          "i" = "Please remove unnecessary columns and make sure there are no missing values in Diff_data.",
+          "i" = "Also check {.arg Diff_value} and {.arg Sig_value} if you modified Diff_data columns."
+        )
+      )
+      }
 
-    #make sure the input data is of data frame class
+    # Match argument choices
+    Exptl_data_type <- match.arg(Exptl_data_type)
+    Exptl_data_orientation <- match.arg(Exptl_data_orientation)
+    
+    # make sure Diff_data is of data frame class
     Diff_data <- as.data.frame(Diff_data)
-    Exptl_data <- as.data.frame(Exptl_data)
-    Exptl_data[is.na(Exptl_data)] <- 0
-
+    
+    # -------------------------------------------------------------------------
+    # Helper functions for Exptl_data preparation
+    # -------------------------------------------------------------------------
+    
+    .is_sparse_matrix <- function(x) {
+      inherits(x, "sparseMatrix")
+    }
+    
+    .replace_na_with_zero <- function(x) {
+      if(.is_sparse_matrix(x)) {
+        x@x[is.na(x@x)] <- 0
+        return(x)
+      }
+      x[is.na(x)] <- 0
+      x
+    }
+    
+    .get_zero_fraction <- function(x) {
+      if(.is_sparse_matrix(x)) {
+        return(1 - (length(x@x) / (nrow(x) * ncol(x))))
+      }
+      
+      n_total <- length(x)
+      if(n_total == 0) return(NA_real_)
+      
+      # Avoid expensive full scans for very large dense matrices
+      if(n_total > 1e6) {
+        set.seed(seed)
+        sampled <- sample(as.vector(x), size = min(1e6, n_total))
+        return(mean(sampled == 0, na.rm = TRUE))
+      }
+      
+      mean(x == 0, na.rm = TRUE)
+    }
+    
+    .looks_integer_like <- function(x, tolerance = 1e-8) {
+      if(.is_sparse_matrix(x)) {
+        values <- x@x
+      } else {
+        values <- as.vector(x)
+      }
+      
+      values <- values[is.finite(values)]
+      if(length(values) == 0) return(FALSE)
+      
+      if(length(values) > 1e6) {
+        set.seed(seed)
+        values <- sample(values, size = 1e6)
+      }
+      
+      all(values >= 0) && all(abs(values - round(values)) < tolerance)
+    }
+    
+    .has_cell_barcode_like_colnames <- function(x) {
+      cn <- colnames(x)
+      if(is.null(cn) || length(cn) == 0) return(FALSE)
+      
+      # Common 10x-like patterns, e.g. AAACCTGAGAAACCAT-1
+      barcode_hits <- grepl("^[ACGTN]{8,}[-_][0-9]+$", cn) |
+        grepl("^[ACGTN]{12,}$", cn)
+      
+      mean(barcode_hits) > 0.3
+    }
+    
+    .check_exptl_data_type_clues <- function(expr_features_by_samples,
+                                             Exptl_data_type,
+                                             from_seurat = FALSE,
+                                             layer = NULL,
+                                             verbose = TRUE) {
+      
+      n_features <- nrow(expr_features_by_samples)
+      n_samples <- ncol(expr_features_by_samples)
+      zero_fraction <- .get_zero_fraction(expr_features_by_samples)
+      barcode_like <- .has_cell_barcode_like_colnames(expr_features_by_samples)
+      integer_like <- .looks_integer_like(expr_features_by_samples)
+      
+      sc_score <- 0
+      bulk_score <- 0
+      
+      if(n_samples >= 1000) sc_score <- sc_score + 1
+      if(!is.na(zero_fraction) && zero_fraction > 0.5) sc_score <- sc_score + 1
+      if(barcode_like) sc_score <- sc_score + 1
+      if(from_seurat) sc_score <- sc_score + 1
+      if(!is.null(layer) && layer %in% c("counts", "data", "scale.data")) sc_score <- sc_score + 1
+      
+      if(n_samples <= 500) bulk_score <- bulk_score + 1
+      if(!is.na(zero_fraction) && zero_fraction < 0.3) bulk_score <- bulk_score + 1
+      if(!barcode_like) bulk_score <- bulk_score + 1
+      if(!integer_like) bulk_score <- bulk_score + 1
+      
+      if(Exptl_data_type == "bulk" && sc_score >= 2) {
+        .exir_warn(
+          "The input was declared as bulk, but some properties look single-cell-like ",
+          "(samples/cells = ", n_samples,
+          ", zero fraction = ", round(zero_fraction, 3),
+          ", barcode-like sample names = ", barcode_like, "). ",
+          "Please make sure Exptl_data_type = 'bulk' is correct."
+        )
+      }
+      
+      if(Exptl_data_type == "sc" && bulk_score >= 3 && !from_seurat) {
+        .exir_warn(
+          "The input was declared as single-cell, but some properties look bulk-like ",
+          "(samples/cells = ", n_samples,
+          ", zero fraction = ", round(zero_fraction, 3),
+          ", barcode-like sample names = ", barcode_like, "). ",
+          "Please make sure Exptl_data_type = 'sc' is correct."
+        )
+      }
+      
+      invisible(list(
+        n_features = n_features,
+        n_samples = n_samples,
+        zero_fraction = zero_fraction,
+        barcode_like = barcode_like,
+        integer_like = integer_like,
+        sc_score = sc_score,
+        bulk_score = bulk_score
+      ))
+    }
+    
+    .extract_seurat_expression_and_condition <- function(Exptl_data,
+                                                         condition,
+                                                         assay,
+                                                         layer) {
+      
+      if(!requireNamespace("SeuratObject", quietly = TRUE)) {
+        cli::cli_abort(
+          "A Seurat object was provided, but the {.pkg SeuratObject} package is not available."
+        )
+      }
+      
+      available_assays <- SeuratObject::Assays(Exptl_data)
+      
+      if(!(assay %in% available_assays)) {
+        cli::cli_abort(
+          c(
+            "The specified {.arg assay} is not among the assays of the Seurat object.",
+            "i" = "Available assays: {.val {available_assays}}.",
+            "i" = "You can also check them using {.code SeuratObject::Assays(Exptl_data)}."
+          )
+        )
+      }
+      
+      available_layers <- tryCatch(
+        SeuratObject::Layers(Exptl_data[[assay]]),
+        error = function(e) character(0)
+      )
+      
+      if(length(available_layers) > 0 && !(layer %in% available_layers)) {
+        cli::cli_abort(
+          c(
+            "The specified {.arg layer} is not among the layers of the selected assay.",
+            "i" = "Available layers: {.val {available_layers}}."
+          )
+        )
+      }
+      
+      expr <- tryCatch(
+        SeuratObject::GetAssayData(
+          object = Exptl_data,
+          assay = assay,
+          layer = layer
+        ),
+        error = function(e) {
+          cli::cli_abort(
+            c(
+              "Could not extract expression data from the Seurat object.",
+              "i" = "Please check {.arg assay} and {.arg layer}.",
+              "x" = conditionMessage(e)
+            )
+          )
+        }
+      )
+      
+      if(nrow(expr) == 0 || ncol(expr) == 0) {
+        cli::cli_abort("The selected Seurat assay/layer contains no data.")
+      }
+      
+      meta <- Exptl_data[[]]
+      
+      if(!(length(condition) == 1 && condition %in% colnames(meta))) {
+        cli::cli_abort(
+          c(
+            "For Seurat input, {.arg condition} must be the name of a metadata column.",
+            "i" = "Available metadata columns include: {.val {utils::head(colnames(meta), 20)}}."
+          )
+        )
+      }
+      
+      sample_condition <- as.character(meta[[condition]])
+      names(sample_condition) <- rownames(meta)
+      
+      if(!all(colnames(expr) %in% names(sample_condition))) {
+        cli::cli_abort("Some cells/samples in the selected assay/layer are missing from the Seurat metadata.")
+      }
+      
+      sample_condition <- sample_condition[colnames(expr)]
+      
+      list(
+        expr_features_by_samples = expr,
+        condition = sample_condition,
+        from_seurat = TRUE
+      )
+    }
+    
+    .extract_matrix_expression_and_condition <- function(Exptl_data,
+                                                         condition,
+                                                         Exptl_data_orientation) {
+      
+      x <- Exptl_data
+      
+      if(tibble::is_tibble(x)) {
+        x <- as.data.frame(x, check.names = FALSE)
+      }
+      
+      # If a feature-row data.frame has a first column containing feature names,
+      # automatically use it as rownames when rownames are uninformative.
+      if(is.data.frame(x) && Exptl_data_orientation == "features_rows") {
+        rn_uninformative <- is.null(rownames(x)) ||
+          anyDuplicated(rownames(x)) ||
+          identical(rownames(x), as.character(seq_len(nrow(x))))
+        
+        first_col <- x[[1]]
+        first_col_can_be_rownames <- is.character(first_col) &&
+          !anyDuplicated(first_col) &&
+          !(length(condition) == 1 && names(x)[1] == condition)
+        
+        if(rn_uninformative && first_col_can_be_rownames) {
+          rownames(x) <- first_col
+          x <- x[, -1, drop = FALSE]
+        }
+      }
+      
+      if(is.data.frame(x)) {
+        
+        if(Exptl_data_orientation == "samples_rows") {
+          
+          if(length(condition) == 1 && condition %in% colnames(x)) {
+            sample_condition <- as.character(x[[condition]])
+            expr <- x[, setdiff(colnames(x), condition), drop = FALSE]
+          } else if(length(condition) == nrow(x)) {
+            sample_condition <- as.character(condition)
+            expr <- x
+          } else {
+            cli::cli_abort(
+              "For {.code Exptl_data_orientation = 'samples_rows'}, {.arg condition} must be either a column name of {.arg Exptl_data} or a vector with length equal to the number of samples/cells."
+            )
+          }
+          
+          expr <- data.frame(lapply(expr, function(z) as.numeric(as.character(z))),
+                             check.names = FALSE)
+          expr <- as.matrix(expr)
+          rownames(expr) <- rownames(x)
+          
+          # convert to features x samples
+          expr <- t(expr)
+          
+        } else {
+          
+          if(length(condition) == 1 && condition %in% rownames(x)) {
+            sample_condition <- as.character(unlist(x[condition, , drop = TRUE]))
+            expr <- x[setdiff(rownames(x), condition), , drop = FALSE]
+          } else if(length(condition) == ncol(x)) {
+            sample_condition <- as.character(condition)
+            expr <- x
+          } else {
+            cli::cli_abort(
+              "For {.code Exptl_data_orientation = 'features_rows'}, {.arg condition} must be either a row name of {.arg Exptl_data} or a vector with length equal to the number of samples/cells."
+            )
+          }
+          
+          expr <- data.frame(lapply(expr, function(z) as.numeric(as.character(z))),
+                             check.names = FALSE)
+          expr <- as.matrix(expr)
+        }
+        
+      } else if(is.matrix(x) || .is_sparse_matrix(x)) {
+        
+        if(Exptl_data_orientation == "samples_rows") {
+          
+          if(length(condition) != nrow(x)) {
+            cli::cli_abort(
+              "For matrix/sparse matrix input with {.code Exptl_data_orientation = 'samples_rows'}, {.arg condition} must be a vector with length equal to the number of rows/samples."
+            )
+          }
+          
+          sample_condition <- as.character(condition)
+          expr <- Matrix::t(x)
+          
+        } else {
+          
+          if(length(condition) == 1 && !is.null(rownames(x)) && condition %in% rownames(x)) {
+            sample_condition <- as.character(x[condition, ])
+            expr <- x[setdiff(rownames(x), condition), , drop = FALSE]
+          } else if(length(condition) == ncol(x)) {
+            sample_condition <- as.character(condition)
+            expr <- x
+          } else {
+            cli::cli_abort(
+              "For matrix/sparse matrix input with {.code Exptl_data_orientation = 'features_rows'}, {.arg condition} must be either a row name of {.arg Exptl_data} or a vector with length equal to the number of columns/samples."
+            )
+          }
+        }
+        
+        if(!.is_sparse_matrix(expr)) {
+          storage.mode(expr) <- "double"
+        }
+        
+      } else {
+        cli::cli_abort(
+          "{.arg Exptl_data} must be a data frame, tibble, matrix, sparse matrix, or Seurat object."
+        )
+      }
+      
+      if(is.null(rownames(expr))) {
+        cli::cli_abort("Feature names are missing. Please provide feature names as rownames of {.arg Exptl_data}.")
+      }
+      
+      if(is.null(colnames(expr))) {
+        colnames(expr) <- paste0("Sample_", seq_len(ncol(expr)))
+      }
+      
+      list(
+        expr_features_by_samples = expr,
+        condition = sample_condition,
+        from_seurat = FALSE
+      )
+    }
+    
+    .normalize_with_edger <- function(counts_features_by_samples) {
+      
+      if(!requireNamespace("edgeR", quietly = TRUE)) {
+        cli::cli_abort("The {.pkg edgeR} package is required for TMM/logCPM normalization.")
+      }
+      
+      if(!.looks_integer_like(counts_features_by_samples)) {
+        cli::cli_abort(
+          paste0(
+            "TMM/logCPM normalization requires raw count-like non-negative integer data. ",
+            "If your data are already normalized or are not suitable for edgeR normalization, ",
+            "set normalize = FALSE and provide pre-normalized data."
+          )
+        )
+      }
+      
+      counts_features_by_samples <- as.matrix(counts_features_by_samples)
+      
+      dge <- edgeR::DGEList(counts = counts_features_by_samples)
+      dge <- edgeR::calcNormFactors(dge, method = "TMM")
+      edgeR::cpm(dge, log = TRUE, prior.count = 1)
+    }
+    
+    .make_pseudo_samples <- function(expr_features_by_samples,
+                                     sample_condition,
+                                     Exptl_data_type,
+                                     pseudo_samples_per_group,
+                                     seed) {
+      
+      if(!requireNamespace("Matrix", quietly = TRUE)) {
+        cli::cli_abort("The {.pkg Matrix} package is required for pseudo-sampling.")
+      }
+      
+      if(Exptl_data_type == "sc" && !requireNamespace("edgeR", quietly = TRUE)) {
+        cli::cli_abort("The {.pkg edgeR} package is required for single-cell pseudo-bulk normalization.")
+      }
+      
+      if(!is.numeric(pseudo_samples_per_group) ||
+         length(pseudo_samples_per_group) != 1 ||
+         is.na(pseudo_samples_per_group) ||
+         pseudo_samples_per_group < 1) {
+        cli::cli_abort("{.arg pseudo_samples_per_group} must be a positive integer.")
+      }
+      
+      pseudo_samples_per_group <- as.integer(pseudo_samples_per_group)
+      sample_condition <- factor(sample_condition)
+      
+      condition_sizes <- table(sample_condition)
+      
+      if(any(condition_sizes < pseudo_samples_per_group)) {
+        cli::cli_abort(
+          c(
+            "{.arg pseudo_samples_per_group} is larger than the number of samples/cells in at least one condition.",
+            "i" = "Condition sizes: {.val {paste(names(condition_sizes), condition_sizes, sep = '=', collapse = ', ')}}.",
+            "i" = "Use a smaller {.arg pseudo_samples_per_group}, or disable pseudo-sampling."
+          )
+        )
+      }
+      
+      if(Exptl_data_type == "sc" && !.looks_integer_like(expr_features_by_samples)) {
+        cli::cli_abort(
+          paste0(
+            "For Exptl_data_type = 'sc' with pseudo_sample = TRUE, the input expression data must be ",
+            "raw counts or count-like non-negative integers. If your single-cell data are already normalized, ",
+            "set pseudo_sample = FALSE and normalize = FALSE."
+          )
+        )
+      }
+      
+      set.seed(seed)
+      
+      pseudo_expr_list <- list()
+      pseudo_condition <- character(0)
+      pseudo_names <- character(0)
+      
+      for(cond in levels(sample_condition)) {
+        
+        sample_idx <- which(sample_condition == cond)
+        n_cond <- length(sample_idx)
+        
+        # Randomize sample/cell order within condition
+        sample_idx <- sample(sample_idx, n_cond, replace = FALSE)
+        
+        # We generate exactly pseudo_samples_per_group groups per condition.
+        # Group sizes differ by at most 1.
+        base_group_size <- n_cond %/% pseudo_samples_per_group
+        remainder <- n_cond %% pseudo_samples_per_group
+        
+        group_sizes <- rep(base_group_size, pseudo_samples_per_group)
+        
+        if(remainder > 0) {
+          group_sizes[seq_len(remainder)] <- group_sizes[seq_len(remainder)] + 1
+        }
+        
+        group_end <- cumsum(group_sizes)
+        group_start <- c(1, utils::head(group_end, -1) + 1)
+        
+        groups <- Map(function(start, end) {
+          sample_idx[start:end]
+        }, group_start, group_end)
+        
+        for(i in seq_along(groups)) {
+          
+          group_idx <- groups[[i]]
+          pseudo_name <- paste0(cond, "_pseudo_", i)
+          
+          if(Exptl_data_type == "bulk") {
+            
+            # For bulk data, input should already be normalized/log-transformed
+            # before reaching this function.
+            pseudo_vec <- Matrix::rowMeans(expr_features_by_samples[, group_idx, drop = FALSE])
+            
+          } else {
+            
+            # For scRNA-seq, raw counts are summed first.
+            pseudo_vec <- Matrix::rowSums(expr_features_by_samples[, group_idx, drop = FALSE])
+          }
+          
+          pseudo_expr_list[[pseudo_name]] <- pseudo_vec
+          pseudo_condition <- c(pseudo_condition, as.character(cond))
+          pseudo_names <- c(pseudo_names, pseudo_name)
+        }
+      }
+      
+      pseudo_expr <- do.call(cbind, pseudo_expr_list)
+      rownames(pseudo_expr) <- rownames(expr_features_by_samples)
+      colnames(pseudo_expr) <- pseudo_names
+      
+      if(Exptl_data_type == "sc") {
+        
+        # scRNA-seq pseudo-bulked counts are normalized after aggregation.
+        pseudo_expr <- .normalize_with_edger(pseudo_expr)
+      }
+      
+      list(
+        expr_features_by_samples = pseudo_expr,
+        condition = pseudo_condition
+      )
+    }
+    
+    .make_internal_exir_dataframe <- function(expr_features_by_samples,
+                                              sample_condition) {
+      
+      # Convert from features x samples to samples x features
+      expr_samples_by_features <- Matrix::t(expr_features_by_samples)
+      
+      # The current ExIR downstream code, ranger, PCA, and fcor expect dense data.
+      # Delaying this conversion until after optional pseudo-sampling minimizes memory use.
+      if(.is_sparse_matrix(expr_samples_by_features)) {
+        expr_samples_by_features <- as.matrix(expr_samples_by_features)
+      }
+      
+      Exptl_data_internal <- as.data.frame(
+        expr_samples_by_features,
+        check.names = FALSE,
+        stringsAsFactors = FALSE
+      )
+      
+      Exptl_data_internal <- .replace_na_with_zero(Exptl_data_internal)
+      
+      Exptl_data_internal$condition <- as.factor(sample_condition)
+      
+      Exptl_data_internal
+    }
+    
+    .filter_exptl_features <- function(expr_features_by_samples,
+                                       sample_condition,
+                                       Diff_data,
+                                       Desired_list,
+                                       Exptl_data_type,
+                                       pseudo_sample,
+                                       feature_filter,
+                                       min_feature_prevalence,
+                                       min_feature_total,
+                                       min_feature_variance,
+                                       always_keep_diff_features,
+                                       verbose = TRUE) {
+      
+      if(!feature_filter) {
+        return(expr_features_by_samples)
+      }
+      
+      n_features_before <- nrow(expr_features_by_samples)
+      n_samples <- ncol(expr_features_by_samples)
+      
+      if(is.null(rownames(expr_features_by_samples))) {
+        cli::cli_abort("Feature names are missing from Exptl_data.")
+      }
+      
+      # -----------------------------------------------------------------------
+      # Adaptive conservative prevalence threshold
+      # -----------------------------------------------------------------------
+      
+      if(is.null(min_feature_prevalence)) {
+        
+        if(Exptl_data_type == "bulk") {
+          min_feature_prevalence <- max(2L, ceiling(0.10 * n_samples))
+        } else {
+          if(pseudo_sample) {
+            min_feature_prevalence <- max(2L, ceiling(0.05 * n_samples))
+          } else {
+            min_feature_prevalence <- max(10L, ceiling(0.001 * n_samples))
+          }
+        }
+        
+        min_feature_prevalence <- min(min_feature_prevalence, n_samples)
+      }
+      
+      # -----------------------------------------------------------------------
+      # Prevalence / total / variance filters
+      # -----------------------------------------------------------------------
+      
+      if(inherits(expr_features_by_samples, "sparseMatrix")) {
+        
+        prevalence <- Matrix::rowSums(expr_features_by_samples != 0)
+        feature_total <- Matrix::rowSums(expr_features_by_samples)
+        
+        # Variance for sparse matrices.
+        feature_mean <- Matrix::rowMeans(expr_features_by_samples)
+        feature_mean_sq <- Matrix::rowMeans(expr_features_by_samples ^ 2)
+        feature_var <- feature_mean_sq - feature_mean ^ 2
+        
+      } else {
+        
+        prevalence <- rowSums(expr_features_by_samples != 0, na.rm = TRUE)
+        feature_total <- rowSums(expr_features_by_samples, na.rm = TRUE)
+        feature_var <- apply(expr_features_by_samples, 1, stats::var, na.rm = TRUE)
+      }
+      
+      keep_prevalence <- prevalence >= min_feature_prevalence
+      keep_variance <- is.finite(feature_var) & feature_var > min_feature_variance
+      
+      if(is.null(min_feature_total)) {
+        keep_total <- rep(TRUE, n_features_before)
+      } else {
+        keep_total <- feature_total >= min_feature_total
+      }
+      
+      keep <- keep_prevalence & keep_variance & keep_total
+      
+      # -----------------------------------------------------------------------
+      # Always retain candidate/differential features if requested
+      # -----------------------------------------------------------------------
+      
+      if(always_keep_diff_features) {
+        
+        force_keep <- unique(c(
+          rownames(Diff_data),
+          if(!is.null(Desired_list)) Desired_list else character(0)
+        ))
+        
+        force_keep <- force_keep[force_keep %in% rownames(expr_features_by_samples)]
+        
+        keep[match(force_keep, rownames(expr_features_by_samples))] <- TRUE
+      }
+      
+      expr_filtered <- expr_features_by_samples[keep, , drop = FALSE]
+      
+      n_features_after <- nrow(expr_filtered)
+      
+      .exir_info(
+        "Feature filtering retained ",
+        n_features_after,
+        " of ",
+        n_features_before,
+        " features before ExIR correlation analysis."
+      )
+      
+      .exir_info(
+        "Feature filtering thresholds: min_feature_prevalence = ",
+        min_feature_prevalence,
+        ", min_feature_total = ",
+        ifelse(is.null(min_feature_total), "NULL", min_feature_total),
+        ", min_feature_variance = ",
+        min_feature_variance,
+        "."
+      )
+      
+      if(n_features_after < 2) {
+        cli::cli_abort(
+          "Feature filtering retained fewer than two features. Please relax the filtering thresholds."
+        )
+      }
+      
+      if(!always_keep_diff_features) {
+        
+        removed_diff_features <- setdiff(
+          intersect(rownames(Diff_data), rownames(expr_features_by_samples)),
+          rownames(expr_filtered)
+        )
+        
+        if(length(removed_diff_features) > 0) {
+          .exir_warn(
+            length(removed_diff_features),
+            " Diff_data features were removed by feature filtering. ",
+            "Set always_keep_diff_features = TRUE to force their retention."
+          )
+        }
+        }
+      
+      expr_filtered
+    }
+    
+    .prepare_exptl_data <- function(Exptl_data,
+                                    Exptl_data_type,
+                                    condition,
+                                    Exptl_data_orientation,
+                                    assay,
+                                    layer,
+                                    normalize,
+                                    pseudo_sample,
+                                    pseudo_samples_per_group,
+                                    Exptl_data_size_check,
+                                    feature_filter,
+                                    min_feature_prevalence,
+                                    min_feature_total,
+                                    min_feature_variance,
+                                    always_keep_diff_features,
+                                    Diff_data,
+                                    Desired_list,
+                                    seed,
+                                    verbose) {
+      
+      from_seurat <- inherits(Exptl_data, "Seurat")
+      
+      if(from_seurat) {
+        extracted <- .extract_seurat_expression_and_condition(
+          Exptl_data = Exptl_data,
+          condition = condition,
+          assay = assay,
+          layer = layer
+        )
+      } else {
+        extracted <- .extract_matrix_expression_and_condition(
+          Exptl_data = Exptl_data,
+          condition = condition,
+          Exptl_data_orientation = Exptl_data_orientation
+        )
+      }
+      
+      expr_features_by_samples <- extracted$expr_features_by_samples
+      sample_condition <- extracted$condition
+      
+      if(length(sample_condition) != ncol(expr_features_by_samples)) {
+        cli::cli_abort(
+          "The length of {.arg condition} does not match the number of samples/cells in {.arg Exptl_data}."
+        )
+      }
+      
+      expr_features_by_samples <- .replace_na_with_zero(expr_features_by_samples)
+      
+      data_clues <- .check_exptl_data_type_clues(
+        expr_features_by_samples = expr_features_by_samples,
+        Exptl_data_type = Exptl_data_type,
+        from_seurat = from_seurat,
+        layer = layer,
+        verbose = verbose
+      )
+      
+      n_samples <- ncol(expr_features_by_samples)
+      
+      # -------------------------------------------------------------------------
+      # Normalization handling
+      # -------------------------------------------------------------------------
+      
+      if(normalize) {
+        
+        if(Exptl_data_type == "bulk") {
+          
+          .exir_info("Normalizing bulk count-like data using edgeR TMM normalization followed by logCPM transformation.")
+          
+          expr_features_by_samples <- .normalize_with_edger(expr_features_by_samples)
+          
+        } else if(Exptl_data_type == "sc" && !pseudo_sample) {
+          
+          cli::cli_abort(
+            paste0(
+              "normalize = TRUE is not supported for single-cell input when pseudo_sample = FALSE. ",
+              "For single-cell data without pseudo-sampling, please provide pre-normalized data and set normalize = FALSE. ",
+              "Alternatively, provide raw counts and set pseudo_sample = TRUE so that ExIR can pseudo-bulk the data ",
+              "and then apply TMM/logCPM normalization."
+            )
+          )
+          
+        } else if(Exptl_data_type == "sc" && pseudo_sample) {
+          
+          .exir_info("Single-cell normalization will be applied after pseudo-bulk aggregation using edgeR TMM/logCPM.")
+          }
+      }
+      
+      if(Exptl_data_size_check && !pseudo_sample && n_samples > 500) {
+        
+        msg <- paste0(
+          "The input Exptl_data contains ", n_samples, " samples/cells. ",
+          "This may substantially increase computation time and memory use. ",
+          "Pseudo-sampling is recommended when the number of samples/cells is greater than 500 ",
+          "or when computational resources are limited."
+        )
+        
+        if(interactive()) {
+          
+          do_pseudo <- utils::askYesNo(
+            paste0(msg, "\n\nWould you like to perform pseudo-sampling?")
+          )
+          
+          if(isTRUE(do_pseudo)) {
+            
+            pseudo_sample <- TRUE
+            
+            pseudo_input <- readline(
+              prompt = paste0(
+                "Number of pseudo-samples per condition group [default: ",
+                pseudo_samples_per_group,
+                "]: "
+              )
+            )
+            
+            if(nzchar(pseudo_input)) {
+              pseudo_samples_per_group <- as.integer(pseudo_input)
+            }
+            
+          } else if(isFALSE(do_pseudo)) {
+            .exir_info("Continuing without pseudo-sampling.")
+          } else if(is.na(do_pseudo)) {
+            cli::cli_abort("ExIR execution was cancelled by the user.")
+          }
+          
+        } else {
+          .exir_warn(
+            msg,
+            " To enable pseudo-sampling, set pseudo_sample = TRUE and ",
+            "pseudo_samples_per_group = 100, or another suitable value."
+          )
+          }
+      }
+      
+      if(pseudo_sample) {
+        
+        .exir_info(
+          "Performing pseudo-sampling with ",
+          pseudo_samples_per_group,
+          " pseudo-samples per condition group."
+        )
+        
+        pseudo_res <- .make_pseudo_samples(
+          expr_features_by_samples = expr_features_by_samples,
+          sample_condition = sample_condition,
+          Exptl_data_type = Exptl_data_type,
+          pseudo_samples_per_group = pseudo_samples_per_group,
+          seed = seed
+        )
+        
+        expr_features_by_samples <- pseudo_res$expr_features_by_samples
+        sample_condition <- pseudo_res$condition
+      }
+      
+      if(Exptl_data_type == "bulk" && !normalize && .looks_integer_like(expr_features_by_samples)) {
+        .exir_warn(
+          "The input was declared as bulk and normalize = FALSE, but the values look count-like. ",
+          "Bulk ExIR input should usually be normalized and log-transformed before running the model. ",
+          "If these are raw bulk RNA-seq counts, consider setting normalize = TRUE."
+        )
+        }
+      
+      if(Exptl_data_type == "sc" && !pseudo_sample) {
+        .exir_warn(
+          "Single-cell input is being used without pseudo-sampling. ",
+          "The current ExIR downstream workflow will eventually require dense operations for RF, PCA, and fcor, ",
+          "which may be memory-intensive for large datasets."
+        )
+      }
+      
+      # -------------------------------------------------------------------------
+      # Conservative feature filtering before dense conversion and correlation
+      # -------------------------------------------------------------------------
+      
+      expr_features_by_samples <- .filter_exptl_features(
+        expr_features_by_samples = expr_features_by_samples,
+        sample_condition = sample_condition,
+        Diff_data = Diff_data,
+        Desired_list = Desired_list,
+        Exptl_data_type = Exptl_data_type,
+        pseudo_sample = pseudo_sample,
+        feature_filter = feature_filter,
+        min_feature_prevalence = min_feature_prevalence,
+        min_feature_total = min_feature_total,
+        min_feature_variance = min_feature_variance,
+        always_keep_diff_features = always_keep_diff_features,
+        verbose = verbose
+      )
+      
+      Exptl_data_internal <- .make_internal_exir_dataframe(
+        expr_features_by_samples = expr_features_by_samples,
+        sample_condition = sample_condition
+      )
+      
+      list(
+        Exptl_data = Exptl_data_internal,
+        n_samples_original = n_samples,
+        pseudo_sample = pseudo_sample,
+        pseudo_samples_per_group = pseudo_samples_per_group,
+        data_clues = data_clues
+      )
+    }
+    
+    # -------------------------------------------------------------------------
+    # Prepare Exptl_data
+    # -------------------------------------------------------------------------
+    
+    prepared_exptl <- .prepare_exptl_data(
+      Exptl_data = Exptl_data,
+      Exptl_data_type = Exptl_data_type,
+      condition = condition,
+      Exptl_data_orientation = Exptl_data_orientation,
+      assay = assay,
+      layer = layer,
+      normalize = normalize,
+      pseudo_sample = pseudo_sample,
+      pseudo_samples_per_group = pseudo_samples_per_group,
+      Exptl_data_size_check = Exptl_data_size_check,
+      feature_filter = feature_filter,
+      min_feature_prevalence = min_feature_prevalence,
+      min_feature_total = min_feature_total,
+      min_feature_variance = min_feature_variance,
+      always_keep_diff_features = always_keep_diff_features,
+      Diff_data = Diff_data,
+      Desired_list = Desired_list,
+      seed = seed,
+      verbose = verbose
+    )
+    
+    Exptl_data <- prepared_exptl$Exptl_data
+    
+    # Internal condition column used by ExIR
+    condition.index <- match("condition", colnames(Exptl_data))
+    
+    if(is.na(condition.index)) {
+      cli::cli_abort("Internal error: the prepared Exptl_data does not contain a {.code condition} column.")
+    }
+    
     #change the colnames of Diff_data
     base::colnames(Diff_data) <- base::paste("source",
                                              base::colnames(Diff_data),
                                              sep = ".")
-
+    
     #change the Inf/-Inf diff values (applicable to sc-Data)
     for(i in 1:base::length(Diff_value)) {
-
-      if(any(base::is.infinite(Diff_data[,Diff_value[i]]))) {
-
+      
+      if(any(base::is.infinite(Diff_data[, Diff_value[i]]))) {
+        
         temp.max.abs.diff.value <-
-      base::max(base::abs(Diff_data[,Diff_value[i]][!base::is.infinite(Diff_data[,Diff_value[i]])]))
-
-        temp.inf.index <- base::which(base::is.infinite(Diff_data[,Diff_value[i]]))
-
+          base::max(base::abs(Diff_data[, Diff_value[i]][!base::is.infinite(Diff_data[, Diff_value[i]])]))
+        
+        temp.inf.index <- base::which(base::is.infinite(Diff_data[, Diff_value[i]]))
+        
         Diff_data[temp.inf.index, Diff_value[i]] <-
-          base::ifelse(base::unlist(Diff_data[temp.inf.index,Diff_value[i]]) > 0,
-                 temp.max.abs.diff.value*inf_const,
-                 -1*temp.max.abs.diff.value*inf_const)
+          base::ifelse(base::unlist(Diff_data[temp.inf.index, Diff_value[i]]) > 0,
+                       temp.max.abs.diff.value * inf_const,
+                       -1 * temp.max.abs.diff.value * inf_const)
       }
     }
-
-    # Get the column number of condition column
-    condition.index <- match(Condition_colname, colnames(Exptl_data))
     
-    # transform the data to numeric
-    if(any(sapply(Exptl_data[,-condition.index], mode)  == "character")) {
-      Exptl_data[,-condition.index] <- data.frame(sapply(Exptl_data[,-condition.index], as.numeric))
-    }
-
-    # Transform the condition column to a factor
-    Exptl_data[,condition.index] <- base::as.factor(Exptl_data[,condition.index])
-
-    # Normalize the experimental data (if required)
-    if(Normalize) {
-      Exptl_data[,-condition.index] <- log2(Exptl_data[,-condition.index]+1)
-    }
-
-    #ProgressBar: Preparing the input data
-    if(verbose) {
-      utils::setTxtProgressBar(pb = pb, value = 5)
-    }
-
-    #ProgressBar: Calculating the differential score
-    if(verbose) {
-      print(unname(as.data.frame("Calculating the differential score")),quote = FALSE, row.names = FALSE)
-    }
-
+    .exir_progress(5, "Input data prepared")
+    
+    .exir_step("Calculating the differential score", 5)
+    
     #1 Calculate differential score
     Diff_data$sum.Diff_value <- base::abs(base::apply(Diff_data[,Diff_value, drop = FALSE],1,sum))
     #range normalize the differential score
     Diff_data$sum.Diff_value <- 1+(((Diff_data$sum.Diff_value-min(Diff_data$sum.Diff_value))*(100-1))/
                                      (max(Diff_data$sum.Diff_value)-min(Diff_data$sum.Diff_value)))
 
-    #ProgressBar: Calculating the differential score
-    if(verbose) {
-      utils::setTxtProgressBar(pb = pb, value = 10)
+    .exir_progress(10, "Differential score calculated")
+    
+    if(!is.null(Regr_value)) {
+      .exir_step("Calculating the regression/time-course R-squared score", 10)
     }
-
-    #ProgressBar: Calculating the regression/time-course R-squared score
-    if(verbose & !is.null(Regr_value)) {
-      print(unname(as.data.frame("Calculating the regression/time-course R-squared score")),quote = FALSE, row.names = FALSE)
-    }
-
+    
     #2 Calculate regression/time-course R-squared score (if provided)
     if (!is.null(Regr_value)) {
       Diff_data$sum.Regr_value <- base::apply(Diff_data[,Regr_value, drop = FALSE],1,sum)
@@ -2202,19 +3407,15 @@ sirir <- function(graph, vertices = V(graph),
                                        (max(Diff_data$sum.Regr_value)-min(Diff_data$sum.Regr_value)))
     }
 
-    #ProgressBar: Calculating the regression/time-course R-squared score
-    if(verbose & !is.null(Regr_value)) {
-      utils::setTxtProgressBar(pb = pb, value = 15)
+    if(!is.null(Regr_value)) {
+      .exir_progress(15, "Regression/time-course score calculated")
     }
-
-    #ProgressBar: Calculating the collective statistical significance of differential/regression factors
-    if(verbose) {
-      print(unname(as.data.frame("Calculating the collective statistical significance of differential/regression factors")),quote = FALSE, row.names = FALSE)
-    }
-
+    
+    .exir_step("Calculating the collective statistical significance score", 15)
+    
     #3 Calculate statistical significance of differential/regression factors
     if (max(Diff_data[,Sig_value]) > 1 | min(Diff_data[,Sig_value]) < 0) {
-      stop("input Sig-values (p-value/padj) must all be in the range 0 to 1!")
+      cli::cli_abort("Input significance values must all be in the range 0 to 1.")
     }
 
     for(m in 1:length(Sig_value)) {
@@ -2235,16 +3436,10 @@ sirir <- function(graph, vertices = V(graph),
     Diff_data$sum.Sig_value <- 1+(((Diff_data$sum.Sig_value-min(Diff_data$sum.Sig_value))*(100-1))/
                                     (max(Diff_data$sum.Sig_value)-min(Diff_data$sum.Sig_value)))
 
-    #ProgressBar: Calculating the collective statistical significance of differential/regression factors
-    if(verbose) {
-      utils::setTxtProgressBar(pb = pb, value = 20)
-    }
-
-    #ProgressBar: Performing the random forests classification (supervised machine learning)
-    if(verbose) {
-      print(unname(as.data.frame("Performing the random forests classification (supervised machine learning)")),quote = FALSE, row.names = FALSE)
-    }
-
+    .exir_progress(20, "Statistical significance score calculated")
+    
+    .exir_step("Performing random forest classification", 20)
+    
     #4 Calculation of the Integrated Value of Influence (IVI)
 
     #a Separate a transcriptomic profile of diff features
@@ -2309,10 +3504,12 @@ sirir <- function(graph, vertices = V(graph),
           )
           
         } else {
-          stop(e)  # rethrow unrelated errors
+          stop(e)  # re-throw unrelated errors
         }
       }
     )
+    
+    .exir_info("Estimating random forest feature-importance p-values")
 
     base::set.seed(seed = seed)
     rf.diff.exptl.pvalue <- as.data.frame(ranger::importance_pvalues(x = rf.diff.exptl,
@@ -2379,17 +3576,11 @@ sirir <- function(graph, vertices = V(graph),
            (max(rf.diff.exptl.pvalue[,"pvalue"])-min(rf.diff.exptl.pvalue[,"pvalue"])))
     }
 
-    #ProgressBar: Performing the random forests classification (supervised machine learning)
-    if(verbose) {
-      utils::setTxtProgressBar(pb = pb, value = 35)
-    }
+    .exir_progress(35, "Random forest classification completed")
+    
 
-
-    #ProgressBar: Performing PCA (unsupervised machine learning)
-    if(verbose) {
-      print(unname(as.data.frame("Performing PCA (unsupervised machine learning)")),quote = FALSE, row.names = FALSE)
-    }
-
+    .exir_step("Performing PCA", 35)
+    
     #5 Unsupervised machine learning (PCA)
 
     Exptl_data.for.PCA.index <- stats::na.omit(base::match(base::rownames(rf.diff.exptl.pvalue),
@@ -2397,175 +3588,194 @@ sirir <- function(graph, vertices = V(graph),
     temp.Exptl_data.for.PCA <- Exptl_data[,Exptl_data.for.PCA.index]
 
     set.seed(seed)
-    temp.PCA <- stats::prcomp(temp.Exptl_data.for.PCA)
+    temp.PCA <- irlba::prcomp_irlba(
+      as.matrix(temp.Exptl_data.for.PCA),
+      n = 1,
+      center = TRUE,
+      scale. = FALSE
+    )
     temp.PCA.r <- base::abs(temp.PCA$rotation[,1])
+    names(temp.PCA.r) <- colnames(temp.Exptl_data.for.PCA)
 
     #range normalize the rotation values
     temp.PCA.r <- 1+(((temp.PCA.r-min(temp.PCA.r))*(100-1))/
                        (max(temp.PCA.r)-min(temp.PCA.r)))
 
-    #ProgressBar: Performing PCA (unsupervised machine learning)
-    if(verbose) {
-      utils::setTxtProgressBar(pb = pb, value = 40)
-    }
-
-    #ProgressBar: Performing the first round of association analysis
-    if(verbose) {
-      print(unname(as.data.frame("Performing the first round of association analysis")),quote = FALSE, row.names = FALSE)
-    }
-
+    .exir_progress(40, "PCA completed")
+    
+    .exir_step("Performing first-round association analysis", 40)
+    .exir_info("Calculating full feature-feature Spearman correlation network")
+    
     #c Performing correlation analysis
-    temp.corr <- fcor(data = Exptl_data[,-condition.index],
-                      method = "spearman", mutualRank = ifelse(cor_thresh_method == "mr", TRUE, FALSE))
-
-    #save a second copy of all cor data
-    temp.corr.for.sec.round <- temp.corr
-
-    #filter corr data for only those corr between diff features and themselves/others
-    filter.corr.index <- stats::na.omit(base::unique(c(base::which(temp.corr$row %in% rownames(rf.diff.exptl.pvalue)),
-                                                       base::which(temp.corr$column %in% rownames(rf.diff.exptl.pvalue)))))
-    temp.corr <- temp.corr[filter.corr.index,]
-
-    #filtering low level correlations
+    temp.corr <- fcor(data = Exptl_data[, -condition.index],
+                      method = "spearman",
+                      mutualRank = ifelse(cor_thresh_method == "mr", TRUE, FALSE))
+    
+    # Define selected / differential features once
+    selected.features <- rownames(rf.diff.exptl.pvalue)
+    
+    # -------------------------------------------------------------------------
+    # First round of association analysis
+    # -------------------------------------------------------------------------
+    
+    # Filter corr data for only those correlations between selected features
+    # and themselves/others.
+    filter.corr.index <- stats::na.omit(base::unique(c(
+      base::which(temp.corr$row %in% selected.features),
+      base::which(temp.corr$column %in% selected.features)
+    )))
+    
+    temp.corr.round1 <- temp.corr[filter.corr.index, , drop = FALSE]
+    
+    # filtering low level correlations
     cor.thresh <- r
     mr.thresh <- mr
-
+    
     if(cor_thresh_method == "mr") {
-
-      temp.corr <- base::subset(temp.corr, temp.corr[,4] < mr.thresh)
-
-      if(nrow(temp.corr)> (max.connections*0.95)) {
-
-        temp.corr.select.index <- utils::head(order(temp.corr$mr),
-                                              n = round(max.connections*0.95))
-
-        temp.corr <- temp.corr[temp.corr.select.index,]
-
+      
+      temp.corr.round1 <- base::subset(temp.corr.round1,
+                                       temp.corr.round1[, 4] < mr.thresh)
+      
+      if(nrow(temp.corr.round1) > (max.connections * 0.95)) {
+        
+        temp.corr.select.index <- utils::head(order(temp.corr.round1$mr),
+                                              n = round(max.connections * 0.95))
+        
+        temp.corr.round1 <- temp.corr.round1[temp.corr.select.index, , drop = FALSE]
       }
-
+      
     } else if(cor_thresh_method == "cor.coefficient") {
-
-      temp.corr <- base::subset(temp.corr, base::abs(temp.corr[,3])>cor.thresh)
-
-      if(nrow(temp.corr)> (max.connections*0.95)) {
-
-        temp.corr.select.index <- utils::tail(order(temp.corr$cor),
-                                              n = round(max.connections*0.95))
-
-        temp.corr <- temp.corr[temp.corr.select.index,]
-
+      
+      temp.corr.round1 <- base::subset(temp.corr.round1,
+                                       base::abs(temp.corr.round1[, 3]) > cor.thresh)
+      
+      if(nrow(temp.corr.round1) > (max.connections * 0.95)) {
+        
+        temp.corr.select.index <- utils::tail(order(temp.corr.round1$cor),
+                                              n = round(max.connections * 0.95))
+        
+        temp.corr.round1 <- temp.corr.round1[temp.corr.select.index, , drop = FALSE]
       }
     }
-
-    diff.only.temp.corr <- temp.corr
-
-    #getting the list of diff features and their correlated features
-    diff.plus.corr.features <- base::unique(c(base::as.character(temp.corr[,1]),
-                                              base::as.character(temp.corr[,2])))
-
-    #find the diff features amongst diff.plus.corr.features
-    diff.only.features.index <- stats::na.omit(base::unique(base::match(rownames(rf.diff.exptl.pvalue),
-                                                                        diff.plus.corr.features)))
+    
+    diff.only.temp.corr <- temp.corr.round1
+    rm(temp.corr.round1)
+    
+    # Getting the list of selected features and their correlated features
+    diff.plus.corr.features <- base::unique(c(
+      base::as.character(diff.only.temp.corr[, 1]),
+      base::as.character(diff.only.temp.corr[, 2])
+    ))
+    
+    # Find selected features among diff.plus.corr.features
+    diff.only.features.index <- stats::na.omit(base::unique(base::match(
+      selected.features,
+      diff.plus.corr.features
+    )))
+    
     non.diff.only.features <- diff.plus.corr.features[-diff.only.features.index]
-
-    #ProgressBar: Performing first round of association analysis
-    if(verbose) {
-      utils::setTxtProgressBar(pb = pb, value = 50)
-    }
-
-    #ProgressBar: Performing the second round of association analysis
-    if(verbose) {
-      print(unname(as.data.frame("Performing the second round of association analysis")),quote = FALSE, row.names = FALSE)
-    }
-
+    
+    .exir_progress(50, "First-round association analysis completed")
+    
+    .exir_step("Performing second-round association analysis", 50)
+    
+    # -------------------------------------------------------------------------
+    # Second round of association analysis
+    # -------------------------------------------------------------------------
+    
     if(base::length(non.diff.only.features) > 0) {
-
-    #redo correlation analysis
-    temp.corr <- temp.corr.for.sec.round
-    rm(temp.corr.for.sec.round)
-
-    #filter corr data for only those corr between non.diff.only.features and themselves/others
-    filter.corr.index <- stats::na.omit(base::unique(c(base::which(temp.corr$row %in% non.diff.only.features),
-                                                       base::which(temp.corr$column %in% non.diff.only.features))))
-    temp.corr <- temp.corr[filter.corr.index,]
-
-    #filtering low level correlations
-    cor.thresh <- r
-    mr.thresh <- mr
-
-    if(cor_thresh_method == "mr") {
-      temp.corr <- base::subset(temp.corr, temp.corr[,4] < mr.thresh)
-
-    } else if(cor_thresh_method == "cor.coefficient") {
-      temp.corr <- base::subset(temp.corr, base::abs(temp.corr[,3])>cor.thresh)
-    }
-
-    # separate non.diff.only features
-    temp.corr.diff.only.index <- stats::na.omit(base::unique(c(base::which(temp.corr$row %in% rownames(rf.diff.exptl.pvalue)),
-                                                               base::which(temp.corr$column %in% rownames(rf.diff.exptl.pvalue)))))
-
-    if(base::length(temp.corr.diff.only.index)>0) {
-      temp.corr <- temp.corr[-temp.corr.diff.only.index,]
-    }
-
-    if(nrow(temp.corr)>(max.connections-nrow(diff.only.temp.corr))) {
-
+      
+      # Filter the original full temp.corr directly.
+      filter.corr.index <- stats::na.omit(base::unique(c(
+        base::which(temp.corr$row %in% non.diff.only.features),
+        base::which(temp.corr$column %in% non.diff.only.features)
+      )))
+      
+      temp.corr.round2 <- temp.corr[filter.corr.index, , drop = FALSE]
+      
+      # filtering low level correlations
+      cor.thresh <- r
+      mr.thresh <- mr
+      
       if(cor_thresh_method == "mr") {
-        temp.corr.select.index <- utils::head(order(temp.corr$mr),
-                                              n = (max.connections-nrow(diff.only.temp.corr)))
-
+        
+        temp.corr.round2 <- base::subset(temp.corr.round2,
+                                         temp.corr.round2[, 4] < mr.thresh)
+        
       } else if(cor_thresh_method == "cor.coefficient") {
-        temp.corr.select.index <- utils::tail(order(temp.corr$cor),
-                                              n = (max.connections-nrow(diff.only.temp.corr)))
+        
+        temp.corr.round2 <- base::subset(temp.corr.round2,
+                                         base::abs(temp.corr.round2[, 3]) > cor.thresh)
       }
-
-      temp.corr <- temp.corr[temp.corr.select.index,]
-    }
-
-    # recombine the diff.only.temp.corr data and temp.corr
-    temp.corr <- base::rbind(temp.corr, diff.only.temp.corr)
-
+      
+      # Remove correlations that involve selected/differential features.
+      temp.corr.diff.only.index <- stats::na.omit(base::unique(c(
+        base::which(temp.corr.round2$row %in% selected.features),
+        base::which(temp.corr.round2$column %in% selected.features)
+      )))
+      
+      if(base::length(temp.corr.diff.only.index) > 0) {
+        temp.corr.round2 <- temp.corr.round2[-temp.corr.diff.only.index, , drop = FALSE]
+      }
+      
+      if(nrow(temp.corr.round2) > (max.connections - nrow(diff.only.temp.corr))) {
+        
+        if(cor_thresh_method == "mr") {
+          
+          temp.corr.select.index <- utils::head(order(temp.corr.round2$mr),
+                                                n = (max.connections - nrow(diff.only.temp.corr)))
+          
+        } else if(cor_thresh_method == "cor.coefficient") {
+          
+          temp.corr.select.index <- utils::tail(order(temp.corr.round2$cor),
+                                                n = (max.connections - nrow(diff.only.temp.corr)))
+        }
+        
+        temp.corr.round2 <- temp.corr.round2[temp.corr.select.index, , drop = FALSE]
+      }
+      
+      # Now the full correlation table is no longer needed.
+      # Overwrite temp.corr with the final edge table.
+      temp.corr <- base::rbind(temp.corr.round2, diff.only.temp.corr)
+      
+      rm(temp.corr.round2, diff.only.temp.corr)
+      
     } else {
+      
+      # No second-round features; final edge table is only first-round edges.
       temp.corr <- diff.only.temp.corr
-      rm(temp.corr.for.sec.round, diff.only.temp.corr)
+      rm(diff.only.temp.corr)
     }
+    
+    # release memory after the full correlation table has been overwritten
+    gc()
 
-    #ProgressBar: Performing second round of association analysis
-    if(verbose) {
-      utils::setTxtProgressBar(pb = pb, value = 60)
-    }
-
-    #ProgressBar: Network reconstruction
-    if(verbose) {
-      print(unname(as.data.frame("Network reconstruction")),quote = FALSE, row.names = FALSE)
-    }
-
+    .exir_progress(60, "Second-round association analysis completed")
+    
+    .exir_step("Reconstructing the association network", 60)
+    
     #d Graph reconstruction
-    temp.corr.graph <- igraph::graph_from_data_frame(temp.corr[,c(1:2)])
-
-    #ProgressBar: Network reconstruction
-    if(verbose) {
-      utils::setTxtProgressBar(pb = pb, value = 65)
-    }
-
-    #ProgressBar: Calculation of the integrated value of influence (IVI)
-    if(verbose) {
-      print(unname(as.data.frame("Calculation of the integrated value of influence (IVI)")),quote = FALSE, row.names = FALSE)
-    }
-
+    temp.corr.graph <- igraph::graph_from_data_frame(temp.corr[, c(1:2)])
+    
+    # Remove self-loops, if any.
+    # Multiple edges are retained to avoid unintentionally changing graph structure.
+    temp.corr.graph <- igraph::simplify(
+      temp.corr.graph,
+      remove.multiple = FALSE,
+      remove.loops = TRUE
+    )
+    
+    .exir_progress(65, "Association network reconstructed")
+    
+    .exir_step("Calculating integrated value of influence (IVI)", 65)
+    
     #e Calculation of IVI
     temp.corr.ivi <- ivi(temp.corr.graph, ncores = ncores)
 
-    #ProgressBar: Calculation of the integrated value of influence (IVI)
-    if(verbose) {
-      utils::setTxtProgressBar(pb = pb, value = 70)
-    }
-
-    #ProgressBar: Calculation of the primitive driver score
-    if(verbose) {
-      print(unname(as.data.frame("Calculation of the primitive driver score")),quote = FALSE, row.names = FALSE)
-    }
-
+    .exir_progress(70, "IVI calculated")
+    
+    .exir_step("Calculating the primitive driver score", 70)
+    
     ## Driver score and ranking
 
     #a calculate first level driver score based on #3 and #4
@@ -2590,15 +3800,18 @@ sirir <- function(graph, vertices = V(graph),
       Diff_data$IVI <- 1
     }
 
-    Diff_data$first.Driver.Rank <- 1
-
-    for (i in 1:nrow(Diff_data)) {
-      if(c(any(Diff_data[i,Diff_value, drop = FALSE]<0) & any(Diff_data[i,Diff_value, drop = FALSE]>0))) {
-        Diff_data$first.Driver.Rank[i] <- 0
-      } else {
-        Diff_data$first.Driver.Rank[i] <- Diff_data$sum.Sig_value[i]*Diff_data$IVI[i]
-      }
-    }
+    diff_vals <- as.matrix(Diff_data[, Diff_value, drop = FALSE])
+    
+    has_neg <- rowSums(diff_vals < 0) > 0
+    has_pos <- rowSums(diff_vals > 0) > 0
+    mixed_sign <- has_neg & has_pos
+    
+    Diff_data$first.Driver.Rank <- ifelse(
+      mixed_sign,
+      0,
+      Diff_data$sum.Sig_value * Diff_data$IVI
+    )
+    
     #range normalize the first driver rank
     if(any(Diff_data$first.Driver.Rank == 0)) {
       Diff_data$first.Driver.Rank <- 0+(((Diff_data$first.Driver.Rank-min(Diff_data$first.Driver.Rank))*(100-0))/
@@ -2608,57 +3821,68 @@ sirir <- function(graph, vertices = V(graph),
                                           (max(Diff_data$first.Driver.Rank)-min(Diff_data$first.Driver.Rank)))
     }
 
-    #ProgressBar: Calculation of the primitive driver score
-    if(verbose) {
-      utils::setTxtProgressBar(pb = pb, value = 75)
-    }
-
-    #ProgressBar: Calculation of the neighborhood driver score
-    if(verbose) {
-      print(unname(as.data.frame("Calculation of the neighborhood driver score")),quote = FALSE, row.names = FALSE)
-    }
-
+    .exir_progress(75, "Primitive driver score calculated")
+    
+    .exir_step("Calculating the neighbourhood driver score", 75)
+    
     #b (#6) calculate neighborhood score
-
+    
     #get the list of network nodes
-    network.nodes <- base::as.character(igraph::as_ids(V(temp.corr.graph)))
-
-    neighborehood.score.table <- data.frame(node = network.nodes,
-                                            N.score = 0)
-    for (n in 1:nrow(neighborehood.score.table)) {
-      first.neighbors <- igraph::as_ids(igraph::neighbors(graph = temp.corr.graph,
-                                                          v = neighborehood.score.table$node[n],
-                                                          mode = "all"))
-      first.neighbors.index <- stats::na.omit(match(first.neighbors,
-                                                    rownames(Diff_data)))
-
-      neighborehood.score.table$N.score[n] <- sum(Diff_data$first.Driver.Rank[first.neighbors.index])
-    }
-
-    #ProgressBar: Calculation of the neighborhood driver score
-    if(verbose) {
-      utils::setTxtProgressBar(pb = pb, value = 80)
-    }
-
-    #ProgressBar: Preparation of the driver table
-    if(verbose) {
-      print(unname(as.data.frame("Preparation of the driver table")),quote = FALSE, row.names = FALSE)
-    }
-
+    network.nodes <- base::as.character(igraph::as_ids(igraph::V(temp.corr.graph)))
+    
+    # Build a named vector of first.Driver.Rank for all graph nodes.
+    # Nodes not present in Diff_data receive score 0, matching the original behaviour.
+    rank_vec <- stats::setNames(
+      rep(0, length(network.nodes)),
+      network.nodes
+    )
+    
+    rank_match <- match(rownames(Diff_data), network.nodes)
+    valid_rank_match <- !is.na(rank_match)
+    
+    rank_vec[rank_match[valid_rank_match]] <- Diff_data$first.Driver.Rank[valid_rank_match]
+    
+    # Build sparse adjacency matrix.
+    # Since self-loops were removed after graph construction, self-correlations do not
+    # contribute to the neighbourhood score.
+    adj_mat <- igraph::as_adjacency_matrix(
+      temp.corr.graph,
+      type = "both",
+      sparse = TRUE
+    )
+    
+    # Ensure rank_vec follows the same node order as the adjacency matrix.
+    rank_vec <- rank_vec[rownames(adj_mat)]
+    
+    # Neighbourhood score = sum of first.Driver.Rank across direct neighbours.
+    N_scores <- as.numeric(adj_mat %*% rank_vec)
+    
+    neighborehood.score.table <- data.frame(
+      node = rownames(adj_mat),
+      N.score = N_scores,
+      stringsAsFactors = FALSE
+    )
+    
+    .exir_progress(80, "Neighbourhood driver score calculated")
+    
+    .exir_step("Preparing the driver table", 80)
+    
+    # Map N.score back to Diff_data
     Diff_data$N.score <- 0
-    Diff_data.N.score.index <- stats::na.omit(match(neighborehood.score.table$node,
-                                                    rownames(Diff_data)))
-
-    neighborehood.score.table.for.Diff_data.N.score.index <- stats::na.omit(match(rownames(Diff_data)[Diff_data.N.score.index],
-                                                                                  neighborehood.score.table$node))
-
-    Diff_data$N.score[Diff_data.N.score.index] <- neighborehood.score.table$N.score[neighborehood.score.table.for.Diff_data.N.score.index]
-
+    
+    nscore_match <- match(rownames(Diff_data), neighborehood.score.table$node)
+    valid_nscore_match <- !is.na(nscore_match)
+    
+    Diff_data$N.score[valid_nscore_match] <- neighborehood.score.table$N.score[nscore_match[valid_nscore_match]]
+    
     #range normalize (1,100) the neighborhood score
-    Diff_data$N.score <- ifelse(sum(Diff_data$N.score) == 0, 1,
-                                1+(((Diff_data$N.score-min(Diff_data$N.score))*(100-1))/
-                                     (max(Diff_data$N.score)-min(Diff_data$N.score))))
-
+    Diff_data$N.score <- ifelse(
+      sum(Diff_data$N.score) == 0,
+      1,
+      1 + (((Diff_data$N.score - min(Diff_data$N.score)) * (100 - 1)) /
+             (max(Diff_data$N.score) - min(Diff_data$N.score)))
+    )
+    
     #c calculate the final driver score
 
     Diff_data$final.Driver.score <- (Diff_data$first.Driver.Rank)*(Diff_data$N.score)
@@ -2702,20 +3926,18 @@ sirir <- function(graph, vertices = V(graph),
                                            method = "BH")
 
       #add driver type
-      Driver.table$driver.type <- ""
-
-      for (d in 1:nrow(Driver.table)) {
-
-        if(sum(Driver.table[d,Diff_value])<0) {
-          Driver.table$driver.type[d] <- "Decelerator"
-
-        } else if(sum(Driver.table[d,Diff_value])>0) {
-          Driver.table$driver.type[d] <- "Accelerator"
-        } else {
-          Driver.table$driver.type[d] <- NA
-        }
-      }
-
+      driver_diff_sum <- rowSums(as.matrix(Driver.table[, Diff_value, drop = FALSE]))
+      
+      Driver.table$driver.type <- ifelse(
+        driver_diff_sum < 0,
+        "Decelerator",
+        ifelse(
+          driver_diff_sum > 0,
+          "Accelerator",
+          NA_character_
+        )
+      )
+      
       Driver.table <- Driver.table[stats::complete.cases(Driver.table),]
 
       #remove redundent columns
@@ -2742,17 +3964,10 @@ sirir <- function(graph, vertices = V(graph),
 
     }
 
-    #ProgressBar: Preparation of the driver table
-    if(verbose) {
-      utils::setTxtProgressBar(pb = pb, value = 85)
-    }
+    .exir_progress(85, "Driver table prepared")
 
-
-    #ProgressBar: Preparation of the biomarker table
-    if(verbose) {
-      print(unname(as.data.frame("Preparation of the biomarker table")),quote = FALSE, row.names = FALSE)
-    }
-
+    .exir_step("Preparing the biomarker table", 85)
+    
     # Create the Biomarker table
 
     Biomarker.table <- Diff_data
@@ -2838,19 +4053,17 @@ sirir <- function(graph, vertices = V(graph),
                                               method = "BH")
 
       #add biomarker type
-      Biomarker.table$type <- ""
-
-      for (b in 1:nrow(Biomarker.table)) {
-
-        if(sum(Biomarker.table[b,Diff_value])<0) {
-          Biomarker.table$type[b] <- "Down-regulated"
-
-        } else if(sum(Biomarker.table[b,Diff_value])>0) {
-          Biomarker.table$type[b] <- "Up-regulated"
-        } else {
-          Biomarker.table$type[b] <- NA
-        }
-      }
+      biomarker_diff_sum <- rowSums(as.matrix(Biomarker.table[, Diff_value, drop = FALSE]))
+      
+      Biomarker.table$type <- ifelse(
+        biomarker_diff_sum < 0,
+        "Down-regulated",
+        ifelse(
+          biomarker_diff_sum > 0,
+          "Up-regulated",
+          NA_character_
+        )
+      )
 
       #remove redundent columns
       Biomarker.table <- Biomarker.table[,c("final.biomarker.score",
@@ -2873,16 +4086,99 @@ sirir <- function(graph, vertices = V(graph),
 
     }
 
-    #ProgressBar: Preparation of the biomarker table
-    if(verbose) {
-      utils::setTxtProgressBar(pb = pb, value = 90)
+    .exir_progress(90, "Biomarker table prepared")
+    
+    #_________________________________
+    
+    get_associated_drivers <- function(nodes, graph, Driver.table) {
+      
+      if(length(nodes) == 0 || is.null(Driver.table) || nrow(Driver.table) == 0) {
+        return(list(
+          first_order = character(0),
+          second_order = character(0)
+        ))
+      }
+      
+      driver_names <- rownames(Driver.table)
+      
+      # Compute all first- and second-order neighbourhoods in batch.
+      # This preserves the same igraph::neighborhood() semantics as the original code.
+      all_nbrs_1 <- igraph::neighborhood(
+        graph = graph,
+        order = 1,
+        nodes = nodes,
+        mode = "all"
+      )
+      
+      all_nbrs_2 <- igraph::neighborhood(
+        graph = graph,
+        order = 2,
+        nodes = nodes,
+        mode = "all"
+      )
+      
+      # First-order associated drivers
+      first_order_drivers <- lapply(all_nbrs_1, function(nbrs) {
+        
+        nbr_names <- igraph::as_ids(nbrs)
+        
+        assoc_drivers <- Driver.table[
+          driver_names %in% nbr_names,
+          ,
+          drop = FALSE
+        ]
+        
+        assoc_drivers <- rownames(assoc_drivers[order(assoc_drivers$Rank), , drop = FALSE])
+        
+        assoc_drivers
+      })
+      
+      # Second-order associated drivers
+      second_order_drivers <- lapply(seq_along(all_nbrs_2), function(i) {
+        
+        nbr_names <- igraph::as_ids(all_nbrs_2[[i]])
+        
+        assoc_drivers <- Driver.table[
+          driver_names %in% nbr_names,
+          ,
+          drop = FALSE
+        ]
+        
+        # Preserve original behaviour:
+        # remove first-order drivers from the second-order driver list.
+        assoc_drivers <- assoc_drivers[
+          !(rownames(assoc_drivers) %in% first_order_drivers[[i]]),
+          ,
+          drop = FALSE
+        ]
+        
+        assoc_drivers <- rownames(assoc_drivers[order(assoc_drivers$Rank), , drop = FALSE])
+        
+        assoc_drivers
+      })
+      
+      first_order_drivers <- vapply(
+        first_order_drivers,
+        function(x) paste0(x, collapse = ", "),
+        character(1)
+      )
+      
+      second_order_drivers <- vapply(
+        second_order_drivers,
+        function(x) paste0(x, collapse = ", "),
+        character(1)
+      )
+      
+      list(
+        first_order = first_order_drivers,
+        second_order = second_order_drivers
+      )
     }
+    
+    #_________________________________
 
-    #ProgressBar: Preparation of the DE-mediator table
-    if(verbose) {
-      print(unname(as.data.frame("Preparation of the DE-mediator table")),quote = FALSE, row.names = FALSE)
-    }
-
+    .exir_step("Preparing the DE-mediator table", 90)
+    
     # Create the DE mediators table
 
     DE.mediator.table <- Diff_data
@@ -2942,76 +4238,32 @@ sirir <- function(graph, vertices = V(graph),
       #filtering redundant (NaN) results
       DE.mediator.table <- DE.mediator.table[stats::complete.cases(DE.mediator.table),]
 
-      if(nrow(as.data.frame(DE.mediator.table))==0) {
+      if(nrow(as.data.frame(DE.mediator.table)) == 0) {
+        
         DE.mediator.table <- NULL
-        } else {
-          # Adding the associated drivers to the table
-          
-          ## First order drivers
-          first_order_drivers <- 
-            lapply(1:nrow(DE.mediator.table), function(i) {
-              
-              first_order_assoc_drivers <-
-                Driver.table[grep(paste0(paste("^",
-                                               igraph::as_ids(igraph::neighborhood(temp.corr.graph, 
-                                                                                   nodes = rownames(DE.mediator.table)[i], 
-                                                                                   order = 1)[[1]]),
-                                               "$", sep = ""), 
-                                         collapse = "|"), 
-                                  rownames(Driver.table), value = TRUE),]
-              
-              first_order_assoc_drivers <- rownames(first_order_assoc_drivers[order(first_order_assoc_drivers$Rank),])
-              first_order_assoc_drivers
-            })
-          
-          ## Second order drivers
-          second_order_drivers <- 
-            lapply(1:nrow(DE.mediator.table), function(i) {
-              
-              second_order_assoc_drivers <-
-                Driver.table[grep(paste0(paste("^",
-                                               igraph::as_ids(igraph::neighborhood(temp.corr.graph, 
-                                                                                   nodes = rownames(DE.mediator.table)[i], 
-                                                                                   order = 2)[[1]]),
-                                               "$", sep = ""), 
-                                         collapse = "|"), 
-                                  rownames(Driver.table), value = TRUE),]
-              
-              second_order_assoc_drivers <- second_order_assoc_drivers[!(rownames(second_order_assoc_drivers) %in% first_order_drivers[[i]]),]
-              
-              second_order_assoc_drivers <- rownames(second_order_assoc_drivers[order(second_order_assoc_drivers$Rank),])
-              second_order_assoc_drivers
-            })
-          
-          ## Collapsing the associated drivers
-          first_order_drivers <- lapply(first_order_drivers, function(i) {
-            paste0(i, collapse = ", ")
-          })
-          
-          second_order_drivers <- lapply(second_order_drivers, function(i) {
-            paste0(i, collapse = ", ")
-          })
-          
-          ## Adding to the table
-          DE.mediator.table$First.order.Drivers <- unlist(first_order_drivers)
-          DE.mediator.table$Second.order.Drivers <- unlist(second_order_drivers)
-          
-          DE.mediator.table <- cbind("DE.mediator" = rownames(DE.mediator.table), DE.mediator.table)
-          DE.mediator.table$Z.score <- as.numeric(DE.mediator.table$Z.score)
-          DE.mediator.table$P.value <- as.numeric(DE.mediator.table$P.value)
+        
+      } else {
+        
+        # Adding the associated drivers to the table
+        associated_drivers <- get_associated_drivers(
+          nodes = rownames(DE.mediator.table),
+          graph = temp.corr.graph,
+          Driver.table = Driver.table
+        )
+        
+        DE.mediator.table$First.order.Drivers <- associated_drivers$first_order
+        DE.mediator.table$Second.order.Drivers <- associated_drivers$second_order
+        
+        DE.mediator.table <- cbind("DE.mediator" = rownames(DE.mediator.table), DE.mediator.table)
+        DE.mediator.table$Z.score <- as.numeric(DE.mediator.table$Z.score)
+        DE.mediator.table$P.value <- as.numeric(DE.mediator.table$P.value)
         }
-    }
+      }
 
-    #ProgressBar: Preparation of the DE-mediator table
-    if(verbose) {
-      utils::setTxtProgressBar(pb = pb, value = 95)
-    }
-
-    #ProgressBar: Preparation of the nonDE-mediator table
-    if(verbose) {
-      print(unname(as.data.frame("Preparation of the nonDE-mediator table")),quote = FALSE, row.names = FALSE)
-    }
-
+    .exir_progress(95, "DE-mediator table prepared")
+    
+    .exir_step("Preparing the non-DE-mediator table", 95)
+    
     # Create the non-DE mediators table
     non.DE.mediators.index <- stats::na.omit(unique(match(rownames(Diff_data),
                                                           neighborehood.score.table$node)))
@@ -3071,72 +4323,29 @@ sirir <- function(graph, vertices = V(graph),
       #filtering redundant (NaN) results
       non.DE.mediators.table <- non.DE.mediators.table[stats::complete.cases(non.DE.mediators.table),]
 
-      if(nrow(as.data.frame(non.DE.mediators.table))==0) {
+      if(nrow(as.data.frame(non.DE.mediators.table)) == 0) {
+        
         non.DE.mediators.table <- NULL
+        
       } else {
+        
         # Adding the associated drivers to the table
+        associated_drivers <- get_associated_drivers(
+          nodes = rownames(non.DE.mediators.table),
+          graph = temp.corr.graph,
+          Driver.table = Driver.table
+        )
         
-        ## First order drivers
-        first_order_drivers <- 
-          lapply(1:nrow(non.DE.mediators.table), function(i) {
-            
-            first_order_assoc_drivers <-
-              Driver.table[grep(paste0(paste("^",
-                                             igraph::as_ids(igraph::neighborhood(temp.corr.graph, 
-                                                                                 nodes = rownames(non.DE.mediators.table)[i], 
-                                                                                 order = 1)[[1]]),
-                                             "$", sep = ""), 
-                                       collapse = "|"), 
-                                rownames(Driver.table), value = TRUE),]
-            
-            first_order_assoc_drivers <- rownames(first_order_assoc_drivers[order(first_order_assoc_drivers$Rank),])
-            first_order_assoc_drivers
-          })
-        
-        ## Second order drivers
-        second_order_drivers <- 
-          lapply(1:nrow(non.DE.mediators.table), function(i) {
-            
-            second_order_assoc_drivers <-
-              Driver.table[grep(paste0(paste("^",
-                                             igraph::as_ids(igraph::neighborhood(temp.corr.graph, 
-                                                                                 nodes = rownames(non.DE.mediators.table)[i], 
-                                                                                 order = 2)[[1]]),
-                                             "$", sep = ""), 
-                                       collapse = "|"), 
-                                rownames(Driver.table), value = TRUE),]
-            
-            second_order_assoc_drivers <- second_order_assoc_drivers[!(rownames(second_order_assoc_drivers) %in% first_order_drivers[[i]]),]
-            
-            second_order_assoc_drivers <- rownames(second_order_assoc_drivers[order(second_order_assoc_drivers$Rank),])
-            second_order_assoc_drivers
-          })
-        
-        ## Collapsing the associated drivers
-        first_order_drivers <- lapply(first_order_drivers, function(i) {
-          paste0(i, collapse = ", ")
-        })
-        
-        second_order_drivers <- lapply(second_order_drivers, function(i) {
-          paste0(i, collapse = ", ")
-        })
-        
-        ## Adding to the table
-        non.DE.mediators.table$First.order.Drivers <- unlist(first_order_drivers)
-        non.DE.mediators.table$Second.order.Drivers <- unlist(second_order_drivers)
+        non.DE.mediators.table$First.order.Drivers <- associated_drivers$first_order
+        non.DE.mediators.table$Second.order.Drivers <- associated_drivers$second_order
         
         non.DE.mediators.table <- cbind("non.DE.mediator" = rownames(non.DE.mediators.table), non.DE.mediators.table)
         non.DE.mediators.table$Z.score <- as.numeric(non.DE.mediators.table$Z.score)
         non.DE.mediators.table$P.value <- as.numeric(non.DE.mediators.table$P.value)
-        
         }
-    }
+      }
 
-    #ProgressBar: Preparation of the nonDE-mediator table
-    if(verbose) {
-      utils::setTxtProgressBar(pb = pb, value = 100)
-    }
-
+    .exir_progress(100, "non-DE-mediator table prepared")
 
     Results <- list("Driver table" = Driver.table,
                     "DE-mediator table" = DE.mediator.table,
@@ -3154,6 +4363,20 @@ sirir <- function(graph, vertices = V(graph),
 
     # set the class of Results
     base::class(Results) <- "ExIR_Result"
+    
+    if(isTRUE(verbose)) {
+      cli::cli_h2("ExIR output summary")
+      cli::cli_ul(c(
+        paste0("Driver table: ", ifelse(is.null(Driver.table), "not returned", paste0(nrow(Driver.table), " rows"))),
+        paste0("DE-mediator table: ", ifelse(is.null(DE.mediator.table), "not returned", paste0(nrow(DE.mediator.table), " rows"))),
+        paste0("non-DE-mediator table: ", ifelse(is.null(non.DE.mediators.table), "not returned", paste0(nrow(non.DE.mediators.table), " rows"))),
+        paste0("Biomarker table: ", ifelse(is.null(Biomarker.table), "not returned", paste0(nrow(Biomarker.table), " rows"))),
+        paste0("Graph nodes: ", igraph::vcount(temp.corr.graph)),
+        paste0("Graph edges: ", igraph::ecount(temp.corr.graph))
+      ))
+    }
+    
+    .exir_done()
 
     return(Results)
   }
@@ -4499,265 +5722,432 @@ sirir <- function(graph, vertices = V(graph),
   #' Fast correlation and mutual rank analysis
   #'
   #' This function calculates Pearson/Spearman correlations between all pairs of features in a matrix/dataframe much faster than the base R cor function.
+  #' It can also calculate correlations between all pairs of features from two input matrices/dataframes when `data2` is provided.
   #' It is also possible to simultaneously calculate mutual rank (MR) of correlations as well as their p-values and adjusted p-values.
   #' Additionally, this function can automatically combine and flatten the result matrices. Selecting correlated features using an MR-based threshold
   #' rather than based on their correlation coefficients or an arbitrary p-value is more efficient and accurate in inferring
   #' functional associations in systems, for example in gene regulatory networks.
-  #' @param data a numeric dataframe/matrix (features on columns and samples on rows).
+  #'
+  #' @param data a numeric dataframe/matrix with features on columns and samples/observations on rows. If `data2` is not provided,
+  #' correlations are calculated between all pairs of features in `data`.
+  #' @param data2 an optional numeric dataframe/matrix with features on columns and samples/observations on rows. If provided,
+  #' correlations are calculated between all features in `data` and all features in `data2`. `data` and `data2` must have the same
+  #' number of rows, and the rows must correspond to the same samples/observations in the same order. Default is `NULL`.
   #' @param na_to_zero logical, whether to convert NAs to 0 in the output (default) or not.
-  #' @param method a character string indicating which correlation coefficient is to be computed. One of "pearson" or "spearman" (default).
+  #' @param method a character string indicating which correlation coefficient is to be computed. One of `"pearson"` or `"spearman"` (default).
   #' @param mutualRank logical, whether to calculate mutual ranks of correlations or not.
-  #' @param mutualRank_mode a character string indicating whether to rank based on "signed" or "unsigned" (default) correlation values. 
-  #' In the "unsigned" mode, only the level of a correlation value is important and not its sign (the function ranks the absolutes of correlations). 
-  #' Options are "unsigned", and "signed".
+  #' @param mutualRank_mode a character string indicating whether to rank based on `"signed"` or `"unsigned"` (default) correlation values.
+  #' In the `"unsigned"` mode, only the level of a correlation value is important and not its sign; therefore, the function ranks the absolute
+  #' values of correlations. Options are `"unsigned"` and `"signed"`.
   #' @param pvalue logical, whether to calculate p-values of correlations or not.
-  #' @param adjust p-value correction method (when pvalue = TRUE), a character string including any of "BH" (default),
-  #' "bonferroni", "holm", "hochberg", "hommel", or "none".
+  #' @param adjust p-value correction method when `pvalue = TRUE`, a character string including any of `"BH"` (default),
+  #' `"bonferroni"`, `"holm"`, `"hochberg"`, `"hommel"`, or `"none"`.
   #' @param flat logical, whether to combine and flatten the result matrices or not.
-  #' @return Depending on the input data, a dataframe or list including cor (correlation coefficients),
-  #' mr (mutual ranks of correlation coefficients), p (p-values of correlation coefficients), and p.adj (adjusted p-values).
+  #' @param remove_self logical, whether to remove self-correlations from the flattened output when `data2` is provided. This is useful when
+  #' `data2` contains some or all of the same features as `data`. Default is `TRUE`.
+  #' @param remove_duplicate_pairs logical, whether to remove duplicate undirected feature pairs from the flattened output when `data2` is provided.
+  #' This is useful when `data2` contains the same features as `data`, because pairs such as `geneA-geneB` and `geneB-geneA` may otherwise both
+  #' be returned. Default is `TRUE`.
+  #'
+  #' @return Depending on the input data and the value of `flat`, a dataframe or list including `cor` correlation coefficients,
+  #' `mr` mutual ranks of correlation coefficients, `p` p-values of correlation coefficients, and `p.adj` adjusted p-values.
+  #' If `data2` is not provided and `flat = TRUE`, the flattened output contains the upper triangle of the all-pairs correlation matrix.
+  #' If `data2` is provided and `flat = TRUE`, the flattened output contains feature pairs between `data` and `data2`.
+  #'
+  #' @details
+  #' When `data2 = NULL`, the function performs the standard all-pairs correlation analysis among the features of `data`.
+  #' When `data2` is provided, the function performs a rectangular correlation analysis between the features of `data` and the features of `data2`.
+  #'
+  #' For Spearman correlation with `data2`, the two input matrices are internally combined before rank transformation so that feature-wise ranks
+  #' are calculated consistently across the same samples/observations.
+  #'
+  #' When `mutualRank = TRUE` and `data2` is provided, the calculated MR values are based on the rectangular correlation space between `data`
+  #' and `data2`. Therefore, these MR values are not necessarily identical to MR values obtained from a full all-pairs correlation matrix followed
+  #' by post hoc filtering.
+  #'
   #' @keywords fcor
   #' @seealso \code{\link[stats]{p.adjust}} and \code{\link[influential]{graph_from_data_frame}}
   #' @export fcor
+  #'
   #' @examples
   #' \dontrun{
   #' set.seed(1234)
+  #'
+  #' # All-pairs correlation among features
   #' data <- datasets::attitude
   #' cor <- fcor(data = data)
+  #'
+  #' # Correlation between two sets of features
+  #' data1 <- mtcars[, 1:4]
+  #' data2 <- mtcars[, 5:11]
+  #' cor_rect <- fcor(data = data1, data2 = data2)
+  #'
+  #' # Correlation between selected features and all features
+  #' selected_data <- mtcars[, 1:4]
+  #' all_data <- mtcars
+  #' cor_selected_all <- fcor(data = selected_data, data2 = all_data)
   #' }
-
   fcor <- function(data,
+                   data2 = NULL,
                    na_to_zero = TRUE,
                    method = "spearman",
                    mutualRank = TRUE,
                    mutualRank_mode = "unsigned",
                    pvalue = FALSE,
                    adjust = "BH",
-                   flat = TRUE) {
+                   flat = TRUE,
+                   remove_self = TRUE,
+                   remove_duplicate_pairs = TRUE) {
     
     #________________________________________
     # Dealing with warnings
-    ## Save current warning setting and disable warnings
-    old_warn <- getOption("warn")
-    options(warn = -1)   # -1 = suppress all warnings
     
-    on.exit(options(warn = old_warn), add = TRUE)  # restore when function exits
+    old_warn <- getOption("warn")
+    options(warn = -1)
+    on.exit(options(warn = old_warn), add = TRUE)
     
     #________________________________________
+    # Input checks
     
-    # Define and compile the rank_matrix function inline
-    Rcpp::cppFunction('
-  NumericMatrix rank_matrix(NumericMatrix mat, bool descending = true, bool use_abs = false) {
-    int nrows = mat.nrow();
-    int ncols = mat.ncol();
-    NumericMatrix ranks(nrows, ncols);
-    auto get_val = [use_abs](double x) { return use_abs ? fabs(x) : x; };
-    auto comp = [descending](double va, double vb) { 
-      if (descending) return va > vb;
-      return va < vb;
-    };
-    for(int i = 0; i < nrows; i++) {
-      std::vector<double> row_vec(ncols);
-      for(int j=0; j<ncols; j++) row_vec[j] = mat(i,j);
-      std::vector<size_t> idx(ncols);
-      std::iota(idx.begin(), idx.end(), 0);
-      std::sort(idx.begin(), idx.end(), 
-        [&get_val, &comp, &row_vec](size_t a, size_t b){
-          double va = get_val(row_vec[a]);
-          double vb = get_val(row_vec[b]);
-          if(va == vb) return a < b;
-          return comp(va, vb);
-        });
-      size_t k = 0;
-      while(k < ncols) {
-        size_t start = k;
-        double val = get_val(row_vec[idx[k]]);
-        while(k < ncols && get_val(row_vec[idx[k]]) == val) ++k;
-        size_t end = k - 1;
-        double avg_rank = (static_cast<double>(start + 1) + static_cast<double>(end + 1)) / 2.0;
-        for(size_t j = start; j <= end; ++j) {
-          size_t id = idx[j];
-          ranks(i, id) = avg_rank;
+    method <- match.arg(method, choices = c("pearson", "spearman"))
+    mutualRank_mode <- match.arg(mutualRank_mode, choices = c("unsigned", "signed"))
+    
+    rectangular <- !is.null(data2)
+    
+    data <- as.matrix(data)
+    
+    if(!is.numeric(data)) {
+      storage.mode(data) <- "double"
+    }
+    
+    var_names1 <- colnames(data)
+    obs_names1 <- rownames(data)
+    
+    if(is.null(var_names1)) {
+      var_names1 <- paste0("V", seq_len(ncol(data)))
+      colnames(data) <- var_names1
+    }
+    
+    if(rectangular) {
+      
+      data2 <- as.matrix(data2)
+      
+      if(!is.numeric(data2)) {
+        storage.mode(data2) <- "double"
+      }
+      
+      var_names2 <- colnames(data2)
+      obs_names2 <- rownames(data2)
+      
+      if(is.null(var_names2)) {
+        var_names2 <- paste0("V", seq_len(ncol(data2)))
+        colnames(data2) <- var_names2
+      }
+      
+      if(nrow(data) != nrow(data2)) {
+        cli::cli_abort("{.arg data} and {.arg data2} must have the same number of rows/samples.")
+      }
+      
+      if(!is.null(obs_names1) && !is.null(obs_names2)) {
+        if(!identical(obs_names1, obs_names2)) {
+          cli::cli_abort("{.arg data} and {.arg data2} must have samples/cells in the same order.")
         }
       }
     }
-    return ranks;
-  }')
     
-    # Define and compile the flatten_cor_matrix function inline
-    Rcpp::cppFunction('
-  List flatten_cor_matrix(NumericMatrix cormat, Nullable<NumericMatrix> mrmat = R_NilValue, 
-                          Nullable<NumericMatrix> pmat = R_NilValue, Nullable<NumericMatrix> padjmat = R_NilValue,
-                          CharacterVector row_names = CharacterVector::create()) {
-    int m = cormat.nrow();
-    bool has_mr = mrmat.isNotNull();
-    bool has_p = pmat.isNotNull();
-    bool has_pa = padjmat.isNotNull();
-    bool has_names = row_names.size() == m;
-    size_t num = (size_t)(m) * (m - 1LL) / 2;
-    CharacterVector rows, cols;
-    if(has_names) {
-      rows = CharacterVector(num);
-      cols = CharacterVector(num);
-    }
-    NumericVector cors(num);
-    NumericVector mrs, ps, pas;
-    if(has_mr) mrs = NumericVector(num);
-    if(has_p) ps = NumericVector(num);
-    if(has_pa) pas = NumericVector(num);
-    NumericMatrix mr = has_mr ? NumericMatrix(mrmat) : NumericMatrix();
-    NumericMatrix p = has_p ? NumericMatrix(pmat) : NumericMatrix();
-    NumericMatrix pa = has_pa ? NumericMatrix(padjmat) : NumericMatrix();
-    size_t cnt = 0;
-    for(int i = 0; i < m-1; i++) {
-      for(int j = i+1; j < m; j++) {
-        if(has_names) {
-          rows[cnt] = row_names[i];
-          cols[cnt] = row_names[j];
-        }
-        cors[cnt] = cormat(i, j);
-        if(has_mr) mrs[cnt] = mr(i, j);
-        if(has_p) ps[cnt] = p(i, j);
-        if(has_pa) pas[cnt] = pa(i, j);
-        cnt++;
-      }
-    }
-    List res;
-    if(has_names) {
-      res["row"] = rows;
-      res["column"] = cols;
-    }
-    res["cor"] = cors;
-    if(has_mr) res["mr"] = mrs;
-    if(has_p) res["p"] = ps;
-    if(has_pa) res["p.adj"] = pas;
-    return res;
-  }')
-    
-    #######################
-    
-    # Preserve dimnames
-    var_names <- colnames(data)
-    obs_names <- rownames(data)
+    #________________________________________
+    # Spearman ranking
     
     if(method == "spearman") {
-      # Rank columns using C++ (ascending, no abs)
-      data_t <- t(data)
-      ranked_t <- rank_matrix(data_t, descending = FALSE, use_abs = FALSE)
-      data <- t(ranked_t)
-      colnames(data) <- var_names
-      rownames(data) <- obs_names
+      
+      if(rectangular) {
+        
+        # Rank-transform the combined matrix so that tied ranks are handled
+        # consistently across data and data2.
+        combined_data <- cbind(data, data2)
+        combined_names <- colnames(combined_data)
+        combined_obs <- rownames(combined_data)
+        
+        ranked_t <- rank_matrix_cpp(
+          t(combined_data),
+          descending = FALSE,
+          use_abs = FALSE
+        )
+        
+        combined_ranked <- t(ranked_t)
+        colnames(combined_ranked) <- combined_names
+        rownames(combined_ranked) <- combined_obs
+        
+        n_data_cols <- ncol(data)
+        
+        data <- combined_ranked[, seq_len(n_data_cols), drop = FALSE]
+        data2 <- combined_ranked[, (n_data_cols + 1):ncol(combined_ranked), drop = FALSE]
+        
+      } else {
+        
+        data_t <- t(data)
+        
+        ranked_t <- rank_matrix_cpp(
+          data_t,
+          descending = FALSE,
+          use_abs = FALSE
+        )
+        
+        data <- t(ranked_t)
+        colnames(data) <- var_names1
+        rownames(data) <- obs_names1
+      }
     }
     
-    #######################
+    #________________________________________
+    # Helper: normalize matrix columns as feature rows
     
-    # Set initial NULL values
-    r = NULL
-    mutR = NULL
-    p = NULL
-    pa = NULL
+    normalize_for_cor <- function(x) {
+      
+      variableNames <- colnames(x)
+      totalVariables <- ncol(x)
+      
+      validVariablesIdx <- which(apply(x, 2, stats::var) > 0)
+      filteredData <- x[, validVariablesIdx, drop = FALSE]
+      
+      if(length(validVariablesIdx) == 0L) {
+        return(
+          list(
+            normalized = NULL,
+            valid_idx = validVariablesIdx,
+            variable_names = variableNames,
+            total_variables = totalVariables
+          )
+        )
+      }
+      
+      centeredMatrix <- t(filteredData)
+      centeredMatrix <- centeredMatrix - rowMeans(centeredMatrix)
+      
+      l2Norms <- sqrt(rowSums(centeredMatrix^2))
+      l2Norms[l2Norms == 0] <- NA_real_
+      
+      normalizedMatrix <- centeredMatrix / l2Norms
+      
+      list(
+        normalized = normalizedMatrix,
+        valid_idx = validVariablesIdx,
+        variable_names = variableNames,
+        total_variables = totalVariables
+      )
+    }
     
-    #######################
+    #________________________________________
+    # Correlation calculation
     
-    # Perform correlation analysis
+    r <- NULL
+    mutR <- NULL
+    p <- NULL
+    pa <- NULL
     
-    # Preserve original variable names and dimensions
-    variableNames <- colnames(data)
-    totalVariables <- ncol(data)
-    
-    # Identify variables with non-zero variance
-    validVariablesIdx <- which(apply(data, 2, var) > 0)
-    filteredData <- data[, validVariablesIdx, drop = FALSE]
-    
-    if (length(validVariablesIdx) == 0L) {
+    if(!rectangular) {
+      
+      norm1 <- normalize_for_cor(data)
+      
+      if(length(norm1$valid_idx) == 0L) {
+        
+        r <- matrix(
+          NA_real_,
+          nrow = norm1$total_variables,
+          ncol = norm1$total_variables,
+          dimnames = list(norm1$variable_names, norm1$variable_names)
+        )
+        
+        if(na_to_zero) {
+          r[!is.finite(r)] <- 0
+        }
+        
+      } else {
+        
+        correlationMatrix <- tcrossprod(norm1$normalized)
+        
+        r <- matrix(
+          NA_real_,
+          nrow = norm1$total_variables,
+          ncol = norm1$total_variables
+        )
+        
+        r[norm1$valid_idx, norm1$valid_idx] <- correlationMatrix
+        rownames(r) <- norm1$variable_names
+        colnames(r) <- norm1$variable_names
+      }
+      
+    } else {
+      
+      norm1 <- normalize_for_cor(data)
+      norm2 <- normalize_for_cor(data2)
+      
       r <- matrix(
         NA_real_,
-        nrow = totalVariables,
-        ncol = totalVariables,
-        dimnames = list(variableNames, variableNames)
+        nrow = norm1$total_variables,
+        ncol = norm2$total_variables,
+        dimnames = list(norm1$variable_names, norm2$variable_names)
       )
-      return(r)
+      
+      if(length(norm1$valid_idx) > 0L && length(norm2$valid_idx) > 0L) {
+        
+        correlationMatrix <- tcrossprod(
+          norm1$normalized,
+          norm2$normalized
+        )
+        
+        r[norm1$valid_idx, norm2$valid_idx] <- correlationMatrix
+      }
     }
-    
-    # Center data (variables as rows)
-    centeredMatrix <- t(filteredData)
-    centeredMatrix <- centeredMatrix - rowMeans(centeredMatrix)
-    
-    # Compute L2 norms (sqrt of sum of squares)
-    l2Norms <- sqrt(rowSums(centeredMatrix^2))
-    
-    # Guard against numerical zero (should not happen after var filtering,
-    # but protects against floating-point edge cases)
-    l2Norms[l2Norms == 0] <- NA_real_
-    
-    # Normalize rows to unit length
-    normalizedMatrix <- centeredMatrix / l2Norms
-    
-    # Pearson correlation via cosine similarity
-    # This is BLAS-backed tcrossprod()
-    correlationMatrix <- tcrossprod(normalizedMatrix)
-    
-    # Reinsert into full matrix
-    r <- matrix(
-      NA_real_,
-      nrow = totalVariables,
-      ncol = totalVariables
-    )
-    
-    r[validVariablesIdx, validVariablesIdx] <- correlationMatrix
-    rownames(r) <- variableNames
-    colnames(r) <- variableNames
     
     if(na_to_zero) {
       r[!is.finite(r)] <- 0
     }
-
-    #######################
+    
+    #________________________________________
+    # P-values
     
     if(pvalue) {
       
-      # Calculate n required for p-value measurement
       n <- nrow(data)
       
-      # Calculate t required for p-value measurement
-      t <- (r * sqrt(n - 2)) / sqrt(1 - r^2)
+      tstat <- (r * sqrt(n - 2)) / sqrt(1 - r^2)
       
-      # Calculate p-value
-      p <- -2 * expm1(stats::pt(abs(t), (n - 2), log.p = TRUE))
+      p <- -2 * expm1(
+        stats::pt(
+          abs(tstat),
+          df = n - 2,
+          log.p = TRUE
+        )
+      )
+      
       p[p > 1 | is.nan(p)] <- 1
       
-      # Calculate adjusted p-value
-      if (adjust != "none") {
-        pa <- stats::p.adjust(p, adjust)
+      if(adjust != "none") {
+        pa <- matrix(
+          stats::p.adjust(as.vector(p), method = adjust),
+          nrow = nrow(p),
+          ncol = ncol(p),
+          dimnames = dimnames(p)
+        )
       }
     }
     
-    #######################
+    #________________________________________
+    # Mutual rank
     
-    # Calculate Mutual Rank
     if(mutualRank) {
+      
       use_abs <- (mutualRank_mode == "unsigned")
-      r_rank <- rank_matrix(r, descending = TRUE, use_abs = use_abs)
-      dimnames(r_rank) <- dimnames(r)  # Add back dimnames
-      mutR <- sqrt(r_rank * t(r_rank))
+      
+      if(!rectangular) {
+        
+        r_rank <- rank_matrix_cpp(
+          r,
+          descending = TRUE,
+          use_abs = use_abs
+        )
+        
+        dimnames(r_rank) <- dimnames(r)
+        mutR <- sqrt(r_rank * t(r_rank))
+        
+      } else {
+        
+        # Rectangular MR-like score.
+        # Row rank: rank each data feature against all data2 features.
+        # Column rank: rank each data2 feature against all data features.
+        #
+        # IMPORTANT:
+        # This is NOT identical to full-matrix MR unless data and data2
+        # contain the same full feature set.
+        
+        row_rank <- rank_matrix_cpp(
+          r,
+          descending = TRUE,
+          use_abs = use_abs
+        )
+        
+        col_rank <- t(
+          rank_matrix_cpp(
+            t(r),
+            descending = TRUE,
+            use_abs = use_abs
+          )
+        )
+        
+        dimnames(row_rank) <- dimnames(r)
+        dimnames(col_rank) <- dimnames(r)
+        
+        mutR <- sqrt(row_rank * col_rank)
+      }
     }
     
-    #######################
+    #________________________________________
+    # Flatten
     
-    # Flatten the results if requested
     if(flat) {
-      flt_list <- flatten_cor_matrix(r, if(mutualRank) mutR else NULL,
-                                     if(pvalue) p else NULL, if(pvalue && adjust != "none") pa else NULL,
-                                     rownames(r))
-      result <- data.frame(flt_list, stringsAsFactors = FALSE, row.names = NULL)
+      
+      if(!rectangular) {
+        
+        flt_list <- flatten_cor_matrix_cpp(
+          r,
+          if(mutualRank) mutR else NULL,
+          if(pvalue) p else NULL,
+          if(pvalue && adjust != "none") pa else NULL,
+          rownames(r)
+        )
+        
+        result <- data.frame(
+          flt_list,
+          stringsAsFactors = FALSE,
+          row.names = NULL
+        )
+        
+      } else {
+        
+        flt_list <- flatten_rect_cor_matrix_cpp(
+          r,
+          if(mutualRank) mutR else NULL,
+          if(pvalue) p else NULL,
+          if(pvalue && adjust != "none") pa else NULL,
+          rownames(r),
+          colnames(r)
+        )
+        
+        result <- data.frame(
+          flt_list,
+          stringsAsFactors = FALSE,
+          row.names = NULL
+        )
+        
+        if(remove_self) {
+          result <- result[result$row != result$column, , drop = FALSE]
+        }
+        
+        if(remove_duplicate_pairs) {
+          
+          pair_id <- ifelse(
+            result$row < result$column,
+            paste(result$row, result$column, sep = "___"),
+            paste(result$column, result$row, sep = "___")
+          )
+          
+          result <- result[!duplicated(pair_id), , drop = FALSE]
+        }
+      }
+      
     } else {
-      result <- list(r = r,
-                     mr = mutR,
-                     p = p,
-                     p.adj = pa)
+      
+      result <- list(
+        r = r,
+        mr = mutR,
+        p = p,
+        p.adj = pa
+      )
     }
     
     class(result) <- c(class(result), "fcor", "influential")
+    
     return(result)
   }
   

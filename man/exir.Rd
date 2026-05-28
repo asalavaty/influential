@@ -12,16 +12,28 @@ exir(
   Regr_value = NULL,
   Sig_value,
   Exptl_data,
-  Condition_colname,
-  Normalize = FALSE,
+  Exptl_data_type = c("bulk", "sc"),
+  condition = "condition",
+  Exptl_data_orientation = c("features_rows", "samples_rows"),
+  assay = "RNA",
+  layer = "counts",
+  normalize = FALSE,
+  pseudo_sample = FALSE,
+  pseudo_samples_per_group = 100,
+  Exptl_data_size_check = TRUE,
+  feature_filter = TRUE,
+  min_feature_prevalence = NULL,
+  min_feature_total = NULL,
+  min_feature_variance = 1e-12,
+  always_keep_diff_features = TRUE,
   cor_thresh_method = "mr",
   r = 0.5,
   mr = 20,
   max.connections = 50000,
   alpha = 0.05,
-  num_trees = 10000,
+  num_trees = 500,
   mtry = NULL,
-  num_permutations = 100,
+  num_permutations = 50,
   inf_const = 10^10,
   ncores = "default",
   seed = 1234,
@@ -52,18 +64,93 @@ data analysis or other analyses such as time-course data analyses that are based
 \item{Sig_value}{An integer vector containing the column number(s) of the significance values (p-value/adjusted p-value) of
 both differential and regression data (if provided). Providing significance values for the regression data is optional.}
 
-\item{Exptl_data}{A dataframe containing all of the experimental data including a column for specifying the conditions.
-The features/variables of the dataframe should be as the columns and the samples should come in the rows.
-The condition column should be of the character class. For example, if the study includes several replicates of
-cancer and normal samples, the condition column should include "cancer" and "normal" as the conditions of different samples.
-Also, the prior normalization of the experimental data is highly recommended. Otherwise,
-the user may set the Normalize argument to TRUE for a simple log2 transformation of the data.
-The experimental data could come from a variety sources such as transcriptomics and proteomics assays.}
+\item{Exptl_data}{Experimental data used by the ExIR model. This can be a data frame, tibble,
+matrix, sparse matrix such as a \code{dgCMatrix}, or a Seurat object. For non-Seurat inputs,
+the expected orientation is controlled by \code{Exptl_data_orientation}. By default,
+features/genes are expected to be in rows and samples/cells in columns, which is the usual
+omics layout. Internally, ExIR converts the data to its required analysis format, with
+samples/cells in rows and features in columns.}
 
-\item{Condition_colname}{A string or character vector specifying the name of the column "condition" of the Exptl_data dataframe.}
+\item{Exptl_data_type}{Character string specifying the experimental data type. One of
+\code{"bulk"} or \code{"sc"}. This is used for data-type checks, optional normalization,
+and pseudo-sampling. For \code{"bulk"}, the input expression data may be either already
+normalized/log-transformed or raw count-like data when \code{normalize = TRUE}. For
+\code{"sc"}, raw counts are recommended and raw counts are required when
+\code{pseudo_sample = TRUE}.}
 
-\item{Normalize}{Logical; whether the experimental data should be normalized or not (default is FALSE). If TRUE, the
-experimental data will be log2 transformed.}
+\item{condition}{A character string or character/factor vector specifying the sample/cell
+conditions. If a single character string is supplied, it is interpreted as the name of the
+condition column/row in \code{Exptl_data}, or as the name of a metadata column when
+\code{Exptl_data} is a Seurat object. If a vector is supplied, it must have the same length
+and order as the samples/cells in \code{Exptl_data}. Default is \code{"condition"}.}
+
+\item{Exptl_data_orientation}{Character string specifying the orientation of non-Seurat
+\code{Exptl_data}. One of \code{"features_rows"} or \code{"samples_rows"}. If
+\code{"features_rows"}, features are rows and samples/cells are columns. If
+\code{"samples_rows"}, samples/cells are rows and features are columns. Default is
+\code{"features_rows"}.}
+
+\item{assay}{Character string specifying the assay to use when \code{Exptl_data} is a Seurat
+object. Default is \code{"RNA"}.}
+
+\item{layer}{Character string specifying the assay layer to use when \code{Exptl_data} is a
+Seurat object. For pseudo-sampling of single-cell data, this should usually be a raw-count
+layer such as \code{"counts"}. Default is \code{"counts"}.}
+
+\item{normalize}{Logical; whether to normalize count-like input data using TMM normalization
+followed by logCPM transformation with \pkg{edgeR}. Default is \code{FALSE}. For
+\code{Exptl_data_type = "bulk"}, this can be used when raw bulk RNA-seq count-like data are
+supplied. This normalization strategy is appropriate for many bulk omics count datasets,
+especially bulk RNA-seq, but users should confirm that TMM/logCPM normalization is suitable
+for their specific data modality. If the data modality requires a different normalization
+strategy, users should pre-normalize their data and set \code{normalize = FALSE}. For
+\code{Exptl_data_type = "sc"}, normalization is automatically applied after pseudo-bulking
+when \code{pseudo_sample = TRUE}. If \code{Exptl_data_type = "sc"} and
+\code{pseudo_sample = FALSE}, users should provide pre-normalized single-cell data and keep
+\code{normalize = FALSE}.}
+
+\item{pseudo_sample}{Logical; whether to perform pseudo-sampling before running ExIR.
+Pseudo-sampling is recommended when the number of cells/samples is greater than 500 or when
+computational resources are limited. For bulk data, pseudo-sampling averages normalized
+log-expression values within non-overlapping condition-specific groups. For single-cell data,
+pseudo-sampling sums raw counts within non-overlapping condition-specific groups, followed by
+TMM normalization and logCPM transformation using \pkg{edgeR}. Default is \code{FALSE}.}
+
+\item{pseudo_samples_per_group}{Integer specifying the target number of pseudo-samples to
+generate per condition group when \code{pseudo_sample = TRUE}. For example, if one condition
+contains 500 cells/samples and \code{pseudo_samples_per_group = 100}, each pseudo-sample will
+contain 5 cells/samples. If another condition contains 536 cells/samples, 64 pseudo-samples
+will contain 5 cells/samples and 36 pseudo-samples will contain 6 cells/samples. Default is
+\code{100}.}
+
+\item{Exptl_data_size_check}{Logical; whether to check the number of input samples/cells and,
+in interactive sessions, prompt the user to consider pseudo-sampling when more than 500
+samples/cells are provided and \code{pseudo_sample = FALSE}. In non-interactive sessions,
+a message is shown and the function continues. Default is \code{TRUE}.}
+
+\item{feature_filter}{Logical; whether to apply conservative feature filtering before
+running RF, PCA and correlation analysis. This filter is not a highly variable gene
+filter. It removes only features with insufficient expression/prevalence or essentially
+zero variance, which are unlikely to produce reliable correlations. Default is \code{TRUE}.}
+
+\item{min_feature_prevalence}{Integer or \code{NULL}; minimum number of samples/cells/
+pseudo-samples in which a feature must be non-zero to be retained. If \code{NULL}, an
+adaptive conservative threshold is used based on \code{Exptl_data_type}, pseudo-sampling,
+and sample size.}
+
+\item{min_feature_total}{Numeric or \code{NULL}; minimum total abundance/count/expression
+support required for a feature to be retained. If \code{NULL}, this criterion is not used.
+For raw count-like data, values such as 10 or 20 may be useful. For normalized/log-scale
+data, users should usually leave this as \code{NULL}.}
+
+\item{min_feature_variance}{Numeric; minimum variance required for a feature to be retained.
+This is intended only to remove zero-variance or near-zero-variance features, not to perform
+HVG selection. Default is \code{1e-12}.}
+
+\item{always_keep_diff_features}{Logical; whether to always retain features present in
+\code{Diff_data} and \code{Desired_list}, even if they fail the conservative expression/
+prevalence filters. This helps preserve candidate differential features while still reducing
+uninformative non-DE background features. Default is \code{TRUE}.}
 
 \item{cor_thresh_method}{A character string indicating the method for filtering the correlation results, either
 "mr" (default; Mutual Rank) or "cor.coefficient".}
@@ -78,13 +165,13 @@ Higher max.connections might increase the computation time, cost, and accuracy o
 
 \item{alpha}{The threshold of the statistical significance (p-value) used throughout the entire model (default is 0.05)}
 
-\item{num_trees}{Number of trees to be used for the random forests classification (supervised machine learning). Default is set to 10000.}
+\item{num_trees}{Number of trees to be used for the random forests classification (supervised machine learning). Default is set to 500.}
 
 \item{mtry}{Number of features to possibly split at in each node. Default is the (rounded down) square root of the
 number of variables. Alternatively, a single argument function returning an integer, given the number of independent variables.}
 
 \item{num_permutations}{Number of permutations to be used for computation of the statistical significance (p-values) of
-the importance scores resulted from random forests classification (default is 100).}
+the importance scores resulted from random forests classification (default is 50).}
 
 \item{inf_const}{The constant value to be multiplied by the maximum absolute value of differential (logFC)
 values for the substitution with infinite differential values. This results in noticeably high biomarker values for features
@@ -99,7 +186,9 @@ cores to be used will be the max(number of available cores) - 1. We recommend le
 
 \item{seed}{The seed to be used for all of the random processes throughout the model (default is 1234).}
 
-\item{verbose}{Logical; whether the accomplishment of different stages of the model should be printed (default is TRUE).}
+\item{verbose}{Logical; whether to display formatted progress messages and a progress bar
+using \pkg{cli}. If \code{TRUE}, ExIR reports the major analysis stages, selected
+warnings, and a final output summary. Default is \code{TRUE}.}
 }
 \value{
 A list of one graph and one to four tables including:
@@ -131,11 +220,11 @@ Diff_value <- c(1,3,5)
 Regr_value <- 7
 Sig_value <- c(2,4,6,8)
 MyExptl_data <- Exptldata
-Condition_colname <- "condition"
+condition <- "condition"
 My.exir <- exir(Desired_list = MyDesired_list,
                Diff_data = MyDiff_data, Diff_value = Diff_value,
                Regr_value = Regr_value, Sig_value = Sig_value,
-               Exptl_data = MyExptl_data, Condition_colname = Condition_colname)
+               Exptl_data = MyExptl_data, condition = condition)
 }
 }
 \seealso{

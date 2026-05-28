@@ -15,11 +15,6 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-<style>
-body {
-text-align: justify}
-</style>
-
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -654,7 +649,13 @@ Check out [our paper](https://doi.org/10.1016/j.patter.2020.100052)^[Salavaty A,
 The following tutorial video demonstrates how to simply calculate the IVI value of 
 all of the nodes within a network.  
 
-<iframe width="100%" height="400" src="https://www.youtube.com/embed/nF9qe4dvuJc" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen data-external="1"></iframe> 
+<a href="https://www.youtube.com/watch?v=nF9qe4dvuJc" target="_blank" rel="noopener noreferrer">
+  <img
+    class="youtube-thumbnail"
+    src="https://img.youtube.com/vi/nF9qe4dvuJc/maxresdefault.jpg"
+    alt="Watch the ExIR tutorial video on YouTube"
+  />
+</a>
 
 ## Network visualization {#NetVis}
 The `cent_network.vis` is a function for the visualization of a network based on applying a centrality measure to the size and color of network nodes. The centrality of network nodes could be calculated by any means and based on any centrality index. Here, we demonstrate the visualization of a network according to [IVI](#IVI) values.
@@ -685,7 +686,13 @@ The above figure illustrates a simple use case of the function `cent_network.vis
 
 The following tutorial video demonstrates how to visualize a network based on the centrality of nodes (e.g. their `IVI` values).
 
-<iframe width="100%" height="400" src="https://www.youtube.com/embed/kCmEdOoIUD4" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen data-external="1"></iframe>
+<a href="https://www.youtube.com/watch?v=kCmEdOoIUD4" target="_blank" rel="noopener noreferrer">
+  <img
+class="youtube-thumbnail"
+src="https://img.youtube.com/vi/kCmEdOoIUD4/maxresdefault.jpg"
+alt="Watch the ExIR tutorial video on YouTube"
+/>
+</a>
 
 ## IVI shiny app {#IVIShiny}
 A shiny app has also been developed for the calculation of IVI as well as IVI-based network 
@@ -802,39 +809,46 @@ Influence.Ranks <- sirir(graph = My_graph,
 # Experimental data-based classification and ranking of top candidate features {#ExIR}
 
 **ExIR**
-    : `ExIR` is a model for the classification and ranking of top candidate features. The input data could come from any type of experiment such as transcriptomics and proteomics. This model is based on multi-level filtration and scoring based on several supervised and unsupervised analyses followed by the classification and integrative ranking of top candidate features. Using this function and depending on the input data and specified arguments, the user can get a graph object and one to four tables including:
-    
-+ **Drivers**: Prioritized drivers are supposed to have the highest impact on the progression of a biological process or disease under investigation.
-+ **Biomarkers**: Prioritized biomarkers are supposed to have the highest sensitivity to different conditions under investigation and the severity of each condition.
-+ **DE-mediators**: Prioritized DE-mediators are those features that are differentially expressed/abundant but in a fluctuating manner and play mediatory roles between drivers.
-+ **nonDE-mediators**: Prioritized nonDE-mediators are those features that are not differentially expressed/abundant but have associations with and play mediatory roles between drivers.
-    
-First, prepare your data. Suppose we have the data for time-course transcriptomics and 
-we have previously performed differential expression analysis for each step-wise pair of
-time-points. Also, we have performed trajectory analysis to identify the genes that have significant alterations across all time-points.
+: `ExIR` is a model for the classification and ranking of top candidate features from experimental omics data. The input data can come from different experimental platforms, including transcriptomics, proteomics, bulk RNA-seq, and single-cell RNA-seq. The model combines multi-level filtration and scoring based on supervised learning, unsupervised learning, network reconstruction, and integrated influence ranking to classify and prioritize candidate features.
+
+Depending on the input data and specified arguments, `exir` returns a graph object and one to four result tables:
+
++ **Drivers**: Prioritized drivers are features predicted to have the highest impact on the progression of the biological process or disease under investigation.
++ **Biomarkers**: Prioritized biomarkers are features predicted to have high sensitivity to the conditions under investigation and to the severity of those conditions.
++ **DE-mediators**: Prioritized DE-mediators are differentially expressed/abundant features that may act in a fluctuating or mediatory manner between drivers.
++ **nonDE-mediators**: Prioritized nonDE-mediators are features that are not differentially expressed/abundant but are associated with and may mediate relationships between drivers.
+
+The `exir` function accepts experimental data in several formats, including data frames, tibbles, matrices, sparse matrices, and Seurat objects. For non-Seurat inputs, the default orientation is the common omics format, with features/genes in rows and samples/cells in columns. Internally, ExIR converts the data to the required analysis format, with samples/cells in rows and features in columns.
+
+The `condition` argument can be either the name of a condition row/column in the input data or a character/factor vector specifying the condition of each sample/cell in the same order as the samples/cells in `Exptl_data`. For Seurat objects, `condition` should be the name of a metadata column.
+
+## Preparing the differential/regression data
+
+Suppose we have time-course transcriptomics data and have previously performed differential expression analysis for each step-wise comparison between time points. Suppose we have also performed regression or trajectory analysis to identify genes with significant alterations across the full time course.
+
 
 ```{r exir.data, eval=FALSE}
-# Prepare sample data
-gene.names <- paste("gene", c(1:2000), sep = "_")
+# Prepare sample feature names
+gene.names <- paste("gene", 1:2000, sep = "_")
 
 set.seed(60)
-tp2.vs.tp1.DEGs <- data.frame(logFC = rnorm(n = 700, mean = 2, sd = 4),
-                              FDR = runif(n = 700, min = 0.0001, max = 0.049))
-
-set.seed(60)
+tp2.vs.tp1.DEGs <- data.frame(
+  logFC = rnorm(n = 700, mean = 2, sd = 4),
+  FDR = runif(n = 700, min = 0.0001, max = 0.049)
+)
 rownames(tp2.vs.tp1.DEGs) <- sample(gene.names, size = 700)
 
 set.seed(70)
-tp3.vs.tp2.DEGs <- data.frame(logFC = rnorm(n = 1300, mean = -1, sd = 5),
-                              FDR = runif(n = 1300, min = 0.0011, max = 0.039))
-
-set.seed(70)
+tp3.vs.tp2.DEGs <- data.frame(
+  logFC = rnorm(n = 1300, mean = -1, sd = 5),
+  FDR = runif(n = 1300, min = 0.0011, max = 0.039)
+)
 rownames(tp3.vs.tp2.DEGs) <- sample(gene.names, size = 1300)
 
 set.seed(80)
-regression.data <- data.frame(R_squared = runif(n = 800, min = 0.1, max = 0.85))
-
-set.seed(80)
+regression.data <- data.frame(
+  R_squared = runif(n = 800, min = 0.1, max = 0.85)
+)
 rownames(regression.data) <- sample(gene.names, size = 800)
 ```
 
@@ -866,24 +880,46 @@ Have a look at the top 10 rows of the `Diff_data` data frame:
 |gene_8321  |         3.8|          0|           0|          1|           0|
 
 
-## Preparing the Exptl_data
-Now, prepare a sample normalized experimental data matrix
+## Preparing the experimental data (Exptl_data)
+The recommended input format for non-Seurat omics data is a matrix or data frame with features in rows and samples/cells in columns. This is the default expected orientation:
+
+```{r}
+Exptl_data_orientation = "features_rows"
+```
+
+For bulk omics data, the input should usually be normalized and log-transformed before running `exir`. Alternatively, if the input is raw count-like bulk RNA-seq data, users can set:
+
+```{r}
+normalize = TRUE
+```
+
+In that case, ExIR applies TMM normalization followed by logCPM transformation using `edgeR`. This normalization strategy is suitable for many bulk RNA-seq count datasets, but users should confirm that it is appropriate for their specific data modality. If another normalization method is more appropriate, users should pre-normalize the data and keep `normalize = FALSE`.
+
+Here, we prepare a simple normalized bulk-like expression matrix with genes in rows and samples in columns.
 
 ```{r exptl_data, eval=FALSE}
 set.seed(60)
-MyExptl_data <- matrix(data = runif(n = 100000, min = 2, max = 300), 
-                       nrow = 50, ncol = 2000, 
-                       dimnames = list(c(paste("cancer_sample", c(1:25), sep = "_"),
-                                         paste("normal_sample", c(1:25), sep = "_")), 
-                                       gene.names))
 
-# Log transform the data to bring them closer to normal distribution
+MyExptl_data <- matrix(
+  data = runif(n = 100000, min = 2, max = 300),
+  nrow = 2000,
+  ncol = 50,
+  dimnames = list(
+    gene.names,
+    c(
+      paste("cancer_sample", 1:25, sep = "_"),
+      paste("normal_sample", 1:25, sep = "_")
+    )
+  )
+)
+
+# Log-transform the data to mimic normalized log-scale bulk expression values
 MyExptl_data <- log2(MyExptl_data)
 
-MyExptl_data[c(1:5, 45:50),c(1:5)]
+MyExptl_data[1:5, c(1:5, 45:50)] %>% t()
 ```
 
-Have a look at top 5 cancer and normal samples (rows) of the `Exptl_data`:
+Have a look at top 5 cancer and normal samples (transposed for better visualization) of the `Exptl_data`:
 
 |                 | gene_1| gene_2| gene_3| gene_4| gene_5|
 |:----------------|------:|------:|------:|------:|------:|
@@ -899,58 +935,141 @@ Have a look at top 5 cancer and normal samples (rows) of the `Exptl_data`:
 |normal_sample_24 |      8|      8|      7|      5|      7|
 |normal_sample_25 |      5|      7|      8|      8|      6|
 
-Now add the "condition" column to the Exptl_data table.
+When `Exptl_data_orientation = "features_columns"` The sample conditions can be supplied as a vector in the same order as the columns of MyExptl_data:
+
 ```{r condition.col, eval=FALSE}
-MyExptl_data <- as.data.frame(MyExptl_data)
-MyExptl_data$condition <- c(rep("C", 25), rep("N", 25))
+condition <- c(rep("C", 25), rep("N", 25))
+MyExptl_data$condition <- condition
 ```
 
+Alternatively, if `Exptl_data_orientation = "features_rows"`, the condition can be provided as a row in the input data and the name of that row can be passed to the `condition` argument. For example:
+
+```{r, eval=FALSE}
+
+MyExptl_data_with_condition <- rbind(
+  condition = condition,
+  MyExptl_data
+)
+
+# In this case, condition = "condition"
+
+```
+
+However, for matrix-based analyses, it is generally cleaner to provide the condition as a separate vector.
+
+## Optional pseudo-sampling for large datasets
+
+For large datasets, especially single-cell datasets with many cells, ExIR can perform pseudo-sampling before running the main model. Pseudo-sampling is recommended when the number of samples/cells is greater than 500 or when computational resources are limited.
+
+For bulk data, pseudo-sampling is performed within each condition group by randomly partitioning samples into non-overlapping groups and averaging normalized log-expression values within each group.
+
+For single-cell RNA-seq data, pseudo-sampling is performed by randomly partitioning cells within each condition group, summing raw counts within each pseudo-sample, and then applying TMM normalization and logCPM transformation using `edgeR`.
+
+The argument:
+
+```{r}
+pseudo_samples_per_group = 100
+```
+
+means that ExIR will generate 100 pseudo-samples per condition group. For example, if a condition contains 500 cells and `pseudo_samples_per_group = 100`, each pseudo-sample will contain 5 cells. If another condition contains 536 cells, 36 pseudo-samples will contain 6 cells and 64 pseudo-samples will contain 5 cells.
+
+## Conservative feature filtering
+
+ExIR includes an optional conservative feature-filtering step before the main RF, PCA, and correlation analyses:
+
+```{r}
+feature_filter = TRUE
+```
+
+This is not a highly variable gene filter. Instead, it removes features with insufficient prevalence, insufficient total signal if requested, or essentially zero variance. This helps reduce non-informative features before the expensive full feature-feature correlation analysis while still preserving biologically relevant non-DE mediators.
+
+By default, features present in `Diff_data` and `Desired_list` are retained even if they fail the conservative expression/prevalence filters:
+
+```{r}
+always_keep_diff_features = TRUE
+```
+
+This helps preserve candidate differential or user-specified features while reducing uninformative background features.
+
 ## Running the `ExIR` model
-Finally, prepare the other required input data for the `ExIR` model.
-    
+Prepare the required arguments for the `exir` model.
+
 ```{r ExIR, eval=FALSE}
 
-#The table of differential/regression previously prepared
+# The table of differential/regression data previously prepared
 my_Diff_data
 
-#The column indices of differential values in the Diff_data table
-Diff_value <- c(1,3) 
+# Column indices of differential values in Diff_data
+Diff_value <- c(1, 3)
 
-#The column indices of regression values in the Diff_data table
+# Column index of regression values in Diff_data
 Regr_value <- 5
 
-#The column indices of significance (P-value/FDR) values in 
-# the Diff_data table
-Sig_value <- c(2,4) 
+# Column indices of significance values in Diff_data
+Sig_value <- c(2, 4)
 
-#The matrix/data frame of normalized experimental
-# data previously prepared
+# The matrix of normalized experimental data previously prepared
 MyExptl_data
 
-#The name of the column delineating the conditions of
-# samples in the Exptl_data matrix
-Condition_colname <- "condition"
+# The condition vector in the same order as the samples/columns of MyExptl_data
+condition <- c(rep("C", 25), rep("N", 25))
 
-#The desired list of features
+# Optional desired list of features
 set.seed(60)
-MyDesired_list <- sample(gene.names, size = 500)  #Optional
+MyDesired_list <- sample(gene.names, size = 500)
 
-#Running the ExIR model
-My.exir <- exir(Desired_list = MyDesired_list,
-                cor_thresh_method = "mr", mr = 100,
-                Diff_data = my_Diff_data, Diff_value = Diff_value,
-                Regr_value = Regr_value, Sig_value = Sig_value,
-                Exptl_data = MyExptl_data, Condition_colname = Condition_colname,
-                seed = 60, verbose = FALSE)
+# Run the ExIR model
+My.exir <- exir(
+  Desired_list = MyDesired_list,
+  Diff_data = my_Diff_data,
+  Diff_value = Diff_value,
+  Regr_value = Regr_value,
+  Sig_value = Sig_value,
+  Exptl_data = MyExptl_data,
+  Exptl_data_type = "bulk",
+  condition = condition,
+  Exptl_data_orientation = "features_rows",
+  normalize = FALSE,
+  pseudo_sample = FALSE,
+  feature_filter = TRUE,
+  cor_thresh_method = "mr",
+  mr = 100,
+  seed = 60,
+  verbose = FALSE
+)
 
 names(My.exir)
-#> [1] "Driver table"         "DE-mediator table"     "Biomarker table"      "Graph"
+#> [1] "Driver table"         "DE-mediator table"    "Biomarker table"      "Graph"
 
 class(My.exir)
 #> [1] "ExIR_Result"
 ```
 
-Have a look at the heads of the output tables of ExIR:
+If the input bulk RNA-seq data are raw count-like values, normalize = TRUE can be used:
+
+```{r, eval=FALSE}
+My.exir <- exir(
+  Desired_list = MyDesired_list,
+  Diff_data = my_Diff_data,
+  Diff_value = Diff_value,
+  Regr_value = Regr_value,
+  Sig_value = Sig_value,
+  Exptl_data = raw_count_matrix,
+  Exptl_data_type = "bulk",
+  condition = condition,
+  Exptl_data_orientation = "features_rows",
+  normalize = TRUE,
+  feature_filter = TRUE,
+  cor_thresh_method = "mr",
+  mr = 100,
+  seed = 60,
+  verbose = FALSE
+)
+```
+
+The output of `exir` is an object of class `ExIR_Result`, containing a graph and one or more result tables depending on the input data and model settings.
+
+Have a look at the output tables:
 
 + **Drivers**
 
@@ -989,14 +1108,80 @@ Have a look at the heads of the output tables of ExIR:
 |gene_1450 | 32.99729|  0.09786426|   68| 0.4610200| 0.9191820|
 |gene_742  | 28.62281| -0.12420298|   79| 0.5494227| 0.9191820|
 
+## Running exir on single-cell RNA-seq data
+
+For single-cell RNA-seq data, raw counts are recommended when pseudo-sampling is used. The input can be a matrix, sparse matrix, or Seurat object.
+
+For a sparse count matrix with genes in rows and cells in columns:
+
+```{r, eval=FALSE}
+My.exir.sc <- exir(
+  Desired_list = MyDesired_list,
+  Diff_data = my_Diff_data,
+  Diff_value = Diff_value,
+  Regr_value = Regr_value,
+  Sig_value = Sig_value,
+  Exptl_data = sc_counts,
+  Exptl_data_type = "sc",
+  condition = cell_condition,
+  Exptl_data_orientation = "features_rows",
+  pseudo_sample = TRUE,
+  pseudo_samples_per_group = 100,
+  feature_filter = TRUE,
+  cor_thresh_method = "mr",
+  mr = 20,
+  seed = 60,
+  verbose = FALSE
+)
+```
+
+For a Seurat object:
+
+```{r, eval=FALSE}
+My.exir.seurat <- exir(
+  Desired_list = MyDesired_list,
+  Diff_data = my_Diff_data,
+  Diff_value = Diff_value,
+  Regr_value = Regr_value,
+  Sig_value = Sig_value,
+  Exptl_data = seurat_object,
+  Exptl_data_type = "sc",
+  condition = "condition",
+  assay = "RNA",
+  layer = "counts",
+  pseudo_sample = TRUE,
+  pseudo_samples_per_group = 100,
+  feature_filter = TRUE,
+  cor_thresh_method = "mr",
+  mr = 20,
+  seed = 60,
+  verbose = FALSE
+)
+```
+
+When a Seurat object is supplied, `condition` should be the name of a metadata column. The `assay` and `layer` arguments specify which assay/layer should be used.
+
+If single-cell data are not pseudo-sampled, users should provide appropriately normalized single-cell data and set:
+
+```{r, eval=FALSE}
+pseudo_sample = FALSE
+normalize = FALSE
+```
+
 The following tutorial video demonstrates how to run the `ExIR` model on a sample experimental data.
 
-<iframe width="100%" height="400" src="https://www.youtube.com/embed/-08nn4_-OUE" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen data-external="1"></iframe>
+<a href="https://www.youtube.com/watch?v=-08nn4_-OUE" target="_blank" rel="noopener noreferrer">
+  <img
+class="youtube-thumbnail"
+src="https://img.youtube.com/vi/-08nn4_-OUE/maxresdefault.jpg"
+alt="Watch the ExIR tutorial video on YouTube"
+/>
+</a>
 
-You can also [computationally simulate knockout and/or up-regulation](#CompManipulate) of the top candidate features outputted by ExIR to evaluate the impact of their manipulations on the flow of information/signaling and integrity of the network prior to taking them to your lab bench.
+You can also [computationally simulate knockout and/or up-regulation](#CompManipulate) of the top candidate features outputted by ExIR to evaluate the impact of their manipulation on the flow of information/signaling and the integrity of the network prior to experimental validation.
 
 ## ExIR visualization
-The `exir.vis` is a function for the visualization of the output of the [ExIR](#ExIR) model. The function simply gets the output of the ExIR model as a single argument and returns a plot of the top 10 prioritized features of all classes. Here, we visualize the top five candidates of the results of the `ExIR` model obtained in the previous step .
+The `exir.vis` function visualizes the output of the [ExIR](#ExIR) model. The function gets the output of the ExIR model as a single argument and returns a plot of the top prioritized features of all available classes. Here, we visualize the top five candidates of the results of the `ExIR` model obtained in the previous step.
 
 ```{r exir.vis, eval=FALSE}
 My.exir.Vis <- exir.vis(exir.results = My.exir, 
@@ -1008,11 +1193,17 @@ My.exir.Vis
 
 ![](../man/figures/ExIR_Vis.png)
 
-However, a complete flexibility (list of arguments) has been provided for the adjustment of all of the visual features of the plot and selection of the desired classes, feature types, and the number of top candidates.
+A complete set of arguments is available for adjusting the visual features of the plot and selecting the desired classes, feature types, and number of top candidates.
 
-The following tutorial video demonstrates how to visualize the results of `ExIR` model.
+The following tutorial video demonstrates how to visualize the results of the `ExIR` model.
 
-<iframe width="100%" height="400" src="https://www.youtube.com/embed/Ie19y6PuBDg" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen data-external="1"></iframe>
+<a href="https://www.youtube.com/watch?v=Ie19y6PuBDg" target="_blank" rel="noopener noreferrer">
+  <img
+class="youtube-thumbnail"
+src="https://img.youtube.com/vi/Ie19y6PuBDg/maxresdefault.jpg"
+alt="Watch the ExIR tutorial video on YouTube"
+/>
+</a>
 
 ## ExIR shiny app {#ExIRShiny}
 A shiny app has also been developed for Running the ExIR model, visualization of its results as well as computational simulation of knockout and/or up-regulation of its top candidate outputs, which is accessible using the following command.  
