@@ -13,14 +13,19 @@ install:
 # Adapt as necessary starting from here
 
 environment:
-  USE_RTOOLS: true
-  WARNINGS_ARE_ERRORS: true
-  _R_CHECK_FORCE_SUGGESTS_: false
-  _R_CHECK_CRAN_INCOMING_: false
+  global:
+    USE_RTOOLS: true
+    WARNINGS_ARE_ERRORS: true
+    _R_CHECK_FORCE_SUGGESTS_: false
+    _R_CHECK_CRAN_INCOMING_: false
+
+  matrix:
+    - R_VERSION: release
 
 build_script:
-  # Show R/session information for debugging
+  # Show R/session information and check whether build tools are visible
   - Rscript -e "sessionInfo()"
+  - Rscript -e "install.packages('pkgbuild', repos = 'https://cloud.r-project.org'); pkgbuild::check_build_tools(debug = TRUE)"
 
   # Use a reliable CRAN mirror and increase timeout
   - Rscript -e "options(timeout = 600); options(repos = c(CRAN = 'https://cloud.r-project.org')); print(getOption('repos'))"
