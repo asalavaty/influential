@@ -39,6 +39,11 @@ build_script:
   - where gcc
   - gcc --version
 
+  # Install Pandoc for R Markdown vignette building
+  - ps: choco install pandoc -y --no-progress
+  - set PATH=C:\Program Files\Pandoc;%PATH%
+  - pandoc --version
+
   # Check build tools, but do not stop the build here if pkgbuild is noisy
   - Rscript -e "options(timeout = 600); install.packages('pkgbuild', repos = 'https://cloud.r-project.org'); pkgbuild::check_build_tools(debug = TRUE)" || ver
 
@@ -52,12 +57,17 @@ build_script:
   # Use required dependencies only; dependencies=TRUE would install many optional Bioconductor packages.
   - Rscript -e "options(timeout = 600); repos <- c(BioCsoft = 'https://bioconductor.org/packages/release/bioc', BioCann = 'https://bioconductor.org/packages/release/data/annotation', BioCexp = 'https://bioconductor.org/packages/release/data/experiment', CRAN = 'https://cloud.r-project.org'); install.packages(c('limma', 'edgeR'), repos = repos, dependencies = c('Depends', 'Imports', 'LinkingTo'))"
 
-  # Install remaining required package dependencies only
+  # Install all remaining required package dependencies only
   - Rscript -e "options(timeout = 600); repos <- c(BioCsoft = 'https://bioconductor.org/packages/release/bioc', BioCann = 'https://bioconductor.org/packages/release/data/annotation', BioCexp = 'https://bioconductor.org/packages/release/data/experiment', CRAN = 'https://cloud.r-project.org'); options(repos = repos); remotes::install_deps(dependencies = c('Depends', 'Imports', 'LinkingTo'), upgrade = 'never')"
 
 test_script:
-  # Ensure Rtools45 is still first in PATH during check
-  - set PATH=C:\rtools45\x86_64-w64-mingw32.static.posix\bin;C:\rtools45\usr\bin;%PATH%
+  # Ensure Rtools45 and Pandoc are still first in PATH during check
+  - set PATH=C:\Program Files\Pandoc;C:\rtools45\x86_64-w64-mingw32.static.posix\bin;C:\rtools45\usr\bin;%PATH%
+
+  # Confirm tools
+  - where gcc
+  - gcc --version
+  - pandoc --version
 
   # Run CRAN-like check
   - Rscript -e "options(timeout = 600); repos <- c(BioCsoft = 'https://bioconductor.org/packages/release/bioc', BioCann = 'https://bioconductor.org/packages/release/data/annotation', BioCexp = 'https://bioconductor.org/packages/release/data/experiment', CRAN = 'https://cloud.r-project.org'); options(repos = repos); rcmdcheck::rcmdcheck(args = c('--no-manual', '--as-cran'), error_on = 'warning')"
