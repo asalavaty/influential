@@ -6,16 +6,40 @@ init:
         $ErrorActionPreference = "Stop"
         Invoke-WebRequest http://raw.github.com/krlmlr/r-appveyor/master/scripts/appveyor-tool.ps1 -OutFile "..\appveyor-tool.ps1"
         Import-Module '..\appveyor-tool.ps1'
+
 install:
   ps: Bootstrap
 
 # Adapt as necessary starting from here
 
+environment:
+  USE_RTOOLS: true
+  WARNINGS_ARE_ERRORS: true
+  _R_CHECK_FORCE_SUGGESTS_: false
+  _R_CHECK_CRAN_INCOMING_: false
+
 build_script:
-  - travis-tool.sh install_deps
+  # Show R/session information for debugging
+  - Rscript -e "sessionInfo()"
+
+  # Use reliable CRAN and Bioconductor repositories
+  - Rscript -e "options(timeout = 600); options(repos = c(CRAN = 'https://cloud.r-project.org')); cat('CRAN repository:', getOption('repos'), '\n')"
+
+  # Install BiocManager first, because edgeR is a Bioconductor package
+  - Rscript -e "options(timeout = 600); options(repos = c(CRAN = 'https://cloud.r-project.org')); if (!requireNamespace('BiocManager', quietly = TRUE)) install.packages('BiocManager')"
+
+  # Install required Bioconductor dependency explicitly
+  - Rscript -e "options(timeout = 600); options(repos = BiocManager::repositories()); BiocManager::install('edgeR', ask = FALSE, update = FALSE)"
+
+  # Install remotes and rcmdcheck
+  - Rscript -e "options(timeout = 600); options(repos = c(CRAN = 'https://cloud.r-project.org')); if (!requireNamespace('remotes', quietly = TRUE)) install.packages('remotes'); if (!requireNamespace('rcmdcheck', quietly = TRUE)) install.packages('rcmdcheck')"
+
+  # Install package dependencies using both CRAN and Bioconductor repositories
+  - Rscript -e "options(timeout = 600); options(repos = BiocManager::repositories()); remotes::install_deps(dependencies = TRUE, upgrade = 'never')"
 
 test_script:
-  - travis-tool.sh run_tests
+  # Run CRAN-like check
+  - Rscript -e "options(timeout = 600); options(repos = BiocManager::repositories()); rcmdcheck::rcmdcheck(args = c('--no-manual', '--as-cran'), error_on = 'warning')"
 
 on_failure:
   - 7z a failure.zip *.Rcheck\*
@@ -39,6 +63,3 @@ artifacts:
 
   - path: '\*_*.zip'
     name: Bits
-
-environment:
-  USE_RTOOLS: true
