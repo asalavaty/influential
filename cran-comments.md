@@ -37,6 +37,17 @@ Please see NEWS for complete details.
 
 There were no ERRORs, WARNINGs or NOTEs.
 
+There was one NOTE from CRAN incoming checks.
+
+The spell-check NOTE refers to package-specific and standard technical
+terms used intentionally in the DESCRIPTION, including ExIR, IVI, omics,
+and tibbles.
+
+The Additional_repositories NOTE refers to the Bioconductor repository
+used for the `edgeR` dependency. `edgeR` is used for TMM/logCPM
+normalization of bulk count-like data and pseudo-bulked single-cell data
+in ExIR. The package dependency check passed successfully.
+
 ## Downstream dependencies
 
 This package has one reverse dependency: `networksem`.
