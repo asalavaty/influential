@@ -22,24 +22,22 @@ build_script:
   # Show R/session information for debugging
   - Rscript -e "sessionInfo()"
 
-  # Use reliable CRAN and Bioconductor repositories
-  - Rscript -e "options(timeout = 600); options(repos = c(CRAN = 'https://cloud.r-project.org')); cat('CRAN repository:', getOption('repos'), '\n')"
+  # Use a reliable CRAN mirror and increase timeout
+  - Rscript -e "options(timeout = 600); options(repos = c(CRAN = 'https://cloud.r-project.org')); print(getOption('repos'))"
 
-  # Install BiocManager first, because edgeR is a Bioconductor package
-  - Rscript -e "options(timeout = 600); options(repos = c(CRAN = 'https://cloud.r-project.org')); if (!requireNamespace('BiocManager', quietly = TRUE)) install.packages('BiocManager')"
+  # Install CRAN-side build/check helpers
+  - Rscript -e "options(timeout = 600); options(repos = c(CRAN = 'https://cloud.r-project.org')); install.packages(c('remotes', 'rcmdcheck'), dependencies = TRUE)"
 
-  # Install required Bioconductor dependency explicitly
-  - Rscript -e "options(timeout = 600); options(repos = BiocManager::repositories()); BiocManager::install('edgeR', ask = FALSE, update = FALSE)"
+  # Install Bioconductor dependencies directly, without BiocManager version validation.
+  # This avoids SSL/config.yaml failures on AppVeyor.
+  - Rscript -e "options(timeout = 600); repos <- c(BioCsoft = 'https://bioconductor.org/packages/release/bioc', BioCann = 'https://bioconductor.org/packages/release/data/annotation', BioCexp = 'https://bioconductor.org/packages/release/data/experiment', CRAN = 'https://cloud.r-project.org'); install.packages(c('limma', 'edgeR'), repos = repos, dependencies = TRUE)"
 
-  # Install remotes and rcmdcheck
-  - Rscript -e "options(timeout = 600); options(repos = c(CRAN = 'https://cloud.r-project.org')); if (!requireNamespace('remotes', quietly = TRUE)) install.packages('remotes'); if (!requireNamespace('rcmdcheck', quietly = TRUE)) install.packages('rcmdcheck')"
-
-  # Install package dependencies using both CRAN and Bioconductor repositories
-  - Rscript -e "options(timeout = 600); options(repos = BiocManager::repositories()); remotes::install_deps(dependencies = TRUE, upgrade = 'never')"
+  # Install all remaining package dependencies using both CRAN and Bioconductor repositories
+  - Rscript -e "options(timeout = 600); repos <- c(BioCsoft = 'https://bioconductor.org/packages/release/bioc', BioCann = 'https://bioconductor.org/packages/release/data/annotation', BioCexp = 'https://bioconductor.org/packages/release/data/experiment', CRAN = 'https://cloud.r-project.org'); options(repos = repos); remotes::install_deps(dependencies = TRUE, upgrade = 'never')"
 
 test_script:
   # Run CRAN-like check
-  - Rscript -e "options(timeout = 600); options(repos = BiocManager::repositories()); rcmdcheck::rcmdcheck(args = c('--no-manual', '--as-cran'), error_on = 'warning')"
+  - Rscript -e "options(timeout = 600); repos <- c(BioCsoft = 'https://bioconductor.org/packages/release/bioc', BioCann = 'https://bioconductor.org/packages/release/data/annotation', BioCexp = 'https://bioconductor.org/packages/release/data/experiment', CRAN = 'https://cloud.r-project.org'); options(repos = repos); rcmdcheck::rcmdcheck(args = c('--no-manual', '--as-cran'), error_on = 'warning')"
 
 on_failure:
   - 7z a failure.zip *.Rcheck\*
