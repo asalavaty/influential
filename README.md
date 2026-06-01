@@ -5,8 +5,7 @@
 
 <!-- badges: start -->
 
-[![AppVeyor build
-status](https://img.shields.io/appveyor/build/asalavaty/influential/master.svg)](https://ci.appveyor.com/project/asalavaty/influential)
+[![R-CMD-check](https://github.com/asalavaty/influential/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/asalavaty/influential/actions/workflows/R-CMD-check.yaml)
 [![](https://www.r-pkg.org/badges/version/influential?color=blue)](https://cran.r-project.org/package=influential)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/influential?color=green)](https://cran.r-project.org/package=influential)
 ![CRAN Downloads](https://cranlogs.r-pkg.org/badges/influential)
