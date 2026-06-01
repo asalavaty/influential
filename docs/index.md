@@ -1,0 +1,132 @@
+# influential [![](reference/figures/Symbol.png)](https://github.com/asalavaty/influential)
+
+## Overview
+
+The goal of `influential` is to help identification of the most
+`influential` nodes in a network as well as the classification and
+ranking of top candidate features. This package contains functions for
+the classification and ranking of features, reconstruction of networks
+from adjacency matrices and data frames, analysis of the topology of the
+network and calculation of centrality measures as well as a novel and
+powerful `influential` node ranking. The **Experimental data-based
+Integrative Ranking (ExIR)** is a sophisticated model for classification
+and ranking of the top candidate features based on only the experimental
+data. The first integrative method, namely the **Integrated Value of
+Influence (IVI)**, that captures all topological dimensions of the
+network for the identification of network most `influential` nodes is
+also provided as a function. Also, neighborhood connectivity, H-index,
+local H-index, and collective influence (CI), all of which required
+centrality measures for the calculation of **IVI**, are for the first
+time provided in an R package. Additionally, a function is provided for
+running **SIRIR** model, which is the combination of leave-one-out cross
+validation technique and the conventional SIR model, on a network to
+unsupervisedly rank the true influence of vertices. Furthermore, some
+functions have been provided for the assessment of dependence and
+correlation of two network centrality measures as well as the
+conditional probability of deviation from their corresponding means in
+opposite directions.
+
+Check out [**our paper**](https://doi.org/10.1016/j.patter.2020.100052)
+for a more complete description of the IVI formula and all of its
+underpinning methods and analyses.
+
+The **Experimental data-based Integrative Ranking (ExIR)** model is
+described in our [**iScience article**](https://asalavaty.com/).
+
+## Author
+
+The `influential` package was written by [Adrian
+Salavaty](https://asalavaty.com/)
+
+## Advisors
+
+Mirana Ramialison and Peter D. Currie
+
+## How to Install
+
+You can install the official [CRAN
+release](https://cran.r-project.org/package=influential) of the
+`influential` with the following code:
+
+``` r
+install.packages("influential")
+```
+
+Or the development version from GitHub:
+
+``` r
+## install.packages("remotes")
+remotes::install_github("asalavaty/influential", build_vignettes = TRUE)
+```
+
+## Vignettes
+
+A comprehensive introduction to `influential` and all of its functions
+is available in the
+[vignette](https://cran.r-project.org/package=influential/vignettes/Vignettes.html).
+
+You may browse Vignettes from within R using the following code.
+
+``` r
+browseVignettes("influential")
+```
+
+## Shiny apps
+
+- [Influential Software Package web
+  portal](https://influential.erc.monash.edu/)
+
+- [IVI Shiny App](https://influential.erc.monash.edu/IVI/): A shiny app
+  for the calculation of the Integrated Value of Influence (IVI) of
+  network nodes as well as IVI-based visualization of the network.
+
+You can also access the IVI shiny app offline from within R and run it
+on your local machine using the following command.
+
+``` r
+influential::runShinyApp("IVI")
+```
+
+- [ExIR Shiny App](https://influential.erc.monash.edu/ExIR/): A shiny
+  app for running the Experimental-data-based Integrative Ranking (ExIR)
+  model as well as visualization of its results.
+
+You can also access the ExIR shiny app offline from within R and run it
+on your local machine using the following command.
+
+``` r
+influential::runShinyApp("ExIR")
+```
+
+## How to cite `influential`
+
+If you use `influential`, please cite the relevant associated
+publication(s).
+
+For the **Integrated Value of Influence (IVI)** and network influence
+analysis, please cite:
+
+- Salavaty A, Ramialison M, Currie PD. Integrated Value of Influence: An
+  Integrative Method for the Identification of the Most Influential
+  Nodes within Networks. *Patterns*. 2020.08.14. [Read
+  online](https://doi.org/10.1016/j.patter.2020.100052).
+
+For the **Experimental data-based Integrative Ranking (ExIR)** model,
+please cite:
+
+- Salavaty A, Douek AM, Kaslin J, Ramialison M, Currie PD. ExIR enables
+  prioritizing driver and biomarker genes from omics data in a reference
+  free manner. *iScience*. In press.
+
+You can also access the package citation information from within R:
+
+``` r
+citation("influential")
+```
+
+## How to contribute
+
+Please don’t hesitate to report any bugs/issues and request for
+enhancement or any other contributions. To submit a bug report or
+enhancement request, please use the [`influential` GitHub issues
+tracker](https://github.com/asalavaty/influential/issues).

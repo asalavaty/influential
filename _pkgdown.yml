@@ -1,5 +1,6 @@
 title: influential
 url: https://asalavaty.github.io/influential/
 template:
+  bootstrap: 5
   params:
     bootswatch: flatly
