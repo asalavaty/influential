@@ -6,13 +6,18 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/asalavaty/influential/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/asalavaty/influential/actions/workflows/R-CMD-check.yaml)
-[![](https://www.r-pkg.org/badges/version/influential?color=blue)](https://cran.r-project.org/package=influential)
-[![](https://cranlogs.r-pkg.org/badges/grand-total/influential?color=8B0000)](https://cran.r-project.org/package=influential)
-![CRAN
-Downloads](https://cranlogs.r-pkg.org/badges/influential?color=8B0000)
-[![](https://img.shields.io/badge/Integrated%20Value%20of%20Influence-IVI-006400.svg?labelColor=000000)](https://doi.org/10.1016/j.patter.2020.100052)
-[![](https://img.shields.io/badge/SIR--based%20Influence%20Ranking-SIRIR-006400.svg?labelColor=000000)](https://doi.org/10.1016/j.patter.2020.100052)
-[![](https://img.shields.io/badge/Experimental%20data--based%20Integrative%20Ranking-ExIR-006400.svg?labelColor=000000)](https://www.biorxiv.org/content/10.1101/2022.10.03.510585v1.abstract)
+[![CRAN
+Version](https://www.r-pkg.org/badges/version/influential?color=blue)](https://cran.r-project.org/package=influential)
+[![Total CRAN
+Downloads](https://cranlogs.r-pkg.org/badges/grand-total/influential?color=8B0000)](https://cran.r-project.org/package=influential)
+[![Monthly CRAN
+Downloads](https://cranlogs.r-pkg.org/badges/influential?color=8B0000)](https://cran.r-project.org/package=influential)
+[![Integrated Value of Influence:
+IVI](https://img.shields.io/badge/Integrated%20Value%20of%20Influence-IVI-006400.svg?labelColor=f5f5f5)](https://doi.org/10.1016/j.patter.2020.100052)
+[![SIR-based Influence Ranking:
+SIRIR](https://img.shields.io/badge/SIR--based%20Influence%20Ranking-SIRIR-006400.svg?labelColor=f5f5f5)](https://doi.org/10.1016/j.patter.2020.100052)
+[![Experimental data-based Integrative Ranking:
+ExIR](https://img.shields.io/badge/Experimental%20data--based%20Integrative%20Ranking-ExIR-006400.svg?labelColor=f5f5f5)](https://www.biorxiv.org/content/10.1101/2022.10.03.510585v1.abstract)
 <!-- badges: end -->
 
 ## Overview
