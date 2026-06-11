@@ -4,7 +4,7 @@ template:
   bootstrap: 5
   params:
     bootswatch: flatly
-navbar:
-  right:
-    - text: "Author"
+home:
+  links:
+    - text: Personal Website
       href: https://asalavaty.com/
