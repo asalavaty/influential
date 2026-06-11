@@ -3,6 +3,10 @@ influential
 
 <!-- NEWS.md is generated from NEWS.Rmd. Please edit that file -->
 
+# influential 2.3.1.9000 (Developmental version)
+
+- The citation information of ExIR is updated.
+
 # influential 2.3.1
 
 ## Major updates

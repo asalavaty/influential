@@ -30,11 +30,12 @@ bibentry(
     person(c("Peter", "D."), "Currie")
   ),
   journal = "iScience",
-  year = "in press",
-  note = "In press",
+  year = "2026",
+  doi = "10.1016/j.isci.2026.116303",
+  url = "https://doi.org/10.1016/j.isci.2026.116303",
   textVersion = paste(
     "Salavaty A, Douek AM, Kaslin J, Ramialison M, Currie PD.",
     "ExIR enables prioritizing driver and biomarker genes from omics data in a reference free manner.",
-    "iScience. In press."
+    "iScience. 2026; doi:10.1016/j.isci.2026.116303."
   )
 )

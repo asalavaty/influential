@@ -17,7 +17,7 @@ IVI](https://img.shields.io/badge/Integrated%20Value%20of%20Influence-IVI-006400
 [![SIR-based Influence Ranking:
 SIRIR](https://img.shields.io/badge/SIR--based%20Influence%20Ranking-SIRIR-006400.svg?labelColor=f5f5f5)](https://doi.org/10.1016/j.patter.2020.100052)
 [![Experimental data-based Integrative Ranking:
-ExIR](https://img.shields.io/badge/Experimental%20data--based%20Integrative%20Ranking-ExIR-006400.svg?labelColor=f5f5f5)](https://www.biorxiv.org/content/10.1101/2022.10.03.510585v1.abstract)
+ExIR](https://img.shields.io/badge/Experimental%20data--based%20Integrative%20Ranking-ExIR-006400.svg?labelColor=f5f5f5)](https://doi.org/10.1016/j.isci.2026.116303)
 <!-- badges: end -->
 
 ## Overview
@@ -123,6 +123,14 @@ influential::runShinyApp("ExIR")
 If you use `influential`, please cite the relevant associated
 publication(s).
 
+For the **Experimental data-based Integrative Ranking (ExIR)** model,
+please cite:
+
+- Salavaty A, Douek AM, Kaslin J, Ramialison M, Currie PD. ExIR enables
+  prioritizing driver and biomarker genes from omics data in a reference
+  free manner. *iScience*. 2026.06.19. [Read
+  online](https://doi.org/10.1016/j.isci.2026.116303).
+
 For the **Integrated Value of Influence (IVI)** and network influence
 analysis, please cite:
 
@@ -130,13 +138,6 @@ analysis, please cite:
   Integrative Method for the Identification of the Most Influential
   Nodes within Networks. *Patterns*. 2020.08.14. [Read
   online](https://doi.org/10.1016/j.patter.2020.100052).
-
-For the **Experimental data-based Integrative Ranking (ExIR)** model,
-please cite:
-
-- Salavaty A, Douek AM, Kaslin J, Ramialison M, Currie PD. ExIR enables
-  prioritizing driver and biomarker genes from omics data in a reference
-  free manner. *iScience*. In press.
 
 You can also access the package citation information from within R:
 

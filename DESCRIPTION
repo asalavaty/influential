@@ -2,7 +2,7 @@ Package: influential
 Type: Package
 Title: Identification and Classification of the Most Influential Nodes
 Language: en-US
-Version: 2.3.1
+Version: 2.3.1.9000
 Authors@R:
     c(
       person("Adrian", "Salavaty",
