@@ -52,7 +52,7 @@ underpinning methods and analyses.
 
 The **Experimental data-based Integrative Ranking (ExIR)** model is
 described in our [**iScience
-article**](https://doi.org/10.1016/j.isci.2026.116303/).
+article**](https://doi.org/10.1016/j.isci.2026.116303).
 
 ## Author
 
