@@ -1,0 +1,269 @@
+# Centrality-based network visualization
+
+This function has been developed for the visualization of a network
+based on applying a centrality measure to the size and color of network
+nodes. You are also able to adjust the directedness and weight of
+connections. Some of the documentations of the arguments of this
+function have been adapted from ggplot2 and igraph packages. A shiny app
+has also been developed for the calculation of IVI as well as IVI-based
+network visualization, which is accessible using the
+\`influential::runShinyApp("IVI")\` command. You can also access the
+shiny app online at https://influential.erc.monash.edu/.
+
+## Usage
+
+``` r
+cent_network.vis(
+  graph,
+  cent.metric,
+  layout = "kk",
+  node.group = NULL,
+  node.color = "viridis",
+  node.size.min = 3,
+  node.size.max = 15,
+  dist.power = 1,
+  node.shape = "circle",
+  stroke.size = 1.5,
+  stroke.color = "identical",
+  stroke.alpha = 0.6,
+  show.labels = TRUE,
+  label.cex = 0.4,
+  label.color = "black",
+  directed = FALSE,
+  arrow.width = 25,
+  arrow.length = 0.07,
+  edge.width = 0.5,
+  weighted = FALSE,
+  edge.width.min = 0.2,
+  edge.width.max = 1,
+  edge.color = "grey75",
+  edge.linetype = "solid",
+  legend.position = "right",
+  legend.direction = "vertical",
+  legend.title = "Centrality\nmeasure",
+  boxed.legend = TRUE,
+  show.plot.title = TRUE,
+  plot.title = "Centrality Measure-based Network",
+  title.position = "center",
+  show.bottom.border = TRUE,
+  show.left.border = TRUE,
+  seed = 1234
+)
+```
+
+## Arguments
+
+- graph:
+
+  A graph (network) of the igraph class.
+
+- cent.metric:
+
+  A numeric vector of the desired centrality measure previously
+  calculated by any means. For example, you may use the function
+  [`ivi`](https://asalavaty.github.io/influential/reference/ivi.md) for
+  the calculation of the Integrated Value of Influence (IVI) of network
+  nodes. Please note that if the centrality measure has been calculated
+  by any means other than the `influential` package, make sure that the
+  order of the values in the `cent.metric` vector is consistent with the
+  order of vertices in the network `(V(graph))`.
+
+- layout:
+
+  The layout to be used for organizing network nodes. Current available
+  layouts include
+  `"kk", "star", "tree", "components", "circle", "automatic", "grid", "sphere", "random", "dh", "drl", "fr", "gem", "graphopt", "lgl", "mds", and "sugiyama"`
+  (default is set to "kk"). For a complete description of different
+  layouts and their underlying algorithms please refer to the function
+  [`layout_`](https://r.igraph.org/reference/layout_.html).
+
+- node.group:
+
+  A vector of the same length as the number of network nodes defining
+  the group each node of the network belongs to.
+
+- node.color:
+
+  A character string indicating the colormap option to use. Five options
+  are available: "magma" (or "A"), "inferno" (or "B"), "plasma" (or
+  "C"), "viridis" (or "D", the default option) and "cividis" (or "E").
+
+- node.size.min:
+
+  The size of nodes with the lowest value of the centrality measure
+  (default is set to 3).
+
+- node.size.max:
+
+  The size of nodes with the highest value of the centrality measure
+  (default is set to 15).
+
+- dist.power:
+
+  The power to be used to visualize more distinction between nodes with
+  high and low centrality measure values. The higher the power, the
+  smaller the nodes with lower values of the centrality measure will
+  become. Default is set to 1, meaning the relative sizes of nodes are
+  reflective of their actual centrality measure values.
+
+- node.shape:
+
+  The shape of nodes. Current available shapes include
+  `"circle", "square", "diamond", "triangle", and "inverted triangle"`
+  (default is set to "circle"). You can also set different shapes to
+  different groups of nodes by providing a character vector of shapes of
+  nodes with the same length and order of network vertices. This is
+  useful when plotting a network that include different type of node
+  (for example, up- and down-regulated features).
+
+- stroke.size:
+
+  The size of stroke (border) around the nodes (default is set to 1.5).
+
+- stroke.color:
+
+  The color of stroke (border) around the nodes (default is set to
+  "identical" meaning that the stroke color of a node will be identical
+  to its corresponding node color). You can also set different colors to
+  different groups of nodes by providing a character vector of colors of
+  nodes with the same length and order of network vertices. This is
+  useful when plotting a network that include different type of node
+  (for example, up- and down-regulated features).
+
+- stroke.alpha:
+
+  The transparency of the stroke (border) around the nodes which should
+  be a number between 0 and 1 (default is set to 0.6).
+
+- show.labels:
+
+  Logical scalar, whether to show node labels or not (default is set to
+  TRUE).
+
+- label.cex:
+
+  The amount by which node labels should be scaled relative to the node
+  sizes (default is set to 0.4).
+
+- label.color:
+
+  The color of node labels (default is set to "black").
+
+- directed:
+
+  Logical scalar, whether to draw the network as directed or not
+  (default is set to FALSE).
+
+- arrow.width:
+
+  The width of arrows in the case the network is directed (default is
+  set to 25).
+
+- arrow.length:
+
+  The length of arrows in inch in the case the network is directed
+  (default is set to 0.07).
+
+- edge.width:
+
+  The constant width of edges if the network is unweighted (default is
+  set to 0.5).
+
+- weighted:
+
+  Logical scalar, whether the network is a weighted network or not
+  (default is set to FALSE).
+
+- edge.width.min:
+
+  The width of edges with the lowest weight (default is set to 0.2).
+  This parameter is ignored for unweighted networks.
+
+- edge.width.max:
+
+  The width of edges with the highest weight (default is set to 1). This
+  parameter is ignored for unweighted networks.
+
+- edge.color:
+
+  The color of edges (default is set to "grey75").
+
+- edge.linetype:
+
+  The line type of edges. Current available linetypes include
+  `"twodash", "longdash", "dotdash", "dotted", "dashed", and "solid"`
+  (default is set to "solid").
+
+- legend.position:
+
+  The position of legends ("none", "left", "right", "bottom", "top", or
+  two-element numeric vector). The default is set to "right".
+
+- legend.direction:
+
+  layout of items in legends ("horizontal" or "vertical"). The default
+  is set to "vertical".
+
+- legend.title:
+
+  The legend title in the string format (default is set to "Centrality
+  measure").
+
+- boxed.legend:
+
+  Logical scalar, whether to draw a box around the legend or not
+  (default is set to TRUE).
+
+- show.plot.title:
+
+  Logical scalar, whether to show the plot title or not (default is set
+  to TRUE).
+
+- plot.title:
+
+  The plot title in the string format (default is set to "Centrality
+  Measure-based Network").
+
+- title.position:
+
+  The position of title ("left", "center", or "right"). The default is
+  set to "center".
+
+- show.bottom.border:
+
+  Logical scalar, whether to draw the bottom border line (default is set
+  to TRUE).
+
+- show.left.border:
+
+  Logical scalar, whether to draw the left border line (default is set
+  to TRUE).
+
+- seed:
+
+  A single value, interpreted as an integer to be used for random number
+  generation for preparing the network layout (default is set to 1234).
+
+## Value
+
+A plot with the class ggplot.
+
+## See also
+
+[`ivi`](https://asalavaty.github.io/influential/reference/ivi.md)
+
+Other visualization functions:
+[`exir.vis()`](https://asalavaty.github.io/influential/reference/exir.vis.md)
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+MyData <- coexpression.data
+My_graph <- graph_from_data_frame(MyData)
+Graph_IVI <- ivi(graph = My_graph, mode = "all")
+Graph_IVI_plot <- cent_network.vis(graph = My_graph, cent.metric = Graph_IVI,
+                                   legend.title = "IVI",
+                                   plot.title = "IVI-based Network")
+} # }
+```
