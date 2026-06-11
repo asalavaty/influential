@@ -2,7 +2,7 @@
 
 ## influential 2.3.1.9000 (Developmental version)
 
-- The citation information of ExIR is updated.
+- Updated the citation information of ExIR.
 
 ## influential 2.3.1
 
