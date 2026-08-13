@@ -1,6 +1,8 @@
 # Changelog
 
-## influential 2.3.1.9000 (Developmental version)
+## influential 2.3.2
+
+- Updated Vignettes comprehensively.
 
 - Updated the citation information of ExIR.
 
