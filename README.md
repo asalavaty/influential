@@ -84,7 +84,7 @@ remotes::install_github("asalavaty/influential", build_vignettes = TRUE)
 
 A comprehensive introduction to `influential` and all of its functions
 is available in the
-[vignette](https://github.com/asalavaty/influential/blob/master/doc/Vignettes.html).
+[vignette](https://cran.r-project.org/web/packages/influential/vignettes/Vignettes.html).
 
 You may browse Vignettes from within R using the following code.
 
