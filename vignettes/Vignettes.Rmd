@@ -1,12 +1,12 @@
 ---
 title: "Introduction to influential"
-subtitle: "*Identification and classification of the most influential nodes*"
+subtitle: "Network influence analysis, centrality assessment, and experimental feature prioritization"
 author: '`r paste("Adrian Salavaty",strftime(Sys.time(),format="%d-%b-%Y"))`'
 output:
   rmarkdown::html_vignette:
     css: influentialVignette.css
     toc: true
-    toc_depth: '2'
+    toc_depth: 3
     df_print: paged
     number_sections: true
 vignette: >
@@ -18,13 +18,18 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 5.4,
+  out.width = "92%"
 )
 options(tibble.print_min = 4L, tibble.print_max = 4L)
-options(width=90)
+options(width = 95)
 options(rmarkdown.html_vignette.check_title = FALSE)
 set.seed(60)
 ```
+
+<div id="top"></div>
 
 ```{r, echo=FALSE}
 spaces <- function (n) {
@@ -32,30 +37,55 @@ spaces <- function (n) {
 }
 ```
 
-# Overview 
+# Overview
 
-```{r fig.align="right", echo=FALSE, out.width="25%", out.extra='style="float:right; padding:10px"'}
+<div class="overview-intro">
+<div class="overview-text">
+
+`influential` is an R package for identifying influential nodes in networks and for classifying and prioritizing candidate features from experimental data. Its functionality spans network construction, centrality analysis, influence ranking, and experimental data-driven feature prioritization.
+
+</div>
+<div class="overview-logo">
+
+```{r echo=FALSE, fig.align="center", out.width="100%", out.extra='class="overview-logo-img"'}
 knitr::include_graphics(path = "../man/figures/Symbol.png", error = FALSE)
 ```
 
-`influential` is an R package mainly for the identification of the most influential nodes in a network as well as the classification and ranking of top candidate features. The `influential` package contains several functions that could be categorized into five groups according to their purpose:
+</div>
+</div>
 
-* Network reconstruction
-* Calculation of centrality measures
-* Assessment of the association of centrality measures
-* Identification of the most `influential` network nodes
-* Experimental data-based classification and ranking of features
+<div class="influential-note">
+<strong>In brief:</strong> <code>influential</code> brings network reconstruction, centrality analysis, influence modelling, and experimental feature prioritization into a single workflow, with dedicated methods such as IVI, SIRIR, and ExIR.
+</div>
 
-The sections below introduce these five categories. However, if you wish not going through all of the functions and their applications, you may skip to any of the novel methods proposed by the `influential`, including: 
+## Package workflows
 
-* [ExIR](#ExIR)
-* [IVI](#IVI)
-* [Hubness score](#HubnessScore)
-* [Spreading score](#SpreadingScore)
-* [SIRIR](#SIRIR)
-* [Computational manipulation](#CompManipulate)
+The main functionality can be grouped into five complementary workflows:
 
-********
+<div class="workflow-grid">
+<div class="workflow-card"><a class="workflow-card-link" href="#fast-correlation-analysis"><span class="workflow-number">1</span><span class="workflow-title">Association analysis</span><span class="workflow-description">Calculate fast pairwise correlations, mutual ranks, p-values, and adjusted p-values before network reconstruction.</span></a></div>
+<div class="workflow-card"><a class="workflow-card-link" href="#network-reconstruction"><span class="workflow-number">2</span><span class="workflow-title">Network reconstruction</span><span class="workflow-description">Build igraph networks from data frames, adjacency matrices, incidence matrices, or SIF files.</span></a></div>
+<div class="workflow-card"><a class="workflow-card-link" href="#calculation-of-centrality-measures"><span class="workflow-number">3</span><span class="workflow-title">Centrality analysis</span><span class="workflow-description">Quantify local, semi-local, and global aspects of node topology using multiple centrality measures.</span></a></div>
+<div class="workflow-card"><a class="workflow-card-link" href="#assessment-of-the-association-of-centrality-measures"><span class="workflow-number">4</span><span class="workflow-title">Centrality association</span><span class="workflow-description">Assess dependence, non-linearity, non-monotonicity, and conditional relationships among continuous measures.</span></a></div>
+<div class="workflow-card"><a class="workflow-card-link" href="#ExIR"><span class="workflow-number">5</span><span class="workflow-title">Feature prioritization</span><span class="workflow-description">Integrate experimental evidence and network influence to classify and rank candidate features with ExIR.</span></a></div>
+</div>
+
+## Featured methods
+
+If you want to move directly to the package's main integrative methods, use the shortcuts below:
+
+<div class="method-grid">
+<div class="method-card"><a class="method-card-link" href="#ExIR"><span class="method-badge">Experimental data</span><span class="method-title">ExIR</span><span class="method-description">Classify and prioritize candidate drivers, biomarkers, and mediators from experimental omics data.</span></a></div>
+<div class="method-card"><a class="method-card-link" href="#IVI"><span class="method-badge">Network influence</span><span class="method-title">IVI</span><span class="method-description">Integrate complementary centrality dimensions to identify the most influential network nodes.</span></a></div>
+<div class="method-card"><a class="method-card-link" href="#HubnessScore"><span class="method-badge">Local topology</span><span class="method-title">Hubness score</span><span class="method-description">Quantify the power of a node within its local network environment.</span></a></div>
+<div class="method-card"><a class="method-card-link" href="#SpreadingScore"><span class="method-badge">Information spread</span><span class="method-title">Spreading score</span><span class="method-description">Prioritize nodes with high potential to spread information through a network.</span></a></div>
+<div class="method-card"><a class="method-card-link" href="#SIRIR"><span class="method-badge">Simulation</span><span class="method-title">SIRIR</span><span class="method-description">Rank nodes by their effect on network topology and information spread using SIR-based simulations.</span></a></div>
+<div class="method-card"><a class="method-card-link" href="#CompManipulate"><span class="method-badge">Perturbation</span><span class="method-title">Computational manipulation</span><span class="method-description">Simulate feature knockout or up-regulation and assess the resulting network-level effects.</span></a></div>
+</div>
+
+<div class="influential-tip">
+<strong>Suggested route:</strong> For network-focused analyses, start with association analysis and network reconstruction, inspect centrality measures, and then use IVI or related influence scores. For experimental omics prioritization, you can move directly to <a href="#ExIR">ExIR</a>.
+</div>
 
 ```{r setup}
 library(influential)
@@ -63,7 +93,10 @@ library(influential)
 
 # Fast correlation analysis
 
-Correlation (association/similarity/dissimilarity) analysis is the first required step before network reconstructions. Although R base `cor` function makes it possible to perform correlation analysis of a table, this function is notably slow in the correlation analysis of large datasets. Also, calculation of probability values is not possible for all correlations between all pairs of features simultaneously. The `fcor` function calculates Pearson/Spearman correlations between all pairs of features in a matrix/dataframe much faster than the base R cor function. It is also possible to simultaneously calculate mutual rank (MR) of correlations as well as their p-values and adjusted p-values. Additionally, this function can automatically combine and flatten the result matrices. Selecting correlated features using an MR-based threshold rather than based on their correlation coefficients or an arbitrary p-value is more efficient and accurate in inferring functional associations in systems, for example in gene regulatory networks. 
+<div class="section-lead"><strong>Purpose:</strong> efficiently quantify pairwise association before network reconstruction, with optional mutual rank and significance statistics.</div>
+
+
+Correlation (association/similarity/dissimilarity) analysis is the first required step before network reconstructions. Although the base R `cor()` function makes it possible to perform correlation analysis of a table, this function is notably slow in the correlation analysis of large datasets. Also, calculation of probability values is not possible for all correlations between all pairs of features simultaneously. The `fcor` function calculates Pearson/Spearman correlations between all pairs of features in a matrix/data frame much faster than the base R cor function. It is also possible to simultaneously calculate mutual rank (MR) of correlations as well as their p-values and adjusted p-values. Additionally, this function can automatically combine and flatten the result matrices. Selecting correlated features using an MR-based threshold rather than based on their correlation coefficients or an arbitrary p-value is more efficient and accurate in inferring functional associations in systems, for example in gene regulatory networks. 
 
 Here is an example of performing correlation analysis using the `fcor` function.
 
@@ -114,9 +147,12 @@ Now have a look at the top 10 rows of the `correlation_tbl`:
 |gene_3 |gene_5 |  0.2174790|  25.922963| 0.1292321| 0.9700054|
 |gene_4 |gene_5 |  0.0341417| 171.499271| 0.8139135| 0.9981266|
 
-<a href="#top">Back to top</a>
+<a class="back-to-top" href="#top">Back to top ↑</a>
 
 # Network reconstruction
+
+<div class="section-lead"><strong>Input flexibility:</strong> reconstruct networks from edge-list data frames, adjacency matrices, incidence matrices, or Cytoscape SIF files.</div>
+
 
 Three functions have been obtained from the `igraph`^[Csardi G., Nepusz T. *The igraph software package for complex network research*.
 InterJournal. 2006; (1695).] R package for the reconstruction of networks.
@@ -151,7 +187,7 @@ A sample appropriate adjacency matrix is brought below:
 knitr::kable(head(coexpression.adjacency, n=15)[10:15,10:15])
 ```
   
-+ Note that the matrix has the same number of rows and columns.
+<div class="influential-note"><strong>Note:</strong> An adjacency matrix must have the same number of rows and columns.</div>
 
 ```{r g_adj, eval=FALSE}
 # Preparing the data
@@ -189,18 +225,21 @@ class(My_graph)
 #> [1] "igraph"
 ```
 
-<a href="#top">Back to top</a>
+<a class="back-to-top" href="#top">Back to top ↑</a>
 
 # Calculation of centrality measures
+
+<div class="section-lead"><strong>Topology at multiple scales:</strong> inspect local, semi-local, and global centrality characteristics before moving to integrative influence ranking.</div>
+
 To calculate the centrality of nodes within a network several different options are available. The following sections describe how to obtain the names of network nodes and use different functions to calculate the centrality of nodes within a network. Although several centrality functions are provided, we recommend the [IVI](#IVI) for the identification of the most `influential` nodes within a network.
 
-> By the way, the results of all of the following centrality functions could be conveniently illustrated using the [centrality-based network visualization function](#NetVis).
+<div class="influential-tip"><strong>Visualization:</strong> Results from the centrality functions below can be visualized using the <a href="#NetVis">centrality-based network visualization</a> workflow.</div>
 
 ## Network vertices
 Network vertices (nodes) are required in order to calculate their centrality measures.
 Thus, before calculation of network centrality measures we need to obtain the name of required network vertices. To this end, we use the `V` function, which is obtained from the `igraph` package. However, you may provide a character vector of the name of your desired nodes manually.
 
-+ Note in many of the centrality index functions the entire network nodes are assessed if no vector of desired vertices is provided.
+<div class="influential-note"><strong>Note:</strong> In many centrality functions, all network nodes are assessed when no vector of desired vertices is supplied.</div>
 
 ```{r Vertices, eval=FALSE}
 # Preparing the data
@@ -395,9 +434,12 @@ head(cr)
 
 ClusterRank could be also calculated for *directed* graphs via specifying the `directed` parameter.
 
-<a href="#top">Back to top</a>
+<a class="back-to-top" href="#top">Back to top ↑</a>
 
 # Assessment of the association of centrality measures
+
+<div class="section-lead"><strong>Beyond simple correlation:</strong> assess distributional properties, dependence, non-linearity, non-monotonicity, and conditional relationships between continuous measures.</div>
+
 
 ## Conditional probability of deviation from means
 
@@ -417,7 +459,7 @@ My.conditional.prob <- cond.prob.analysis(data = MyData,
 print(My.conditional.prob)
 ```
 
-- As you can see in the results, the whole data is also randomly splitted into half in order 
+- As you can see in the results, the whole data is also randomly split into halves in order 
 to further test the validity of conditional probability assessments.
 - *The higher the conditional probability the more two centrality measures behave in contrary manners*.
 
@@ -453,7 +495,7 @@ is done based on the NNS statistics which itself calculates the correlation base
 5. **Assessment of conditional probability of deviation from means**
 This step assesses the conditional probability of deviation of two centrality measures (or any other two continuous variables) from their corresponding means in opposite directions.
     - The independent centrality measure (variable) is considered as the condition variable and the other as the desired one.
-    - As you will see in the results, the whole data is also randomly splitted into half in order 
+    - As you will see in the results, the whole data is also randomly split into halves in order 
 to further test the validity of conditional probability assessments.
     - *The higher the conditional probability the more two centrality measures behave in contrary manners*.
 
@@ -514,8 +556,9 @@ print(My.metrics.assessment)
 #> [1] 55.90331
 ```
 
-**Note**: It should also be noted that as a single regression line does not fit all models with a 
-certain degree of freedom, based on the size and correlation mode of the variables provided, this function might return an error due to incapability of running step 2. In this case, you may follow each step manually or as an alternative run the other function named `double.cent.assess.noRegression` which does not perform any regression test and consequently it is not required to determine the dependent and independent variables.
+<div class="influential-warning">
+<strong>Regression fallback:</strong> A single regression specification may not fit every dataset. Depending on the sample size and association structure, <code>double.cent.assess()</code> may fail during the regression-based step. In that situation, you can perform the individual assessments manually or use <code>double.cent.assess.noRegression()</code>, which avoids the regression test and therefore does not require dependent and independent variables to be specified.
+</div>
 
 ## Nature of association (without considering dependence direction)
 
@@ -540,7 +583,7 @@ is done based on the NNS statistics which itself calculates the correlation base
 4. **Assessment of conditional probability of deviation from means**
 This step assesses the conditional probability of deviation of two centrality measures (or any other two continuous variables) from their corresponding means in opposite directions.
     - The `centrality2` variable is considered as the condition variable and the other (`centrality1`) as the desired one.
-    - As you will see in the results, the whole data is also randomly splitted into half in order 
+    - As you will see in the results, the whole data is also randomly split into halves in order 
 to further test the validity of conditional probability assessments.
     - *The higher the conditional probability the more two centrality measures behave in contrary manners*.
 
@@ -594,9 +637,16 @@ print(My.metrics.assessment)
 #> [1] 55.68163
 ```
 
-<a href="#top">Back to top</a>
+<a class="back-to-top" href="#top">Back to top ↑</a>
 
 # Identification of the most `influential` network nodes {#IVI}
+
+<div class="method-highlight">
+<span class="method-kicker">Integrative network influence</span>
+<strong>Integrated Value of Influence (IVI)</strong>
+<span>Combines local, semi-local, and global centrality information to identify influential nodes while reducing the limitations of relying on any single centrality measure.</span>
+</div>
+
 
 **IVI**
     : `IVI` is the first integrative method for the identification of network most influential
@@ -682,7 +732,7 @@ My_graph_IVI_Vis
 
 The above figure illustrates a simple use case of the function `cent_network.vis`. You can apply this function to directed/undirected and/or weighted/unweighted networks. Also, a complete flexibility (list of arguments) have been provided for the adjustment of colors, transparencies, sizes, titles, etc. Additionally, several different layouts have been provided that could be conveniently applied to a network. 
 
-> In the case of highly crowded networks, the "**grid**" layout would be most appropriate.
+<div class="influential-tip"><strong>Tip:</strong> For highly crowded networks, the <code>"grid"</code> layout is often the most appropriate choice.</div>
 
 The following tutorial video demonstrates how to visualize a network based on the centrality of nodes (e.g. their `IVI` values).
 
@@ -695,16 +745,27 @@ alt="Watch the ExIR tutorial video on YouTube"
 </a>
 
 ## IVI shiny app {#IVIShiny}
-A shiny app has also been developed for the calculation of IVI as well as IVI-based network 
-visualization, which is accessible using the following command.  
-`influential::runShinyApp("IVI")`  
-You can also access the shiny app online at the [Influential Software Package server](https://influential.erc.monash.edu/).
 
-<a href="#top">Back to top</a>
+<div class="app-callout">
+<span class="app-label">Interactive app</span>
+<h3>Explore IVI without writing a full analysis script</h3>
+<p>Launch the bundled Shiny app for IVI calculation and IVI-based network visualization:</p>
+<pre><code>influential::runShinyApp("IVI")</code></pre>
+<p>You can also use the <a href="https://influential.erc.monash.edu/" target="_blank" rel="noopener noreferrer">Influential Software Package server</a>.</p>
+</div>
+
+<a class="back-to-top" href="#top">Back to top ↑</a>
 
 # Identification of the most important network spreaders {#SpreadingScore}
-Sometimes we seek to identify not necessarily the most influential nodes but the nodes
-with most potential in spreading of information throughout the network.
+
+<div class="method-highlight">
+<span class="method-kicker">Information spreading</span>
+<strong>Spreading score</strong>
+<span>Integrates complementary centrality measures to prioritize nodes with high potential to spread information throughout a network.</span>
+</div>
+
+Sometimes we seek to identify not necessarily the most influential nodes but nodes
+with the greatest potential in spreading of information throughout the network.
 
 **Spreading score**
     : `spreading.score` is an integrative score made up of four different centrality measures
@@ -735,11 +796,17 @@ head(Spreading.score)
 
 Spreading score could be also calculated for *directed* and/or *weighted* graphs via specifying the `directed`, `mode`, and `weights` parameters. The results could be conveniently illustrated using the [centrality-based network visualization function](#NetVis).
 
-<a href="#top">Back to top</a>
+<a class="back-to-top" href="#top">Back to top ↑</a>
 
 # Identification of the most important network hubs {#HubnessScore}
-In some cases we want to identify not the nodes with the most sovereignty in their 
-surrounding local environments.
+
+<div class="method-highlight">
+<span class="method-kicker">Local network power</span>
+<strong>Hubness score</strong>
+<span>Summarizes local topological strength using degree centrality and local H-index.</span>
+</div>
+
+In some cases, the goal is to identify nodes with the strongest influence within their surrounding local environments.
 
 **Hubness score**
     : `hubness.score` is an integrative score made up of two different centrality measures
@@ -767,11 +834,18 @@ head(Hubness.score)
 #>   84.299719   46.741660   77.441514    8.437142   92.870451   88.734131
 ```
 
-Spreading score could be also calculated for *directed* graphs via specifying the `directed` and `mode` parameters. The results could be conveniently illustrated using the [centrality-based network visualization function](#NetVis).
+Hubness score can also be calculated for *directed* graphs via specifying the `directed` and `mode` parameters. The results could be conveniently illustrated using the [centrality-based network visualization function](#NetVis).
 
-<a href="#top">Back to top</a>
+<a class="back-to-top" href="#top">Back to top ↑</a>
 
 # Ranking the influence of nodes on the topology of a network based on the `SIRIR` model {#SIRIR}
+
+<div class="method-highlight">
+<span class="method-kicker">Simulation-based influence</span>
+<strong>SIRIR</strong>
+<span>Uses SIR-based simulations with leave-one-out perturbation to rank nodes according to their effect on network topology and information spread.</span>
+</div>
+
 
 **SIRIR**
     : `SIRIR` is achieved by the integration of susceptible-infected-recovered (SIR) model with the leave-one-out cross validation technique and ranks network nodes based on their true universal influence on the network topology and spread of information. One of the applications of this function is the assessment of 
@@ -804,9 +878,16 @@ Influence.Ranks <- sirir(graph = My_graph,
 |ASPM  |             41.8|    9|
 |ANLN  |             41.8|    9|
 
-<a href="#top">Back to top</a>
+<a class="back-to-top" href="#top">Back to top ↑</a>
 
 # Experimental data-based classification and ranking of top candidate features {#ExIR}
+
+<div class="method-highlight method-highlight-accent">
+<span class="method-kicker">Experimental prioritization</span>
+<strong>ExIR</strong>
+<span>Combines experimental evidence, machine learning, network reconstruction, and integrated influence ranking to classify and prioritize candidate features.</span>
+</div>
+
 
 **ExIR**
 : `ExIR` is a model for the classification and ranking of top candidate features from experimental omics data. The input data can come from different experimental platforms, including transcriptomics, proteomics, bulk RNA-seq, and single-cell RNA-seq. The model combines multi-level filtration and scoring based on supervised learning, unsupervised learning, network reconstruction, and integrated influence ranking to classify and prioritize candidate features.
@@ -1206,13 +1287,25 @@ alt="Watch the ExIR tutorial video on YouTube"
 </a>
 
 ## ExIR shiny app {#ExIRShiny}
-A shiny app has also been developed for Running the ExIR model, visualization of its results as well as computational simulation of knockout and/or up-regulation of its top candidate outputs, which is accessible using the following command.  
-`influential::runShinyApp("ExIR")`  
-You can also access the shiny app online at the [Influential Software Package server](https://influential.erc.monash.edu/).
 
-<a href="#top">Back to top</a>
+<div class="app-callout">
+<span class="app-label">Interactive app</span>
+<h3>Run and explore ExIR interactively</h3>
+<p>The bundled Shiny app supports ExIR analysis, result visualization, and computational simulation of knockout and/or up-regulation of top candidate outputs:</p>
+<pre><code>influential::runShinyApp("ExIR")</code></pre>
+<p>You can also use the <a href="https://influential.erc.monash.edu/" target="_blank" rel="noopener noreferrer">Influential Software Package server</a>.</p>
+</div>
+
+<a class="back-to-top" href="#top">Back to top ↑</a>
 
 # Computational manipulation of cells {#CompManipulate}
+
+<div class="method-highlight">
+<span class="method-kicker">In silico perturbation</span>
+<strong>Computational manipulation</strong>
+<span>Simulates feature knockout and/or up-regulation and evaluates the resulting impact on information flow within an association network.</span>
+</div>
+
 The `comp_manipulate` is a function for the simulation of feature (gene, protein, etc.) knockout and/or up-regulation in cells. 
 This function works based on the [SIRIR](#SIRIR) (SIR-based Influence Ranking) model and could be applied on the output of the [ExIR](#ExIR) model or any other independent association network. For feature (gene/protein/etc.) knockout the [SIRIR](#SIRIR) model is used to remove the feature from the network and assess its impact on the flow of information (signaling) within the network. 
 On the other hand, in case of up-regulation a node similar to the desired node is added to the network with exactly the same connections (edges) as of the original node. Next, the [SIRIR](#SIRIR) model is used to evaluate the difference in the flow of information/signaling after adding (up-regulating) the desired feature/node compared with the original network. In case you are applying this function on the output of [ExIR](#ExIR) model, you may note that as the gene/protein knockout would impact on the integrity of the under-investigation network as well as the networks of other overlapping biological processes/pathways, it is recommended to select those features that simultaneously have the highest (most significant) [ExIR](#ExIR)-based rank and lowest knockout rank. In contrast, as the up-regulation would not affect the integrity of the network, you may select the features with highest (most significant) [ExIR](#ExIR)-based and up-regulation-based ranks. Altogether, it is recommended to select the features 
@@ -1270,6 +1363,6 @@ Have a look at the heads of the output tables:
 |51 |gene_11555   |    5|Up-regulation     |
 |5  |gene_7535    |   10|Knockout          |
 
-<a href="#top">Back to top</a>
+<a class="back-to-top" href="#top">Back to top ↑</a>
 
 # References
