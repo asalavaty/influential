@@ -67,6 +67,18 @@ association analysis and network reconstruction, inspect centrality
 measures, and then use IVI or related influence scores. For experimental
 omics prioritization, you can move directly to [ExIR](#ExIR).
 
+Interactive package explorer
+
+#### Explore the influential toolkit before choosing a workflow
+
+The **influential Feature Explorer** provides a visual, interactive
+overview of the package’s capabilities and helps you identify the
+methods most relevant to your analysis, including network
+reconstruction, IVI, Hubness score, Spreading score, SIRIR, ExIR,
+visualization, and computational perturbation.
+
+[**Open Feature Explorer ↗**](https://asalavaty.com/widgets/influential)
+
 ``` r
 
 library(influential)

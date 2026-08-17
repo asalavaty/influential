@@ -53,86 +53,219 @@
 </nav><div class="container template-home">
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
-<div class="page-header"><h1 id="influential-">influential <a href="https://github.com/asalavaty/influential" class="external-link"><img src="reference/figures/Symbol.png" align="right" height="221"></a>
+<div class="page-header"><h1 id="influential-">influential <a href="https://github.com/asalavaty/influential" class="external-link"><img src="reference/figures/Symbol.png" align="right" height="221" alt="influential logo"></a>
 <a class="anchor" aria-label="anchor" href="#influential-"></a>
 </h1></div>
+<div class="section level3">
+<h3 id="network-influence-analysis-centrality-assessment-and-experimental-feature-prioritization-in-r">Network influence analysis, centrality assessment, and experimental feature prioritization in R<a class="anchor" aria-label="anchor" href="#network-influence-analysis-centrality-assessment-and-experimental-feature-prioritization-in-r"></a>
+</h3>
 <!-- badges: start -->
 
+<!-- badges: end -->
+</div>
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
-<p>The goal of <code>influential</code> is to help identification of the most <code>influential</code> nodes in a network as well as the classification and ranking of top candidate features. This package contains functions for the classification and ranking of features, reconstruction of networks from adjacency matrices and data frames, analysis of the topology of the network and calculation of centrality measures as well as a novel and powerful <code>influential</code> node ranking. The <strong>Experimental data-based Integrative Ranking (ExIR)</strong> is a sophisticated model for classification and ranking of the top candidate features based on only the experimental data. The first integrative method, namely the <strong>Integrated Value of Influence (IVI)</strong>, that captures all topological dimensions of the network for the identification of network most <code>influential</code> nodes is also provided as a function. Also, neighborhood connectivity, H-index, local H-index, and collective influence (CI), all of which required centrality measures for the calculation of <strong>IVI</strong>, are for the first time provided in an R package. Additionally, a function is provided for running <strong>SIRIR</strong> model, which is the combination of leave-one-out cross validation technique and the conventional SIR model, on a network to unsupervisedly rank the true influence of vertices. Furthermore, some functions have been provided for the assessment of dependence and correlation of two network centrality measures as well as the conditional probability of deviation from their corresponding means in opposite directions.</p>
-<p>Check out <a href="https://doi.org/10.1016/j.patter.2020.100052" class="external-link"><strong>our paper</strong></a> for a more complete description of the IVI formula and all of its underpinning methods and analyses.</p>
-<p>The <strong>Experimental data-based Integrative Ranking (ExIR)</strong> model is described in our <a href="https://doi.org/10.1016/j.isci.2026.116303" class="external-link"><strong>iScience article</strong></a>.</p>
+<p><code>influential</code> is an R package for identifying influential nodes in networks and for classifying and prioritizing candidate features from experimental data. It brings together <strong>association analysis, network reconstruction, centrality assessment, influence ranking, visualization, simulation, and experimental feature prioritization</strong> in a single toolkit.</p>
+<p>Two complementary workflows sit at the center of the package:</p>
+<ul>
+<li>
+<strong>Integrated Value of Influence (IVI)</strong> integrates local, semi-local, and global topological information to identify influential network nodes while reducing the limitations of relying on any single centrality measure.</li>
+<li>
+<strong>Experimental data-based Integrative Ranking (ExIR)</strong> combines experimental evidence, machine learning, network reconstruction, and influence ranking to classify and prioritize candidate <strong>drivers, biomarkers, and mediators</strong> from omics data.</li>
+</ul>
+<p>The package also provides <strong>Hubness score</strong> for local network power, <strong>Spreading score</strong> for information-spreading potential, <strong>SIRIR</strong> for simulation-based influence ranking, computational knockout/up-regulation, fast correlation analysis, network reconstruction utilities, centrality measures, and centrality-based network visualization.</p>
+<div class="section level3">
+<h3 id="at-a-glance">At a glance<a class="anchor" aria-label="anchor" href="#at-a-glance"></a>
+</h3>
+<table class="table">
+<colgroup>
+<col width="50%">
+<col width="50%">
+</colgroup>
+<thead><tr>
+<th align="left">Capability</th>
+<th align="left">What <code>influential</code> provides</th>
+</tr></thead>
+<tbody>
+<tr>
+<td align="left"><strong>Association analysis</strong></td>
+<td align="left">Fast Pearson/Spearman correlation analysis with optional mutual rank, p-values, and adjusted p-values</td>
+</tr>
+<tr>
+<td align="left"><strong>Network reconstruction</strong></td>
+<td align="left">Construction of <code>igraph</code> networks from data frames, adjacency matrices, incidence matrices, and SIF files</td>
+</tr>
+<tr>
+<td align="left"><strong>Centrality analysis</strong></td>
+<td align="left">Local, semi-local, and global centrality measures together with association assessment</td>
+</tr>
+<tr>
+<td align="left"><strong>Network influence</strong></td>
+<td align="left">IVI, Hubness score, Spreading score, and SIRIR</td>
+</tr>
+<tr>
+<td align="left"><strong>Experimental prioritization</strong></td>
+<td align="left">ExIR-based classification and ranking of drivers, biomarkers, and mediators from omics data</td>
+</tr>
+<tr>
+<td align="left"><strong>Perturbation &amp; visualization</strong></td>
+<td align="left">In silico knockout/up-regulation and centrality-based network visualization</td>
+</tr>
+<tr>
+<td align="left"><strong>Interactive analysis</strong></td>
+<td align="left">Browser-based and locally launchable Shiny interfaces for IVI and ExIR</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 <div class="section level2">
-<h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a>
+<h2 id="quick-links">Quick links<a class="anchor" aria-label="anchor" href="#quick-links"></a>
 </h2>
-<p>The <code>influential</code> package was written by <a href="https://asalavaty.com/" class="external-link">Adrian Salavaty</a></p>
+<table class="table">
+<colgroup>
+<col width="50%">
+<col width="50%">
+</colgroup>
+<thead><tr>
+<th align="left">Resource</th>
+<th align="left">Link</th>
+</tr></thead>
+<tbody>
+<tr>
+<td align="left">✨ <strong>Feature Explorer</strong>
+</td>
+<td align="left"><a href="https://asalavaty.com/widgets/influential" class="external-link">Explore the features and capabilities of <code>influential</code></a></td>
+</tr>
+<tr>
+<td align="left">📦 <strong>CRAN</strong>
+</td>
+<td align="left"><a href="https://cran.r-project.org/package=influential" class="external-link">cran.r-project.org/package=influential</a></td>
+</tr>
+<tr>
+<td align="left">📖 <strong>Full vignette</strong>
+</td>
+<td align="left"><a href="https://cran.r-project.org/web/packages/influential/vignettes/Vignettes.html" class="external-link">Introduction to influential</a></td>
+</tr>
+<tr>
+<td align="left">💻 <strong>GitHub</strong>
+</td>
+<td align="left"><a href="https://github.com/asalavaty/influential" class="external-link">github.com/asalavaty/influential</a></td>
+</tr>
+<tr>
+<td align="left">🌐 <strong>Interactive web portal</strong>
+</td>
+<td align="left"><a href="https://influential.erc.monash.edu/" class="external-link">Influential Software Package</a></td>
+</tr>
+<tr>
+<td align="left">🐞 <strong>Issues &amp; feature requests</strong>
+</td>
+<td align="left"><a href="https://github.com/asalavaty/influential/issues" class="external-link">GitHub issue tracker</a></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="section level2">
-<h2 id="advisors">Advisors<a class="anchor" aria-label="anchor" href="#advisors"></a>
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>Mirana Ramialison and Peter D. Currie</p>
-</div>
-<div class="section level2">
-<h2 id="how-to-install">How to Install<a class="anchor" aria-label="anchor" href="#how-to-install"></a>
-</h2>
-<p>You can install the official <a href="https://cran.r-project.org/package=influential" class="external-link">CRAN release</a> of the <code>influential</code> with the following code:</p>
+<p>Install the current CRAN release:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"influential"</span><span class="op">)</span></span></code></pre></div>
-<p>Or the development version from GitHub:</p>
+<p>Or install the development version from GitHub:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">## install.packages("remotes")</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"asalavaty/influential"</span>, build_vignettes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># install.packages("remotes")</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span></span>
+<span>  <span class="st">"asalavaty/influential"</span>,</span>
+<span>  build_vignettes <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>Then load the package:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/asalavaty/influential" class="external-link">influential</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="vignettes">Vignettes<a class="anchor" aria-label="anchor" href="#vignettes"></a>
+<h2 id="core-methods">Core methods<a class="anchor" aria-label="anchor" href="#core-methods"></a>
 </h2>
-<p>A comprehensive introduction to <code>influential</code> and all of its functions is available in the <a href="https://cran.r-project.org/web/packages/influential/vignettes/Vignettes.html" class="external-link">vignette</a>.</p>
-<p>You may browse Vignettes from within R using the following code.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="section level3">
+<h3 id="integrated-value-of-influence-ivi">Integrated Value of Influence (IVI)<a class="anchor" aria-label="anchor" href="#integrated-value-of-influence-ivi"></a>
+</h3>
+<p>IVI integrates complementary <strong>local, semi-local, and global</strong> centrality dimensions to identify influential nodes within a network.</p>
+<p>For the methodological details, see:</p>
+<p><a href="https://doi.org/10.1016/j.patter.2020.100052" class="external-link"><strong>Integrated Value of Influence: An Integrative Method for the Identification of the Most Influential Nodes within Networks</strong></a></p>
+</div>
+<div class="section level3">
+<h3 id="experimental-data-based-integrative-ranking-exir">Experimental data-based Integrative Ranking (ExIR)<a class="anchor" aria-label="anchor" href="#experimental-data-based-integrative-ranking-exir"></a>
+</h3>
+<p>ExIR prioritizes candidate features directly from experimental omics data by integrating multiple levels of evidence with network reconstruction and influence ranking. Depending on the input data and analysis settings, ExIR can identify <strong>drivers, biomarkers, DE-mediators, and nonDE-mediators</strong>.</p>
+<p>For the methodological details, see:</p>
+<p><a href="https://doi.org/10.1016/j.isci.2026.116303" class="external-link"><strong>ExIR enables prioritizing driver and biomarker genes from omics data in a reference free manner</strong></a></p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="documentation">Documentation<a class="anchor" aria-label="anchor" href="#documentation"></a>
+</h2>
+<p>A comprehensive introduction to <code>influential</code> and its functions is available in the package vignette:</p>
+<p><strong><a href="https://cran.r-project.org/web/packages/influential/vignettes/Vignettes.html" class="external-link">Read the influential vignette</a></strong></p>
+<p>You can also browse installed vignettes directly from R:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/browseVignettes.html" class="external-link">browseVignettes</a></span><span class="op">(</span><span class="st">"influential"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="shiny-apps">Shiny apps<a class="anchor" aria-label="anchor" href="#shiny-apps"></a>
 </h2>
-<ul>
-<li><p><a href="https://influential.erc.monash.edu/" class="external-link">Influential Software Package web portal</a></p></li>
-<li><p><a href="https://influential.erc.monash.edu/IVI/" class="external-link">IVI Shiny App</a>: A shiny app for the calculation of the Integrated Value of Influence (IVI) of network nodes as well as IVI-based visualization of the network.</p></li>
-</ul>
-<p>You can also access the IVI shiny app offline from within R and run it on your local machine using the following command.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">influential</span><span class="fu">::</span><span class="fu"><a href="reference/runShinyApp.html">runShinyApp</a></span><span class="op">(</span><span class="st">"IVI"</span><span class="op">)</span></span></code></pre></div>
-<ul>
-<li>
-<a href="https://influential.erc.monash.edu/ExIR/" class="external-link">ExIR Shiny App</a>: A shiny app for running the Experimental-data-based Integrative Ranking (ExIR) model as well as visualization of its results.</li>
-</ul>
-<p>You can also access the ExIR shiny app offline from within R and run it on your local machine using the following command.</p>
+<p>The package provides interactive interfaces for IVI and ExIR through the <a href="https://influential.erc.monash.edu/" class="external-link">Influential Software Package web portal</a>.</p>
+<div class="section level3">
+<h3 id="ivi-shiny-app">IVI Shiny app<a class="anchor" aria-label="anchor" href="#ivi-shiny-app"></a>
+</h3>
+<p>The <a href="https://influential.erc.monash.edu/IVI/" class="external-link">IVI Shiny App</a> supports calculation of IVI values and IVI-based network visualization.</p>
+<p>You can also launch it locally:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">influential</span><span class="fu">::</span><span class="fu"><a href="reference/runShinyApp.html">runShinyApp</a></span><span class="op">(</span><span class="st">"IVI"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="exir-shiny-app">ExIR Shiny app<a class="anchor" aria-label="anchor" href="#exir-shiny-app"></a>
+</h3>
+<p>The <a href="https://influential.erc.monash.edu/ExIR/" class="external-link">ExIR Shiny App</a> supports ExIR analysis, result visualization, and downstream exploration.</p>
+<p>You can also launch it locally:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">influential</span><span class="fu">::</span><span class="fu"><a href="reference/runShinyApp.html">runShinyApp</a></span><span class="op">(</span><span class="st">"ExIR"</span><span class="op">)</span></span></code></pre></div>
+</div>
 </div>
 <div class="section level2">
 <h2 id="how-to-cite-influential">How to cite <code>influential</code>
 <a class="anchor" aria-label="anchor" href="#how-to-cite-influential"></a>
 </h2>
-<p>If you use <code>influential</code>, please cite the relevant associated publication(s).</p>
-<p>For the <strong>Experimental data-based Integrative Ranking (ExIR)</strong> model, please cite:</p>
+<p>If you use <code>influential</code>, please cite the publication associated with the method(s) used in your analysis.</p>
+<p>For the <strong>Experimental data-based Integrative Ranking (ExIR)</strong> model:</p>
 <ul>
 <li>Salavaty A, Douek AM, Kaslin J, Ramialison M, Currie PD. ExIR enables prioritizing driver and biomarker genes from omics data in a reference free manner. <em>iScience</em>. 2026.06.19. <a href="https://doi.org/10.1016/j.isci.2026.116303" class="external-link">Read online</a>.</li>
 </ul>
-<p>For the <strong>Integrated Value of Influence (IVI)</strong> and network influence analysis, please cite:</p>
+<p>For the <strong>Integrated Value of Influence (IVI)</strong> and network influence analysis:</p>
 <ul>
 <li>Salavaty A, Ramialison M, Currie PD. Integrated Value of Influence: An Integrative Method for the Identification of the Most Influential Nodes within Networks. <em>Patterns</em>. 2020.08.14. <a href="https://doi.org/10.1016/j.patter.2020.100052" class="external-link">Read online</a>.</li>
 </ul>
-<p>You can also access the package citation information from within R:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<p>Package citation information is also available from R:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"influential"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="how-to-contribute">How to contribute<a class="anchor" aria-label="anchor" href="#how-to-contribute"></a>
+<h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a>
 </h2>
-<p>Please don’t hesitate to report any bugs/issues and request for enhancement or any other contributions. To submit a bug report or enhancement request, please use the <a href="https://github.com/asalavaty/influential/issues" class="external-link"><code>influential</code> GitHub issues tracker</a>.</p>
+<p>The <code>influential</code> package was developed by <a href="https://asalavaty.com/" class="external-link">Adrian Salavaty</a>.</p>
+<div class="section level3">
+<h3 id="advisors">Advisors<a class="anchor" aria-label="anchor" href="#advisors"></a>
+</h3>
+<ul>
+<li>Mirana Ramialison</li>
+<li>Peter D. Currie</li>
+</ul>
+</div>
+</div>
+<div class="section level2">
+<h2 id="contributing-and-support">Contributing and support<a class="anchor" aria-label="anchor" href="#contributing-and-support"></a>
+</h2>
+<p>Bug reports, feature requests, documentation suggestions, and other contributions are welcome.</p>
+<p>Please use the <a href="https://github.com/asalavaty/influential/issues" class="external-link"><code>influential</code> GitHub issues tracker</a> to report problems or suggest enhancements.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
