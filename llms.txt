@@ -1,4 +1,4 @@
-# influential [![influential logo](reference/figures/Symbol.png)](https://github.com/asalavaty/influential)
+# influential [![influential logo](reference/figures/Symbol.png)](https://asalavaty.com/widgets/influential)
 
 ### Network influence analysis, centrality assessment, and experimental feature prioritization in R
 
