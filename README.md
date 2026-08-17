@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# influential <a href="https://github.com/asalavaty/influential"><img src="man/figures/Symbol.png" align="right" height="221" alt="influential logo"/></a>
+# influential <a href="https://asalavaty.com/widgets/influential"><img src="man/figures/Symbol.png" align="right" height="221" alt="influential logo"/></a>
 
 ### Network influence analysis, centrality assessment, and experimental feature prioritization in R
 
