@@ -87,6 +87,13 @@ If you want to move directly to the package's main integrative methods, use the 
 <strong>Suggested route:</strong> For network-focused analyses, start with association analysis and network reconstruction, inspect centrality measures, and then use IVI or related influence scores. For experimental omics prioritization, you can move directly to <a href="#ExIR">ExIR</a>.
 </div>
 
+<div class="app-callout">
+<span class="app-label">Interactive package explorer</span>
+<h3>Explore the influential toolkit before choosing a workflow</h3>
+<p>The <strong>influential Feature Explorer</strong> provides a visual, interactive overview of the package's capabilities and helps you identify the methods most relevant to your analysis, including network reconstruction, IVI, Hubness score, Spreading score, SIRIR, ExIR, visualization, and computational perturbation.</p>
+<p><a href="https://asalavaty.com/widgets/influential" target="_blank" rel="noopener noreferrer"><strong>Open Feature Explorer ↗</strong></a></p>
+</div>
+
 ```{r setup}
 library(influential)
 ```

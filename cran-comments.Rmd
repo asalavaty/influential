@@ -1,0 +1,46 @@
+---
+title: "CRAN Comments"
+author: "Adrian (Abbas) Salavaty"
+date: "15/01/2020 (updated on `r format(Sys.time(), '%d %B, %Y')`)"
+output:
+  github_document:
+    toc: false
+    keep_html: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 2.3.2 New version submission
+
+This is a new submission of version 2.3.2 of the package `influential`.
+
+- Updated Vignettes comprehensively.
+
+- Updated the citation information of ExIR.
+
+Please see NEWS for complete details.
+
+## Test environments
+
+* local OS X install, R 4.5.0
+* windows server (on AppVeyor CI), R 4.1.0
+* ubuntu (r-hub CI), devel and release
+* win-builder, devel and release
+
+## R CMD check results
+
+There were no ERRORs, WARNINGs or NOTEs.
+
+There was one NOTE from CRAN incoming checks.
+
+The spell-check NOTE refers to package-specific and standard technical terms used intentionally in the DESCRIPTION, including ExIR, IVI, omics, and tibbles.
+
+The Additional_repositories NOTE refers to the Bioconductor repository used for the `edgeR` dependency. `edgeR` is used for TMM/logCPM normalization of bulk count-like data and pseudo-bulked single-cell data in ExIR. The package dependency check passed successfully.
+
+## Downstream dependencies
+
+This package has one reverse dependency: `networksem`.
+
+I have run reverse dependency checks and confirm that there are no breaking changes.
