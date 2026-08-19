@@ -31,3 +31,4 @@ logo.png
 ^\.github$
 ^CRAN-SUBMISSION$
 .positai
+^pkgdown$

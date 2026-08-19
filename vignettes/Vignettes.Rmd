@@ -47,9 +47,7 @@ spaces <- function (n) {
 </div>
 <div class="overview-logo">
 
-```{r echo=FALSE, fig.align="center", out.width="100%", out.extra='class="overview-logo-img"'}
-knitr::include_graphics(path = "../man/figures/Symbol.png", error = FALSE)
-```
+![](figures/Symbol.png){.overview-logo-img}
 
 </div>
 </div>
