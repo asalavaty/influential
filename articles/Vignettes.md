@@ -8,7 +8,7 @@ experimental data. Its functionality spans network construction,
 centrality analysis, influence ranking, and experimental data-driven
 feature prioritization.
 
-![](../reference/figures/Symbol.png)
+![](figures/Symbol.png)
 
 **In brief:** `influential` brings network reconstruction, centrality
 analysis, influence modelling, and experimental feature prioritization
