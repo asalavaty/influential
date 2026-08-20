@@ -58,7 +58,6 @@ Suggests:
     knitr,
     rmarkdown
 Depends: R (>= 4.0.0)
-Additional_repositories: https://bioconductor.org/packages/release/bioc
 URL: https://github.com/asalavaty/influential, https://asalavaty.github.io/influential/
 BugReports: https://github.com/asalavaty/influential/issues
 License: GPL-3

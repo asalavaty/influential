@@ -68,7 +68,7 @@ network visualization.
 |:---|:---|
 | ✨ **Feature Explorer** | [Explore the features and capabilities of `influential`](https://asalavaty.com/widgets/influential) |
 | 📦 **CRAN** | [cran.r-project.org/package=influential](https://cran.r-project.org/package=influential) |
-| 📖 **Full vignette** | [Introduction to influential](https://cran.r-project.org/web/packages/influential/vignettes/Vignettes.html) |
+| 📖 **Full vignette** | [Introduction to influential](https://asalavaty.github.io/influential/articles/Vignettes.html) |
 | 💻 **GitHub** | [github.com/asalavaty/influential](https://github.com/asalavaty/influential) |
 | 🌐 **Interactive web portal** | [Influential Software Package](https://influential.erc.monash.edu/) |
 | 🐞 **Issues & feature requests** | [GitHub issue tracker](https://github.com/asalavaty/influential/issues) |
@@ -130,7 +130,7 @@ A comprehensive introduction to `influential` and its functions is
 available in the package vignette:
 
 **[Read the influential
-vignette](https://cran.r-project.org/web/packages/influential/vignettes/Vignettes.html)**
+vignette](https://asalavaty.github.io/influential/articles/Vignettes.html)**
 
 You can also browse installed vignettes directly from R:
 
