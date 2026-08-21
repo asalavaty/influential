@@ -170,7 +170,7 @@ A sample appropriate data frame is brought below:
 knitr::kable(head(coexpression.data))
 ```
     
-This is a co-expression dataset obtained from a paper by Salavaty **et al**.^[Salavaty A, Rezvani Z, Najafi A. *Survival analysis and functional annotation of long non-coding RNAs in lung adenocarcinoma*. J Cell Mol Med. 2019;23:5600–5617. ([DOI: 10.1111/jcmm.14458](https://doi.org/10.1111/jcmm.14458/))]
+This is a co-expression dataset obtained from a paper by Salavaty **et al**.^[Salavaty A, Rezvani Z, Najafi A. *Survival analysis and functional annotation of long non-coding RNAs in lung adenocarcinoma*. J Cell Mol Med. 2019;23:5600–5617. ([DOI: 10.1111/jcmm.14458](https://doi.org/10.1111/jcmm.14458))]
 
 ```{r g_dataframe}
 # Preparing the data
@@ -311,7 +311,7 @@ Betweenness centrality could be also calculated for *directed* and/or *weighted*
 
 ## Neighborhood connectivity
 
-Neighborhood connectivity is one of the other important centrality measures that reflect the semi-local centrality of a node. This centrality measure was first represented in a Science paper^[Maslov S., Sneppen K. *Specificity and stability in topology of protein networks*. Science. 2002; 296: 910-913 ([DOI: 10.1126/science.1065103 ](https://doi.org/10.1126/science.1065103/))] in 2002 and is for the first time calculable in R environment via the `influential` package.
+Neighborhood connectivity is one of the other important centrality measures that reflect the semi-local centrality of a node. This centrality measure was first represented in a Science paper^[Maslov S., Sneppen K. *Specificity and stability in topology of protein networks*. Science. 2002; 296: 910-913 ([DOI: 10.1126/science.1065103 ](https://doi.org/10.1126/science.1065103))] in 2002 and is for the first time calculable in R environment via the `influential` package.
 
 ```{r NC, eval=FALSE}
 # Preparing the data

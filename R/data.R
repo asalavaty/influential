@@ -14,7 +14,7 @@
 #'   \item{Coexpressed.Gene}{Co-expressed gene symbol}
 #'   ...
 #' }
-#' @source \url{https://pubmed.ncbi.nlm.nih.gov/31211495/}
+#' @source \url{https://doi.org/10.1111/jcmm.14458}
 "coexpression.data"
 
 #=============================================================================
@@ -39,7 +39,7 @@
 #'   \item{CI}{Collective Influence}
 #'   ...
 #' }
-#' @source \url{https://doi.org/10.1111/jcmm.14458/}
+#' @source \url{https://doi.org/10.1111/jcmm.14458}
 "centrality.measures"
 
 #=============================================================================
@@ -59,5 +59,5 @@
 #'   \item{lncRNA}{lncRNA symbol}
 #'   ...
 #' }
-#' @source \url{https://doi.org/10.1111/jcmm.14458/}
+#' @source \url{https://doi.org/10.1111/jcmm.14458}
 "coexpression.adjacency"
