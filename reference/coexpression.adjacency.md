@@ -23,4 +23,4 @@ A data frame with 794 rows and 794 variables:
 
 ## Source
 
-<https://doi.org/10.1111/jcmm.14458/>
+<https://doi.org/10.1111/jcmm.14458>

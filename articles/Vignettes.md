@@ -1657,11 +1657,11 @@ Have a look at the heads of the output tables:
 [^2]: Salavaty A, Rezvani Z, Najafi A. *Survival analysis and functional
     annotation of long non-coding RNAs in lung adenocarcinoma*. J Cell
     Mol Med. 2019;23:5600–5617. ([DOI:
-    10.1111/jcmm.14458](https://doi.org/10.1111/jcmm.14458/))
+    10.1111/jcmm.14458](https://doi.org/10.1111/jcmm.14458))
 
 [^3]: Maslov S., Sneppen K. *Specificity and stability in topology of
     protein networks*. Science. 2002; 296: 910-913 ([DOI:
-    10.1126/science.1065103](https://doi.org/10.1126/science.1065103/))
+    10.1126/science.1065103](https://doi.org/10.1126/science.1065103))
 
 [^4]: NNS: Nonlinear Nonparametric Statistics.
     ([CRAN](https://cran.r-project.org/package=NNS))
