@@ -6,6 +6,8 @@
 
 ## influential 2.3.2
 
+CRAN release: 2026-08-23
+
 - Updated Vignettes comprehensively.
 
 - Updated the citation information of ExIR.

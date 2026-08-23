@@ -12,7 +12,7 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/asalavaty/influential/blob/master/inst/CITATION)
+[`inst/CITATION`](https://github.com/asalavaty/influential/blob/v2.3.2/inst/CITATION)
 
 Salavaty A, Ramialison M, Currie PD. Integrated Value of Influence: An
 Integrative Method for the Identification of the Most Influential Nodes
