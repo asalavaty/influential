@@ -97,7 +97,7 @@ sirir <- function(graph, vertices = V(graph),
           max(loocr.spread[[h]]$NR)
         })
         
-        cat(paste("\nProcessing vertex ", as_ids(s), " is done!", "\n", sep = ""))  # Print message for each iteration
+        print(paste("\nProcessing vertex ", ifelse(inherits(vertices, "igraph.vs"), as_ids(s), s), " is done!", "\n", sep = ""))  # Print message for each iteration
         
         # return mean of loocr spreads
         mean(loocr.mean.spread)

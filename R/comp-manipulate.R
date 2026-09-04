@@ -1,8 +1,8 @@
-#=============================================================================
+#_____________________________________________________________________________
 #
 #    Computational manipulation of cells
 #
-#=============================================================================
+#_____________________________________________________________________________
 
 #' Computational manipulation of cells
 #'
@@ -71,13 +71,13 @@ comp_manipulate <- function(exir_output = NULL,
                             ncores = "default", 
                             seed = 1234) {
   
-  ##**************************##
+  #_____________________________
   # Take care of input graph
   if(!is.null(exir_output) && inherits(exir_output, "ExIR_Result")) {
     graph <- exir_output$Graph
   }
   
-  ##**************************##
+  #_____________________________
   # Over-expression function
   
   overexpr <- function(graph, vertices = upregulate_vertices, beta = beta, gamma = gamma,
@@ -165,7 +165,7 @@ comp_manipulate <- function(exir_output = NULL,
     return(temp.loocr.table)
   }
   
-  ##**************************##
+  #_____________________________
   # Knockout results
   if(!is.null(ko_vertices)) {
     base::suppressWarnings(
@@ -194,7 +194,7 @@ comp_manipulate <- function(exir_output = NULL,
     
   } else {ko_results <- NULL}
   
-  ##**************************##
+  #_____________________________
   
   # Over-expression results
   if(!is.null(upregulate_vertices)) {
@@ -224,7 +224,7 @@ comp_manipulate <- function(exir_output = NULL,
     
   } else {overexpr_results <- NULL}
   
-  ##**************************##
+  #_____________________________
   
   # Combined results
   if(!is.null(ko_results) & !is.null(overexpr_results)) {
@@ -242,7 +242,7 @@ comp_manipulate <- function(exir_output = NULL,
     combined_results <- NULL
   }
   
-  ##**************************##
+  #_____________________________
   
   # Correct results data frames
   
@@ -250,7 +250,7 @@ comp_manipulate <- function(exir_output = NULL,
   overexpr_results <- overexpr_results[,-2]
   combined_results <- combined_results[,-2]
   
-  ##**************************##
+  #_____________________________
   
   # Final results
   final.results <- list(Knockout = ko_results,
