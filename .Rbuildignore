@@ -32,3 +32,5 @@ logo.png
 ^CRAN-SUBMISSION$
 .positai
 ^pkgdown$
+^\.positai$
+^\.claude$

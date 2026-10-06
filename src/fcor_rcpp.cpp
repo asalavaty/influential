@@ -77,6 +77,39 @@ NumericMatrix rank_matrix_cpp(NumericMatrix mat,
 }
 
 
+
+// Convert an optional R object to a numeric matrix without relying on
+// Rcpp::Nullable<NumericMatrix> argument conversion. This keeps the C++
+// entry points robust across newer R/Rcpp combinations.
+static NumericMatrix numeric_matrix_or_empty(SEXP x, const char* arg_name) {
+  if (Rf_isNull(x)) {
+    return NumericMatrix();
+  }
+
+  if (!Rf_isMatrix(x)) {
+    Rcpp::stop("'%s' must be a matrix or NULL.", arg_name);
+  }
+
+  if (TYPEOF(x) == REALSXP) {
+    return NumericMatrix(x);
+  }
+
+  if (TYPEOF(x) == INTSXP) {
+    IntegerMatrix src(x);
+    NumericMatrix out(src.nrow(), src.ncol());
+    std::copy(src.begin(), src.end(), out.begin());
+
+    SEXP dimnames = Rf_getAttrib(x, R_DimNamesSymbol);
+    if (dimnames != R_NilValue) {
+      out.attr("dimnames") = dimnames;
+    }
+
+    return out;
+  }
+
+  Rcpp::stop("'%s' must be a numeric (double or integer) matrix or NULL.", arg_name);
+}
+
 // [[Rcpp::export]]
 List flatten_cor_matrix_cpp(NumericMatrix cormat,
                             Nullable<NumericMatrix> mrmat = R_NilValue,

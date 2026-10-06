@@ -5,6 +5,8 @@ influential
 
 # influential 2.3.2.9000 (Developmental version)
 
+- Debug `fcor` function.
+
 - Debug `sirir` function so that it works with character vector inputs
   as well.
 
