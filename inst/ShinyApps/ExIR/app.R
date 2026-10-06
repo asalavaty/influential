@@ -20,21 +20,12 @@ options(warn=-1)
 
 navbarPageWithText <- function(..., text) {
 
-    if(as.integer(paste(unlist(packageVersion(pkg = "shiny")), collapse = "")) <= 160) {
-        navbar <- navbarPage(...)
-        textEl <- tags$p(class = "navbar-text", text)
-        navbar[[3]][[1]]$children[[1]] <- htmltools::tagAppendChild(
-            navbar[[3]][[1]]$children[[1]],
-            textEl)
-        navbar
-    } else {
-        navbar <- navbarPage(...)
-        textEl <- tags$p(class = "navbar-text", text)
-        navbar[[4]][[1]][[1]]$children[[1]] <- htmltools::tagAppendChild(
-            navbar[[4]][[1]][[1]]$children[[1]],
-            textEl)
-        navbar
-    }
+    # Append the descriptive text to the navbar header. The navbar is queried by
+    # its CSS class (rather than by list position) so that this works across
+    # Shiny/Bootstrap versions.
+    navbar <- navbarPage(...)
+    textEl <- tags$p(class = "navbar-text", text)
+    htmltools::tagQuery(navbar)$find(".navbar-header")$append(textEl)$allTags()
 }
 
 ####**********************************************####
@@ -1186,13 +1177,30 @@ ui <- navbarPageWithText(id = "inTabset",
                                              h4(icon("scroll"), "Please cite the following two papers if you used this shiny app in your study."),
                                              br(),
                                              panel(footer = "",heading = "", status = "primary",
-                                      h3(tags$b("ExIR: a versatile one-stop model for the extraction, classification, and prioritization of candidate genes from experimental data"),
+                                      h3(tags$b("ExIR enables prioritizing driver and biomarker genes from omics data in a reference free manner"),
                                          style = "color:grey88;"),
                                       br(),
-                                      h5(tags$b("The ExIR manuscript is still under review.")),
+                                      h5(tags$b("The ExIR manuscript is published in the interdisciplinary journal iScience, a Cell Press journal!")),
 
-                                      p("Salavaty A, Ramialison M, Currie PD.", tags$i("ExIR: a versatile one-stop model for the extraction, classification, and prioritization of candidate genes from experimental data"),
-                                        style = "text-decoration:underline;")
+                                      p("Salavaty A, Douek AM, Kaslin J, Ramialison M, Currie PD.", tags$i("ExIR enables prioritizing driver and biomarker genes from omics data in a reference free manner"), "iScience, 2026; 29",
+                                        style = "text-decoration:underline;"),
+                                      
+                                      tags$li(a("DOI: 10.1016/j.isci.2026.116303", href = "https://doi.org/10.1016/j.isci.2026.116303",
+                                                style = "color:blue;")),
+                                      tags$li(a("PMID: 42291207", href = "https://pubmed.ncbi.nlm.nih.gov/42291207/",
+                                                style = "color:blue;")),
+                                      tags$li(a("PMCID: PMC13264208", href = "http://www.ncbi.nlm.nih.gov/pmc/articles/PMC13264208/",
+                                                style = "color:blue;")),
+                                      
+                                      h4(tags$b("Summary")),
+                                      p("High-throughput sequencing enables genome-wide interrogation of biological systems, yet prioritizing 
+                                        functionally relevant genes and proteins from these data remains a key challenge. Here, we present ExIR (experimental data-based integrative ranking), 
+                                        a data-driven framework that classifies and ranks features as drivers, biomarkers, or mediators based on their behavior within inferred association networks. 
+                                        ExIR operates directly on experimental data without relying on external annotations. 
+                                        Across 14 transcriptomic and proteomic datasets, ExIR showed consistently strong performance in feature prioritization relative to commonly used methods. 
+                                        Application to RNA-seq data from a zebrafish model of mucopolysaccharidosis IIIA identified candidate regulators associated with disease progression. 
+                                        These results indicate that ExIR provides a generalizable approach for extracting biologically meaningful features from high-dimensional datasets, 
+                                        supporting more efficient downstream experimental investigation and interpretation.")
                                       ),
                                       panel(footer = "",heading = "", status = "success",
                                              h3(tags$b("Integrated Value of Influence: An Integrative Method for the Identification of the Most Influential Nodes within Networks"),
@@ -1259,7 +1267,7 @@ devtools::install_github('asalavaty/influential',
                                       column(8,
                                              panel(footer = "",heading = "", status = "default",
                                                    h3(tags$b("Credits"), style = "color:darkcyan"),
-                                                   p("The ExIR project was done by", a("Adrian (Abbas) Salavaty", href = "https://www.abbassalavaty.com/", style = "color:blue"),
+                                                   p("The ExIR project was done by", a("Adrian Salavaty", href = "https://www.abbassalavaty.com/", style = "color:blue"),
                                                      "and was supervised by",
                                                      a("Prof. Peter Currie", href = "https://www.armi.org.au/about/our-people/peter-currie/",
                                                        style = "color:blue"),

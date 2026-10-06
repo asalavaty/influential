@@ -1,15 +1,13 @@
 CRAN Comments
 ================
 Adrian (Abbas) Salavaty
-15/01/2020 (updated on 13 August, 2026)
+15/01/2020 (updated on 07 October, 2026)
 
-## 2.3.2 New version submission
+## 2.3.3 New version submission
 
-This is a new submission of version 2.3.2 of the package `influential`.
+This is a new submission of version 2.3.3 of the package `influential`.
 
-- Updated Vignettes comprehensively.
-
-- Updated the citation information of ExIR.
+- Debugged fcor and sirir functions and updated bundled apps.
 
 Please see NEWS for complete details.
 

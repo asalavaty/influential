@@ -17,21 +17,12 @@ options(warn=-1)
 
 navbarPageWithText <- function(..., text) {
 
-  if(as.integer(paste(unlist(packageVersion(pkg = "shiny")), collapse = "")) <= 160) {
+    # Append the descriptive text to the navbar header. The navbar is queried by
+    # its CSS class (rather than by list position) so that this works across
+    # Shiny/Bootstrap versions.
     navbar <- navbarPage(...)
     textEl <- tags$p(class = "navbar-text", text)
-    navbar[[3]][[1]]$children[[1]] <- htmltools::tagAppendChild(
-                                                                navbar[[3]][[1]]$children[[1]],
-                                                                textEl)
-    navbar
-  } else {
-    navbar <- navbarPage(...)
-    textEl <- tags$p(class = "navbar-text", text)
-    navbar[[4]][[1]][[1]]$children[[1]] <- htmltools::tagAppendChild(
-                                                                     navbar[[4]][[1]][[1]]$children[[1]],
-                                                                     textEl)
-    navbar
-  }
+    htmltools::tagQuery(navbar)$find(".navbar-header")$append(textEl)$allTags()
 }
 
 ####**********************************************####
@@ -385,7 +376,7 @@ devtools::install_github('asalavaty/influential',
                column(8,
                       panel(footer = "",heading = "", status = "default",
                             h3(tags$b("Credits"), style = "color:darkcyan"),
-                            p("The IVI project was done by", a("Adrian (Abbas) Salavaty", href = "https://www.abbassalavaty.com/", style = "color:blue"),
+                            p("The IVI project was done by", a("Adrian Salavaty", href = "https://www.abbassalavaty.com/", style = "color:blue"),
                               "and was supervised by",
                               a("Prof. Peter Currie", href = "https://www.armi.org.au/about/our-people/peter-currie/",
                                 style = "color:blue"),
@@ -459,12 +450,12 @@ server <- function(input, output, session) {
         fileType <- input$fileType
         temp.graph <-
             switch(fileType,
-                   pairs = igraph::graph_from_data_frame(d = data(), directed = input$directed),
-                   adjacency = igraph::graph_from_adjacency_matrix(adjmatrix = data(), mode = input$mode, weighted = input$weighted),
-                   incidence = igraph::graph_from_incidence_matrix(incidence = data(), mode = input$mode, directed = input$directed, weighted = input$weighted),
-                   sif = igraph::graph_from_data_frame(d = data(), directed = input$directed))
+                   pairs = igraph::graph_from_data_frame(d = data(), directed = as.logical(input$directed)),
+                   adjacency = igraph::graph_from_adjacency_matrix(adjmatrix = data(), mode = input$mode, weighted = as.logical(input$weighted)),
+                   incidence = igraph::graph_from_incidence_matrix(incidence = data(), mode = input$mode, directed = as.logical(input$directed), weighted = as.logical(input$weighted)),
+                   sif = igraph::graph_from_data_frame(d = data(), directed = as.logical(input$directed)))
         
-        if(input$weighted == TRUE && input$weightColumn != 0) {
+        if(as.logical(input$weighted) && input$weightColumn != 0) {
         temp.graph <-
             set.edge.attribute(graph = temp.graph,
                                name = "weight",
@@ -476,17 +467,17 @@ server <- function(input, output, session) {
     })
 
     observe({
-        if(input$weighted == FALSE || input$weightColumn == 0) {
+        if(!as.logical(input$weighted) || input$weightColumn == 0) {
 
             final.graph <- eventReactive(input$go, {
                 req(input$file)
 
                 fileType <- input$fileType
                 switch(fileType,
-                       pairs = igraph::graph_from_data_frame(d = data(), directed = input$directed),
-                       adjacency = igraph::graph_from_adjacency_matrix(adjmatrix = data(), mode = input$mode, weighted = input$weighted),
-                       incidence = igraph::graph_from_incidence_matrix(incidence = data(), mode = input$mode, directed = input$directed, weighted = input$weighted),
-                       sif = igraph::graph_from_data_frame(d = data(), directed = input$directed))
+                       pairs = igraph::graph_from_data_frame(d = data(), directed = as.logical(input$directed)),
+                       adjacency = igraph::graph_from_adjacency_matrix(adjmatrix = data(), mode = input$mode, weighted = as.logical(input$weighted)),
+                       incidence = igraph::graph_from_incidence_matrix(incidence = data(), mode = input$mode, directed = as.logical(input$directed), weighted = as.logical(input$weighted)),
+                       sif = igraph::graph_from_data_frame(d = data(), directed = as.logical(input$directed)))
             })
         }
     })
@@ -505,7 +496,7 @@ server <- function(input, output, session) {
         })
 
         observeEvent(input$weighted, {
-            if(input$weighted == FALSE) {
+            if(!as.logical(input$weighted)) {
                 disable("weightColumn")
             } else {
                 enable("weightColumn")
@@ -532,7 +523,7 @@ server <- function(input, output, session) {
                          detail = NULL,
                          value = 65, min = 1, max = 100, {
 
-                ivi(graph = final.graph(), weights = NULL, directed = input$directed,
+                ivi(graph = final.graph(), weights = NULL, directed = as.logical(input$directed),
                     mode = input$mode, loops = input$loops, d = input$d, scale = input$scale)
             })
         })
@@ -604,9 +595,9 @@ server <- function(input, output, session) {
         })
 
         observe({
-            if(!is.weighted(final.graph()) | input$weighted == FALSE) {
+            if(!is.weighted(final.graph()) | !as.logical(input$weighted)) {
                 disable("weighted.edges")
-            } else if(is.weighted(final.graph()) | input$weighted == TRUE) {
+            } else if(is.weighted(final.graph()) | as.logical(input$weighted)) {
                 enable("weighted.edges")
             }
         })
@@ -627,11 +618,11 @@ server <- function(input, output, session) {
                                      show.labels = input$show.labels,
                                      label.cex = input$label.cex,
                                      label.color = input$label.color,
-                                     directed = input$directed.edges,
+                                     directed = as.logical(input$directed.edges),
                                      arrow.width = input$arrow.width,
                                      arrow.length = input$arrow.length,
                                      edge.width = input$edge.width,
-                                     weighted = input$weighted.edges,
+                                     weighted = as.logical(input$weighted.edges),
                                      edge.width.min = input$edge.width.min.max[1],
                                      edge.width.max = input$edge.width.min.max[2],
                                      edge.color = input$edge.color,
@@ -649,7 +640,7 @@ server <- function(input, output, session) {
         })
 
     observe({
-        if(input$weighted.edges == FALSE) {
+        if(!as.logical(input$weighted.edges)) {
             hide("edge.width.min.max")
         } else {
           shinyjs::show("edge.width.min.max", anim = TRUE, animType = "slide")
@@ -678,7 +669,7 @@ server <- function(input, output, session) {
     })
 
     observe({
-        if(input$directed.edges == TRUE) {
+        if(as.logical(input$directed.edges)) {
           shinyjs::show(id = "arrow.width", anim = TRUE, animType = "slide")
           shinyjs::show(id = "arrow.length", anim = TRUE, animType = "slide")
         } else {
