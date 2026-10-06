@@ -1,6 +1,8 @@
 # Changelog
 
-## influential 2.3.2.9000 (Developmental version)
+## influential 2.3.3
+
+- Bundled apps work with current Shiny and igraph
 
 - Debug `fcor` function.
 
