@@ -2,6 +2,8 @@
 
 ## influential 2.3.3
 
+CRAN release: 2026-10-06
+
 - Bundled apps work with current Shiny and igraph
 
 - Debug `fcor` function.
