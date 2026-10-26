@@ -3,7 +3,7 @@ pkgdown: 2.2.1
 pkgdown_sha: ~
 articles:
   Vignettes: Vignettes.html
-last_built: 2026-10-07T05:36Z
+last_built: 2026-10-26T02:01Z
 urls:
   reference: https://asalavaty.github.io/influential/reference
   article: https://asalavaty.github.io/influential/articles
