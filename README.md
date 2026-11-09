@@ -7,6 +7,8 @@
 
 <!-- badges: start -->
 
+[![GitHub
+stars](https://img.shields.io/github/stars/asalavaty/influential?style=social)](https://github.com/asalavaty/influential)
 [![R-CMD-check](https://github.com/asalavaty/influential/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/asalavaty/influential/actions/workflows/R-CMD-check.yaml)
 [![CRAN
 Version](https://www.r-pkg.org/badges/version/influential?color=blue)](https://cran.r-project.org/package=influential)
@@ -22,6 +24,25 @@ SIRIR](https://img.shields.io/badge/SIR--based%20Influence%20Ranking-SIRIR-00640
 ExIR](https://img.shields.io/badge/Experimental%20data--based%20Integrative%20Ranking-ExIR-006400.svg?labelColor=f5f5f5)](https://doi.org/10.1016/j.isci.2026.116303)
 
 <!-- badges: end -->
+
+<!-- A GitHub star helps others discover influential. Text stays real HTML for sharp rendering. -->
+
+<h3 align="center">
+
+Finding influential useful? Please star this repo!
+</h3>
+
+<p align="center">
+
+Your star helps other researchers discover and use influential.
+</p>
+
+<p align="center">
+
+<a href="https://github.com/asalavaty/influential" title="Star influential on GitHub">
+<img src=".github/assets/influential-star-button.gif" width="360" alt="Animated Star on GitHub button; opens the influential repository" />
+</a>
+</p>
 
 ## Overview
 
@@ -210,3 +231,8 @@ contributions are welcome.
 Please use the [`influential` GitHub issues
 tracker](https://github.com/asalavaty/influential/issues) to report
 problems or suggest enhancements.
+
+If `influential` has been useful in your research, please consider
+[starring the repository on
+GitHub](https://github.com/asalavaty/influential). It helps other
+researchers find the package.
