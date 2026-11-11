@@ -2,6 +2,13 @@
 
 ### Network influence analysis, centrality assessment, and experimental feature prioritization in R
 
+### Finding influential useful? Please star this repo!
+
+Your star helps other researchers discover and use influential.
+
+[![Animated Star on GitHub button; opens the influential
+repository](.github/assets/influential-star-button.gif)](https://github.com/asalavaty/influential "Star influential on GitHub")
+
 ## Overview
 
 `influential` is an R package for identifying influential nodes in
@@ -196,6 +203,11 @@ contributions are welcome.
 Please use the [`influential` GitHub issues
 tracker](https://github.com/asalavaty/influential/issues) to report
 problems or suggest enhancements.
+
+If `influential` has been useful in your research, please consider
+[starring the repository on
+GitHub](https://github.com/asalavaty/influential). It helps other
+researchers find the package.
 
 # Package index
 
